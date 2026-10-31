@@ -192,6 +192,26 @@ table.stats td.t{font-family:var(--f-body)}
 .rhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:8px;border-bottom:2px solid var(--accent);padding-bottom:6px;margin-bottom:12px}
 .rhead h2{font-size:1.6em}
 .rhead .meta{font-family:var(--f-mono);color:var(--muted)}
+.rhead [data-print]{margin-left:auto}
+.rstatus{margin:-4px 0 12px;font-weight:600;font-size:.92em}
+.rstatus.good{color:var(--ok)} .rstatus.bad{color:var(--bad)}
+@media print{
+  @page{margin:12mm}
+  :root:root:root{--paper:#fff;--panel:#fff;--sunk:#f2f2ee;--ink:#111;--muted:#444;--rule:#bbb;--brass:#7a5410;--slate:#3c4f5c;--ok:#1f5a2a;--warn:#7a5a0a;--bad:#9a2a22;--on:#fff;color-scheme:light}
+  :root:root:root :is(body,.rcard,.pcard){--accent:color-mix(in oklab, var(--fac) 70%, #000)}
+  html,body{background:#fff!important;font-size:10.5pt}
+  .bar,.mbar,#toast,#leaveBar,.noprint,.viewbar,#buildBar,.ddall,.refjump,.refacts .btn,#foot{display:none!important}
+  body.print-roster #view-build{display:none!important}
+  body.print-roster #view-roster{display:block!important}
+  .rgrid{grid-template-columns:1fr 1fr;gap:8px}
+  .rcard,.rrule,.clrel{break-inside:avoid}
+  .rcard{border-top-width:3px}
+  details>summary .chev{display:none}
+  .credits{font-size:7.5pt;margin-top:8px;padding:6px 0 0;line-height:1.3}
+  .main{padding-bottom:0!important}
+  .credits p{margin:0 0 2px;max-width:none}
+  a{color:inherit}
+}
 .rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(22em,100%),1fr));gap:12px}
 .rcard{background:var(--panel);border:1px solid var(--rule);border-top:4px solid var(--accent);border-radius:3px;padding:10px 12px;min-width:0}
 .rcard.veh{border-top-color:var(--slate)}
@@ -431,6 +451,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
       <div class="plist" id="plist"></div>
       <div class="pfoot">
         <button class="btn" id="saveBtn">Save patrol</button>
+        <button class="btn ghost" id="shareBtn">Share link</button>
         <button class="btn ghost" id="copyBtn">Copy as text</button>
         <span class="saved-tag" id="savedTag"></span>
         <span class="sp"></span>
@@ -759,10 +780,12 @@ function route(h){
   if (m[0]==="faction" && facById(m[1])) return {v:"ref", arg:m[1]};
   if (m[0]==="builder") return {v:"home"};
   if (m[0]==="changes") return {v:"changes"};
+  if (m[0]==="p" && m[1]) return {v:"shared", arg:{faction:m[1], limit:parseInt(m[2],10), items:m[3]||"", name:m.slice(4).join("/")}};
   return {v:"factions"};
 }
 const hashFor = (v,arg) => v==="ref" ? "#/faction/"+arg : v==="factions" ? "#/factions" : v==="changes" ? "#/changes" : v==="edit" ? "#/builder/edit" : "#/builder";
 function showView(v, arg, push=true){
+  if (v==="shared") return openShared(arg);
   state.view = v; document.body.classList.toggle("on-home", v!=="edit"); document.body.dataset.view = v;
   document.querySelectorAll(".navtab").forEach(a=>a.classList.toggle("on", a.dataset.nav === (v==="factions"||v==="ref" ? "factions" : v==="changes" ? "" : "builder")));
   if (v==="home"){ confirmDel=null; document.body.style.removeProperty("--fac"); renderHome(); }
@@ -835,12 +858,30 @@ function editDraft(p){
 }
 function newId(){ return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
 
+// Share link: the whole patrol lives in the address, e.g. #/p/gwynt/300/gw-rhyfler:3,gw-milwer/My%20Patrol
+function shareUrl(){
+  const items = FAC.units.filter(u=>state.items[u.id]>0).map(u=>state.items[u.id]>1 ? `${u.id}:${state.items[u.id]}` : u.id).join(",");
+  return location.origin + location.pathname + `#/p/${FAC.id}/${state.limit}/${items}/${encodeURIComponent(state.name||"")}`;
+}
+function openShared(a){
+  const f = facById(a.faction);
+  if (!f){ toast("That shared patrol's faction isn't in this builder"); return showView("factions"); }
+  const items = {}; let missing = 0;
+  String(a.items||"").split(",").filter(Boolean).forEach(x=>{ const [id,q] = x.split(":"); const n = Math.max(1, Math.min(99, parseInt(q,10)||1));
+    if (f.units.some(u=>u.id===id)) items[id] = (items[id]||0) + n; else missing++; });
+  const limit = a.limit>0 && a.limit<=5000 ? a.limit : 300;
+  let name = ""; try{ name = decodeURIComponent(a.name||""); }catch(e){ name = a.name||""; }
+  editDraft({id:null, name: name.slice(0,80) || `${f.name} ${limit}`, faction:f.id, limit, items});
+  toast(missing ? `${missing} unit${missing===1?"":"s"} in this link ${missing===1?"is":"are"} no longer in the rulebook data and ${missing===1?"was":"were"} left out` : "Shared patrol opened. Press Save to keep a copy");
+}
 function renderRoster(){
   const rows = FAC.units.filter(u=>state.items[u.id]>0);
   const t = total();
   const v = $("#view-roster");
   if(!rows.length){ v.innerHTML = `<p class="empty">Add units on the Build tab and they'll appear here as reference cards.</p>`; return; }
-  v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span></div>
+  const errs = checks().out.filter(c=>c.lvl==="err");
+  v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span><button class="btn ghost noprint" type="button" data-print>Print roster</button></div>
+  <p class="rstatus ${errs.length?"bad":"good"}">${errs.length ? `Not legal: ${errs.map(c=>esc(c.msg)).join(" ")}` : `Legal at ${state.limit} points.`}</p>
   <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}</article>`).join("")}</div>`;
 }
 
@@ -887,7 +928,9 @@ async function init(){
     state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; setFaction(keepF||p.faction); }
   $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
   $("#foot").innerHTML = pgWrap(`Data from Clash of Rhyfles Faction Profiles ${DATA.meta.profilesVersion} and the Full Book.`) + ` · <a href="#/changes" data-go="#/changes">Rules changelog</a>` + `<span class="pnote"><br>${pgWrap(DATA.rules.patrolNote)}</span>`;
-  const r = route(location.hash); showView(r.v, r.arg, false); history.replaceState(null,"",hashFor(r.v,r.arg)); persist();
+  const r = route(location.hash);
+  if (r.v==="shared"){ history.replaceState(null,"","#/builder"); openShared(r.arg); persist(); return; }
+  showView(r.v, r.arg, false); history.replaceState(null,"",hashFor(r.v,r.arg)); persist();
 }
 
 /* events */
@@ -918,6 +961,23 @@ window.addEventListener("popstate", ()=>{ if(!DATA) return; const r = route(loca
 $("#backBtn").addEventListener("click", ()=>tryLeave({v:"home"}));
 $("#themeBtn").addEventListener("click", ()=>{ const order=["auto","light","dark"]; applyTheme(order[(order.indexOf(state.theme||"auto")+1)%3]); persist(); });
 $("#saveBtn").addEventListener("click", ()=>{ if(isDirty()) savePatrol(); leave(); });
+$("#shareBtn").addEventListener("click", ()=>{
+  if (!DATA) return; if (!Object.values(state.items).some(q=>q>0)) return toast("Add some units first");
+  const url = shareUrl();
+  const fallback = ()=>{ const a=$("#copyArea"); a.value=url; a.select(); try{ document.execCommand("copy"); toast("Share link copied"); }catch(e){ toast("Couldn't copy the link"); } };
+  const copy = ()=>{ try{ navigator.clipboard.writeText(url).then(()=>toast("Share link copied. Paste it anywhere"), fallback); }catch(e){ fallback(); } };
+  // Phones: open the device's share menu (Discord, messages...). Desktop: copy the link.
+  if (navigator.share && matchMedia("(pointer:coarse)").matches) navigator.share({title: state.name || "Quar patrol", url}).catch(err=>{ if(err && err.name!=="AbortError") copy(); });
+  else copy();
+});
+document.addEventListener("click", e=>{ if (e.target.closest("[data-print]")) window.print(); });
+// Printing from the builder always prints the roster (unit cards with every rule opened)
+let printOpened = [];
+window.addEventListener("beforeprint", ()=>{
+  if (state.view==="edit" && DATA){ renderRoster(); document.body.classList.add("print-roster"); }
+  printOpened = [...document.querySelectorAll("details:not([open])")]; printOpened.forEach(d=>d.open=true);
+});
+window.addEventListener("afterprint", ()=>{ document.body.classList.remove("print-roster"); printOpened.forEach(d=>d.open=false); printOpened = []; });
 $("#leaveSave").addEventListener("click", ()=>{ savePatrol(); leave(); });
 $("#leaveDiscard").addEventListener("click", ()=>{ leave(); toast("Changes discarded"); });
 $("#leaveStay").addEventListener("click", ()=>{ pendingNav=null; $("#leaveBar").hidden=true; });
