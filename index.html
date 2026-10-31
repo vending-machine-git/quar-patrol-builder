@@ -1,8 +1,23 @@
 <meta charset="utf-8">
 <title>Quar Patrol Builder</title>
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#22291b">
+<meta name="description" content="Build legal patrols and look up every unit, weapon and rule for all 12 Clash of Rhyfles factions. Unofficial and fan-made.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quar Patrol Builder">
+<meta property="og:title" content="Quar Patrol Builder: Clash of Rhyfles">
+<meta property="og:description" content="Build legal patrols and look up every unit, weapon and rule for all 12 Clash of Rhyfles factions. Unofficial and fan-made.">
+<meta property="og:url" content="https://vending-machine-git.github.io/quar-patrol-builder/">
+<meta property="og:image" content="https://vending-machine-git.github.io/quar-patrol-builder/icons/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Quar Patrol Builder logo and title above a row of faction art">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Inter:wght@800;900&family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
 /* Layout: a muster sheet. Sticky command bar with the points gauge; muster roll (unit catalogue) on the left, the patrol being built on the right; a roster view for the table. */
 :root{
@@ -50,7 +65,21 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .bar .wrap>*{font-size:1.15em}
 .brand{display:flex;flex-direction:column;line-height:1}
 .brand small{font-size:.68em;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:700;margin-bottom:3px}
-.brand b{font-family:var(--f-display);font-weight:400;font-size:1.6em;letter-spacing:.02em;text-transform:uppercase}
+.brand b{font-family:"Inter","Inter Display",var(--f-display);font-weight:900;font-size:1.6em;letter-spacing:-.005em;text-transform:uppercase}
+.bar .brandbtn{display:inline-flex;align-items:center;gap:.6em}
+.brandicon{width:2.7em;height:2.7em;flex:0 0 auto;display:block}
+.bantag,.banart{display:none}
+body[data-view="factions"] .bar{position:relative}
+body[data-view="factions"] .bar .wrap{padding-block:26px 12px}
+body[data-view="factions"] .brandicon{width:4.6em;height:4.6em}
+body[data-view="factions"] .brand small{font-size:.9em;margin-bottom:6px}
+body[data-view="factions"] .brand b{font-size:2.9em}
+body[data-view="factions"] .bantag{display:block;grid-column:1/-1;order:3;margin:2px 0 0;font-size:1.25em;color:var(--muted);max-width:52em;line-height:1.3}
+body[data-view="factions"] .banart{display:flex;grid-column:1/-1;order:3;gap:3px;margin-top:6px;border-top:3px solid var(--brass);overflow-x:auto;scrollbar-width:thin}
+.banart a{flex:1 0 5.6em;height:9.5em;background:#f3efe2 center 20%/cover no-repeat;display:block;transition:filter .15s}
+.banart a:hover{filter:brightness(1.06) saturate(1.1)}
+.banart a:focus-visible{outline:3px solid var(--brass);outline-offset:-3px}
+body[data-view="factions"] .mainnav{order:4}
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:end;min-width:0}
 .field{display:flex;flex-direction:column;gap:2px;min-width:0}
 .field label{font-size:.7em;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -314,6 +343,12 @@ body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view=
 .hhead-r{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
 .hhead-r.stack{flex-direction:column;align-items:flex-end;gap:4px}
 @media (max-width:480px){.hhead-r.stack{align-items:flex-start}}
+@media (max-width:640px){
+  body[data-view="factions"] .brandicon{width:3.4em;height:3.4em}
+  body[data-view="factions"] .brand b{font-size:2em}
+  body[data-view="factions"] .bantag{font-size:1em}
+  .banart a{flex-basis:5em;height:7.5em}
+}
 .saved-tag.dirty{color:var(--warn);font-weight:600}
 .btn:disabled{opacity:.45;cursor:default}
 .leave{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;padding:10px 12px;margin:0 0 12px;background:var(--brass-soft);border:1px solid var(--brass);border-radius:3px}
@@ -344,7 +379,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 
 <div class="bar">
   <div class="wrap">
-    <button class="brandbtn" id="homeBtn" aria-label="Go to Factions"><span class="brand"><small>Quar · Clash of Rhyfles</small><b>Patrol Builder</b></span></button>
+    <button class="brandbtn" id="homeBtn" aria-label="Go to Factions"><img class="brandicon" src="icons/icon.svg" alt=""><span class="brand"><small>Quar · Clash of Rhyfles</small><b>Patrol Builder</b></span></button>
     <div class="controls">
       <div class="field"><label for="patrolName">Patrol name</label><input id="patrolName" type="text" placeholder="Unnamed patrol" autocomplete="off"></div>
       <div class="field"><label for="faction">Faction</label><select id="faction"></select></div>
@@ -356,6 +391,8 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
       <div class="track"><i id="fill"></i></div>
     </div>
     <button class="themebtn" id="themeBtn" type="button"></button>
+    <p class="bantag">Build legal patrols and look up every unit, weapon and rule for all 12 factions. Unofficial and fan-made.</p>
+    <div class="banart" id="banArt" aria-label="Factions"></div>
     <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a></nav>
   </div>
 </div>
@@ -415,7 +452,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <footer class="credits" aria-label="Credits">
     <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles (10/26) and remain the property of Zombiesmith.</p>
     <p>Rules design: Joshua Qualtieri &amp; Anthony Brown · World design: Joshua Qualtieri, Pete Murray, Pete McKenna &amp; Edward McEneely · Art: Joshua Qualtieri</p>
-    <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith. Please support the creators by getting the rulebooks from <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">zombiesmith.com</a>.<br>Spotted a mistake? Let me know.</p>
+    <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith. Please support the creators by getting the rulebooks from <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">zombiesmith.com</a>.<br>Spotted a mistake? Let me know on Discord.</p>
   </footer>
 </div>
 <div class="mbar" id="mbar"><span class="mleft"><span><span class="mused" id="mused">0 / 300</span> <span id="mstate">pts</span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
@@ -758,6 +795,7 @@ function renderChanges(){
   </article>`).join("") || `<p class="empty">No changes yet.</p>`}`;
 }
 function renderFactions(){
+  $("#banArt").innerHTML = DATA.factions.filter(f=>f.art).map(f=>`<a href="#/faction/${f.id}" data-go="#/faction/${f.id}" title="${esc(f.name)}" aria-label="${esc(f.name)}" style="background-image:url('${esc(f.art)}')"></a>`).join("");
   $("#fgrid").innerHTML = DATA.factions.map(f=>{
     const n = f.units.length, cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
     const desc = f.intro ? esc(f.intro) : `${n} unit profiles: ${esc(cats.join(", "))}.`;
