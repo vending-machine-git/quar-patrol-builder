@@ -20,7 +20,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Inter:wght@800;900&family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Inter:wght@800;900&family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&family=Special+Elite&display=swap">
 <style>
 /* Layout: a muster sheet. Sticky command bar with the points gauge; muster roll (unit catalogue) on the left, the patrol being built on the right; a roster view for the table. */
 :root{
@@ -45,12 +45,12 @@
 html{background:var(--paper)}
 /* Faction colour: --fac is set to the open patrol's faction colour (book table colour); --accent adapts it to the theme */
 :root{--fac:var(--brass)}
-body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li{--accent:color-mix(in oklab, var(--fac) var(--acc-mix), var(--ink)); --accent-soft:color-mix(in oklab, var(--fac) 15%, var(--panel)); --accent-line:color-mix(in oklab, var(--fac) 45%, var(--rule))}
+body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce{--accent:color-mix(in oklab, var(--fac) var(--acc-mix), var(--ink)); --accent-soft:color-mix(in oklab, var(--fac) 15%, var(--panel)); --accent-line:color-mix(in oklab, var(--fac) 45%, var(--rule))}
 /* Where supported, keep the book's colours saturated: deepen them on light, brighten them on dark */
 @supports (color: oklch(from red l c h)){
-  body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li{--accent:oklch(from var(--fac) min(l, 0.5) calc(c * 1.2) h)}
-  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}}
-  :root[data-theme="dark"] :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}
+  body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce{--accent:oklch(from var(--fac) min(l, 0.5) calc(c * 1.2) h)}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}}
+  :root[data-theme="dark"] :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}
 }
 .fpick-list li span{color:var(--accent);font-weight:600}
 .fpick-btn span{color:var(--accent);font-weight:600}
@@ -187,6 +187,15 @@ table.stats td.t{font-family:var(--f-body)}
 .updbar .updacts{display:flex;gap:8px}
 @media (max-width:860px){ body[data-view="edit"] .updbar{bottom:calc(64px + env(safe-area-inset-bottom,0px))} }
 @media print{ .updbar{display:none!important} }
+#repPrint{display:none}
+.brepwrap{margin:6px 0 4px;overflow:hidden;border-radius:2px}
+@media print{
+  body.print-report > *:not(#repPrint){display:none!important}
+  body.print-report #repPrint{display:block!important}
+  html:has(body.print-report),body.print-report{background:#fff!important}
+  body.print-report .brep{box-shadow:none;max-width:none;font-size:11.5px;border:none;padding:18px 20px 14px}
+  body.print-report .brep h1{font-size:3em}
+}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:3px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
 #copyArea{position:absolute;left:-9999px;top:0}
@@ -198,6 +207,111 @@ table.stats td.t{font-family:var(--f-body)}
 .rhead .meta{font-family:var(--f-mono);color:var(--muted)}
 .rhead [data-print]{margin-left:auto}
 .rstatus{margin:-4px 0 12px;font-weight:600;font-size:.92em}
+.gsetup{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end;padding:12px}
+.gsetup select,.gsetup input{background:var(--paper);color:var(--ink);border:1px solid var(--rule);border-radius:3px;padding:6px 8px;font:inherit;max-width:100%}
+.gnote{margin:0;padding:0 12px 12px}
+.gsave{margin:0 12px 12px}
+.btn.gendg{background:var(--brass);border-color:var(--brass);color:var(--on)}
+.btn.gnewg{background:var(--slate);border-color:var(--slate);color:var(--on)}
+.btn.gendg:hover,.btn.gnewg:hover{filter:brightness(1.1)}
+.btn.gendg.danger,.btn.gnewg.danger{background:var(--bad);border-color:var(--bad);color:var(--on)}
+.gminfo{padding:0 12px 4px}
+.gminfo dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0 0 6px;padding:10px 12px;border:1px solid var(--rule);border-radius:3px;background:var(--sunk);font-size:.92em}
+.gminfo dt{font-weight:700;color:var(--muted);text-transform:uppercase;font-size:.78em;letter-spacing:.08em;padding-top:.15em}
+.gminfo dd{margin:0}
+.gminfo p{margin:0 0 8px}
+.gmission{display:block;font-size:.85em;font-weight:600;color:var(--accent);margin-top:2px}
+.gactive{display:inline-block;font-weight:700;padding:.35em .8em;border-radius:3px;border:1.5px solid var(--accent);color:var(--accent)}
+.gactive.opp{border-color:var(--muted);color:var(--ink)}
+.gendbtns{display:flex;gap:8px;flex-wrap:wrap}
+.gresult{border:1.5px solid var(--accent);border-radius:4px;padding:12px 14px;background:var(--accent-soft)}
+.gresult h3{margin:0 0 4px;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:1.4em}
+.gverdict{margin:0 0 10px;font-weight:700;font-size:1.05em}
+.gscores{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:8px}
+.gscores>div{display:flex;flex-direction:column}
+.gscores b{font-family:var(--f-mono);font-size:2em;line-height:1.1}
+.gresult .hint{margin:0 0 10px}
+.gresult .gverdict{font-family:var(--f-display);font-size:1.6em;font-weight:400;text-transform:uppercase;margin:2px 0 0;color:var(--accent)}
+.gline{margin:0 0 10px;font-style:italic}
+.grow2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:10px;margin:0 0 10px}
+@media (max-width:640px){.grow2{grid-template-columns:1fr}}
+.grow2 .field{margin:0} .grow2 textarea{width:100%;box-sizing:border-box;font:inherit;resize:vertical}
+.grepbox{margin:0 0 12px;background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:6px 12px}
+.grep .ghead{font-family:var(--f-display);text-transform:uppercase;font-size:1.3em;margin:6px 0 0}
+.grep .gline{margin-bottom:6px}
+.gtags{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px}
+.gtags span,.gflag{font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:1px 7px;border-radius:2px;background:var(--slate);color:var(--on)}
+.gflag{background:var(--brass)}
+.grsides{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 20px}
+.grep h4{margin:10px 0 2px;font-size:1.05em} .grep h5{margin:8px 0 2px;font-size:.8em;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.grep ul{margin:0;padding-left:1.2em} .grep .hint{margin:0 0 4px}
+.gmoments{margin:0;padding-left:1.4em} .gmoments>li{margin:0 0 6px}
+.gbox output small{font-size:.55em;color:var(--muted);font-weight:500}
+.gtop{padding:12px;display:flex;flex-direction:column;gap:12px;border-top:4px solid var(--accent)}
+.gtitle{display:flex;gap:10px;align-items:center}
+.gtitle b{display:block;font-size:1.15em}
+.gcounters{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:flex-start}
+.gcounters.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16em,100%),1fr));gap:10px}
+.gside{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:flex-end;padding:10px;border:1px solid var(--rule);border-radius:3px;background:var(--sunk)}
+.gwho{width:100%;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.8em;color:var(--accent)}
+.gctr{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.gsetup a,.gnote a{color:var(--accent);font-weight:600}
+.gl{font-size:.72em;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
+.gbox{display:inline-flex;align-items:center;border:1px solid var(--rule);border-radius:3px;background:var(--panel)}
+.gbox output{min-width:2.4em;text-align:center;font-family:var(--f-mono);font-weight:600;font-size:1.35em}
+.gbtn{all:unset;cursor:pointer;width:2.2em;height:2.2em;display:grid;place-items:center;font-size:1.15em;font-weight:700;color:var(--ink)}
+.gbtn:hover{background:var(--accent-soft)}
+.gbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.gsub{font-size:.75em;color:var(--muted);max-width:16em}
+.gbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;align-items:center;color:var(--muted)}
+.gbar b{color:var(--ink)}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(21em,100%),1fr));gap:10px}
+.gunit{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:3px;padding:10px 12px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.gunit header{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.gunit .gn{font-family:var(--f-mono);color:var(--accent);font-weight:600}
+.gunit .gv{color:var(--muted);font-size:.9em}
+.gstats{font-family:var(--f-mono);font-size:.8em;color:var(--muted);margin-top:2px}
+.gnow{display:flex;flex-wrap:wrap;gap:4px}
+.gnow span{font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:1px 7px;border-radius:2px;background:var(--warn);color:var(--on)}
+.gnow span.ready{background:var(--ok)}
+.gunit.out{opacity:.62;border-left-color:var(--bad)}
+.gunit.spent{background:var(--sunk);border-left-color:var(--muted)}
+.gunit.spent header b,.gunit.spent .gstats{opacity:.65}
+.gnow span.spentb{background:var(--muted)}
+button.gactive{font:inherit;font-weight:700;cursor:pointer;background:transparent}
+button.gactive:hover{background:color-mix(in oklab, var(--accent) 12%, transparent)}
+.gunit.out .gnow span{background:var(--bad)}
+.gunit.killed b{text-decoration:line-through}
+.gchips{display:flex;flex-wrap:wrap;gap:5px}
+.gctrs{display:flex;flex-wrap:wrap;gap:6px 14px}
+.gstep{display:flex;flex-direction:column;gap:2px}
+.gsl{font-size:.68em;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.gbox.sm output{font-size:1em;min-width:2.6em}
+.gbox.sm output small{color:var(--muted);font-size:.8em}
+.gbox.sm .gbtn{width:1.8em;height:1.8em;font-size:1em}
+.gnow span.info{background:var(--slate)}
+.gchip{font:inherit;font-size:.8em;font-weight:600;cursor:pointer;padding:3px 9px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:var(--ink)}
+.gchip:hover{border-color:var(--ink)}
+.gchip[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:var(--on)}
+.gchip.outk[aria-pressed="true"],.gchip.mountd[aria-pressed="true"],.gchip.immob[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
+.gchip:focus-visible,.gdot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gtasks{display:flex;gap:5px;flex:0 0 auto}
+.gdot{all:unset;cursor:pointer;width:1.05em;height:1.05em;border-radius:50%;border:2px solid var(--accent)}
+.gdot[aria-pressed="true"]{background:var(--accent)}
+.gforce{display:block;margin-top:6px}
+.gforce>*+*{margin-top:10px}
+.gfhead .hint{display:block}
+.gfhead{display:flex;gap:10px;align-items:center;border-bottom:2px solid var(--accent);padding-bottom:6px;cursor:pointer;list-style:none}
+.gfhead::-webkit-details-marker{display:none}
+.gfhead .chev{display:inline-block;color:var(--accent);transition:transform .15s;font-size:.9em}
+details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
+.gfhead:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.gbad{display:inline-block;vertical-align:.15em;margin:0;font-size:.72em;font-weight:700;letter-spacing:.06em;padding:1px 7px;border-radius:2px;background:var(--bad);color:var(--on)}
+.gerrs{margin:0;padding:8px 12px 8px 28px;border:1px solid var(--bad);border-left-width:4px;border-radius:3px;color:var(--bad);background:var(--bad-soft);font-size:.9em;display:flex;flex-direction:column;gap:3px}
+.gfhead>div{flex:1;min-width:0}
+.gfhead b{display:inline;font-size:1.15em;color:var(--accent);margin-right:8px}
+.gimp{border-top:0}
+.gmore>summary{cursor:pointer;font-size:.78em;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
 .savewarn{display:flex;gap:10px;align-items:flex-start;margin:0;padding:10px 14px;border:1.5px solid var(--warn);border-left-width:5px;border-radius:3px;background:color-mix(in oklab, var(--warn) 12%, var(--panel));line-height:1.4}
 .savewarn svg{width:1.4em;height:1.4em;flex:0 0 auto;color:var(--warn);margin-top:.05em}
 .savewarn b{color:var(--ink)}
@@ -295,7 +409,7 @@ table.stats td.t{font-family:var(--f-body)}
 }
 /* home */
 body.on-home .controls, body.on-home .gauge, body.on-home #buildBar, body.on-home #view-build, body.on-home #view-roster, body.on-home .mbar{display:none!important}
-body:not([data-view="home"]) #view-home, body:not([data-view="factions"]) #view-factions, body:not([data-view="ref"]) #view-ref, body:not([data-view="changes"]) #view-changes{display:none}
+body:not([data-view="home"]) #view-home, body:not([data-view="factions"]) #view-factions, body:not([data-view="ref"]) #view-ref, body:not([data-view="changes"]) #view-changes, body:not([data-view="game"]) #view-game{display:none}
 /* main tabs */
 .mainnav{grid-column:1/-1;display:flex;gap:2px;margin:0 0 calc(-15px / 1.15)}
 .navtab{padding:6px 14px 7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.82em;color:var(--muted);text-decoration:none;border-bottom:3px solid transparent}
@@ -402,6 +516,8 @@ body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view=
 .hhead-r{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
 .hhead-r.stack{flex-direction:column;align-items:flex-end;gap:4px}
 @media (max-width:480px){.hhead-r.stack{align-items:flex-start}}
+@media (max-width:520px){ .navtab{padding:6px 8px 7px;letter-spacing:.03em;font-size:.74em;white-space:nowrap} .mainnav{gap:0} }
+@media (max-width:370px){ .navtab{padding:6px 6px 7px;letter-spacing:.01em;font-size:.68em} }
 @media (max-width:480px){
   .bar .wrap{grid-template-columns:minmax(0,1fr) auto}
   .bar .brandbtn{min-width:0}
@@ -438,6 +554,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 .fmeta .flag{width:1.6em;height:1.08em}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<style id="brepCss"></style>
 
 <div class="bar">
   <div class="wrap">
@@ -453,7 +570,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
       <div class="track"><i id="fill"></i></div>
     </div>
     <button class="themebtn" id="themeBtn" type="button"></button>
-    <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a></nav>
+    <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a></nav>
   </div>
 </div>
 
@@ -464,6 +581,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   </section>
   <section id="view-ref" aria-label="Faction reference"></section>
   <section id="view-changes" class="home" aria-label="Rules changelog"></section>
+  <section id="view-game" class="home" aria-label="Game tracker"></section>
   <section id="view-home" class="home" aria-label="My patrols">
     <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
     <p class="savewarn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Your patrols are saved only in this browser, on this device.</b> They won't appear on your other devices or browsers, and clearing your browsing data (cookies and site data) or using a private window will erase them. To keep a backup, use <b>Share link</b> or <b>Copy as text</b> and save the result somewhere safe; you can bring a text list back with <b>Import a patrol from text</b> below.</span></p>
@@ -839,24 +957,576 @@ function route(h){
   if (m[0]==="faction" && facById(m[1])) return {v:"ref", arg:m[1]};
   if (m[0]==="builder") return {v:"home"};
   if (m[0]==="changes") return {v:"changes"};
+  if (m[0]==="game") return {v:"game"};
   if (m[0]==="p" && m[1]) return {v:"shared", arg:{faction:m[1], limit:parseInt(m[2],10), items:m[3]||"", name:m.slice(4).join("/")}};
   return {v:"factions"};
 }
-const hashFor = (v,arg) => v==="ref" ? "#/faction/"+arg : v==="factions" ? "#/factions" : v==="changes" ? "#/changes" : v==="edit" ? "#/builder/edit" : "#/builder";
+const hashFor = (v,arg) => v==="ref" ? "#/faction/"+arg : v==="factions" ? "#/factions" : v==="changes" ? "#/changes" : v==="game" ? "#/game" : v==="edit" ? "#/builder/edit" : "#/builder";
 function showView(v, arg, push=true){
   if (v==="shared") return openShared(arg);
   state.view = v; document.body.classList.toggle("on-home", v!=="edit"); document.body.dataset.view = v;
-  document.querySelectorAll(".navtab").forEach(a=>a.classList.toggle("on", a.dataset.nav === (v==="factions"||v==="ref" ? "factions" : v==="changes" ? "" : "builder")));
+  document.querySelectorAll(".navtab").forEach(a=>a.classList.toggle("on", a.dataset.nav === (v==="factions"||v==="ref" ? "factions" : v==="changes" ? "" : v==="game" ? "game" : "builder")));
   if (v==="home"){ confirmDel=null; document.body.style.removeProperty("--fac"); renderHome(); }
   else if (v==="factions"){ document.body.style.removeProperty("--fac"); renderFactions(); }
   else if (v==="ref"){ renderRef(arg); }
   else if (v==="changes"){ document.body.style.removeProperty("--fac"); renderChanges(); }
+  else if (v==="game"){ renderGame(); }
   else { $("#tab-build").click(); }
   const h = hashFor(v,arg); if (push && location.hash!==h) history.pushState(null,"",h);
   window.scrollTo(0,0);
 }
 function navTo(t){ if (state.view==="edit") tryLeave(t); else showView(t.v, t.arg); }
 const slug = c => c.toLowerCase().replace(/[^a-z0-9]+/g,"-");
+/* ---------- Game Tracker ----------
+   Statuses from Core Rules p5 (Ready, Engaged, Overwatch, Gobsmacked, Prone, Out of Action) and the Full Book
+   (Rattled and Disabled for mounts, crews and vehicles; Killed). Each commander starts with 5 Pluck (Full Book p128).
+   Time-limited missions: 2/3/4/5 Turns for 100/200/300/400+ point Patrols (Full Book p128). */
+const GAME_KEY = "quar-game-v1";
+let game = null;
+try{ game = JSON.parse(localStorage.getItem(GAME_KEY) || "null"); }catch(e){ game = null; }
+function saveGame(){ try{ if (game) localStorage.setItem(GAME_KEY, JSON.stringify(game)); else localStorage.removeItem(GAME_KEY); }catch(e){} }
+// Statuses by unit type. Names follow the Core Rules (p5, Tend Wounded p25) and the Full Book
+// (mounted rhyflers p42-45, vehicles p49-55, weapon crews). Tips are short reminders, not the book text.
+const ST = {
+  engaged:{t:"Engaged", tip:"In base contact with an enemy: no Ranged Combat Tasks to or from it."},
+  overwatch:{t:"Overwatch", tip:"May interrupt an enemy Movement or Combat Task within three Range Bands."},
+  prone:{t:"Prone", tip:"-2 to be hit by ranged attacks; moves with Prone Movement."},
+  gob:{t:"Gobsmacked", tip:"Also Prone. Only Prone Movement towards cover or Recover."},
+  prepared:{t:"Prepared", tip:"Weapon Prepared for its special attack; stays until fired or switched back."},
+  primed:{t:"Primed", tip:"Holding a Primed explosive. If Gobsmacked or taken OOA it drops and detonates."},
+  flesh:{t:"Flesh Wound", tip:"Tend Wounded result 3: only one Task a Round; if taken OOA again, remove it."},
+  incap:{t:"Incapacitated", tip:"Tend Wounded result 2: can't move on its own; can be carried off."},
+  carried:{t:"Carried Off", tip:"Wounded rhyfler carried to your Deployment Zone (+3 Pluck)."},
+  dismounted:{t:"Dismounted", tip:"Rider (and any passenger) fighting on foot."},
+  mountw:{t:"Mount Wounded", tip:"Mount's Movement Allowance drops to the second value."},
+  mountd:{t:"Mount Disabled", tip:"Mount out for the battle; the rider fights on foot."},
+  rattled:{t:"Rattled", tip:"-2 to Skill Checks until the Recovery Task removes it."},
+  immob:{t:"Immobilized", tip:"Treads or wheels knocked out: stays in place for the rest of the battle."},
+  jammed:{t:"Main Gun Jammed", tip:"Can't fire the main gun until the Gunner clears it."},
+  reload:{t:"Needs Reload", tip:"Slow Reload: the Gunner must Reload before firing again."},
+  unbuttoned:{t:"Unbuttoned", tip:"Hatch open, Crew Commander exposed. Off = Buttoned Up."},
+  disabled:{t:"Disabled", tip:"No longer functions for the rest of the battle."},
+  ooa:{t:"Out of Action", tip:"Seriously hurt. Another rhyfler may Tend Wounded."},
+  killed:{t:"Killed", tip:"Killed or removed from the battle."}
+};
+const OUT = ["ooa","killed","disabled","carried"];
+// Missions (Full Book p132-141), time limits (p129) and Rounds per Turn (p15) come from the data file.
+const missionOf = id => (DATA.missions||[]).find(m=>m.id===id) || (DATA.missions||[]).find(m=>m.id==="custom") || {id:"custom", name:"Custom", turns:null, pluck:5, objectives:[]};
+const RPT = () => (DATA.missionRules && DATA.missionRules.roundsPerTurn) || 9;
+function timeLimitFor(pts){ for (const [max,t] of (DATA.missionRules||{}).timeLimits || [[100,2],[200,3],[300,4],[null,5]]) if (max==null || pts<=max) return t; return 5; }
+function turnLimitOf(g){ const m = missionOf(g.mission); if (m.turns==="time") return timeLimitFor(Math.max(g.limit, (g.oppForce||{}).limit||0)); return typeof m.turns==="number" ? m.turns : null; }
+const activeSide = g => { const k = (g.turn-1)*RPT() + (g.round-1); return ((k%2===0) === (g.first!=="opp")) !== !!g.swap ? "me" : "opp"; };
+const uType = u => u.vehicle ? "veh" : u.crew ? "crew" : (u.profiles||[]).some(p=>/^mounted$/i.test(p.label||"")) ? "mounted" : "inf";
+const allW = u => [...(u.weapons||[]).map(w=>String(w.abilities||w.type||"")), ...(u.abilities||[])].join(", ");
+function statusKeys(u, g){
+  const t = uType(u), w = allW(u);
+  if (t==="veh") return ["overwatch","rattled","immob", (u.weapons||[]).length?"jammed":null, /Slow Reload/i.test(w)?"reload":null, u.armor?"unbuttoned":null, "disabled"].filter(Boolean);
+  if (t==="crew") return ["engaged","overwatch","gob","rattled","prepared","disabled"];
+  const foot = ["engaged","overwatch","prone","gob","prepared","primed","flesh","incap","carried","ooa","killed"];
+  if (t==="mounted"){
+    const dis = g.st.dismounted;
+    return ["dismounted","mountw","mountd","rattled", ...foot.filter(k=> dis || (k!=="prone" && k!=="gob"))];
+  }
+  return foot;
+}
+function setStatus(g, k, on, u){
+  g.st[k] = on;
+  if (!on) return;
+  if (k==="gob"){ g.st.prone = true; g.st.overwatch = false; if (g.st.primed){ g.st.primed = false; toast("Primed explosive dropped: it detonates on this rhyfler"); } }
+  if (k==="engaged") g.st.overwatch = false;
+  if (k==="ooa"){ g.st.killed = false; if (g.st.primed) toast("Primed explosive dropped: it detonates on this rhyfler"); }
+  if (k==="killed"){ g.st.ooa = false; }
+  if (k==="flesh") g.st.incap = false;
+  if (k==="incap") g.st.flesh = false;
+  if (k==="mountd"){ g.st.dismounted = true; g.st.mountw = false; }
+  if (k==="disabled" || k==="killed" || k==="ooa" || k==="carried")
+    Object.keys(g.st).forEach(x=>{ if (x!==k && !["dismounted","mountd","flesh","incap","immob"].includes(x)) g.st[x]=false; });
+  if (k==="ooa" && g.st.flesh){ g.st.killed = true; g.st.ooa = false; } // a Flesh Wound rhyfler taken OOA again is removed
+}
+// Armoured vehicle locations, e.g. "Tread (3) · Hull (2) · Engine (2)"
+const locsOf = u => u.armor ? String(u.armor.locations).split("·").map(x=>{ const m = x.trim().match(/^(.+?)\s*\((\d+)\)$/); return m ? {name:m[1].trim(), max:+m[2]} : null; }).filter(Boolean) : [];
+function applyDamageRules(g, u){
+  if (u.armor){ locsOf(u).forEach(L=>{ const taken = (g.c.loc||{})[L.name]||0; if (taken >= L.max){ if (/tread|wheel/i.test(L.name)) g.st.immob = true; else g.st.disabled = true; } }); }
+  if (u.crew && (g.c.dmg||0) >= u.crew.d) g.st.disabled = true;
+}
+function expandUnits(f, items, prefix){
+  const units = [];
+  f.units.forEach(u=>{ const q = (items||{})[u.id]||0; for (let i=1;i<=q;i++) units.push({uid:prefix+u.id+"#"+i, unitId:u.id, f:f.id, n:i, of:q, st:{}, c:{}, tasks:0}); });
+  return units;
+}
+function newGame(pid, o){
+  const p = state.saved.find(x=>x.id===pid); if (!p) return;
+  const f = facById(p.faction); if (!f) return;
+  o = o || {}; const m = missionOf(o.mission || "custom");
+  const roles = m.roles || null, myRole = roles ? (roles.includes(o.role) ? o.role : roles[0]) : null, oppRole = roles ? roles.find(r=>r!==myRole) : null;
+  const pl = r => typeof m.pluck==="object" ? (m.pluck[r] ?? 5) : (m.pluck ?? 5);
+  const first = m.firstRole && roles ? (m.firstRole===myRole ? "me" : "opp") : (o.first==="opp" ? "opp" : "me");
+  game = {v:3, patrolId:p.id, name:p.name||f.name, faction:f.id, limit:p.limit, opp:"", oppForce:null, mission:m.id, role:myRole, oppRole, first,
+    turn:1, round:1, pluck:[pl(myRole), pl(oppRole)], vp:[0,0], units:expandUnits(f, p.items, ""), hideOut:false, started:Date.now(), ended:null, log:[]};
+  saveGame();
+}
+// Opponent's patrol: from a share link (…#/p/faction/limit/items/name) or a "Copy as text" list.
+function parseForce(txt){
+  txt = String(txt||"").trim();
+  if (!txt) return {error:"Paste a share link or a text list first."};
+  if (txt.length > 200000) return {error:"That's too much text to be a patrol list."};
+  const m = txt.match(/#\/p\/([^\s"'<>]+)/);
+  if (m){
+    const parts = m[1].split("/"), f = facById(parts[0]);
+    if (!f) return {error:"That share link's faction isn't in this builder."};
+    const items = {}; let missed = 0;
+    String(parts[2]||"").split(",").filter(Boolean).forEach(x=>{ const [id,q] = x.split(":"); if (f.units.some(u=>u.id===id)) items[id] = Math.min(99,(items[id]||0)+Math.max(1,parseInt(q,10)||1)); else missed++; });
+    if (!Object.keys(items).length) return {error:"No units in that share link matched the rulebook data."};
+    let name = ""; try{ name = decodeURIComponent(parts.slice(3).join("/")); }catch(e){ name = parts.slice(3).join("/"); }
+    const limit = parseInt(parts[1],10);
+    return {faction:f.id, name:name.slice(0,80), limit: limit>0 && limit<=5000 ? limit : 300, items, missed: missed ? [`${missed} unknown unit${missed===1?"":"s"}`] : []};
+  }
+  return parseTextList(txt);
+}
+function setOppForce(r){
+  const f = facById(r.faction);
+  game.oppForce = {name: r.name || `${f.name} ${r.limit}`, faction:f.id, limit:r.limit, units:expandUnits(f, r.items, "o:")};
+}
+const unitOf = g => { const f = facById(g.f || game.faction); return f && f.units.find(u=>u.id===g.unitId); };
+const oppLabel = () => game.opp || (game.oppForce && game.oppForce.name) || "Opponent";
+const importBox = (id, open) => `<details class="imp gimp" id="${id}Box"${open?" open":""}><summary>${id==="gOppNew"?"Add your opponent's patrol":"Import Opponent's Patrol (optional)"}</summary>
+  <p class="hint">Paste their <b>share link</b>, or a list made with <b>Copy as text</b>, or open a .txt file with one in it.</p>
+  <textarea id="${id}Text" rows="4" spellcheck="false" placeholder="https://…/#/p/… or a text list"></textarea>
+  <div class="impacts">${id==="gOppNew"?`<button class="btn" type="button" data-g="addopp">Add opponent</button>`:""}<label class="btn ghost filebtn">Open .txt file<input type="file" class="gOppFile" data-target="${id}Text" accept=".txt,text/plain"></label><span class="hint" id="${id}Msg" role="status"></span></div></details>`;
+// Mission summary on the setup screen (names and numbers only; the rules themselves are in the book).
+function missionInfo(){
+  const sel = $("#gMission"); if (!sel) return; const m = missionOf(sel.value); renderGame.mission = m.id;
+  const rw = $("#gRoleWrap"), prevRole = ($("#gRole")||{}).value, prevFirst = ($("#gFirst")||{}).value;
+  rw.innerHTML = m.roles ? `<label for="gRole">You are</label><select id="gRole">${m.roles.map(r=>`<option${r===prevRole?" selected":""}>${esc(r)}</option>`).join("")}</select>`
+    : `<label for="gFirst">Who goes first?</label><select id="gFirst"><option value="me"${prevFirst!=="opp"?" selected":""}>You</option><option value="opp"${prevFirst==="opp"?" selected":""}>Opponent</option></select>`;
+  const role = ($("#gRole")||{}).value, other = m.roles ? m.roles.find(r=>r!==role) : null;
+  const turns = m.turns==="time" ? `Time limit by patrol size: ${(DATA.missionRules.timeLimits||[]).map(([mx,t])=>mx==null?`${t} for larger`:`${t} up to ${mx} pts`).join(", ")}` : typeof m.turns==="number" ? `${m.turns} Turns` : "No Turn limit in the book: play until you agree to stop";
+  const pluck = typeof m.pluck==="object" ? `${role}: ${m.pluck[role]} · ${other}: ${m.pluck[other]}` : `${m.pluck} each`;
+  $("#gMissionInfo").innerHTML = m.id==="custom" ? `<p class="hint">No mission rules: 5 Pluck each, no Turn limit.</p>` : `<dl>
+    <dt>Turns</dt><dd>${esc(turns)}</dd><dt>Rounds</dt><dd>${RPT()} per Turn (one per Activation card)</dd>
+    <dt>First active</dt><dd>${esc(m.first||"")}</dd><dt>Starting Pluck</dt><dd>${esc(pluck)}</dd>
+    ${m.sizes?`<dt>Patrols</dt><dd>${esc(m.sizes)}</dd>`:""}
+    ${m.objectives.length?`<dt>Objectives</dt><dd>${m.objectives.map(esc).join("<br>")}</dd>`:""}
+  </dl><p class="hint">Full details in the book<span class="pg"> (${esc(m.page)})</span>.</p>`;
+}
+document.addEventListener("change", e=>{ if (e.target.id==="gMission" || e.target.id==="gRole") missionInfo(); });
+function renderGame(){
+  const v = $("#view-game");
+  const head = `<div class="hhead"><h1>Game Tracker</h1><div class="hhead-r">${game?`<div class="gendbtns">${game.ended?"":`<button class="btn gendg" type="button" data-g="endgame">End Game</button>`}<button class="btn gnewg" type="button" data-g="end">New game</button></div>`:""}</div></div>`;
+  if (!game || !facById(game.faction)){
+    document.body.style.removeProperty("--fac");
+    const list = state.saved.filter(p=>p && Object.values(p.items||{}).some(q=>q>0)).sort((a,b)=>(b.updated||0)-(a.updated||0));
+    v.innerHTML = head + `<div class="card"><header><h2>Start a game</h2></header>${list.length ? `<div class="gsetup">
+      <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}</select></div>
+      <div class="field"><label for="gOpp">Opponent's name (optional)</label><input id="gOpp" type="text" maxlength="40" placeholder="Uses their patrol's name if blank" autocomplete="off"></div>
+      <div class="field"><label for="gMission">Mission</label><select id="gMission">${(DATA.missions||[]).map(m=>`<option value="${esc(m.id)}"${m.id===(renderGame.mission||"custom")?" selected":""}>${esc(m.name)}</option>`).join("")}</select></div>
+      <div class="field" id="gRoleWrap"></div>
+      </div><div class="gminfo" id="gMissionInfo"></div>${importBox("gOppSetup", false)}<div class="gsetup"><button class="btn" type="button" data-g="start">Start game</button></div>` :
+      `<div class="gsetup"><p class="hint">You don't have any saved patrols yet. Build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, save it, then come back here.</p></div>`}
+      <p class="hint gnote">Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too. The mission sets the number of Turns, who goes first and the starting Pluck.</p>
+      <p class="savewarn gsave" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>The game is saved in this browser until you start a new one.</b></span></p></div>`;
+    missionInfo();
+    return;
+  }
+  game.units.forEach(g=>{ g.f = g.f || game.faction; });
+  const me = facById(game.faction), of = game.oppForce && facById(game.oppForce.faction);
+  if (!game.mission){ game.mission = "custom"; game.first = game.first || "me"; }
+  const ms = missionOf(game.mission), lim = turnLimitOf(game), act = activeSide(game);
+  const isOut = g => OUT.some(k=>g.st[k]);
+  const ctr = (key, idx, label, sub, of_) => { const val = idx==null ? game[key] : game[key][idx];
+    return `<div class="gctr"><span class="gl">${label}</span><div class="gbox"><button type="button" class="gbtn" data-g="dec" data-k="${key}" data-i="${idx??""}" aria-label="${label} minus one">−</button><output>${val}${of_?`<small> of ${of_}</small>`:""}</output><button type="button" class="gbtn" data-g="inc" data-k="${key}" data-i="${idx??""}" aria-label="${label} plus one">+</button></div>${sub?`<span class="gsub">${sub}</span>`:""}</div>`; };
+  const card = g => { const u = unitOf(g); if (!u) return ""; g.c = g.c || {};
+    const t = uType(u), out = OUT.some(k=>g.st[k]);
+    const prof = (u.profiles||[]).find(p=> t==="mounted" ? (g.st.dismounted ? !/^mounted$/i.test(p.label||"") : /^mounted$/i.test(p.label||"")) : true) || (u.profiles||[])[0];
+    const ma = prof && t==="mounted" && g.st.mountw && /\//.test(prof.ma) ? String(prof.ma).split("/")[1] : prof && prof.ma;
+    const stats = prof ? `${prof.label?esc(prof.label)+": ":""}Sk ${esc(prof.sk)} · Mt ${esc(prof.mt)} · MA ${esc(ma)} · T ${esc(prof.t)}` : u.vehicle ? `Sk ${esc(u.vehicle.sk)} · MA ${esc(u.vehicle.ma)}${u.vehicle.t?` · T ${esc(u.vehicle.t)}`:""}` : u.crew ? `Crew ${esc(u.crew.crew)} · Sk ${esc(u.crew.sk)} · T ${esc(u.crew.t)}` : "";
+    const keys = statusKeys(u, g);
+    const chips = keys.map(k=>`<button type="button" class="gchip ${k}${OUT.includes(k)?" outk":""}" data-g="st" data-u="${esc(g.uid)}" data-s="${k}" aria-pressed="${!!g.st[k]}" title="${esc(ST[k].tip)}">${ST[k].t}</button>`).join("");
+    const step = (key, label, val, max, sub) => `<span class="gstep"><span class="gsl">${label}</span><span class="gbox sm"><button type="button" class="gbtn" data-g="cdec" data-u="${esc(g.uid)}" data-c="${esc(key)}" aria-label="${esc(label)} minus one">−</button><output>${val}${max!=null?`<small>/${max}</small>`:""}</output><button type="button" class="gbtn" data-g="cinc" data-u="${esc(g.uid)}" data-c="${esc(key)}" data-max="${max??""}" aria-label="${esc(label)} plus one">+</button></span>${sub?`<span class="gsub">${sub}</span>`:""}</span>`;
+    let cx = "";
+    if (t==="veh" && u.armor) cx = locsOf(u).map(L=>step("loc:"+L.name, `${L.name} damage`, (g.c.loc||{})[L.name]||0, L.max)).join("");
+    else if (t==="veh") cx = step("dmg","Damage taken", g.c.dmg||0, null);
+    if (t==="crew") cx = step("dmg","Crew damage", g.c.dmg||0, u.crew.d) + (/\bHMG\b/.test(allW(u)) ? step("heat","Heat markers", g.c.heat||0, 4, (g.c.heat||0)>=4?"Roll on the Heat chart":"") : "");
+    const tasks = `<span class="gtasks" title="Tasks this Round: max 2 per rhyfler, only one a Combat Task (Core Rules p11). Resets at End Round.">${[1,2].map(n=>`<button type="button" class="gdot" data-g="task" data-u="${esc(g.uid)}" data-n="${n}" aria-pressed="${g.tasks>=n}" aria-label="Task ${n} used"></button>`).join("")}</span>`;
+    const now = Object.keys(ST).filter(k=>g.st[k]).map(k=>ST[k].t);
+    const spent = !out && (g.tasks||0) >= 2; if (spent) now.unshift("Spent");
+    if (t==="veh" && u.armor && !g.st.unbuttoned && !out) now.unshift("Buttoned Up");
+    return `<article class="gunit${out?" out":""}${spent?" spent":""}${g.st.killed?" killed":""}">
+      <header><div><b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span><div class="gstats">${stats}</div></div>${out?"":tasks}</header>
+      <div class="gnow">${now.length ? now.map(x=>`<span${x==="Buttoned Up"?' class="info"':x==="Spent"?' class="spentb" title="Used both Tasks this Round. Ready again after End Round."':""}>${esc(x)}</span>`).join("") : `<span class="ready">Ready</span>`}</div>
+      ${cx?`<div class="gctrs">${cx}</div>`:""}
+      <div class="gchips">${chips}</div>
+      <details class="gmore"><summary>Profile</summary>${statBlock(u)}${weaponLine(u)}${rulesText(u)}${abilityList(u)}</details>
+    </article>`; };
+  // Each force's cards are drawn with its own faction loaded (weapon tables differ per faction).
+  const force = (title, f, units, extra, isOpp, limit) => {
+    const errs = forceProblems(f.id, units, limit);
+    useFaction(f.id);
+    const alive = units.filter(g=>!isOut(g)).length, ooa = units.filter(g=>g.st.ooa).length, dead = units.filter(g=>g.st.killed).length, gone = units.filter(g=>g.st.disabled||g.st.carried).length;
+    const shown = units.filter(g=>!(game.hideOut && isOut(g)));
+    const key = isOpp ? "opp" : "me", open = !((game.closed||{})[key]);
+    return `<details class="gforce" data-side="${key}"${open?" open":""}${f.color?` style="--fac:${f.color}"`:""}>
+      <summary class="gfhead"><span class="chev">▸</span>${flagImg(f)}<div><b>${esc(title)}</b>${errs.length?`<span class="gbad" title="${esc(errs.join(" "))}">NOT LEGAL · ${errs.length} problem${errs.length===1?"":"s"}</span>`:""}<span class="hint">${esc(f.name)}${extra?` · ${extra}`:""} · ${units.length} rhyfler${units.length===1?"":"s"}</span></div>${isOpp?`<button class="btn ghost" type="button" data-g="removeopp">Remove</button>`:""}</summary>
+      ${errs.length?`<ul class="gerrs">${errs.map(m=>`<li>${pgWrap(m)}</li>`).join("")}</ul>`:""}
+      <div class="gbar"><span><b>${alive}</b> fighting · <b>${ooa}</b> Out of Action · <b>${dead}</b> Killed${gone?` · <b>${gone}</b> Disabled or carried off`:""}</span></div>
+      <div class="ggrid">${shown.map(card).join("") || `<p class="hempty">Every rhyfler is out of the fight.</p>`}</div></details>`;
+  };
+  const myHtml = force(game.name, me, game.units, `${game.limit} pts`, false, game.limit);
+  const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card">${importBox("gOppNew", true)}</div>`;
+  useFaction(game.faction);
+  const opp = esc(oppLabel());
+  v.innerHTML = head + `
+  <div class="gtop card"${me.color?` style="--fac:${me.color}"`:""}>
+    <div class="gtitle">${flagImg(me)}<div><b>${esc(game.name)}</b><span class="hint">${esc(me.name)} · ${game.limit} pts · vs ${opp}</span><span class="gmission">${esc(ms.name)}${game.role?` · You are the ${esc(game.role)}`:""}<span class="pg">${ms.page?` (${esc(ms.page)})`:""}</span></span></div></div>
+    ${game.ended ? resultsCard(ms) : `<div class="gcounters">
+      ${ctr("turn",null,"Turn", lim ? "" : "No Turn limit", lim)}
+      ${ctr("round",null,"Round", "", RPT())}
+      <div class="gctr"><span class="gl">Active</span><button type="button" class="gactive ${act}" data-g="swapact" title="Tap to switch the active player">${act==="me"?"You":opp} <span aria-hidden="true">⇄</span></button><span class="gsub">Tap to switch · alternates each Round</span></div>
+      <div class="gctr"><span class="gl">&nbsp;</span><button class="btn" type="button" data-g="endround">End Round</button><span class="gsub">${lim && game.turn>=lim && game.round>=RPT() ? "Last Round of the battle" : "End Round clears Task dots"}</span></div>
+    </div>`}
+    <div class="gcounters two">
+      <div class="gside"><span class="gwho">You</span>${ctr("pluck",0,"Pluck")}${ctr("vp",0,"Victory Points")}</div>
+      <div class="gside"><span class="gwho">${opp}</span>${ctr("pluck",1,"Pluck")}${ctr("vp",1,"Victory Points")}</div>
+    </div>
+  </div>
+  <div class="gbar"><span></span><label class="switch" for="gHide"><input type="checkbox" id="gHide"${game.hideOut?" checked":""}> Hide units out of the fight</label></div>
+  ${myHtml}
+  ${oppHtml}
+  `;
+}
+// Rule check for a force in the tracker: borrow the builder's checks() with that force's units.
+function forceProblems(fid, units, limit){
+  const keep = {items: state.items, limit: state.limit, fac: FAC && FAC.id};
+  const items = {}; units.forEach(g=>{ items[g.unitId] = (items[g.unitId]||0) + 1; });
+  let errs = [];
+  try{ state.items = items; state.limit = limit; useFaction(fid); errs = checks().out.filter(c=>c.lvl==="err").map(c=>c.msg); }
+  finally{ state.items = keep.items; state.limit = keep.limit; if (keep.fac) useFaction(keep.fac); }
+  return errs;
+}
+/* ---------- Battle report ----------
+   Built from the game log (casualties, VP changes) recorded while playing. The outcome names and
+   thresholds below are the builder's own flavour text, not rules from the book. */
+const NOTE_KEYS = ["killed","ooa","disabled","carried","immob","mountd","incap","flesh"];
+const OUTCOMES = {
+  annihilation:{h:"Annihilation",        s:"{W} wiped {L} from the field."},
+  flawless:    {h:"Flawless Victory",    s:"{W} won without losing a single rhyfler."},
+  pyrrhic:     {h:"Pyrrhic Victory",     s:"{W} took the day, but paid dearly for it."},
+  comeback:    {h:"Comeback Victory",    s:"{W} clawed back from behind to snatch the win."},
+  wire:        {h:"Down to the Wire",    s:"The lead changed hands late, and {W} held on at the very end."},
+  landslide:   {h:"Landslide",           s:"{W} dominated {L} from start to finish."},
+  decisive:    {h:"Decisive Victory",    s:"{W} beat {L} clearly and convincingly."},
+  clear:       {h:"Clear Victory",       s:"{W} came out comfortably ahead of {L}."},
+  close:       {h:"Close Battle",        s:"{W} edged out {L} by the narrowest of margins."},
+  objective:   {h:"Mission Accomplished",s:"{W} completed the mission against {L}."},
+  bloodyDraw:  {h:"Bloody Stalemate",    s:"Both patrols were shattered and neither side could claim the field."},
+  standoff:    {h:"Cagey Standoff",      s:"Neither commander committed, and the battle fizzled out."},
+  stalemate:   {h:"Stalemate",           s:"Honours even: neither side could break the other."},
+  undecided:   {h:"Battle Over",         s:"Choose who won the mission to complete the report."}
+};
+const TAGS = {
+  bloodbath:"Bloodbath", attrition:"War of Attrition", lastStand:"Last One Standing", seesaw:"Seesaw Battle",
+  noPluck:"Out of Pluck", distance:"Went the Distance", sharp:"Short and Sharp", firstBlood:"First Blood"
+};
+function logEvent(s, k, d, uid){ game.log = game.log || []; game.log.push({t:game.turn, r:game.round, s, k, d, u:uid}); }
+function unlogEvent(uid, k){ const L = game.log || []; for (let i=L.length-1;i>=0;i--) if (L[i].u===uid && L[i].k===k){ L.splice(i,1); return; } }
+const sideOf = g => game.units.includes(g) ? "me" : "opp";
+const uLabel = g => { const u = unitOf(g); return u ? `${u.name}${g.of>1?" #"+g.n:""}${u.variant?` (${u.variant})`:""}` : "Unknown unit"; };
+const when = e => `Turn ${e.t}, Round ${e.r}`;
+function battleReport(){
+  const ms = missionOf(game.mission), [a,b] = game.vp, log = game.log || [], end = game.ended || {turn:game.turn, round:game.round};
+  const names = {me: game.name, opp: oppLabel()};
+  const mineU = game.units, oppU = game.oppForce ? game.oppForce.units : null;
+  const lostN = us => us.filter(g=>OUT.some(k=>g.st[k])).length;
+  const loss = {me:{n:lostN(mineU), of:mineU.length}, opp: oppU ? {n:lostN(oppU), of:oppU.length} : null};
+  const frac = s => loss[s] && loss[s].of ? loss[s].n/loss[s].of : null;
+  let w = end.winner && end.winner!=="auto" ? end.winner : (ms.noVP ? null : a>b ? "me" : b>a ? "opp" : "draw");
+  // VP story: biggest deficit each side came back from, lead changes and when the final lead was taken
+  let run = [0,0], deficit = {me:0, opp:0}, changes = 0, leader = null, leadAt = null;
+  log.filter(e=>e.k==="vp").forEach(e=>{ run[e.s==="me"?0:1] += e.d;
+    deficit.me = Math.max(deficit.me, run[1]-run[0]); deficit.opp = Math.max(deficit.opp, run[0]-run[1]);
+    const now = run[0]>run[1] ? "me" : run[1]>run[0] ? "opp" : null;
+    if (now && now!==leader){ if (leader) changes++; leader = now; leadAt = e; } });
+  let key;
+  if (w==="me" || w==="opp"){
+    const L = w==="me" ? "opp" : "me", wl = frac(w), ll = frac(L), m = Math.abs(a-b), top = Math.max(a,b);
+    if (ll===1) key = "annihilation";
+    else if (loss[w].n===0 && loss[L] && loss[L].n>0) key = "flawless";
+    else if (wl!=null && ll!=null && wl>=0.5 && wl>=ll) key = "pyrrhic";
+    else if (ms.noVP || (end.winner && end.winner!=="auto" && !(w==="me"?a>b:b>a))) key = "objective";
+    else if (deficit[w]>=2) key = "comeback";
+    else if (changes>=1 && leadAt && leadAt.t===end.turn && end.turn>1) key = "wire";
+    else if (m>=5 || (top>=4 && m/top>=0.6)) key = "landslide";
+    else if (m>=3) key = "decisive";
+    else if (m>=2) key = "clear";
+    else key = "close";
+  } else if (w==="draw"){
+    const fm = frac("me"), fo = frac("opp"), lostAll = loss.me.n + (loss.opp ? loss.opp.n : 0);
+    key = fm>=0.5 && (fo==null || fo>=0.5) ? "bloodyDraw" : (a+b===0 && lostAll<=2) ? "standoff" : "stalemate";
+  } else key = "undecided";
+  const W = w==="me" ? names.me : w==="opp" ? names.opp : "", Lname = w==="me" ? names.opp : names.me;
+  const o = OUTCOMES[key];
+  const tags = [];
+  const allN = loss.me.of + (loss.opp ? loss.opp.of : 0), allLost = loss.me.n + (loss.opp ? loss.opp.n : 0);
+  if (allN && allLost/allN >= 0.6) tags.push(TAGS.bloodbath);
+  else if (frac("me")>=0.4 && frac("opp")>=0.4) tags.push(TAGS.attrition);
+  if ([["me",mineU],["opp",oppU]].some(([s,us])=>us && us.length>1 && us.length-loss[s].n===1)) tags.push(TAGS.lastStand);
+  if (changes>=2) tags.push(TAGS.seesaw);
+  if (game.pluck.some(p=>p===0)) tags.push(TAGS.noPluck);
+  const lim = turnLimitOf(game);
+  if (lim && end.turn>=lim && end.round>=RPT()) tags.push(TAGS.distance); else if (end.turn===1) tags.push(TAGS.sharp);
+  const fb = log.find(e=>OUT.includes(e.k));
+  // Each side: starting units grouped, then what was left at the end
+  const sideRep = (s, us, fid, limit) => {
+    const counts = {}; us.forEach(g=>{ const u = unitOf(g); const k = u ? `${u.name}${u.variant?` (${u.variant})`:""}` : "Unknown unit"; counts[k] = (counts[k]||0)+1; });
+    const standing = [], lost = [], standingX = [], lostX = [];
+    us.forEach(g=>{ const out = OUT.find(k=>g.st[k]);
+      if (out){ const e = [...log].reverse().find(x=>x.u===g.uid && x.k===out); lost.push(`${uLabel(g)}: ${ST[out].t}${e?` (${when(e)})`:""}`); lostX.push({n:uLabel(g), d:`${ST[out].t}${e?` · T${e.t} R${e.r}`:""}`}); }
+      else { const st = Object.keys(ST).filter(k=>g.st[k]).map(k=>ST[k].t); standing.push(`${uLabel(g)}${st.length?`: ${st.join(", ")}`:""}`); standingX.push({n:uLabel(g), d:st.join(", ")}); } });
+    const f = facById(fid);
+    return {key: s, fid, color: (f && f.color) || "#6b5d45", title: names[s], sub: `${f?f.name:""}${limit?` · ${limit} pts`:""}`, start: Object.entries(counts).map(([k,n])=>`${n}× ${k}`), startX: Object.entries(counts).map(([k,n])=>({n:k, d:`×${n}`})), total: us.length, standing, lost, standingX, lostX, pluck: game.pluck[s==="me"?0:1], vp: game.vp[s==="me"?0:1]};
+  };
+  const sides = [sideRep("me", mineU, game.faction, game.limit)];
+  if (oppU) sides.push(sideRep("opp", oppU, game.oppForce.faction, game.oppForce.limit));
+  // Notable moments: every Round where something happened, grouped
+  const colorOf = s => { const f = facById(s==="me" ? game.faction : (game.oppForce||{}).faction); return (f && f.color) || "#7d6f55"; };
+  const rounds = {};
+  log.forEach(e=>{ const id = e.t*100+e.r; (rounds[id] = rounds[id] || {t:e.t, r:e.r, ev:[]}).ev.push(e); });
+  const cas = R => R.ev.filter(e=>OUT.includes(e.k)).length;
+  const list = Object.values(rounds).sort((x,y)=>x.t-y.t||x.r-y.r);
+  const bloodiest = list.reduce((best,R)=> cas(R)>=2 && (!best || cas(R)>cas(best)) ? R : best, null);
+  const moments = list.map(R=>{
+    const items = [], itemsX = [], vp = {me:0, opp:0};
+    R.ev.forEach(e=>{ if (e.k==="vp") vp[e.s] += e.d; else { const g = allGameUnits().find(x=>x.uid===e.u); const t = `${names[e.s]}: ${g?uLabel(g):"a unit"} ${ST[e.k]?ST[e.k].t:e.k}`; items.push(t); itemsX.push({text:t, color:colorOf(e.s)}); } });
+    ["me","opp"].forEach(s=>{ if (vp[s]){ const t = `${names[s]} ${vp[s]>0?"scored":"lost"} ${Math.abs(vp[s])} VP`; items.push(t); itemsX.push({text:t, color:colorOf(s)}); } });
+    const flags = [];
+    if (fb && R.ev.includes(fb)) flags.push("First blood");
+    if (bloodiest===R) flags.push("Bloodiest Round");
+    if (leadAt && R.ev.includes(leadAt) && (w===leader) && changes>=1) flags.push("Decisive moment");
+    return {when: when(R), items, itemsX, flags};
+  }).filter(m=>m.items.length);
+  const result = ms.noVP ? (!(end.winner && end.winner!=="auto") ? "Decided by the mission objectives (winner not chosen)" : w==="draw" ? "Draw on the mission objectives" : `${W} wins on the mission objectives`) :
+    `${names.me} ${a} VP · ${names.opp} ${b} VP${w==="draw"?" · Draw":W?` · ${W} wins`:""}`;
+  const meta = [`Mission: ${ms.name}${ms.page?` (${ms.page})`:""}`,
+    `Ended on Turn ${end.turn}${lim?` of ${lim}`:""}, Round ${end.round}`,
+    new Date(end.at||Date.now()).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})];
+  return {headline: o.h, sentence: o.s.replace("{W}", W).replace("{L}", Lname), tags, result, meta, sides, moments, notes: (end.notes||"").trim(), winner: w, oppName: names.opp, oppVP: b, oppPluck: game.pluck[1]};
+}
+function reportText(R){
+  const L = [];
+  L.push("BATTLE REPORT · Quar: Clash of Rhyfles", "", R.headline.toUpperCase(), R.sentence);
+  if (R.tags.length) L.push(R.tags.join(" · "));
+  L.push("", ...R.meta, R.result);
+  R.sides.forEach(S=>{
+    L.push("", "", `${S.title.toUpperCase()}${S.sub?` (${S.sub})`:""}`, `VP ${S.vp} · Pluck left ${S.pluck}`, "", `Starting units (${S.total}):`, ...S.start.map(x=>"  "+x));
+    L.push("", `Still fighting at the end (${S.standing.length}):`, ...(S.standing.length ? S.standing.map(x=>"  "+x) : ["  none"]));
+    L.push("", `Lost (${S.lost.length}):`, ...(S.lost.length ? S.lost.map(x=>"  "+x) : ["  none"]));
+  });
+  L.push("", "", "NOTABLE MOMENTS");
+  if (R.moments.length) R.moments.forEach(m=>{ L.push(`${m.when}${m.flags.length?`  [${m.flags.join(", ")}]`:""}`, ...m.items.map(x=>"  "+x)); });
+  else L.push("  Nothing was recorded during the battle.");
+  if (R.notes) L.push("", "", "COMMANDER'S NOTES", R.notes);
+  L.push("", "", "Made with the unofficial Quar Patrol Builder: https://vending-machine-git.github.io/quar-patrol-builder/");
+  return L.join("\n");
+}
+// Designed battle report: the same markup is shown on screen, printed (Save as PDF) and saved as a standalone .html file.
+const BREP_FONTS = "https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&family=Special+Elite&display=swap";
+const BREP_CSS = `
+.brep{--pp:#f3ead3;--pp2:#e9dcbc;--ik:#2b2418;--mu:#6b5d45;--ln:#b9a57c;--red:#9b2c1f;color:var(--ik);background:var(--pp);
+  background-image:radial-gradient(ellipse at 15% 10%,rgba(255,255,255,.55),transparent 55%),radial-gradient(ellipse at 90% 95%,rgba(120,90,40,.16),transparent 60%);
+  font-family:"Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;font-size:15px;line-height:1.38;padding:28px 30px 22px;border:1px solid var(--ln);
+  box-shadow:inset 0 0 0 6px var(--pp),inset 0 0 0 7px var(--ln);position:relative;overflow:hidden;max-width:900px;margin:0 auto;box-sizing:border-box;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.brep *{box-sizing:border-box}
+.brep .mast{text-align:center;border-bottom:3px double var(--ik);padding-bottom:10px;margin-bottom:14px}
+.brep .kick{display:flex;justify-content:space-between;gap:10px;font-size:.72em;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--ln);padding-bottom:5px;margin-bottom:10px}
+.brep .paper{font-family:"Saira Stencil One",Impact,sans-serif;font-size:1.05em;letter-spacing:.32em;text-transform:uppercase;color:var(--red);margin:0}
+.brep h1{font-family:"Saira Stencil One",Impact,sans-serif;font-weight:400;font-size:clamp(2.1em,7vw,3.5em);line-height:1;margin:4px 0 6px;text-transform:uppercase;letter-spacing:.02em}
+.brep .dek{font-style:italic;font-size:1.15em;margin:0 auto;max-width:36em}
+.brep .tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:10px 0 0}
+.brep .tags span{font-size:.7em;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--ik);padding:2px 8px;border-radius:2px}
+.brep .meta{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;font-size:.82em;color:var(--mu);margin-top:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.brep .score{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:12px;margin:0 0 16px}
+.brep .side{position:relative;background:rgba(255,255,255,.35);border:1px solid var(--ln);border-top:6px solid var(--c);padding:10px 12px 12px;min-width:0}
+.brep .side .who{display:flex;align-items:center;gap:9px;min-width:0}
+.brep .side .who img{width:46px;height:31px;object-fit:cover;border:1px solid var(--ik);flex:0 0 auto}
+.brep .side .who div{min-width:0}
+.brep .side h2{margin:0;font-size:1.25em;line-height:1.1;font-weight:700;overflow-wrap:anywhere}
+.brep .side .fac{font-size:.78em;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);font-weight:600}
+.brep .side .big{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:3.2em;line-height:1;margin:8px 0 2px;color:var(--c2)}
+.brep .side .big small{font-size:.28em;letter-spacing:.12em;color:var(--mu);margin-left:4px}
+.brep .side .sub{font-size:.85em;color:var(--mu)}
+.brep .pips{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px}
+.brep .pips i{width:12px;height:12px;background:var(--c2);display:block;border:1px solid var(--c2)}
+.brep .pips i.x{background:transparent;border-color:var(--mu);position:relative}
+.brep .pips i.x:after{content:"";position:absolute;inset:-1px;background:linear-gradient(45deg,transparent 45%,var(--red) 45%,var(--red) 55%,transparent 55%),linear-gradient(-45deg,transparent 45%,var(--red) 45%,var(--red) 55%,transparent 55%)}
+.brep .vs{align-self:center;font-family:"Saira Stencil One",Impact,sans-serif;font-size:1.5em;color:var(--mu)}
+.brep .stamp{position:absolute;bottom:12px;right:12px;transform:rotate(-11deg);font-family:"Saira Stencil One",Impact,sans-serif;font-size:1.35em;letter-spacing:.14em;color:var(--red);border:3px solid var(--red);padding:2px 10px;border-radius:4px;opacity:.82;mix-blend-mode:multiply;background:rgba(255,255,255,.08)}
+.brep .stamp.draw{position:static;display:inline-block;margin-top:10px;transform:rotate(-4deg)}
+.brep .result{text-align:center;font-weight:700;margin:-6px 0 16px;font-size:.95em}
+.brep h3{break-after:avoid;font-family:"Saira Stencil One",Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.12em;font-size:1.05em;margin:0 0 8px;display:flex;align-items:center;gap:10px}
+.brep h3:after{content:"";flex:1;border-top:1px solid var(--ik)}
+.brep .forces{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 22px;margin-bottom:16px}
+.brep .force{break-inside:avoid}
+.brep .force h4{margin:0 0 4px;font-size:1.02em;border-left:5px solid var(--c);padding-left:7px}
+.brep h5{margin:9px 0 3px;font-size:.72em;letter-spacing:.16em;text-transform:uppercase;color:var(--mu)}
+.brep ul{list-style:none;margin:0;padding:0}
+.brep li{padding:2px 0;border-bottom:1px dotted var(--ln);display:flex;justify-content:space-between;gap:8px}
+.brep li span{color:var(--mu);font-size:.88em;text-align:right}
+.brep li.dead b{font-weight:600;text-decoration:line-through;text-decoration-color:var(--red)}
+.brep li.dead span{color:var(--red)}
+.brep .none{color:var(--mu);font-style:italic;font-size:.9em;margin:2px 0}
+.brep .tl{position:relative;margin:0 0 16px;padding-left:22px}
+.brep .tl:before{content:"";position:absolute;left:6px;top:4px;bottom:4px;border-left:2px solid var(--ik)}
+.brep .tl>div{position:relative;margin-bottom:10px;break-inside:avoid}
+.brep .tl>div:before{content:"";position:absolute;left:-21px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--pp);border:2px solid var(--ik)}
+.brep .tl>div.hot:before{background:var(--red);border-color:var(--red)}
+.brep .tl .when{font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.82em}
+.brep .tl .tlf{font-size:.66em;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--red);padding:1px 6px;margin-left:6px;border-radius:2px;vertical-align:1px}
+.brep .tl p{margin:1px 0;font-size:.95em}
+.brep .tl p i{display:inline-block;width:8px;height:8px;background:var(--c);margin-right:6px;vertical-align:1px}
+.brep .notes{font-family:"Special Elite","Courier New",monospace;background:rgba(255,255,255,.45);border:1px solid var(--ln);padding:10px 14px;transform:rotate(-.4deg);margin:0 0 16px;white-space:pre-wrap;break-inside:avoid;box-shadow:2px 3px 0 rgba(60,40,10,.12)}
+.brep .foot{border-top:3px double var(--ik);padding-top:6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;font-size:.72em;color:var(--mu);letter-spacing:.06em}
+@media (max-width:560px){.brep{padding:20px 16px 16px;font-size:14px}.brep .score{grid-template-columns:1fr}.brep .vs{text-align:center}.brep .kick{flex-direction:column;align-items:center}}
+`;
+try{ document.getElementById("brepCss").textContent = BREP_CSS; }catch(e){}
+function brepHTML(R, flagSrc){
+  flagSrc = flagSrc || (f=>f && f.flag);
+  const date = R.meta[2];
+  const side = S => { const f = facById(S.fid), src = flagSrc(f);
+    const pips = Array.from({length:S.total},(_,i)=>`<i${i>=S.total-S.lost.length?' class="x"':""}></i>`).join("");
+    return `<div class="side" style="--c:${esc(S.color)};--c2:color-mix(in oklab, ${esc(S.color)} 75%, #000)">
+      ${R.winner===S.key?`<div class="stamp">Victor</div>`:""}
+      <div class="who">${src?`<img src="${esc(src)}" alt="">`:""}<div><h2>${esc(S.title)}</h2><div class="fac">${esc(S.sub)}</div></div></div>
+      <div class="big">${S.vp}<small>VP</small></div>
+      <div class="sub">${S.total-S.lost.length} of ${S.total} standing · ${S.pluck} Pluck left</div>
+      <div class="pips" aria-hidden="true">${pips}</div></div>`; };
+  const oneSide = R.sides.length===1;
+  const oppBox = oneSide ? `<div class="side" style="--c:#7d6f55;--c2:#5a4f3b">${R.winner==="opp"?`<div class="stamp">Victor</div>`:""}<div class="who"><div><h2>${esc(R.oppName)}</h2><div class="fac">Patrol not recorded</div></div></div><div class="big">${R.oppVP}<small>VP</small></div><div class="sub">${R.oppPluck} Pluck left</div></div>` : "";
+  const list = (xs, cls, empty) => xs.length ? `<ul>${xs.map(x=>`<li${cls?` class="${cls}"`:""}><b>${esc(x.n)}</b>${x.d?`<span>${esc(x.d)}</span>`:""}</li>`).join("")}</ul>` : `<p class="none">${empty}</p>`;
+  return `<article class="brep">
+    <header class="mast">
+      <div class="kick"><span>Field Dispatch</span><span>${esc(date)}</span><span>Quar: Clash of Rhyfles</span></div>
+      <p class="paper">Battle Report</p>
+      <h1>${esc(R.headline)}</h1>
+      <p class="dek">${esc(R.sentence)}</p>
+      ${R.winner==="draw"?`<div class="stamp draw">Draw</div>`:""}
+      ${R.tags.length?`<div class="tags">${R.tags.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
+      <div class="meta"><span>${esc(R.meta[0])}</span><span>${esc(R.meta[1])}</span></div>
+    </header>
+    <section class="score">${side(R.sides[0])}<div class="vs">VS</div>${oneSide?oppBox:side(R.sides[1])}</section>
+    <p class="result">${esc(R.result)}</p>
+    <h3>Order of battle</h3>
+    <section class="forces">${R.sides.map(S=>`<div class="force" style="--c:${esc(S.color)}"><h4>${esc(S.title)}</h4>
+      <h5>Mustered (${S.total})</h5>${list(S.startX,"","None")}
+      <h5>Still fighting (${S.standingX.length})</h5>${list(S.standingX,"","None")}
+      <h5>Fallen (${S.lostX.length})</h5>${list(S.lostX,"dead","None lost")}</div>`).join("")}</section>
+    <h3>Notable moments</h3>
+    ${R.moments.length ? `<section class="tl">${R.moments.map(m=>`<div${m.flags.length?' class="hot"':""}><span class="when">${esc(m.when)}</span>${m.flags.map(f=>`<span class="tlf">${esc(f)}</span>`).join("")}
+      ${m.itemsX.map(x=>`<p style="--c:${esc(x.color)}"><i></i>${esc(x.text)}</p>`).join("")}</div>`).join("")}</section>` : `<p class="none" style="margin-bottom:16px">Nothing was recorded during the battle.</p>`}
+    ${R.notes?`<h3>Commander's notes</h3><div class="notes">${esc(R.notes)}</div>`:""}
+    <footer class="foot"><span>Made with the unofficial Quar Patrol Builder</span><span>vending-machine-git.github.io/quar-patrol-builder</span></footer>
+  </article>`;
+}
+async function brepDataFlag(f){
+  try{ const r = await fetch(f.flag); const bl = await r.blob(); return await new Promise(res=>{ const fr = new FileReader(); fr.onload = ()=>res(fr.result); fr.onerror = ()=>res(null); fr.readAsDataURL(bl); }); }catch(e){ return null; }
+}
+async function brepFile(R){
+  const flags = {};
+  for (const S of R.sides){ const f = facById(S.fid); if (f && f.flag && !(f.id in flags)) flags[f.id] = await brepDataFlag(f); }
+  const body = brepHTML(R, f=> f ? flags[f.id] : null);
+  return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(R.headline)}: ${esc(R.sides[0].title)} vs ${esc(R.oppName)}</title>
+<link rel="stylesheet" href="${BREP_FONTS}">
+<style>html{background:#d9cfb8}body{margin:0;padding:24px 12px}${BREP_CSS}
+@media print{html,body{background:#fff;padding:0}@page{margin:10mm}.brep{box-shadow:none;max-width:none;font-size:11.5px;border:none;padding:18px 20px 14px}.brep h1{font-size:3em}}</style></head>
+<body>${body}</body></html>`;
+}
+function brepPrint(R){
+  let host = document.getElementById("repPrint");
+  if (!host){ host = document.createElement("div"); host.id = "repPrint"; document.body.appendChild(host); }
+  host.innerHTML = brepHTML(R);
+  document.body.classList.add("print-report");
+  const done = ()=>{ document.body.classList.remove("print-report"); window.removeEventListener("afterprint", done); };
+  window.addEventListener("afterprint", done);
+  setTimeout(()=>window.print(), 150);
+}
+function reportFileName(){ const s = x => String(x||"").replace(/[^\w\- ]+/g,"").trim().slice(0,40) || "patrol";
+  return `Battle report - ${s(game.name)} vs ${s(oppLabel())}.html`; }
+function resultsCard(ms){
+  const opp = esc(oppLabel()), [a,b] = game.vp, R = battleReport(), wv = game.ended.winner || "auto";
+  const opts = [["auto", ms.noVP ? "Choose who won…" : "By Victory Points"], ["me", `${game.name} won`], ["opp", `${oppLabel()} won`], ["draw","Draw"]];
+  return `<div class="gresult"><h3>Battle over</h3>
+    <p class="gverdict">${esc(R.headline)}</p><p class="gline">${esc(R.sentence)}</p>
+    <div class="gscores"><div><span class="gl">You</span><b>${a}</b><span class="gsub">VP · ${game.pluck[0]} Pluck left</span></div><div><span class="gl">${opp}</span><b>${b}</b><span class="gsub">VP · ${game.pluck[1]} Pluck left</span></div></div>
+    <div class="grow2"><div class="field"><label for="gWinner">Result${ms.noVP?` <span class="hint">(decided by objectives${ms.page?`, ${esc(ms.page)}`:""})</span>`:""}</label><select id="gWinner">${opts.map(([v,t])=>`<option value="${v}"${v===wv?" selected":""}>${esc(t)}</option>`).join("")}</select></div>
+    <div class="field"><label for="gNotes">Commander's notes (optional, goes in the report)</label><textarea id="gNotes" rows="2" maxlength="2000" placeholder="Heroic moments, grudges, what you'd change next time…">${esc(game.ended.notes||"")}</textarea></div></div>
+    <details class="gmore grepbox" open><summary>Battle report</summary><div class="brepwrap">${brepHTML(R)}</div></details>
+    <div class="gendbtns"><button class="btn" type="button" data-g="printrep">Print / Save as PDF</button><button class="btn ghost" type="button" data-g="dlrep">Download report</button><button class="btn ghost" type="button" data-g="copyrep">Copy as text</button><button class="btn ghost" type="button" data-g="resume">Resume game</button><button class="btn gnewg" type="button" data-g="end">New game</button></div></div>`;
+}
+const allGameUnits = () => game ? [...game.units, ...((game.oppForce||{}).units||[])] : [];
+function gMsg(id, text, bad){ const m = $("#"+id+"Msg"); if (m){ m.textContent = text; m.classList.toggle("bad", !!bad); } }
+document.addEventListener("click", e=>{
+  const b = e.target.closest("[data-g]"); if (!b || !$("#view-game").contains(b)) return;
+  const a = b.dataset.g;
+  if (b.closest("summary")) e.preventDefault();
+  if (a==="start"){
+    const opp = (($("#gOpp")||{}).value||"").trim().slice(0,40), otxt = (($("#gOppSetupText")||{}).value||"").trim();
+    let r = null;
+    if (otxt){ r = parseForce(otxt); if (r.error){ $("#gOppSetupBox").open = true; gMsg("gOppSetup", r.error, true); return; } }
+    newGame($("#gPatrol").value, {mission: ($("#gMission")||{}).value, role: ($("#gRole")||{}).value, first: ($("#gFirst")||{}).value});
+    if (game){ game.opp = opp; if (r) setOppForce(r); saveGame(); renderGame(); window.scrollTo(0,0);
+      toast(r && r.missed && r.missed.length ? `Game started. Couldn't match: ${r.missed.join(", ")}` : "Game started. Good luck!"); }
+    return;
+  }
+  if (!game) return;
+  if (a==="addopp"){ const r = parseForce(($("#gOppNewText")||{}).value); if (r.error){ gMsg("gOppNew", r.error, true); return; }
+    setOppForce(r); toast(r.missed && r.missed.length ? `Opponent added. Couldn't match: ${r.missed.join(", ")}` : `Added ${game.oppForce.name}`); }
+  if (a==="removeopp"){ if (!b.dataset.sure){ b.dataset.sure = "1"; b.textContent = "Tap again to remove"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "Remove"; b.classList.remove("danger"); } }, 3500); return; }
+    game.oppForce = null; toast("Opponent's patrol removed"); }
+  if (a==="end"){ if (b.dataset.sure){ game = null; saveGame(); renderGame(); toast("Game cleared"); } else { b.dataset.sure = "1"; b.textContent = "Tap again to clear this game"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "New game"; b.classList.remove("danger"); } }, 3500); } return; }
+  if (a==="inc" || a==="dec"){ const k = b.dataset.k, i = b.dataset.i, d = a==="inc" ? 1 : -1;
+    if (i===""){ const max = k==="round" ? RPT() : (turnLimitOf(game) || 99); game[k] = Math.max(1, Math.min(max, game[k]+d)); } else { const was = game[k][+i]; game[k][+i] = Math.max(0, Math.min(999, game[k][+i]+d)); if (k==="vp" && game[k][+i]!==was) logEvent(+i===0?"me":"opp", "vp", game[k][+i]-was); } }
+  if (a==="endround"){ allGameUnits().forEach(g=>g.tasks=0); const lim = turnLimitOf(game);
+    if (game.round < RPT()){ game.round++; toast(`Round ${game.round}: ${activeSide(game)==="me" ? "your" : oppLabel()+"'s"} turn to activate`); }
+    else if (lim && game.turn >= lim){ toast("That was the last Round of the battle. Press End Game to see the result"); }
+    else { game.turn++; game.round = 1; toast(`Turn ${game.turn} begins: reshuffle the Activation Deck`); } }
+  if (a==="endgame"){ if (!b.dataset.sure){ b.dataset.sure = "1"; b.textContent = "Tap again to end"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "End Game"; b.classList.remove("danger"); } }, 3500); return; }
+    game.ended = {turn: game.turn, round: game.round, at: Date.now(), winner: (game.lastEnd||{}).winner || "auto", notes: (game.lastEnd||{}).notes || ""}; toast("Battle over"); }
+  if (a==="resume"){ game.lastEnd = {winner: game.ended.winner, notes: game.ended.notes}; game.ended = null; }
+  const g = b.dataset.u && allGameUnits().find(x=>x.uid===b.dataset.u);
+  const before = g ? NOTE_KEYS.filter(k=>g.st[k]) : null;
+  if (a==="st" && g) setStatus(g, b.dataset.s, !g.st[b.dataset.s], unitOf(g));
+  if ((a==="cinc"||a==="cdec") && g){ g.c = g.c || {}; const key = b.dataset.c, d = a==="cinc" ? 1 : -1, max = b.dataset.max==="" || b.dataset.max==null ? 99 : +b.dataset.max;
+    if (key.startsWith("loc:")){ const n = key.slice(4); g.c.loc = g.c.loc || {}; g.c.loc[n] = Math.max(0, Math.min(max, (g.c.loc[n]||0)+d)); }
+    else g.c[key] = Math.max(0, Math.min(max, (g.c[key]||0)+d));
+    if (d>0) applyDamageRules(g, unitOf(g)); }
+  if (a==="task" && g){ const n = +b.dataset.n; g.tasks = g.tasks>=n ? n-1 : n; if (g.tasks>=2){ const u = unitOf(g); toast(`${u?u.name:"Unit"}${g.of>1?" #"+g.n:""} is Spent until next Round`); } }
+  if (g && before){ const after = NOTE_KEYS.filter(k=>g.st[k]);
+    after.filter(k=>!before.includes(k)).forEach(k=>logEvent(sideOf(g), k, 1, g.uid));
+    before.filter(k=>!after.includes(k)).forEach(k=>unlogEvent(g.uid, k)); }
+  if (a==="printrep"){ brepPrint(battleReport()); return; }
+  if (a==="dlrep"){ brepFile(battleReport()).then(html=>{ const url = URL.createObjectURL(new Blob([html], {type:"text/html;charset=utf-8"})); const l = document.createElement("a"); l.href = url; l.download = reportFileName(); document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 4000); toast("Battle report downloaded. Open it in any browser"); }); return; }
+  if (a==="copyrep"){ const txt = reportText(battleReport());
+    { const fallback = ()=>{ const t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); toast("Battle report copied"); }catch(e){ toast("Couldn't copy: try Download instead"); } t.remove(); };
+      try{ navigator.clipboard.writeText(txt).then(()=>toast("Battle report copied. Paste it anywhere"), fallback); }catch(e){ fallback(); } }
+    return; }
+  if (a==="swapact"){ game.swap = !game.swap; toast(`Active player: ${activeSide(game)==="me" ? "You" : oppLabel()}`); }
+  saveGame();
+  const y = window.scrollY; renderGame(); window.scrollTo(0, y);
+});
+document.addEventListener("toggle", e=>{ const d = e.target; if (game && d.classList && d.classList.contains("gforce")){ game.closed = game.closed || {}; game.closed[d.dataset.side] = !d.open; saveGame(); } }, true);
+document.addEventListener("change", e=>{
+  if (e.target.id==="gWinner" && game && game.ended){ game.ended.winner = e.target.value; saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
+  if (e.target.id==="gNotes" && game && game.ended){ game.ended.notes = e.target.value.slice(0,2000); saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
+  if (e.target.id==="gHide" && game){ game.hideOut = e.target.checked; saveGame(); renderGame(); return; }
+  if (e.target.classList && e.target.classList.contains("gOppFile")){
+    const f = e.target.files && e.target.files[0], ta = $("#"+e.target.dataset.target), id = e.target.dataset.target.replace(/Text$/,"");
+    if (!f || !ta) return;
+    if (f.size > 200000){ gMsg(id, "That file is too large to be a patrol list.", true); e.target.value = ""; return; }
+    if (f.type && !/^text\//.test(f.type) && !/\.txt$/i.test(f.name)){ gMsg(id, "Please choose a .txt file.", true); e.target.value = ""; return; }
+    const rd = new FileReader(); rd.onload = ()=>{ ta.value = rd.result; const r = parseForce(rd.result); gMsg(id, r.error ? r.error : `Ready: ${r.name || facById(r.faction).name}`, !!r.error); e.target.value = ""; }; rd.readAsText(f);
+  }
+});
 function renderChanges(){
   const log = DATA.changelog||[];
   const fname = id => { const f = facById(id); return f ? `<b class="clfac">${esc(f.name)}</b>` : ""; };
@@ -1213,7 +1883,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-10-31.93";
+const APP_VERSION = "2026-10-31.105";
 let updDismissed = false;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;

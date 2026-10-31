@@ -9600,5 +9600,221 @@
     }
    ]
   }
+ ],
+ "missionRules": {
+  "roundsPerTurn": 9,
+  "roundsSrc": "Full Book p15",
+  "timeLimits": [
+   [
+    100,
+    2
+   ],
+   [
+    200,
+    3
+   ],
+   [
+    300,
+    4
+   ],
+   [
+    null,
+    5
+   ]
+  ],
+  "timeSrc": "Full Book p129",
+  "pluckSrc": "Full Book p129"
+ },
+ "missions": [
+  {
+   "id": "meeting",
+   "name": "Meeting Engagement",
+   "page": "Full Book p132",
+   "turns": null,
+   "roles": null,
+   "pluck": 5,
+   "first": "Whoever deploys first",
+   "sizes": "Any size; 300 points is standard",
+   "objectives": [
+    "Primary: Last Rhyfler Standing (5)",
+    "Secondary: 2 for each rhyfler past the middle",
+    "Minor: Pluck for crossing the middle"
+   ]
+  },
+  {
+   "id": "ambushed",
+   "name": "Ambushed",
+   "page": "Full Book p133",
+   "turns": null,
+   "roles": [
+    "Attacker",
+    "Defender"
+   ],
+   "pluck": {
+    "Attacker": 7,
+    "Defender": 5
+   },
+   "firstRole": "Defender",
+   "first": "The Defender (deploys first)",
+   "sizes": "Any size",
+   "objectives": [
+    "Primary: Run Away! or Who Ambushed Whom? (5)",
+    "Secondary: Get Him Out of Here (2)",
+    "Minor: Pluck for escaping and for OOA"
+   ]
+  },
+  {
+   "id": "defend",
+   "name": "Defend!",
+   "page": "Full Book p134",
+   "turns": "time",
+   "roles": [
+    "Attacker",
+    "Defender"
+   ],
+   "pluck": 5,
+   "firstRole": "Attacker",
+   "first": "The Attacker",
+   "sizes": "Any size; harder: 300 attacking points for every 200 defending",
+   "objectives": [
+    "Primary: Hold the Line! (5)",
+    "Secondary: They Shall Not Pass! (2 each)",
+    "Minor: Pluck for crossing the middle and for OOA"
+   ]
+  },
+  {
+   "id": "seize",
+   "name": "Seize the Prize",
+   "page": "Full Book p135",
+   "turns": "time",
+   "roles": [
+    "Attacker",
+    "Defender"
+   ],
+   "pluck": 5,
+   "firstRole": "Attacker",
+   "first": "The Attacker",
+   "sizes": "Recommended: Defender 250, Attacker 350",
+   "objectives": [
+    "Primary: Get the Thing! (5)",
+    "Minor: Pluck for taking the prize"
+   ]
+  },
+  {
+   "id": "takehold",
+   "name": "Take and Hold",
+   "page": "Full Book p136",
+   "turns": null,
+   "roles": null,
+   "pluck": 5,
+   "first": "Whoever deploys first (roll off)",
+   "sizes": "Any size",
+   "objectives": [
+    "Primary: Take & Hold (1–3 VP per objective at the end of each Turn)",
+    "Primary: Not the Hill to Die On (5)",
+    "Minor: Pluck for each objective held"
+   ]
+  },
+  {
+   "id": "trench",
+   "name": "Trench Raid!",
+   "page": "Full Book p137",
+   "turns": 4,
+   "roles": [
+    "Attacker",
+    "Defender"
+   ],
+   "pluck": 5,
+   "firstRole": "Attacker",
+   "first": "The Attacker",
+   "sizes": "Defender 300, Attacker 400",
+   "objectives": [
+    "Primary: The Important Junction (win, draw or loss)"
+   ],
+   "noVP": true
+  },
+  {
+   "id": "getgun",
+   "name": "Get the Gun!",
+   "page": "Full Book p138",
+   "turns": 4,
+   "roles": [
+    "Attacker",
+    "Defender"
+   ],
+   "pluck": 5,
+   "firstRole": "Attacker",
+   "first": "The Attacker",
+   "sizes": "Defender 300 (with a heavy weapon crew), Attacker 450",
+   "objectives": [
+    "Take them out! (win or loss)"
+   ],
+   "noVP": true
+  },
+  {
+   "id": "guard",
+   "name": "Guard Duty",
+   "page": "Full Book p139",
+   "turns": 4,
+   "roles": [
+    "Attacker",
+    "Defender"
+   ],
+   "pluck": 5,
+   "firstRole": "Attacker",
+   "first": "The Attacker",
+   "sizes": "Defender 300 (with a heavy weapon crew), Attacker 450",
+   "objectives": [
+    "Destroy the Supplies! (5 per depot)",
+    "Get the Gun! (3, or 1)"
+   ]
+  },
+  {
+   "id": "tractor",
+   "name": "Tractor Meeting",
+   "page": "Full Book p140",
+   "turns": 4,
+   "roles": [
+    "Road side",
+    "Bottom edge"
+   ],
+   "pluck": 5,
+   "firstRole": "Road side",
+   "first": "The side deploying on the road",
+   "sizes": "450 each, both with a tractor",
+   "objectives": [
+    "Primary: Secure the Junction (2 per Ready rhyfler, 5 for a tractor)",
+    "Secondary: Protect the Tractor (3, +2)"
+   ]
+  },
+  {
+   "id": "armored",
+   "name": "Armored Assault",
+   "page": "Full Book p141",
+   "turns": null,
+   "roles": [
+    "Attacker",
+    "Defender"
+   ],
+   "pluck": 5,
+   "firstRole": "Attacker",
+   "first": "The Attackers",
+   "sizes": "Attackers 2 × 375 (each with a tractor), Defenders 2 × 225; uses the Multiplayer and Larger Battle rules (Full Book p16)",
+   "objectives": [
+    "Primary: Break the Line (win, draw or loss)"
+   ],
+   "noVP": true
+  },
+  {
+   "id": "custom",
+   "name": "Custom / no mission",
+   "page": "",
+   "turns": null,
+   "roles": null,
+   "pluck": 5,
+   "first": "Agree with your opponent",
+   "sizes": "",
+   "objectives": []
+  }
  ]
 }
