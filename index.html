@@ -252,6 +252,11 @@ table.stats td.t{font-family:var(--f-body)}
 .gtitle b{display:block;font-size:1.15em}
 .gcounters{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:flex-start}
 .gcounters.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16em,100%),1fr));gap:10px}
+.goppl{flex:1 0 100%}
+.gsavechk{display:flex;align-items:center;gap:6px;margin:6px 0 2px;font-size:.92em;cursor:pointer}
+.goppl>summary{cursor:pointer;font-weight:700;font-size:.85em;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.goppl>summary .gsub{text-transform:none;letter-spacing:0;font-weight:500}
+.gopplin{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:flex-end;margin-top:8px}
 .gside{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:flex-end;padding:10px;border:1px solid var(--rule);border-radius:3px;background:var(--sunk)}
 .gwho{width:100%;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.8em;color:var(--accent)}
 .gctr{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
@@ -1055,14 +1060,16 @@ function expandUnits(f, items, prefix){
   return units;
 }
 function newGame(pid, o){
-  const p = state.saved.find(x=>x.id===pid); if (!p) return;
-  const f = facById(p.faction); if (!f) return;
-  o = o || {}; const m = missionOf(o.mission || "custom");
+  o = o || {};
+  const p = o.force ? {id:o.savedId||null, name:o.force.name || `${(facById(o.force.faction)||{}).name||""} ${o.force.limit}`.trim(), faction:o.force.faction, limit:o.force.limit, items:o.force.items}
+    : pid ? state.saved.find(x=>x.id===pid) : {id:null, name:"You", faction:null, limit: Math.max(50, Math.min(5000, o.points||200)), items:{}};
+  if (!p) return;
+  const f = p.faction ? facById(p.faction) : null; if (p.faction && !f) return; const m = missionOf(o.mission || "custom");
   const roles = m.roles || null, myRole = roles ? (roles.includes(o.role) ? o.role : roles[0]) : null, oppRole = roles ? roles.find(r=>r!==myRole) : null;
   const pl = r => typeof m.pluck==="object" ? (m.pluck[r] ?? 5) : (m.pluck ?? 5);
   const first = m.firstRole && roles ? (m.firstRole===myRole ? "me" : "opp") : (o.first==="opp" ? "opp" : "me");
-  game = {v:3, patrolId:p.id, name:p.name||f.name, faction:f.id, limit:p.limit, opp:"", oppForce:null, mission:m.id, role:myRole, oppRole, first,
-    turn:1, round:1, pluck:[pl(myRole), pl(oppRole)], vp:[0,0], units:expandUnits(f, p.items, ""), hideOut:false, started:Date.now(), ended:null, log:[]};
+  game = {v:3, patrolId:p.id, name:p.name||(f&&f.name)||"You", faction:f?f.id:null, limit:p.limit, opp:"", oppForce:null, mission:m.id, role:myRole, oppRole, first,
+    turn:1, round:1, pluck:[pl(myRole), pl(oppRole)], vp:[0,0], units: f ? expandUnits(f, p.items, "") : [], hideOut:false, started:Date.now(), ended:null, log:[]};
   saveGame();
 }
 // Opponent's patrol: from a share link (…#/p/faction/limit/items/name) or a "Copy as text" list.
@@ -1083,16 +1090,29 @@ function parseForce(txt){
   }
   return parseTextList(txt);
 }
+function saveImported(r){
+  const f = facById(r.faction); if (!f) return null;
+  const tot = Object.entries(r.items).reduce((t,[id,q])=>{ const u = f.units.find(x=>x.id===id); return t + (u ? u.pts*q : 0); }, 0);
+  const rec = {id:newId(), name: r.name || `${f.name} ${r.limit}`, faction:f.id, limit:r.limit, items:{...r.items}, total:tot, updated:Date.now()};
+  state.saved.push(rec); persist(); return rec;
+}
 function setOppForce(r){
   const f = facById(r.faction);
   game.oppForce = {name: r.name || `${f.name} ${r.limit}`, faction:f.id, limit:r.limit, units:expandUnits(f, r.items, "o:")};
 }
 const unitOf = g => { const f = facById(g.f || game.faction); return f && f.units.find(u=>u.id===g.unitId); };
 const oppLabel = () => game.opp || (game.oppForce && game.oppForce.name) || "Opponent";
-const importBox = (id, open) => `<details class="imp gimp" id="${id}Box"${open?" open":""}><summary>${id==="gOppNew"?"Add your opponent's patrol":"Import Opponent's Patrol (optional)"}</summary>
-  <p class="hint">Paste their <b>share link</b>, or a list made with <b>Copy as text</b>, or open a .txt file with one in it.</p>
+const IMPBOX = {
+  gOppSetup:{t:"Import Opponent's Patrol (optional)", who:"their"},
+  gOppNew:{t:"Add your opponent's patrol", who:"their", btn:["addopp","Add opponent"]},
+  gMeSetup:{t:"Import Your Patrol (optional)", who:"your", note:"Use this on a tablet or another device where your patrol isn't saved. It's used instead of the patrol picked above.", save:true},
+  gMeNew:{t:"Add your patrol", who:"your", note:"Track each of your rhyflers from here on.", btn:["addme","Add my patrol"], save:true}
+};
+const importBox = (id, open) => { const c = IMPBOX[id]; return `<details class="imp gimp" id="${id}Box"${open?" open":""}><summary>${c.t}</summary>
+  <p class="hint">${c.note?c.note+" ":""}Paste ${c.who} <b>share link</b>, or a list made with <b>Copy as text</b>, or open a .txt file with one in it.</p>
   <textarea id="${id}Text" rows="4" spellcheck="false" placeholder="https://…/#/p/… or a text list"></textarea>
-  <div class="impacts">${id==="gOppNew"?`<button class="btn" type="button" data-g="addopp">Add opponent</button>`:""}<label class="btn ghost filebtn">Open .txt file<input type="file" class="gOppFile" data-target="${id}Text" accept=".txt,text/plain"></label><span class="hint" id="${id}Msg" role="status"></span></div></details>`;
+  ${c.save?`<label class="gsavechk"><input type="checkbox" id="${id}Save"> Also save it to My Patrols on this device</label>`:""}
+  <div class="impacts">${c.btn?`<button class="btn" type="button" data-g="${c.btn[0]}">${c.btn[1]}</button>`:""}<label class="btn ghost filebtn">Open .txt file<input type="file" class="gOppFile" data-target="${id}Text" accept=".txt,text/plain"></label><span class="hint" id="${id}Msg" role="status"></span></div></details>`; };
 // Mission summary on the setup screen (names and numbers only; the rules themselves are in the book).
 function missionInfo(){
   const sel = $("#gMission"); if (!sel) return; const m = missionOf(sel.value); renderGame.mission = m.id;
@@ -1113,16 +1133,17 @@ document.addEventListener("change", e=>{ if (e.target.id==="gMission" || e.targe
 function renderGame(){
   const v = $("#view-game");
   const head = `<div class="hhead"><h1>Game Tracker</h1><div class="hhead-r">${game?`<div class="gendbtns">${game.ended?"":`<button class="btn gendg" type="button" data-g="endgame">End Game</button>`}<button class="btn gnewg" type="button" data-g="end">New game</button></div>`:""}</div></div>`;
-  if (!game || !facById(game.faction)){
+  if (!game || (game.faction && !facById(game.faction))){
     document.body.style.removeProperty("--fac");
     const list = state.saved.filter(p=>p && Object.values(p.items||{}).some(q=>q>0)).sort((a,b)=>(b.updated||0)-(a.updated||0));
-    v.innerHTML = head + `<div class="card"><header><h2>Start a game</h2></header>${list.length ? `<div class="gsetup">
-      <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}</select></div>
+    v.innerHTML = head + `<div class="card"><header><h2>Start a game</h2></header>${`<div class="gsetup">
+      <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}<option value="">No patrol: just track the game</option></select></div>
+      <div class="field" id="gPtsWrap"${list.length?" hidden":""}><label for="gPts">Patrol size (points)</label><input id="gPts" type="number" min="50" max="5000" step="50" value="200" inputmode="numeric"></div>
       <div class="field"><label for="gOpp">Opponent's name (optional)</label><input id="gOpp" type="text" maxlength="40" placeholder="Uses their patrol's name if blank" autocomplete="off"></div>
       <div class="field"><label for="gMission">Mission</label><select id="gMission">${(DATA.missions||[]).map(m=>`<option value="${esc(m.id)}"${m.id===(renderGame.mission||"custom")?" selected":""}>${esc(m.name)}</option>`).join("")}</select></div>
       <div class="field" id="gRoleWrap"></div>
-      </div><div class="gminfo" id="gMissionInfo"></div>${importBox("gOppSetup", false)}<div class="gsetup"><button class="btn" type="button" data-g="start">Start game</button></div>` :
-      `<div class="gsetup"><p class="hint">You don't have any saved patrols yet. Build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, save it, then come back here.</p></div>`}
+      </div><div class="gminfo" id="gMissionInfo"></div>${importBox("gMeSetup", false)}${importBox("gOppSetup", false)}<div class="gsetup"><button class="btn" type="button" data-g="start">Start game</button></div>`}
+      ${list.length ? "" : `<p class="hint gnote">No saved patrols on this device. Use <b>Import Your Patrol</b> to bring one over, build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, or just track Turns, Pluck, Victory Points and losses.</p>`}
       <p class="hint gnote">Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too. The mission sets the number of Turns, who goes first and the starting Pluck.</p>
       <p class="savewarn gsave" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>The game is saved in this browser until you start a new one.</b></span></p></div>`;
     missionInfo();
@@ -1131,8 +1152,11 @@ function renderGame(){
   game.units.forEach(g=>{ g.f = g.f || game.faction; });
   const me = facById(game.faction), of = game.oppForce && facById(game.oppForce.faction);
   if (!game.mission){ game.mission = "custom"; game.first = game.first || "me"; }
+  game.oppLost = game.oppLost || 0; game.oppSize = game.oppSize || 0; game.myLost = game.myLost || 0; game.mySize = game.mySize || 0;
   const ms = missionOf(game.mission), lim = turnLimitOf(game), act = activeSide(game);
   const isOut = g => OUT.some(k=>g.st[k]);
+  const lossBox = (pre, title) => { const L = game[pre+"Lost"], S = game[pre+"Size"];
+    return `<details class="goppl" data-loss="${pre}"${game[pre+"LossOpen"]?" open":""}><summary>${title} <span class="gsub">${L||S ? `(${L}${S?` of ${S}`:""} lost) · ` : ""}Optional, for the battle report</span></summary><div class="gopplin">${ctr(pre+"Lost",null,"Units lost", "", S||0)}${ctr(pre+"Size",null,"Patrol size")}</div></details>`; };
   const ctr = (key, idx, label, sub, of_) => { const val = idx==null ? game[key] : game[key][idx];
     return `<div class="gctr"><span class="gl">${label}</span><div class="gbox"><button type="button" class="gbtn" data-g="dec" data-k="${key}" data-i="${idx??""}" aria-label="${label} minus one">−</button><output>${val}${of_?`<small> of ${of_}</small>`:""}</output><button type="button" class="gbtn" data-g="inc" data-k="${key}" data-i="${idx??""}" aria-label="${label} plus one">+</button></div>${sub?`<span class="gsub">${sub}</span>`:""}</div>`; };
   const card = g => { const u = unitOf(g); if (!u) return ""; g.c = g.c || {};
@@ -1171,13 +1195,13 @@ function renderGame(){
       <div class="gbar"><span><b>${alive}</b> fighting · <b>${ooa}</b> Out of Action · <b>${dead}</b> Killed${gone?` · <b>${gone}</b> Disabled or carried off`:""}</span></div>
       <div class="ggrid">${shown.map(card).join("") || `<p class="hempty">Every rhyfler is out of the fight.</p>`}</div></details>`;
   };
-  const myHtml = force(game.name, me, game.units, `${game.limit} pts`, false, game.limit);
+  const myHtml = me ? force(game.name, me, game.units, `${game.limit} pts`, false, game.limit) : `<div class="card">${importBox("gMeNew", false)}</div>`;
   const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card">${importBox("gOppNew", true)}</div>`;
-  useFaction(game.faction);
+  if (game.faction) useFaction(game.faction); else document.body.style.removeProperty("--fac");
   const opp = esc(oppLabel());
   v.innerHTML = head + `
-  <div class="gtop card"${me.color?` style="--fac:${me.color}"`:""}>
-    <div class="gtitle">${flagImg(me)}<div><b>${esc(game.name)}</b><span class="hint">${esc(me.name)} · ${game.limit} pts · vs ${opp}</span><span class="gmission">${esc(ms.name)}${game.role?` · You are the ${esc(game.role)}`:""}<span class="pg">${ms.page?` (${esc(ms.page)})`:""}</span></span></div></div>
+  <div class="gtop card"${me && me.color?` style="--fac:${me.color}"`:""}>
+    <div class="gtitle">${me ? flagImg(me) : ""}<div><b>${esc(game.name)}</b><span class="hint">${me ? esc(me.name) : "No patrol loaded"} · ${game.limit} pts · vs ${opp}</span><span class="gmission">${esc(ms.name)}${game.role?` · You are the ${esc(game.role)}`:""}<span class="pg">${ms.page?` (${esc(ms.page)})`:""}</span></span></div></div>
     ${game.ended ? resultsCard(ms) : `<div class="gcounters">
       ${ctr("turn",null,"Turn", lim ? "" : "No Turn limit", lim)}
       ${ctr("round",null,"Round", "", RPT())}
@@ -1185,11 +1209,11 @@ function renderGame(){
       <div class="gctr"><span class="gl">&nbsp;</span><button class="btn" type="button" data-g="endround">End Round</button><span class="gsub">${lim && game.turn>=lim && game.round>=RPT() ? "Last Round of the battle" : "End Round clears Task dots"}</span></div>
     </div>`}
     <div class="gcounters two">
-      <div class="gside"><span class="gwho">You</span>${ctr("pluck",0,"Pluck")}${ctr("vp",0,"Victory Points")}</div>
-      <div class="gside"><span class="gwho">${opp}</span>${ctr("pluck",1,"Pluck")}${ctr("vp",1,"Victory Points")}</div>
+      <div class="gside"><span class="gwho">You</span>${ctr("pluck",0,"Pluck")}${ctr("vp",0,"Victory Points")}${me ? "" : lossBox("my","Your losses")}</div>
+      <div class="gside"><span class="gwho">${opp}</span>${ctr("pluck",1,"Pluck")}${ctr("vp",1,"Victory Points")}${game.oppForce ? "" : lossBox("opp","Their losses")}</div>
     </div>
   </div>
-  <div class="gbar"><span></span><label class="switch" for="gHide"><input type="checkbox" id="gHide"${game.hideOut?" checked":""}> Hide units out of the fight</label></div>
+  ${allGameUnits().length ? `<div class="gbar"><span></span><label class="switch" for="gHide"><input type="checkbox" id="gHide"${game.hideOut?" checked":""}> Hide units out of the fight</label></div>` : ""}
   ${myHtml}
   ${oppHtml}
   `;
@@ -1237,7 +1261,8 @@ function battleReport(){
   const names = {me: game.name, opp: oppLabel()};
   const mineU = game.units, oppU = game.oppForce ? game.oppForce.units : null;
   const lostN = us => us.filter(g=>OUT.some(k=>g.st[k])).length;
-  const loss = {me:{n:lostN(mineU), of:mineU.length}, opp: oppU ? {n:lostN(oppU), of:oppU.length} : null};
+  const counted = pre => (game[pre+"Lost"]||game[pre+"Size"]) ? {n:game[pre+"Lost"]||0, of:game[pre+"Size"]||0} : null;
+  const loss = {me: mineU.length ? {n:lostN(mineU), of:mineU.length} : counted("my"), opp: oppU ? {n:lostN(oppU), of:oppU.length} : counted("opp")};
   const frac = s => loss[s] && loss[s].of ? loss[s].n/loss[s].of : null;
   let w = end.winner && end.winner!=="auto" ? end.winner : (ms.noVP ? null : a>b ? "me" : b>a ? "opp" : "draw");
   // VP story: biggest deficit each side came back from, lead changes and when the final lead was taken
@@ -1250,7 +1275,7 @@ function battleReport(){
   if (w==="me" || w==="opp"){
     const L = w==="me" ? "opp" : "me", wl = frac(w), ll = frac(L), m = Math.abs(a-b), top = Math.max(a,b);
     if (ll===1) key = "annihilation";
-    else if (loss[w].n===0 && loss[L] && loss[L].n>0) key = "flawless";
+    else if (loss[w] && loss[w].n===0 && loss[L] && loss[L].n>0) key = "flawless";
     else if (wl!=null && ll!=null && wl>=0.5 && wl>=ll) key = "pyrrhic";
     else if (ms.noVP || (end.winner && end.winner!=="auto" && !(w==="me"?a>b:b>a))) key = "objective";
     else if (deficit[w]>=2) key = "comeback";
@@ -1260,21 +1285,22 @@ function battleReport(){
     else if (m>=2) key = "clear";
     else key = "close";
   } else if (w==="draw"){
-    const fm = frac("me"), fo = frac("opp"), lostAll = loss.me.n + (loss.opp ? loss.opp.n : 0);
-    key = fm>=0.5 && (fo==null || fo>=0.5) ? "bloodyDraw" : (a+b===0 && lostAll<=2) ? "standoff" : "stalemate";
+    const fm = frac("me"), fo = frac("opp"), lostAll = (loss.me ? loss.me.n : 0) + (loss.opp ? loss.opp.n : 0);
+    key = (fm!=null || fo!=null) && (fm==null || fm>=0.5) && (fo==null || fo>=0.5) ? "bloodyDraw" : (a+b===0 && lostAll<=2) ? "standoff" : "stalemate";
   } else key = "undecided";
   const W = w==="me" ? names.me : w==="opp" ? names.opp : "", Lname = w==="me" ? names.opp : names.me;
   const o = OUTCOMES[key];
   const tags = [];
-  const allN = loss.me.of + (loss.opp ? loss.opp.of : 0), allLost = loss.me.n + (loss.opp ? loss.opp.n : 0);
+  const kn = s => loss[s] && loss[s].of, allN = ["me","opp"].reduce((t,s)=>t+(kn(s)?loss[s].of:0),0), allLost = ["me","opp"].reduce((t,s)=>t+(kn(s)?loss[s].n:0),0);
   if (allN && allLost/allN >= 0.6) tags.push(TAGS.bloodbath);
   else if (frac("me")>=0.4 && frac("opp")>=0.4) tags.push(TAGS.attrition);
-  if ([["me",mineU],["opp",oppU]].some(([s,us])=>us && us.length>1 && us.length-loss[s].n===1)) tags.push(TAGS.lastStand);
+  if (["me","opp"].some(s=>loss[s] && loss[s].of>1 && loss[s].of-loss[s].n===1)) tags.push(TAGS.lastStand);
   if (changes>=2) tags.push(TAGS.seesaw);
   if (game.pluck.some(p=>p===0)) tags.push(TAGS.noPluck);
   const lim = turnLimitOf(game);
   if (lim && end.turn>=lim && end.round>=RPT()) tags.push(TAGS.distance); else if (end.turn===1) tags.push(TAGS.sharp);
-  const fb = log.find(e=>OUT.includes(e.k));
+  const isCas = e => OUT.includes(e.k) || e.k==="lost";
+  const fb = log.find(isCas);
   // Each side: starting units grouped, then what was left at the end
   const sideRep = (s, us, fid, limit) => {
     const counts = {}; us.forEach(g=>{ const u = unitOf(g); const k = u ? `${u.name}${u.variant?` (${u.variant})`:""}` : "Unknown unit"; counts[k] = (counts[k]||0)+1; });
@@ -1285,18 +1311,20 @@ function battleReport(){
     const f = facById(fid);
     return {key: s, fid, color: (f && f.color) || "#6b5d45", title: names[s], sub: `${f?f.name:""}${limit?` · ${limit} pts`:""}`, start: Object.entries(counts).map(([k,n])=>`${n}× ${k}`), startX: Object.entries(counts).map(([k,n])=>({n:k, d:`×${n}`})), total: us.length, standing, lost, standingX, lostX, pluck: game.pluck[s==="me"?0:1], vp: game.vp[s==="me"?0:1]};
   };
-  const sides = [sideRep("me", mineU, game.faction, game.limit)];
+  const sides = mineU.length ? [sideRep("me", mineU, game.faction, game.limit)] : [];
   if (oppU) sides.push(sideRep("opp", oppU, game.oppForce.faction, game.oppForce.limit));
   // Notable moments: every Round where something happened, grouped
-  const colorOf = s => { const f = facById(s==="me" ? game.faction : (game.oppForce||{}).faction); return (f && f.color) || "#7d6f55"; };
+  const colorOf = s => { const f = facById(s==="me" ? game.faction : (game.oppForce||{}).faction); return (f && f.color) || (s==="me" ? "#5d6b3a" : "#7d6f55"); };
   const rounds = {};
   log.forEach(e=>{ const id = e.t*100+e.r; (rounds[id] = rounds[id] || {t:e.t, r:e.r, ev:[]}).ev.push(e); });
-  const cas = R => R.ev.filter(e=>OUT.includes(e.k)).length;
+  const cas = R => R.ev.filter(isCas).length;
   const list = Object.values(rounds).sort((x,y)=>x.t-y.t||x.r-y.r);
   const bloodiest = list.reduce((best,R)=> cas(R)>=2 && (!best || cas(R)>cas(best)) ? R : best, null);
   const moments = list.map(R=>{
     const items = [], itemsX = [], vp = {me:0, opp:0};
-    R.ev.forEach(e=>{ if (e.k==="vp") vp[e.s] += e.d; else { const g = allGameUnits().find(x=>x.uid===e.u); const t = `${names[e.s]}: ${g?uLabel(g):"a unit"} ${ST[e.k]?ST[e.k].t:e.k}`; items.push(t); itemsX.push({text:t, color:colorOf(e.s)}); } });
+    const lostBy = s => R.ev.filter(e=>e.k==="lost" && e.s===s).length;
+    R.ev.forEach(e=>{ if (e.k==="vp") vp[e.s] += e.d; else if (e.k==="lost"){} else { const g = allGameUnits().find(x=>x.uid===e.u); const t = `${names[e.s]}: ${g?uLabel(g):"a unit"} ${ST[e.k]?ST[e.k].t:e.k}`; items.push(t); itemsX.push({text:t, color:colorOf(e.s)}); } });
+    ["me","opp"].forEach(s=>{ const n = lostBy(s); if (n){ const t = `${names[s]} lost ${n} unit${n===1?"":"s"}`; items.push(t); itemsX.push({text:t, color:colorOf(s)}); } });
     ["me","opp"].forEach(s=>{ if (vp[s]){ const t = `${names[s]} ${vp[s]>0?"scored":"lost"} ${Math.abs(vp[s])} VP`; items.push(t); itemsX.push({text:t, color:colorOf(s)}); } });
     const flags = [];
     if (fb && R.ev.includes(fb)) flags.push("First blood");
@@ -1304,12 +1332,14 @@ function battleReport(){
     if (leadAt && R.ev.includes(leadAt) && (w===leader) && changes>=1) flags.push("Decisive moment");
     return {when: when(R), items, itemsX, flags};
   }).filter(m=>m.items.length);
-  const result = ms.noVP ? (!(end.winner && end.winner!=="auto") ? "Decided by the mission objectives (winner not chosen)" : w==="draw" ? "Draw on the mission objectives" : `${W} wins on the mission objectives`) :
-    `${names.me} ${a} VP · ${names.opp} ${b} VP${w==="draw"?" · Draw":W?` · ${W} wins`:""}`;
+  const result = ms.noVP ? (!(end.winner && end.winner!=="auto") ? "Decided by the mission objectives (winner not chosen)" : w==="draw" ? "Draw on the mission objectives" : `${W} ${W==="You"?"win":"wins"} on the mission objectives`) :
+    `${names.me} ${a} VP · ${names.opp} ${b} VP${w==="draw"?" · Draw":W?` · ${W} ${W==="You"?"win":"wins"}`:""}`;
   const meta = [`Mission: ${ms.name}${ms.page?` (${ms.page})`:""}`,
     `Ended on Turn ${end.turn}${lim?` of ${lim}`:""}, Round ${end.round}`,
     new Date(end.at||Date.now()).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})];
-  return {headline: o.h, sentence: o.s.replace("{W}", W).replace("{L}", Lname), tags, result, meta, sides, moments, notes: (end.notes||"").trim(), winner: w, oppName: names.opp, oppVP: b, oppPluck: game.pluck[1]};
+  return {headline: o.h, sentence: o.s.replace("{W}", W).replace("{L}", Lname), tags, result, meta, sides, moments, notes: (end.notes||"").trim(), winner: w, oppName: names.opp, oppVP: b, oppPluck: game.pluck[1],
+    simple: {me: mineU.length ? null : {key:"me", name:names.me, vp:a, pluck:game.pluck[0], lost:game.myLost||0, size:game.mySize||0, color:colorOf("me")},
+             opp: oppU ? null : {key:"opp", name:names.opp, vp:b, pluck:game.pluck[1], lost:game.oppLost||0, size:game.oppSize||0, color:colorOf("opp")}}};
 }
 function reportText(R){
   const L = [];
@@ -1321,6 +1351,7 @@ function reportText(R){
     L.push("", `Still fighting at the end (${S.standing.length}):`, ...(S.standing.length ? S.standing.map(x=>"  "+x) : ["  none"]));
     L.push("", `Lost (${S.lost.length}):`, ...(S.lost.length ? S.lost.map(x=>"  "+x) : ["  none"]));
   });
+  ["me","opp"].forEach(k=>{ const X = R.simple[k]; if (X) L.push("", "", X.name.toUpperCase()+" (patrol not recorded)", `VP ${X.vp} · Pluck left ${X.pluck}`, `Units lost: ${X.lost}${X.size?` of ${X.size}`:""}`); });
   L.push("", "", "NOTABLE MOMENTS");
   if (R.moments.length) R.moments.forEach(m=>{ L.push(`${m.when}${m.flags.length?`  [${m.flags.join(", ")}]`:""}`, ...m.items.map(x=>"  "+x)); });
   else L.push("  Nothing was recorded during the battle.");
@@ -1400,8 +1431,8 @@ function brepHTML(R, flagSrc){
       <div class="big">${S.vp}<small>VP</small></div>
       <div class="sub">${S.total-S.lost.length} of ${S.total} standing · ${S.pluck} Pluck left</div>
       <div class="pips" aria-hidden="true">${pips}</div></div>`; };
-  const oneSide = R.sides.length===1;
-  const oppBox = oneSide ? `<div class="side" style="--c:#7d6f55;--c2:#5a4f3b">${R.winner==="opp"?`<div class="stamp">Victor</div>`:""}<div class="who"><div><h2>${esc(R.oppName)}</h2><div class="fac">Patrol not recorded</div></div></div><div class="big">${R.oppVP}<small>VP</small></div><div class="sub">${R.oppPluck} Pluck left</div></div>` : "";
+  const simple = X => `<div class="side" style="--c:${esc(X.color)};--c2:color-mix(in oklab, ${esc(X.color)} 75%, #000)">${R.winner===X.key?`<div class="stamp">Victor</div>`:""}<div class="who"><div><h2>${esc(X.name)}</h2><div class="fac">Patrol not recorded</div></div></div><div class="big">${X.vp}<small>VP</small></div><div class="sub">${X.size ? `${X.size-X.lost} of ${X.size} standing · ` : `${X.lost} unit${X.lost===1?"":"s"} lost · `}${X.pluck} Pluck left</div>${X.size?`<div class="pips" aria-hidden="true">${Array.from({length:X.size},(_,i)=>`<i${i>=X.size-X.lost?' class="x"':""}></i>`).join("")}</div>`:""}</div>`;
+  const box = k => { const S = R.sides.find(x=>x.key===k); return S ? side(S) : simple(R.simple[k]); };
   const list = (xs, cls, empty) => xs.length ? `<ul>${xs.map(x=>`<li${cls?` class="${cls}"`:""}><b>${esc(x.n)}</b>${x.d?`<span>${esc(x.d)}</span>`:""}</li>`).join("")}</ul>` : `<p class="none">${empty}</p>`;
   return `<article class="brep">
     <header class="mast">
@@ -1413,13 +1444,13 @@ function brepHTML(R, flagSrc){
       ${R.tags.length?`<div class="tags">${R.tags.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
       <div class="meta"><span>${esc(R.meta[0])}</span><span>${esc(R.meta[1])}</span></div>
     </header>
-    <section class="score">${side(R.sides[0])}<div class="vs">VS</div>${oneSide?oppBox:side(R.sides[1])}</section>
+    <section class="score">${box("me")}<div class="vs">VS</div>${box("opp")}</section>
     <p class="result">${esc(R.result)}</p>
-    <h3>Order of battle</h3>
+    ${R.sides.length ? `<h3>Order of battle</h3>
     <section class="forces">${R.sides.map(S=>`<div class="force" style="--c:${esc(S.color)}"><h4>${esc(S.title)}</h4>
       <h5>Mustered (${S.total})</h5>${list(S.startX,"","None")}
       <h5>Still fighting (${S.standingX.length})</h5>${list(S.standingX,"","None")}
-      <h5>Fallen (${S.lostX.length})</h5>${list(S.lostX,"dead","None lost")}</div>`).join("")}</section>
+      <h5>Fallen (${S.lostX.length})</h5>${list(S.lostX,"dead","None lost")}</div>`).join("")}</section>` : ""}
     <h3>Notable moments</h3>
     ${R.moments.length ? `<section class="tl">${R.moments.map(m=>`<div${m.flags.length?' class="hot"':""}><span class="when">${esc(m.when)}</span>${m.flags.map(f=>`<span class="tlf">${esc(f)}</span>`).join("")}
       ${m.itemsX.map(x=>`<p style="--c:${esc(x.color)}"><i></i>${esc(x.text)}</p>`).join("")}</div>`).join("")}</section>` : `<p class="none" style="margin-bottom:16px">Nothing was recorded during the battle.</p>`}
@@ -1435,7 +1466,7 @@ async function brepFile(R){
   for (const S of R.sides){ const f = facById(S.fid); if (f && f.flag && !(f.id in flags)) flags[f.id] = await brepDataFlag(f); }
   const body = brepHTML(R, f=> f ? flags[f.id] : null);
   return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(R.headline)}: ${esc(R.sides[0].title)} vs ${esc(R.oppName)}</title>
+<title>${esc(R.headline)}: ${esc(game.name)} vs ${esc(R.oppName)}</title>
 <link rel="stylesheet" href="${BREP_FONTS}">
 <style>html{background:#d9cfb8}body{margin:0;padding:24px 12px}${BREP_CSS}
 @media print{html,body{background:#fff;padding:0}@page{margin:10mm}.brep{box-shadow:none;max-width:none;font-size:11.5px;border:none;padding:18px 20px 14px}.brep h1{font-size:3em}}</style></head>
@@ -1471,21 +1502,31 @@ document.addEventListener("click", e=>{
   if (b.closest("summary")) e.preventDefault();
   if (a==="start"){
     const opp = (($("#gOpp")||{}).value||"").trim().slice(0,40), otxt = (($("#gOppSetupText")||{}).value||"").trim();
-    let r = null;
+    let r = null, mine = null, savedId = null; const mtxt = (($("#gMeSetupText")||{}).value||"").trim();
+    if (mtxt){ mine = parseForce(mtxt); if (mine.error){ $("#gMeSetupBox").open = true; gMsg("gMeSetup", mine.error, true); return; } }
     if (otxt){ r = parseForce(otxt); if (r.error){ $("#gOppSetupBox").open = true; gMsg("gOppSetup", r.error, true); return; } }
-    newGame($("#gPatrol").value, {mission: ($("#gMission")||{}).value, role: ($("#gRole")||{}).value, first: ($("#gFirst")||{}).value});
+    if (mine && ($("#gMeSetupSave")||{}).checked){ const rec = saveImported(mine); if (rec) savedId = rec.id; }
+    newGame($("#gPatrol").value, {force: mine, savedId, points: +(($("#gPts")||{}).value)||200, mission: ($("#gMission")||{}).value, role: ($("#gRole")||{}).value, first: ($("#gFirst")||{}).value});
     if (game){ game.opp = opp; if (r) setOppForce(r); saveGame(); renderGame(); window.scrollTo(0,0);
-      toast(r && r.missed && r.missed.length ? `Game started. Couldn't match: ${r.missed.join(", ")}` : "Game started. Good luck!"); }
+      const miss = [...((mine||{}).missed||[]), ...((r||{}).missed||[])];
+      toast(miss.length ? `Game started. Couldn't match: ${miss.join(", ")}` : savedId ? "Game started. Your patrol was saved to My Patrols" : "Game started. Good luck!"); }
     return;
   }
   if (!game) return;
+  if (a==="addme"){ const r = parseForce(($("#gMeNewText")||{}).value); if (r.error){ gMsg("gMeNew", r.error, true); return; }
+    const f = facById(r.faction); if (($("#gMeNewSave")||{}).checked){ const rec = saveImported(r); if (rec) game.patrolId = rec.id; }
+    game.faction = f.id; game.units = expandUnits(f, r.items, ""); game.limit = r.limit; if (!game.name || game.name==="You") game.name = r.name || `${f.name} ${r.limit}`;
+    toast(r.missed && r.missed.length ? `Patrol added. Couldn't match: ${r.missed.join(", ")}` : `Added ${game.name}`); }
   if (a==="addopp"){ const r = parseForce(($("#gOppNewText")||{}).value); if (r.error){ gMsg("gOppNew", r.error, true); return; }
     setOppForce(r); toast(r.missed && r.missed.length ? `Opponent added. Couldn't match: ${r.missed.join(", ")}` : `Added ${game.oppForce.name}`); }
   if (a==="removeopp"){ if (!b.dataset.sure){ b.dataset.sure = "1"; b.textContent = "Tap again to remove"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "Remove"; b.classList.remove("danger"); } }, 3500); return; }
     game.oppForce = null; toast("Opponent's patrol removed"); }
   if (a==="end"){ if (b.dataset.sure){ game = null; saveGame(); renderGame(); toast("Game cleared"); } else { b.dataset.sure = "1"; b.textContent = "Tap again to clear this game"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "New game"; b.classList.remove("danger"); } }, 3500); } return; }
   if (a==="inc" || a==="dec"){ const k = b.dataset.k, i = b.dataset.i, d = a==="inc" ? 1 : -1;
-    if (i===""){ const max = k==="round" ? RPT() : (turnLimitOf(game) || 99); game[k] = Math.max(1, Math.min(max, game[k]+d)); } else { const was = game[k][+i]; game[k][+i] = Math.max(0, Math.min(999, game[k][+i]+d)); if (k==="vp" && game[k][+i]!==was) logEvent(+i===0?"me":"opp", "vp", game[k][+i]-was); } }
+    if (k==="oppLost" || k==="myLost"){ const pre = k.slice(0,-4), side = pre==="my" ? "me" : "opp", max = game[pre+"Size"] || 999, was = game[k]||0; game[k] = Math.max(0, Math.min(max, was+d));
+      if (game[k]>was) logEvent(side, "lost", 1); else if (game[k]<was){ const L = game.log||[]; for (let x=L.length-1;x>=0;x--) if (L[x].k==="lost" && L[x].s===side){ L.splice(x,1); break; } } }
+    else if (k==="oppSize" || k==="mySize"){ const pre = k.slice(0,-4); game[k] = Math.max(0, Math.min(999, (game[k]||0)+d)); if (game[k] && game[pre+"Lost"] > game[k]) game[k] = game[pre+"Lost"]; }
+    else if (i===""){ const max = k==="round" ? RPT() : (turnLimitOf(game) || 99); game[k] = Math.max(1, Math.min(max, game[k]+d)); } else { const was = game[k][+i]; game[k][+i] = Math.max(0, Math.min(999, game[k][+i]+d)); if (k==="vp" && game[k][+i]!==was) logEvent(+i===0?"me":"opp", "vp", game[k][+i]-was); } }
   if (a==="endround"){ allGameUnits().forEach(g=>g.tasks=0); const lim = turnLimitOf(game);
     if (game.round < RPT()){ game.round++; toast(`Round ${game.round}: ${activeSide(game)==="me" ? "your" : oppLabel()+"'s"} turn to activate`); }
     else if (lim && game.turn >= lim){ toast("That was the last Round of the battle. Press End Game to see the result"); }
@@ -1514,8 +1555,9 @@ document.addEventListener("click", e=>{
   saveGame();
   const y = window.scrollY; renderGame(); window.scrollTo(0, y);
 });
-document.addEventListener("toggle", e=>{ const d = e.target; if (game && d.classList && d.classList.contains("gforce")){ game.closed = game.closed || {}; game.closed[d.dataset.side] = !d.open; saveGame(); } }, true);
+document.addEventListener("toggle", e=>{ const d = e.target; if (game && d.classList && d.classList.contains("goppl")){ game[(d.dataset.loss||"opp")+"LossOpen"] = d.open; saveGame(); return; } if (game && d.classList && d.classList.contains("gforce")){ game.closed = game.closed || {}; game.closed[d.dataset.side] = !d.open; saveGame(); } }, true);
 document.addEventListener("change", e=>{
+  if (e.target.id==="gPatrol"){ const w = $("#gPtsWrap"); if (w) w.hidden = !!e.target.value; return; }
   if (e.target.id==="gWinner" && game && game.ended){ game.ended.winner = e.target.value; saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
   if (e.target.id==="gNotes" && game && game.ended){ game.ended.notes = e.target.value.slice(0,2000); saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
   if (e.target.id==="gHide" && game){ game.hideOut = e.target.checked; saveGame(); renderGame(); return; }
@@ -1883,7 +1925,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-10-31.105";
+const APP_VERSION = "2026-10-31.110";
 let updDismissed = false;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
