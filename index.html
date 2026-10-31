@@ -952,7 +952,9 @@ function parseTextList(txt){
   return {faction:fac.id, name, limit: limit>0 && limit<=5000 ? limit : 300, items, missed};
 }
 function importTextList(txt){
-  const r = parseTextList(txt), msg = $("#importMsg");
+  const msg = $("#importMsg");
+  if (String(txt||"").length > 200000){ msg.textContent = "That's too much text to be a patrol list."; msg.classList.add("bad"); return; }
+  const r = parseTextList(txt);
   if (r.error){ msg.textContent = r.error; msg.classList.add("bad"); return; }
   msg.textContent = ""; msg.classList.remove("bad"); $("#importText").value = ""; $("#importBox").open = false;
   const f = facById(r.faction);
@@ -1100,6 +1102,10 @@ $("#themeBtn").addEventListener("click", ()=>{ const order=["auto","light","dark
 $("#saveBtn").addEventListener("click", ()=>{ if(isDirty()) savePatrol(); leave(); });
 $("#importBtn").addEventListener("click", ()=>{ if (DATA) importTextList($("#importText").value); });
 $("#importFile").addEventListener("change", e=>{ const f = e.target.files && e.target.files[0]; if (!f) return;
+  // Only small plain-text files are read. Nothing is uploaded or run: the text is only matched against unit names.
+  const msg = $("#importMsg");
+  if (f.size > 200000){ msg.textContent = "That file is too large to be a patrol list."; msg.classList.add("bad"); e.target.value = ""; return; }
+  if (f.type && !/^text\//.test(f.type) && !/\.txt$/i.test(f.name)){ msg.textContent = "Please choose a .txt file."; msg.classList.add("bad"); e.target.value = ""; return; }
   const rd = new FileReader(); rd.onload = ()=>{ $("#importText").value = rd.result; importTextList(rd.result); e.target.value = ""; }; rd.readAsText(f); });
 $("#shareBtn").addEventListener("click", ()=>{
   if (!DATA) return; if (!Object.values(state.items).some(q=>q>0)) return toast("Add some units first");
@@ -1207,7 +1213,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-10-31.92";
+const APP_VERSION = "2026-10-31.93";
 let updDismissed = false;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
