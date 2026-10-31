@@ -1158,7 +1158,7 @@ document.addEventListener("toggle", e=>{ const d=e.target; if(!d.classList || !d
 
 /* rule popups */
 const pop = document.createElement("div"); pop.className="pop"; pop.id="rulePop"; pop.setAttribute("role","tooltip"); pop.hidden=true; document.body.appendChild(pop);
-let popFor=null, pinned=false, hideT=null;
+let popFor=null, pinned=false, pinnedEl=null, hideT=null;
 function popHTML(el){
   if (el.dataset.weapon){ const w=FAC.weapons.find(x=>x.name===el.dataset.weapon);
     return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p8)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
@@ -1176,14 +1176,14 @@ function showPop(el){
   let top=r.bottom+6; if (top+ph > window.innerHeight-m) top=Math.max(m, r.top-ph-6);
   pop.style.left=left+"px"; pop.style.top=top+"px";
 }
-function hidePop(){ if(popFor){ popFor.setAttribute("aria-expanded","false"); popFor.removeAttribute("aria-describedby"); } popFor=null; pinned=false; pop.hidden=true; }
+function hidePop(){ if(popFor){ popFor.setAttribute("aria-expanded","false"); popFor.removeAttribute("aria-describedby"); } popFor=null; pinned=false; pinnedEl=null; pop.hidden=true; }
 const canHover = matchMedia("(hover: hover)").matches;
 document.addEventListener("mouseover", e=>{ if(!canHover || pinned) return; const el=e.target.closest(".rl"); if(el) showPop(el); else if(popFor && !e.target.closest(".pop")) hideT=setTimeout(hidePop,120); });
 document.addEventListener("focusin", e=>{ const el=e.target.closest(".rl"); if(el) showPop(el); });
 document.addEventListener("focusout", e=>{ if(e.target.closest(".rl") && !pinned) hideT=setTimeout(hidePop,120); });
 document.addEventListener("click", e=>{
   const el=e.target.closest(".rl");
-  if (el){ e.stopPropagation(); if(popFor===el && pinned){ hidePop(); } else { showPop(el); pinned=true; } return; }
+  if (el){ e.stopPropagation(); if(pinnedEl===el && popFor===el){ hidePop(); } else { showPop(el); pinned=true; pinnedEl=el; } return; }
   if (!e.target.closest(".pop") && popFor) hidePop();
 }, true);
 document.addEventListener("keydown", e=>{ if(e.key==="Escape" && popFor){ const el=popFor; hidePop(); el.focus(); } });
