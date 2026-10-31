@@ -207,6 +207,7 @@ table.stats td.t{font-family:var(--f-body)}
 .ps-units th{font-size:.78em;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1.5px solid #111;padding:2px 4px}
 .ps-units td{padding:2px 4px;vertical-align:top;border-top:.5px solid #bbb}
 .ps-units tr.cont td{border-top:0;padding-top:0}
+.ps-units tr.note td{font-size:.88em;font-style:italic;color:#333;padding-bottom:3px}
 .ps-units tbody{break-inside:avoid}
 .ps-units td.q{font-weight:700;white-space:nowrap}
 .ps-units td.u span{color:#555}
@@ -989,6 +990,7 @@ function renderPrintSheet(){
     const blank = (lbl) => `<td></td><td class="u sub">${esc(lbl)}</td><td></td>`;
     let h = profs.map((p,i)=>`<tr${i?' class="cont"':""}>${i?blank(p.label||""):head(p.label?` <em>${esc(p.label)}</em>`:"")}<td>${esc(p.sk)}</td><td>${esc(p.mt)}</td><td>${esc(p.ma)}</td><td>${esc(p.t)}</td>${showD?`<td>${esc(p.d||"")}</td>`:""}<td class="w">${p.equip.map(wtxt).join("; ")}</td><td class="a">${esc(p.abilities.join(", "))}</td></tr>`).join("");
     if (rest) h += `<tr${profs.length?' class="cont"':""}>${profs.length?blank(""):head("")}<td colspan="${cols+1}" class="w">${rest}</td></tr>`;
+    if (u.notes) h += `<tr class="cont note"><td></td><td colspan="${cols+3}">${pgWrap(u.notes)}</td></tr>`;
     return `<tbody>${h}</tbody>`; }).join("");
   const rules = new Map(); rows.forEach(u=>allAbilities(u).forEach(a=>{ if(!rules.has(a.name)) rules.set(a.name,a); }));
   const rtext = x => { const m = x.text.match(/^[^:]{1,40}\([^)]*\):\s*/); return (m && x.text.startsWith(x.name)) ? cap(x.text.slice(m[0].length)) : x.text; };
@@ -1008,7 +1010,7 @@ function renderRoster(){
   const errs = checks().out.filter(c=>c.lvl==="err");
   v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span><button class="btn ghost noprint" type="button" data-print>Print quick-reference sheet</button></div>
   <p class="rstatus ${errs.length?"bad":"good"}">${errs.length ? `Not legal: ${errs.map(c=>esc(c.msg)).join(" ")}` : `Legal at ${state.limit} points.`}</p>
-  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}</article>`).join("")}</div>`;
+  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${u.notes?`<p class="rule">${pgWrap(u.notes)}</p>`:""}${abilityList(u)}</article>`).join("")}</div>`;
 }
 
 function renderAll(){ if(state.view==="edit"){ renderCatalog(); renderPatrol(); if(!$("#view-roster").hidden) renderRoster(); updateSaveState(); } }
