@@ -183,6 +183,10 @@ table.stats td.t{font-family:var(--f-body)}
 .pop p{margin:0}
 .pop .src{display:block;margin-top:6px;font-family:var(--f-mono);font-size:.75em;color:var(--muted)}
 .pop table.stats{margin:2px 0 4px}
+.updbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;width:min(36em,calc(100% - 24px));display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--panel);color:var(--ink);border:1.5px solid var(--brass);border-left-width:5px;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.updbar .updacts{display:flex;gap:8px}
+@media (max-width:860px){ body[data-view="edit"] .updbar{bottom:calc(64px + env(safe-area-inset-bottom,0px))} }
+@media print{ .updbar{display:none!important} }
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:3px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
 #copyArea{position:absolute;left:-9999px;top:0}
@@ -523,6 +527,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="mbar" id="mbar"><span class="mleft"><span><span class="mused" id="mused">0 / 300</span> <span id="mstate">pts</span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
 <textarea id="copyArea" aria-hidden="true" tabindex="-1"></textarea>
 <div class="toast" id="toast" role="status"></div>
+<div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
 <script>
 (function(){
@@ -1196,6 +1201,25 @@ document.addEventListener("click", e=>{
 document.addEventListener("keydown", e=>{ if(e.key==="Escape" && popFor){ const el=popFor; hidePop(); el.focus(); } });
 window.addEventListener("scroll", ()=>{ if(popFor && !pinned) hidePop(); else if(popFor) showPop(popFor); }, {passive:true});
 window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
+
+// Update check: if a newer copy of this page is online, offer a one-tap refresh.
+// Bump APP_VERSION on every release.
+const APP_VERSION = "2026-10-31.91";
+let updDismissed = false;
+function checkForUpdate(){
+  if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
+  fetch(location.pathname, {cache:"no-store"}).then(r=>r.ok ? r.text() : "").then(t=>{
+    const m = t.match(/const APP_VERSION = "([^"]+)"/);
+    if (m && m[1] !== APP_VERSION) $("#updBar").hidden = false;
+  }).catch(()=>{});
+}
+$("#updBtn").addEventListener("click", ()=>{
+  if (state.view==="edit" && isDirty() && Object.keys(state.items).length){ toast("Save your patrol first, then refresh"); return; }
+  location.reload();
+});
+$("#updLater").addEventListener("click", ()=>{ updDismissed = true; $("#updBar").hidden = true; });
+document.addEventListener("visibilitychange", ()=>{ if (!document.hidden) checkForUpdate(); });
+setTimeout(checkForUpdate, 4000); setInterval(checkForUpdate, 20*60*1000);
 
 init();
 })();
