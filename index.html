@@ -1004,7 +1004,7 @@ async function init(){
     state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; setFaction(p.faction); state.status = !Object.keys(state.items).length?"empty":checks().out.some(c=>c.lvl==="err")?"err":"ok"; const up=p.updated; saveCurrent(); p.updated=up||Date.now();
     state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; setFaction(keepF||p.faction); }
   $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
-  $("#foot").innerHTML = pgWrap(`Data from Clash of Rhyfles Faction Profiles ${DATA.meta.profilesVersion} and the Full Book.`) + ` · <a href="#/changes" data-go="#/changes">Rules changelog</a>` + `<span class="pnote"><br>${pgWrap(DATA.rules.patrolNote)}</span>`;
+  $("#foot").innerHTML = pgWrap(`Data from Clash of Rhyfles Faction Profiles ${DATA.meta.profilesVersion} and the Full Book.`) + ` · <a href="#/changes" data-go="#/changes">Rules changelog</a>`;
   const r = route(location.hash);
   if (r.v==="shared"){ history.replaceState(null,"","#/builder"); openShared(r.arg); persist(); return; }
   showView(r.v, r.arg, false); history.replaceState(null,"",hashFor(r.v,r.arg)); persist();
