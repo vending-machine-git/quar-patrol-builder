@@ -316,8 +316,10 @@ body:not([data-view="home"]) #view-home, body:not([data-view="factions"]) #view-
 .refintro{margin:8px 0 12px;max-width:62em;line-height:1.45}
 .refacts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
 .refjump{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
-.refjump a{padding:4px 11px;border:1px solid var(--accent-line);border-radius:999px;color:var(--accent);background:var(--accent-soft);text-decoration:none;font-size:.85em;font-weight:600}
-.refjump a:hover{border-color:var(--accent)}
+.refjump .chip{font:inherit;cursor:pointer;padding:4px 11px;border:1px solid var(--accent-line);border-radius:999px;color:var(--accent);background:var(--accent-soft);font-size:.85em;font-weight:600}
+.refjump .chip:hover{border-color:var(--accent)}
+.refjump .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.refjump .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .refcat{font-family:var(--f-display);font-weight:400;font-size:1.35em;text-transform:uppercase;letter-spacing:.03em;color:var(--accent);border-bottom:2px solid var(--accent-line);margin:24px 0 10px;padding-bottom:4px;scroll-margin-top:9em}
 details.catdd>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
 details.catdd>summary::-webkit-details-marker{display:none}
@@ -854,7 +856,19 @@ function useFaction(id){
 function refCard(u){
   return `<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3>${esc(u.name)}</h3><span class="pts">${u.pts}${u.fa!=null?`<span class="facnt" title="Force Allowance">(${u.fa})</span>`:""}</span></header><p class="sub">${esc(u.variant)}<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</article>`;
 }
+// Section filter on a faction page: nothing picked = everything shown; pick one or more chips to show only those sections.
+const refFilter = new Set();
+function applyRefFilter(){
+  const v = $("#view-ref");
+  v.querySelectorAll("details.catdd.ref").forEach(d=>{ const show = !refFilter.size || refFilter.has(d.id); d.hidden = !show; if (show && refFilter.size && !d.open){ d.open = true; catOpen[d.dataset.dd] = true; } });
+  v.querySelectorAll("[data-filter]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.filter ? refFilter.has(b.dataset.filter) : !refFilter.size)));
+}
+function toggleRefFilter(id){
+  if (!id) refFilter.clear(); else if (refFilter.has(id)) refFilter.delete(id); else refFilter.add(id);
+  applyRefFilter();
+}
 function renderRef(id){
+  if (renderRef.last !== id) refFilter.clear(); renderRef.last = id;
   useFaction(id); const f = FAC;
   const cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
   const rules = new Map(); f.units.forEach(u=>allAbilities(u).forEach(a=>{ if(!rules.has(a.name)) rules.set(a.name,a); }));
@@ -867,7 +881,7 @@ function renderRef(id){
     ${f.intro?`<p class="refintro">${esc(f.intro)}<span class="pg"> (${esc(f.introSrc)})</span></p>`:`<p class="refintro hint">The rulebooks have no introduction for this faction.</p>`}
     <div class="refacts"><button class="btn" data-build="${f.id}">Build a patrol</button><span class="hint">${f.units.length} units<span class="pg"> · ${esc(f.pages)}</span></span></div>
   </div></div>
-  <nav class="refjump" aria-label="Jump to">${cats.map(c=>`<a href="#" data-jump="ref-${slug(c)}">${esc(c)}</a>`).join("")}<a href="#" data-jump="ref-weapons">Weapons</a><a href="#" data-jump="ref-rules">Special rules</a></nav>
+  <div class="refjump" role="group" aria-label="Show sections"><button type="button" class="chip all" data-filter="" aria-pressed="true">Show all</button>${cats.map(c=>`<button type="button" class="chip" data-filter="ref-${slug(c)}" aria-pressed="false">${esc(c)}</button>`).join("")}<button type="button" class="chip" data-filter="ref-weapons" aria-pressed="false">Weapons</button><button type="button" class="chip" data-filter="ref-rules" aria-pressed="false">Special rules</button></div>
   <div class="ddall"><button type="button" data-ddall="1">Open all</button><button type="button" data-ddall="0">Close all</button></div>
   ${cats.map(c=>{ const us=f.units.filter(u=>u.cat===c), k=ddKey("ref:"+f.id,c); return `<details class="catdd ref" id="ref-${slug(c)}" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">${esc(c)}</h2><span class="ccount">${us.length} unit${us.length===1?"":"s"}</span></summary><div class="rgrid">${us.map(refCard).join("")}</div></details>`;}).join("")}
   ${(k=>`<details class="catdd ref" id="ref-weapons" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Weapons</h2><span class="ccount">${f.weapons.length} weapon${f.weapons.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__weapons"))}
@@ -875,6 +889,7 @@ function renderRef(id){
   </details>
   ${(k=>`<details class="catdd ref" id="ref-rules" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Special rules</h2><span class="ccount">${rl.length} rule${rl.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__rules"))}
   <div class="rrules">${rl.map(a=>`<div class="rrule"><b>${esc(a.name)}</b> ${pgWrap(a.text)}<span class="src pg">${esc(a.src)}</span></div>`).join("")}</div></details>`;
+  applyRefFilter();
 }
 function openPatrol(id){
   const p = state.saved.find(x=>x.id===id); if(!p) return;
@@ -1016,6 +1031,7 @@ $("#homeBtn").addEventListener("click", ()=>{ if(DATA) navTo({v:"factions"}); })
 document.addEventListener("click", e=>{
   if (e.defaultPrevented || !DATA) return;
   const a = e.target.closest("a[data-go]"); if (a){ e.preventDefault(); navTo(route(a.dataset.go)); return; }
+  const fb = e.target.closest("[data-filter]"); if (fb){ toggleRefFilter(fb.dataset.filter); return; }
   const j = e.target.closest("a[data-jump]"); if (j){ e.preventDefault(); const t=document.getElementById(j.dataset.jump); if(t && t.tagName==="DETAILS" && !t.open){ t.open=true; catOpen[t.dataset.dd]=true; } if(t) t.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"}); }
 });
 window.addEventListener("popstate", ()=>{ if(!DATA) return; const r = route(location.hash);
