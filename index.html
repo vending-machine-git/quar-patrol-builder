@@ -1,4 +1,7 @@
+<!doctype html>
+<html lang="en">
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Quar Patrol Builder</title>
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-32.png" type="image/png" sizes="32x32">
@@ -336,9 +339,23 @@ body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view=
 .hhead-r{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
 .hhead-r.stack{flex-direction:column;align-items:flex-end;gap:4px}
 @media (max-width:480px){.hhead-r.stack{align-items:flex-start}}
+@media (max-width:480px){
+  .bar .wrap{grid-template-columns:minmax(0,1fr) auto}
+  .bar .brandbtn{min-width:0}
+  .brand{min-width:0}
+  .brand small{white-space:nowrap;letter-spacing:.06em;font-size:min(.68em, 3.1vw)}
+  .brand b{white-space:nowrap;font-size:min(1.3em, 5.8vw)}
+  body[data-view="factions"] .brand b{font-size:min(1.75em, 5.8vw)}
+  body[data-view="factions"] .brandicon{width:min(3.4em, 13vw);height:min(3.4em, 13vw)}
+  body[data-view="factions"] .brand small{font-size:min(.9em, 3vw)}
+  .themebtn{grid-column:2;grid-row:1}
+  .gauge{grid-column:1/-1;order:2;min-width:0}
+  body[data-view="edit"] .brand small{display:none}
+  body[data-view="edit"] .brandicon{width:2.1em;height:2.1em}
+}
 @media (max-width:640px){
   body[data-view="factions"] .brandicon{width:3.4em;height:3.4em}
-  body[data-view="factions"] .brand b{font-size:2em}
+  body[data-view="factions"] .brand b{font-size:1.75em}
 }
 .saved-tag.dirty{color:var(--warn);font-weight:600}
 .btn:disabled{opacity:.45;cursor:default}
@@ -865,7 +882,7 @@ function textList(){
 
 async function init(){
   load(); applyTheme(state.theme || "auto");
-  try{ const r = await fetch("data/quar-data.json"); DATA = await r.json(); }
+  try{ const r = await fetch("data/quar-data.json", {cache:"no-cache"}); DATA = await r.json(); }
   catch(e){ $("#catalog").innerHTML = `<p class="empty">Couldn't load the unit data file (data/quar-data.json). Open this page from the published link or a web server.</p>`; return; }
   const facOpts = DATA.factions.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join("");
   const limOpts = DATA.rules.presetLimits.map(p=>`<option value="${p}">${p}</option>`).join("") + `<option value="custom">Custom…</option>`;
