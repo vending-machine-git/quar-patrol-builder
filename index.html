@@ -194,6 +194,9 @@ table.stats td.t{font-family:var(--f-body)}
 .rhead .meta{font-family:var(--f-mono);color:var(--muted)}
 .rhead [data-print]{margin-left:auto}
 .rstatus{margin:-4px 0 12px;font-weight:600;font-size:.92em}
+.savewarn{display:flex;gap:10px;align-items:flex-start;margin:0;padding:10px 14px;border:1.5px solid var(--warn);border-left-width:5px;border-radius:3px;background:color-mix(in oklab, var(--warn) 12%, var(--panel));line-height:1.4}
+.savewarn svg{width:1.4em;height:1.4em;flex:0 0 auto;color:var(--warn);margin-top:.05em}
+.savewarn b{color:var(--ink)}
 .psheet{display:none}
 .psheet{color:#111;line-height:1.25}
 .ps-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;border-bottom:2px solid #111;padding-bottom:3px;margin-bottom:4px}
@@ -441,7 +444,8 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <section id="view-ref" aria-label="Faction reference"></section>
   <section id="view-changes" class="home" aria-label="Rules changelog"></section>
   <section id="view-home" class="home" aria-label="My patrols">
-    <div class="hhead"><h1>My Patrols</h1><div class="hhead-r stack"><span class="hint">Saved in this browser on this device</span><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
+    <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
+    <p class="savewarn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Your patrols are saved only in this browser, on this device.</b> They won't appear on your other devices or browsers, and clearing your browsing data (cookies and site data) or using a private window will erase them. Use <b>Share link</b> to keep a backup of any patrol you want to keep.</span></p>
     <div class="card">
       <header><h2>New Patrol</h2></header>
       <form class="newp" id="newForm">
