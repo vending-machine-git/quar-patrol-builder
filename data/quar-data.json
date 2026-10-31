@@ -699,8 +699,7 @@
        "min": 1,
        "text": "May only be selected if the Patrol includes a Caerten."
       }
-     ],
-     "flag": "The book prints no Force Allowance for this unit."
+     ]
     },
     {
      "id": "cof-cook",
@@ -2094,8 +2093,7 @@
        "text": "A Loader assists a weapon with the Loader trait, such as the H-11a or Splagen Torpedo (Full Book p37).",
        "soft": true
       }
-     ],
-     "flag": "The book prints no Force Allowance for this unit."
+     ]
     },
     {
      "id": "cr-iscaerten-grifkis",
@@ -2264,8 +2262,7 @@
        "min": 1,
        "text": "May only be selected if the Patrol includes a Caerten."
       }
-     ],
-     "flag": "The book prints no Force Allowance for this unit."
+     ]
     },
     {
      "id": "cr-cook",
@@ -2504,8 +2501,7 @@
         "Skirmisher"
        ]
       }
-     ],
-     "flag": "The book prints no Force Allowance for this loadout (the Gorga Pathfinder is 38 (2))."
+     ]
     },
     {
      "id": "cr-pathfinder-yawdryl",
@@ -4940,8 +4936,7 @@
        "min": 1,
        "text": "May only be selected if the Patrol includes a Caerten."
       }
-     ],
-     "flag": "The book prints no Force Allowance for this unit."
+     ]
     },
     {
      "id": "gw-cook",
@@ -5743,8 +5738,7 @@
        "soft": true,
        "text": "A Loader assists a weapon with the Loader trait, such as the H-11a (Full Book p37)."
       }
-     ],
-     "flag": "The book prints no Force Allowance for this unit."
+     ]
     },
     {
      "id": "tm-mortar",
@@ -5938,8 +5932,7 @@
        "min": 1,
        "text": "May only be selected if the Patrol includes a Caerten."
       }
-     ],
-     "flag": "The book prints no Force Allowance for this unit."
+     ]
     },
     {
      "id": "tm-cook",
@@ -8355,8 +8348,7 @@
        "soft": true,
        "text": "A Loader with Switch Ammo usually accompanies a Torpedo Rhyfler (Splagen B.e)."
       }
-     ],
-     "flag": "The book prints no Force Allowance for this unit."
+     ]
     },
     {
      "id": "mb-trench-raiders",
@@ -9485,7 +9477,6 @@
        ]
       }
      ],
-     "flag": "The book prints no Force Allowance for this loadout (the Gorga Pathfinder is 38 (2)).",
      "advisorPool": true,
      "notes": "Crusader Specialist profile (Profiles p19), taken through the Crusader \"Advisor\"."
     },
@@ -9570,6 +9561,44 @@
    "introSrc": "Profiles p54",
    "art": "data/art/tollyn-maeryn.jpg",
    "artPage": "Profiles p53"
+  }
+ ],
+ "changelog": [
+  {
+   "date": "2026-10-31",
+   "source": "Faction Profiles 10/26 + Full Book",
+   "title": "First release",
+   "intro": "All 12 factions in the Faction Profiles 10/26 entered and checked against the pages.",
+   "changes": [
+    {
+     "faction": "fidwog",
+     "text": "Shaedyn: Blast (Small, 2d6). The book prints \"Slow\"; corrected to Small as confirmed by the game's designer."
+    },
+    {
+     "faction": "gwynt",
+     "text": "Harlech Carbine: Sn -2. The cavalry weapon table prints -3 (Profiles p32); -2 confirmed by the game's designer."
+    },
+    {
+     "faction": "crusaders",
+     "text": "Cavalry Yawdryl and Cavalry Scout Yawdryl: Leader (2/4). The book prints \"Leader (2,4)\"."
+    },
+    {
+     "faction": "toulmore",
+     "text": "Cavalry Dragoon Yawdryl (dismounted): Leader (2/4). The book prints \"Leader (2,4)\"."
+    },
+    {
+     "faction": "toulmore",
+     "text": "Caerten: the \"one per 300 points\" limit applies, although the row is missing its footnote marker."
+    },
+    {
+     "faction": "tollyn-maeryn",
+     "text": "The LMG limit footnote applies to the LMG Milwer. The book prints the marker on the SMG Milwer row."
+    },
+    {
+     "faction": "maebwysh",
+     "text": "\"Blunt Rounds\" corrected to Blunt Round to match the rule's name."
+    }
+   ]
   }
  ]
 }
