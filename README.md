@@ -14,7 +14,7 @@ Build a patrol, see your points and Force Allowance as you go, and get warned th
   - tap any trait or ability to read what it does.
 - **Save your patrols** in your browser.
 - **Share a patrol as a link.** The whole patrol is stored inside the link, so anyone who opens it sees your list and can save their own copy. No accounts needed.
-- **Print your roster**: unit cards with stats, weapons and every rule written out, ready for the table.
+- **Print a quick-reference sheet**: one line per unit with stats and weapons, then every rule your patrol uses written out once. Most patrols fit on a single page.
 - **Copy a list as text**, with any rule problems included.
 - **Show rulebook pages** switch: turn on page references to look anything up in your books.
 - **Rules changelog**: lists every place where the builder differs from the printed book, and what changes in each new rulebook version.

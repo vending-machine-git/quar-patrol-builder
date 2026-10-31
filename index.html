@@ -194,6 +194,29 @@ table.stats td.t{font-family:var(--f-body)}
 .rhead .meta{font-family:var(--f-mono);color:var(--muted)}
 .rhead [data-print]{margin-left:auto}
 .rstatus{margin:-4px 0 12px;font-weight:600;font-size:.92em}
+.psheet{display:none}
+.psheet{color:#111;line-height:1.25}
+.ps-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;border-bottom:2px solid #111;padding-bottom:3px;margin-bottom:4px}
+.ps-head h1{margin:0;font-size:1.5em;font-family:var(--f-display);font-weight:400;text-transform:uppercase;letter-spacing:.02em}
+.ps-head .bad,.ps-errs{color:#9a2a22}
+.ps-errs,.ps-notes{margin:2px 0 4px;font-size:.92em}
+.ps-units{width:100%;border-collapse:collapse;font-size:1em}
+.ps-units th{font-size:.78em;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1.5px solid #111;padding:2px 4px}
+.ps-units td{padding:2px 4px;vertical-align:top;border-top:.5px solid #bbb}
+.ps-units tr.cont td{border-top:0;padding-top:0}
+.ps-units tbody{break-inside:avoid}
+.ps-units td.q{font-weight:700;white-space:nowrap}
+.ps-units td.u span{color:#555}
+.ps-units td.u em{font-style:normal;font-size:.85em;color:#555}
+.ps-units td.u.sub{padding-left:1.2em;font-size:.85em;color:#555}
+.ps-units td.p{font-weight:700;white-space:nowrap}
+.ps-units td.p small{font-weight:400;color:#555}
+.ps-units td.w i,.ps-units td.a{font-size:.92em}
+.ps-units td.w i{color:#444}
+.psheet h2{font-size:1em;text-transform:uppercase;letter-spacing:.08em;margin:8px 0 3px;border-bottom:1px solid #111;font-family:inherit;font-weight:700}
+.ps-rules{columns:2;column-gap:14px;font-size:.88em}
+.ps-rules p{margin:0 0 3px;break-inside:avoid}
+.ps-foot{margin-top:6px;font-size:.75em;color:#555}
 .rstatus.good{color:var(--ok)} .rstatus.bad{color:var(--bad)}
 @media print{
   @page{margin:12mm}
@@ -201,8 +224,9 @@ table.stats td.t{font-family:var(--f-body)}
   :root:root:root :is(body,.rcard,.pcard){--accent:color-mix(in oklab, var(--fac) 70%, #000)}
   html,body{background:#fff!important;font-size:10.5pt}
   .bar,.mbar,#toast,#leaveBar,.noprint,.viewbar,#buildBar,.ddall,.refjump,.refacts .btn,#foot{display:none!important}
-  body.print-roster #view-build{display:none!important}
-  body.print-roster #view-roster{display:block!important}
+  body.print-roster .wrap.main > *:not(#printSheet){display:none!important}
+  body.print-roster #printSheet{display:block!important}
+  body.print-roster{font-size:9pt}
   .rgrid{grid-template-columns:1fr 1fr;gap:8px}
   .rcard,.rrule,.clrel{break-inside:avoid}
   .rcard{border-top-width:3px}
@@ -461,6 +485,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   </div>
 
   <div id="view-roster" class="roster" role="tabpanel" aria-labelledby="tab-roster" hidden></div>
+  <div id="printSheet" class="psheet" aria-hidden="true"></div>
   <p class="foot" id="foot"></p>
   <footer class="credits" aria-label="Credits">
     <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles (10/26) and remain the property of Zombiesmith.</p>
@@ -874,13 +899,46 @@ function openShared(a){
   editDraft({id:null, name: name.slice(0,80) || `${f.name} ${limit}`, faction:f.id, limit, items});
   toast(missing ? `${missing} unit${missing===1?"":"s"} in this link ${missing===1?"is":"are"} no longer in the rulebook data and ${missing===1?"was":"were"} left out` : "Shared patrol opened. Press Save to keep a copy");
 }
+// Compact print sheet: one table row per unit (or per profile), then each rule used in the patrol written out once.
+function renderPrintSheet(){
+  const rows = FAC.units.filter(u=>state.items[u.id]>0), el = $("#printSheet");
+  if (!rows.length){ el.innerHTML = ""; return; }
+  const {out} = checks(), errs = out.filter(c=>c.lvl==="err"), warns = out.filter(c=>c.lvl==="warn");
+  const n = rows.reduce((a,u)=>a+state.items[u.id],0);
+  const showD = rows.some(u=>(u.profiles||[]).some(p=>p.d));
+  const wtxt = e => { const w = findW(e); if (!w) return esc(e); const nm = /^\d/.test(e) ? e : w.name;
+    return `<b>${esc(nm)}</b> ${esc(w.r)}/${esc(w.sn)}${w.traits.length?` <i>${esc(w.traits.join(", "))}</i>`:""}`; };
+  const other = u => { const t = [];
+    if (u.crew){ const c=u.crew; t.push(`Crew ${esc(c.crew)} · Sk ${esc(c.sk)} · T ${esc(c.t)} · D ${esc(c.d)} · Break ${esc(c.brk)} · MA ${esc(c.ma)}`); }
+    if (u.vehicle){ const v=u.vehicle; t.push(`Crew ${esc(v.crew)} · ${esc(v.activation)} · Sk ${esc(v.sk)} · MA ${esc(v.ma)}${v.t?` · T ${esc(v.t)}`:""}`); }
+    if (u.armor){ const a=u.armor; t.push(`Armour (${esc(a.locations)}): Front ${esc(a.front)} · Side ${esc(a.side)} · Rear ${esc(a.rear)}`); }
+    if (u.weapons && u.weapons.length) t.push(u.weapons.map(w=>`<b>${esc(w.name)}</b> Rn ${esc(w.rn)} ${esc(w.arc)}${(w.abilities||w.type)?` <i>${esc(w.abilities||w.type)}</i>`:""}`).join("; "));
+    if (u.abilities && u.abilities.length) t.push(`Abilities: ${esc(u.abilities.join(", "))}`);
+    return t.join("<br>"); };
+  const cols = showD ? 6 : 5;
+  const body = rows.map(u=>{ const q = state.items[u.id], profs = u.profiles||[], rest = other(u);
+    const head = (extra) => `<td class="q">${q}×</td><td class="u"><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span>${extra||""}</td><td class="p">${u.pts*q}${q>1?`<small> (${u.pts} ea)</small>`:""}</td>`;
+    const blank = (lbl) => `<td></td><td class="u sub">${esc(lbl)}</td><td></td>`;
+    let h = profs.map((p,i)=>`<tr${i?' class="cont"':""}>${i?blank(p.label||""):head(p.label?` <em>${esc(p.label)}</em>`:"")}<td>${esc(p.sk)}</td><td>${esc(p.mt)}</td><td>${esc(p.ma)}</td><td>${esc(p.t)}</td>${showD?`<td>${esc(p.d||"")}</td>`:""}<td class="w">${p.equip.map(wtxt).join("; ")}</td><td class="a">${esc(p.abilities.join(", "))}</td></tr>`).join("");
+    if (rest) h += `<tr${profs.length?' class="cont"':""}>${profs.length?blank(""):head("")}<td colspan="${cols+1}" class="w">${rest}</td></tr>`;
+    return `<tbody>${h}</tbody>`; }).join("");
+  const rules = new Map(); rows.forEach(u=>allAbilities(u).forEach(a=>{ if(!rules.has(a.name)) rules.set(a.name,a); }));
+  const rtext = x => { const m = x.text.match(/^[^:]{1,40}\([^)]*\):\s*/); return (m && x.text.startsWith(x.name)) ? cap(x.text.slice(m[0].length)) : x.text; };
+  const rl = [...rules.values()].sort((a,b)=>a.name.localeCompare(b.name));
+  el.innerHTML = `<header class="ps-head"><h1>${esc(state.name||"Unnamed patrol")}</h1><span>${esc(FAC.name)} · <b>${total()} / ${state.limit} pts</b> · ${n} unit${n===1?"":"s"} · ${errs.length?`<b class="bad">NOT LEGAL</b>`:"Legal"}</span></header>
+  ${errs.length?`<p class="ps-errs">${errs.map(c=>pgWrap(c.msg)).join(" ")}</p>`:""}
+  <table class="ps-units"><thead><tr><th>#</th><th>Unit</th><th>Pts</th><th>Sk</th><th>Mt</th><th>MA</th><th>T</th>${showD?"<th>D</th>":""}<th>Weapons (R/Sn, traits)</th><th>Abilities</th></tr></thead>${body}</table>
+  ${warns.length?`<p class="ps-notes">${warns.map(c=>pgWrap(c.msg)).join(" ")}</p>`:""}
+  ${rl.length?`<h2>Rules</h2><div class="ps-rules">${rl.map(a=>`<p><b>${esc(a.full)}</b> ${pgWrap(rtext(a))}</p>`).join("")}</div>`:""}
+  <p class="ps-foot">Quar Patrol Builder (unofficial, fan-made) · Clash of Rhyfles © Zombiesmith 2025 · Data from Faction Profiles ${esc(DATA.meta.profilesVersion)}</p>`;
+}
 function renderRoster(){
   const rows = FAC.units.filter(u=>state.items[u.id]>0);
   const t = total();
   const v = $("#view-roster");
   if(!rows.length){ v.innerHTML = `<p class="empty">Add units on the Build tab and they'll appear here as reference cards.</p>`; return; }
   const errs = checks().out.filter(c=>c.lvl==="err");
-  v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span><button class="btn ghost noprint" type="button" data-print>Print roster</button></div>
+  v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span><button class="btn ghost noprint" type="button" data-print>Print quick-reference sheet</button></div>
   <p class="rstatus ${errs.length?"bad":"good"}">${errs.length ? `Not legal: ${errs.map(c=>esc(c.msg)).join(" ")}` : `Legal at ${state.limit} points.`}</p>
   <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}</article>`).join("")}</div>`;
 }
@@ -974,7 +1032,7 @@ document.addEventListener("click", e=>{ if (e.target.closest("[data-print]")) wi
 // Printing from the builder always prints the roster (unit cards with every rule opened)
 let printOpened = [];
 window.addEventListener("beforeprint", ()=>{
-  if (state.view==="edit" && DATA){ renderRoster(); document.body.classList.add("print-roster"); }
+  if (state.view==="edit" && DATA){ renderPrintSheet(); document.body.classList.add("print-roster"); }
   printOpened = [...document.querySelectorAll("details:not([open])")]; printOpened.forEach(d=>d.open=true);
 });
 window.addEventListener("afterprint", ()=>{ document.body.classList.remove("print-roster"); printOpened.forEach(d=>d.open=false); printOpened = []; });
