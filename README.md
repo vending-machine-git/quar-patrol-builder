@@ -12,7 +12,10 @@ Build a patrol, see your points and Force Allowance as you go, and get warned th
   - live points total and Force Allowance counts;
   - checks the limits printed in the book: Force Allowance, "one per X points" limits, units that require other units, Retinue/Staff and the Tollyn Maeryn Advisor;
   - tap any trait or ability to read what it does.
-- **Save your patrols** in your browser, and **copy a list as text** (any rule problems are included) to share it.
+- **Save your patrols** in your browser.
+- **Share a patrol as a link.** The whole patrol is stored inside the link, so anyone who opens it sees your list and can save their own copy. No accounts needed.
+- **Print your roster**: unit cards with stats, weapons and every rule written out, ready for the table.
+- **Copy a list as text**, with any rule problems included.
 - **Show rulebook pages** switch: turn on page references to look anything up in your books.
 - **Rules changelog**: lists every place where the builder differs from the printed book, and what changes in each new rulebook version.
 - Light and dark themes; works on desktop and phone.
@@ -39,6 +42,7 @@ index.html              the page
 data/quar-data.json     all units, weapons, rules and the changelog
 data/flags/             faction flags (from the rulebooks)
 data/art/               faction art (from the rulebooks)
+icons/                  website icon
 ```
 
 When a new version of the Faction Profiles is released, the data file is updated and the changes are added to the Rules changelog.
