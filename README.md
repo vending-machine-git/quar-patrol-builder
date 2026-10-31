@@ -24,11 +24,11 @@ All unit profiles, points and rules come only from the official rulebooks:
 - *Clash of Rhyfles Faction Profiles* (version 10/26)
 - *Clash of Rhyfles* Full Book
 
-Every points value and stat was checked by hand against the printed page. Where the book has an obvious misprint, the builder uses the corrected value. Two corrections were confirmed by the game's designer. All of them are listed on the site's **Rules changelog** page. Where the book leaves something out, such as a unit with no Force Allowance printed, the builder shows a note instead of guessing.
+Every points value and stat was checked by hand against the printed page. Where the book has an obvious misprint, the builder uses the corrected value. Two corrections were confirmed by the game's designer. All of them are listed on the site's **Rules changelog** page. Where the book leaves something unclear, the builder shows a note instead of guessing.
 
 ## Spotted a mistake?
 
-Please open an **Issue** on this repository, or contact **vending_machine** (@tsuiki2664). Include the faction, the unit and the page number if you can.
+Please open an **Issue** on this repository, or contact **vending_machine** (@tsuiki2664) on Discord. Include the faction, the unit and the page number if you can.
 
 ## How it's made
 
