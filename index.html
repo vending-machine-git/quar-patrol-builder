@@ -315,6 +315,11 @@ body:not([data-view="home"]) #view-home, body:not([data-view="factions"]) #view-
 .refhero .ftag{font-size:.95em;margin-top:4px;display:block}
 .refintro{margin:8px 0 12px;max-width:62em;line-height:1.45}
 .refacts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.buildcta{display:inline-flex;align-items:center;gap:.45em;font-size:1.12em;padding:.55em 1.2em;background:var(--accent);border-color:var(--accent);color:var(--paper);letter-spacing:.02em;box-shadow:0 2px 0 color-mix(in oklab, var(--accent) 55%, #000), 0 4px 14px color-mix(in oklab, var(--accent) 35%, transparent);transition:transform .12s, filter .12s}
+.buildcta svg{width:1em;height:1em}
+.buildcta:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.buildcta:active{transform:translateY(1px);box-shadow:0 1px 0 color-mix(in oklab, var(--accent) 55%, #000)}
+.buildcta:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .refjump{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
 .refjump .chip{font:inherit;cursor:pointer;padding:4px 11px;border:1px solid var(--accent-line);border-radius:999px;color:var(--accent);background:var(--accent-soft);font-size:.85em;font-weight:600}
 .refjump .chip:hover{border-color:var(--accent)}
@@ -894,7 +899,7 @@ function renderRef(id){
   <div class="refhero"><span class="fart">${f.art?`<img src="${esc(f.art)}" alt="">`:""}</span><div>
     <div class="ptitle">${flagImg(f,"flag lg")}<h1>${esc(f.name)}</h1></div>${f.tagline?`<span class="ftag">${esc(f.tagline)}</span>`:""}
     ${f.intro?`<p class="refintro">${esc(f.intro)}<span class="pg"> (${esc(f.introSrc)})</span></p>`:`<p class="refintro hint">The rulebooks have no introduction for this faction.</p>`}
-    <div class="refacts"><button class="btn" data-build="${f.id}">Build a patrol</button><span class="hint">${f.units.length} units<span class="pg"> · ${esc(f.pages)}</span></span></div>
+    <div class="refacts"><button class="btn buildcta" data-build="${f.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Build a patrol</button><span class="hint">${f.units.length} units<span class="pg"> · ${esc(f.pages)}</span></span></div>
   </div></div>
   <div class="refjump" role="group" aria-label="Show sections"><button type="button" class="chip all" data-filter="" aria-pressed="true">Show all</button>${cats.map(c=>`<button type="button" class="chip" data-filter="ref-${slug(c)}" aria-pressed="false">${esc(c)}</button>`).join("")}<button type="button" class="chip" data-filter="ref-weapons" aria-pressed="false">Weapons</button><button type="button" class="chip" data-filter="ref-rules" aria-pressed="false">Special rules</button></div>
   <div class="ddall"><button type="button" data-ddall="1">Open all</button><button type="button" data-ddall="0">Close all</button></div>
