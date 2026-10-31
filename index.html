@@ -1,0 +1,982 @@
+<meta charset="utf-8">
+<title>Quar Patrol Builder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: a muster sheet. Sticky command bar with the points gauge; muster roll (unit catalogue) on the left, the patrol being built on the right; a roster view for the table. */
+:root{
+  --paper:#eeede4; --panel:#fbfaf5; --sunk:#e5e3d8; --ink:#22291b; --muted:#5b6450; --rule:#c9cdbd;
+  --olive:#4a5a2c; --slate:#3c4f5c; --brass:#9a6a12; --brass-soft:#f3e6c6;
+  --ok:#2f6b37; --warn:#a77712; --bad:#a8332b; --bad-inv:#ff9c90; --bad-soft:#f6dedb; --on:#fff; --acc-mix:84%;
+  --f-display:"Saira Stencil One","Arial Narrow",sans-serif;
+  --f-body:"Barlow Semi Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#161913; --panel:#1f241b; --sunk:#262c21; --ink:#e4e8da; --muted:#a3ab95; --rule:#3a4132;
+  --olive:#a9bd78; --slate:#9cb8c9; --brass:#d9a441; --brass-soft:#3a3020;
+  --ok:#7fbf7a; --warn:#e0b04a; --bad:#ef7d72; --bad-inv:#a8332b; --bad-soft:#3d2422; --on:#161913; --acc-mix:60%; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#161913; --panel:#1f241b; --sunk:#262c21; --ink:#e4e8da; --muted:#a3ab95; --rule:#3a4132;
+  --olive:#a9bd78; --slate:#9cb8c9; --brass:#d9a441; --brass-soft:#3a3020;
+  --ok:#7fbf7a; --warn:#e0b04a; --bad:#ef7d72; --bad-inv:#a8332b; --bad-soft:#3d2422; --on:#161913; --acc-mix:60%; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--paper)}
+/* Faction colour: --fac is set to the open patrol's faction colour (book table colour); --accent adapts it to the theme */
+:root{--fac:var(--brass)}
+body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li{--accent:color-mix(in oklab, var(--fac) var(--acc-mix), var(--ink)); --accent-soft:color-mix(in oklab, var(--fac) 15%, var(--panel)); --accent-line:color-mix(in oklab, var(--fac) 45%, var(--rule))}
+/* Where supported, keep the book's colours saturated: deepen them on light, brighten them on dark */
+@supports (color: oklch(from red l c h)){
+  body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li{--accent:oklch(from var(--fac) min(l, 0.5) calc(c * 1.2) h)}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}}
+  :root[data-theme="dark"] :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}
+}
+.fpick-list li span{color:var(--accent);font-weight:600}
+.fpick-btn span{color:var(--accent);font-weight:600}
+body{background:radial-gradient(1100px 420px at 0% -8%, color-mix(in oklab, var(--fac) 16%, transparent), transparent 70%), radial-gradient(900px 380px at 100% 0%, color-mix(in oklab, var(--brass) 9%, transparent), transparent 70%), var(--paper);background-attachment:fixed;transition:background-color .3s}
+/* text grows with the screen: 15px on laptops/phones, up to 22px on very large monitors; everything else is sized in em so it scales too */
+body{color:var(--ink);font-family:var(--f-body);font-size:clamp(15px, 0.45vw + 9.5px, 22px);line-height:1.35}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.wrap{max-width:118em;margin:0 auto;padding-left:max(16px,2.5vw,env(safe-area-inset-left,0px));padding-right:max(16px,2.5vw,env(safe-area-inset-right,0px))}
+
+/* command bar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:linear-gradient(180deg, var(--panel), color-mix(in oklab, var(--fac) 7%, var(--panel)));border-bottom:3px solid var(--accent)}
+.bar .wrap{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px 23px;align-items:center;padding-block:12px}
+.bar .wrap>*{font-size:1.15em}
+.brand{display:flex;flex-direction:column;line-height:1}
+.brand small{font-size:.68em;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:700;margin-bottom:3px}
+.brand b{font-family:var(--f-display);font-weight:400;font-size:1.6em;letter-spacing:.02em;text-transform:uppercase}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:end;min-width:0}
+.field{display:flex;flex-direction:column;gap:2px;min-width:0}
+.field label{font-size:.7em;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.field input,.field select{background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:5px 8px;min-width:0}
+#patrolName{width:13em}
+#customPts{width:5.5em}
+.gauge{min-width:14em}
+.gauge .nums{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-variant-numeric:tabular-nums}
+.gauge .used{font-family:var(--f-mono);font-weight:600;font-size:1.35em}
+.gauge .left{font-size:.85em;color:var(--muted)}
+.track{height:.55em;background:var(--sunk);border-radius:2px;overflow:hidden;margin-top:4px}
+.track i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.gauge.over .used{color:var(--bad)} .gauge.over .track i{background:var(--bad)}
+.gauge.full .track i{background:var(--brass)}
+
+.viewbar{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:8px 16px;margin:14px 0 10px}
+.tabs{display:flex;gap:4px;margin-right:auto}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:.9em;color:var(--muted);user-select:none}
+.switch input{appearance:none;-webkit-appearance:none;width:34px;height:20px;border-radius:10px;background:var(--rule);position:relative;cursor:pointer;margin:0;transition:background .15s;flex:none}
+.switch input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--panel);transition:transform .15s}
+.switch input:checked{background:var(--olive)}
+.switch input:checked::after{transform:translateX(14px)}
+.switch input:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+body.hide-pages .pg{display:none!important}
+.rdd{margin-top:8px;border-top:1px solid var(--rule)}
+.rdd summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;padding:6px 0 2px;font-size:.78em;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.rdd summary::-webkit-details-marker{display:none}
+.rdd summary::before{content:"▸";display:inline-block;transition:transform .15s;color:var(--brass)}
+.rdd[open] summary::before{transform:rotate(90deg)}
+.rdd summary:hover{color:var(--ink)}
+.rdd summary .n{font-family:var(--f-mono);letter-spacing:0;font-weight:500}
+.tab{border:1px solid var(--rule);background:transparent;border-radius:3px;padding:6px 14px;cursor:pointer;font-weight:600;letter-spacing:.04em}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* build view */
+.build{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;padding-bottom:40px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:3px;min-width:0}
+.card>header{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:10px 12px 8px;border-bottom:2px solid var(--accent-line);background:var(--accent-soft);border-radius:3px 3px 0 0}
+h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.25em;letter-spacing:.03em;text-transform:uppercase}
+.hint{font-size:.82em;color:var(--muted)}
+.cat{padding:4px 12px 8px}
+.cat h3{margin:10px 0 4px;font-size:.72em;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px}
+.cat h3::after{content:"";flex:1;border-top:1px solid var(--accent-line)}
+.unit{border-top:1px dotted var(--rule)}
+.unit:first-of-type{border-top:0}
+.urow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:6px 0}
+.uname{background:none;border:0;padding:0;text-align:left;cursor:pointer;min-width:0}
+.uname b{font-weight:700}
+.uname span{color:var(--muted);font-size:.9em}
+.uname .chev{display:inline-block;width:1em;color:var(--muted);transition:transform .15s}
+.unit.open .chev{transform:rotate(90deg)}
+.pts{font-family:var(--f-mono);font-weight:600;font-variant-numeric:tabular-nums;min-width:3.2em;text-align:right}
+.fa{font-family:var(--f-mono);font-size:.78em;color:var(--muted);min-width:5.4em;text-align:right;white-space:nowrap}
+.fa.at{color:var(--ok);font-weight:600} .fa.over{color:var(--bad);font-weight:600}
+.add{width:2em;height:2em;border-radius:3px;border:1px solid var(--olive);background:transparent;color:var(--olive);font-weight:700;font-size:1.1em;cursor:pointer;line-height:1}
+.add:hover{background:var(--olive);color:var(--panel)}
+.btns{display:flex;gap:4px}
+.add.sub{border-color:var(--bad);color:var(--bad)}
+.add.sub:hover{background:var(--bad);color:var(--panel);border-color:var(--bad)}
+.add.sub:disabled{border-color:var(--rule);color:var(--muted)}
+.add:disabled{opacity:.35;cursor:default;pointer-events:none}
+.detail{padding:2px 0 10px 1em}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:3px;padding:5px 12px;cursor:pointer;font-weight:600}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--rule)}
+
+/* stat blocks */
+table.stats{border-collapse:collapse;font-size:.88em;margin:4px 0;font-variant-numeric:tabular-nums}
+table.stats th{font-size:.78em;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:2px 10px 2px 0}
+table.stats td{padding:2px 10px 2px 0;font-family:var(--f-mono);font-weight:500}
+table.stats td.t{font-family:var(--f-body)}
+.scroll{overflow-x:auto;max-width:100%}
+.abl{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:.88em}
+.abl b{font-weight:700}
+.abl .src{font-family:var(--f-mono);font-size:.78em;color:var(--muted);margin-left:4px}
+.rule{font-size:.85em;color:var(--brass);margin:4px 0 0}
+
+/* patrol */
+.checks{list-style:none;margin:0;padding:8px 12px;display:flex;flex-direction:column;gap:5px;border-bottom:1px solid var(--rule)}
+.checks li{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;font-size:.9em}
+.checks .tag{font-family:var(--f-mono);font-size:.72em;font-weight:600;padding:1px 6px;border-radius:2px;color:var(--on)}
+.checks .err .tag{background:var(--bad)} .checks .warn .tag{background:var(--warn)} .checks .ok .tag{background:var(--ok)}
+.plist{padding:4px 12px 8px}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 0;border-top:1px dotted var(--rule)}
+.prow:first-of-type{border-top:0}
+.prow.bad .pname b{color:var(--bad)}
+.pname{min-width:0}
+.pname span{color:var(--muted);font-size:.9em}
+.step{display:flex;align-items:center;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.step button{width:1.9em;height:1.9em;border:0;background:transparent;cursor:pointer;font-weight:700}
+.step button{transition:background .12s,color .12s}
+.step button[data-act="dec"]:hover,.step button[data-act="dec"]:focus-visible{background:var(--bad);color:var(--panel)}
+.step button[data-act="inc"]:hover,.step button[data-act="inc"]:focus-visible{background:var(--ok);color:var(--panel)}
+.step output{min-width:2em;text-align:center;font-family:var(--f-mono);font-weight:600}
+.empty{padding:22px 12px;color:var(--muted);text-align:center}
+.pfoot{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-top:1px solid var(--rule);align-items:center}
+.pfoot .sp{flex:1}
+.saved{padding:6px 12px 12px;border-top:1px solid var(--rule)}
+.saved ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.saved li{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:.9em}
+.saved li button{border:0;background:none;padding:2px 4px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.saved li .meta{color:var(--muted);font-family:var(--f-mono);font-size:.8em}
+.rl{all:unset;cursor:help;border-bottom:1px dotted var(--brass);color:inherit;font:inherit}
+.rl:hover,.rl:focus-visible,.rl[aria-expanded="true"]{color:var(--brass);border-bottom-style:solid}
+.rl:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+.pop{position:fixed;z-index:20;max-width:min(24em,calc(100vw - 24px));background:var(--panel);color:var(--ink);border:1px solid var(--ink);border-top:4px solid var(--accent);border-radius:3px;
+  padding:9px 11px;box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:.93em;line-height:1.35;pointer-events:auto}
+.pop h4{margin:0 0 4px;font-family:var(--f-display);font-weight:400;font-size:1.05em;letter-spacing:.03em;text-transform:uppercase}
+.pop p{margin:0}
+.pop .src{display:block;margin-top:6px;font-family:var(--f-mono);font-size:.75em;color:var(--muted)}
+.pop table.stats{margin:2px 0 4px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:3px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+#copyArea{position:absolute;left:-9999px;top:0}
+
+/* roster */
+.roster{padding-bottom:40px}
+.rhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:8px;border-bottom:2px solid var(--accent);padding-bottom:6px;margin-bottom:12px}
+.rhead h2{font-size:1.6em}
+.rhead .meta{font-family:var(--f-mono);color:var(--muted)}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(22em,100%),1fr));gap:12px}
+.rcard{background:var(--panel);border:1px solid var(--rule);border-top:4px solid var(--accent);border-radius:3px;padding:10px 12px;min-width:0}
+.rcard.veh{border-top-color:var(--slate)}
+.rcard header{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.rcard h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.12em;letter-spacing:.03em;text-transform:uppercase}
+.rcard .qty{font-family:var(--f-mono);font-weight:600;color:var(--brass);margin-right:6px}
+.rcard .sub{color:var(--muted);font-size:.88em;margin:0 0 4px}
+.wtable{margin-top:12px}
+.eqwhere{font-size:.85em;color:var(--muted);font-family:var(--f-body)}
+.foot{color:var(--muted);font-size:.8em;padding:8px 0 10px}
+.credits{border-top:1px solid var(--rule);margin-top:6px;padding:10px 0 34px;font-size:.78em;line-height:1.5;color:var(--muted)}
+.credits p{margin:0 0 6px;max-width:75em}
+.credits b{color:var(--ink);font-weight:600}
+.credits a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.credits a:hover{color:var(--accent)}
+
+.mbar{display:none}
+@media (min-width:861px){
+  #patrolCard{position:sticky;top:calc(var(--barh,110px) + 12px);max-height:calc(100vh - var(--barh,110px) - 24px);display:flex;flex-direction:column}
+  #patrolCard>header,#patrolCard>.checks,#patrolCard>.pfoot{flex:0 0 auto}
+  #patrolCard>.checks{max-height:30vh;overflow:auto}
+  #patrolCard>.plist{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain}
+}
+@media (max-width:860px){
+  .bar{position:static}
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;gap:12px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper);
+    padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  .mbar .mused{font-family:var(--f-mono);font-weight:600;font-size:1.1em;font-variant-numeric:tabular-nums}
+  .mbar.ptsover .mused{color:var(--bad-inv)}
+  .mbar .mleft{display:flex;flex-direction:column;min-width:0;gap:2px}
+  .mbar .mprob{color:var(--bad-inv);font-size:.85em;font-weight:600;line-height:1.25}
+  .mbar a{color:var(--paper);font-weight:600;text-underline-offset:3px}
+  .wrap.main{padding-bottom:70px}
+  .toast{bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .bar .wrap{grid-template-columns:1fr auto auto}
+  .controls{grid-column:1/-1;order:3}
+  .mainnav{order:4}
+  .build{grid-template-columns:minmax(0,1fr)}
+  #patrolName{width:100%}
+  .controls .field:first-child{flex:1 1 100%}
+}
+@media (max-width:480px){
+  .gauge{min-width:150px}
+  .fa{min-width:0;font-size:.7em}
+  .urow{gap:7px}
+  .brand b{font-size:1.3em}
+  .themebtn .tl{display:none}
+  .bar .wrap>*{font-size:1em}
+}
+/* home */
+body.on-home .controls, body.on-home .gauge, body.on-home #buildBar, body.on-home #view-build, body.on-home #view-roster, body.on-home .mbar{display:none!important}
+body:not([data-view="home"]) #view-home, body:not([data-view="factions"]) #view-factions, body:not([data-view="ref"]) #view-ref, body:not([data-view="changes"]) #view-changes{display:none}
+/* main tabs */
+.mainnav{grid-column:1/-1;display:flex;gap:2px;margin:0 0 calc(-15px / 1.15)}
+.navtab{padding:6px 14px 7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.82em;color:var(--muted);text-decoration:none;border-bottom:3px solid transparent}
+.navtab:hover{color:var(--ink)}
+.navtab.on{color:var(--ink);border-bottom-color:var(--ink)}
+/* factions grid */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(25em,100%),1fr));gap:12px}
+.fcard{display:grid;grid-template-columns:8.5em minmax(0,1fr);min-height:9.6em;background:var(--panel);border:1px solid var(--rule);border-radius:3px;overflow:hidden;color:inherit;text-decoration:none;transition:border-color .15s,box-shadow .15s,transform .15s}
+.fcard:hover,.fcard:focus-visible{border-color:var(--accent);box-shadow:0 5px 16px rgba(0,0,0,.18);transform:translateY(-1px)}
+.fart{background:#f5f1e4;display:flex;align-items:center;justify-content:center;overflow:hidden;border-right:3px solid var(--accent)}
+.fart img{width:100%;height:100%;object-fit:cover;object-position:center 30%;mix-blend-mode:multiply;display:block}
+.fbody{padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.fname{font-family:var(--f-display);text-transform:uppercase;font-size:1.15em;letter-spacing:.03em;color:var(--accent);line-height:1.1}
+.ftag{font-size:.8em;font-style:italic;color:var(--muted)}
+.fdesc{margin:3px 0 0;font-size:.86em;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.fmeta2{margin-top:auto;padding-top:4px;font-size:.76em;color:var(--muted);font-family:var(--f-mono)}
+/* reference page */
+.refhero{display:grid;grid-template-columns:minmax(8em,12em) minmax(0,1fr);gap:18px;align-items:start;margin:12px 0 10px;padding:14px;background:var(--panel);border:1px solid var(--rule);border-top:4px solid var(--accent);border-radius:3px}
+.refhero .fart{border:0;border-radius:3px;aspect-ratio:1/1}
+.refhero .fart img{object-fit:contain}
+.refhero h1{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;letter-spacing:.02em;color:var(--accent);font-size:2em;line-height:1.05}
+.refhero .ftag{font-size:.95em;margin-top:4px;display:block}
+.refintro{margin:8px 0 12px;max-width:62em;line-height:1.45}
+.refacts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.refjump{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
+.refjump a{padding:4px 11px;border:1px solid var(--accent-line);border-radius:999px;color:var(--accent);background:var(--accent-soft);text-decoration:none;font-size:.85em;font-weight:600}
+.refjump a:hover{border-color:var(--accent)}
+.refcat{font-family:var(--f-display);font-weight:400;font-size:1.35em;text-transform:uppercase;letter-spacing:.03em;color:var(--accent);border-bottom:2px solid var(--accent-line);margin:24px 0 10px;padding-bottom:4px;scroll-margin-top:9em}
+details.catdd>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+details.catdd>summary::-webkit-details-marker{display:none}
+details.catdd>summary .chev{display:inline-block;transition:transform .15s;font-size:.8em;color:var(--accent)}
+details.catdd[open]>summary .chev{transform:rotate(90deg)}
+details.catdd>summary .ccount{margin-left:auto;font-family:var(--f-body,inherit);font-size:.62em;letter-spacing:.04em;color:var(--muted);text-transform:none;font-weight:500}
+details.catdd>summary:hover .chev,details.catdd>summary:focus-visible .chev{color:var(--text)}
+details.catdd>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cat>details.catdd>summary h3{flex:1;margin:10px 0 4px}
+.cat>details.catdd>summary .ccount{font-size:.7em}
+.refcat.dd{margin:0;border:0;padding:0;flex:1}
+details.catdd.ref{scroll-margin-top:9em}
+details.catdd.ref>summary .ccount{font-size:.85em}
+details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px 0 10px;padding-bottom:4px}
+.ddall{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.ddall button{background:none;border:0;color:var(--muted);font:inherit;font-size:.82em;cursor:pointer;text-decoration:underline;padding:2px 4px}
+.ddall button:hover{color:var(--text)}
+.facnt{font-size:.72em;color:var(--muted);font-weight:500;margin-left:3px}
+.rrules{background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:4px 14px}
+.rrule{padding:8px 0;border-top:1px dotted var(--rule)}
+.clrel{background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:12px 16px;max-width:62em}
+#view-changes .refintro{margin:0}
+.clrel header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;border-bottom:1px solid var(--rule);padding-bottom:6px;margin-bottom:8px}
+.clrel h2{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:1.25em;letter-spacing:.02em}
+.clrel p{margin:6px 0}
+.cllist{margin:6px 0 2px;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;line-height:1.4}
+.clfac{font-weight:700;color:var(--accent)}
+.foot a{color:inherit;text-underline-offset:2px}
+body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view="changes"] .pnote{display:none}
+.rrule:first-child{border-top:0}
+.rrule b{color:var(--accent)}
+.rrule .src{font-family:var(--f-mono);font-size:.75em;color:var(--muted);margin-left:6px}
+@media (max-width:640px){ .refhero{grid-template-columns:1fr} .refhero .fart{max-width:11em} .fcard{grid-template-columns:7em minmax(0,1fr)} }
+.brandbtn{all:unset;cursor:pointer;border-radius:3px}
+.brandbtn:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+.home{padding:18px 0 40px;display:flex;flex-direction:column;gap:18px}
+.hhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:6px 16px;border-bottom:2px solid var(--accent);padding-bottom:6px}
+.hhead h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:2em;letter-spacing:.02em;text-transform:uppercase;line-height:1}
+.newp{padding:12px;display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end}
+.newp .field input,.newp .field select{background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:6px 8px}
+.newp #newName{width:16em;max-width:100%}
+.newp #newCustom{width:5.5em}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:.92em;cursor:pointer;padding-bottom:6px}
+.chk input{accent-color:var(--olive);width:1.1em;height:1.1em;margin:0}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(18em,100%),1fr));gap:12px}
+.pcard{background:var(--panel);border:1px solid var(--rule);border-top:4px solid var(--accent);border-radius:3px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pcard h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.2em;letter-spacing:.03em;text-transform:uppercase;overflow-wrap:anywhere}
+.pcard .meta{font-size:.88em;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 10px}
+.pcard .ptot{display:flex;justify-content:space-between;align-items:baseline;font-variant-numeric:tabular-nums}
+.pcard .ptot b{font-family:var(--f-mono);font-size:1.15em}
+.pill{flex:none;white-space:nowrap;font-family:var(--f-mono);font-size:.72em;font-weight:600;padding:1px 7px;border-radius:2px;color:var(--on)}
+.pill.ok{background:var(--ok)} .pill.err{background:var(--bad)} .pill.empty{background:var(--muted)}
+.pcard .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.pcard .acts .sp{flex:1}
+.pcard.over .track i{background:var(--bad)}
+.hempty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--rule);border-radius:3px}
+.saved-tag{font-size:.82em;color:var(--muted)}
+.themebtn{grid-column:-2/-1;justify-self:end;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:3px;padding:5px 10px;cursor:pointer;font-weight:600;white-space:nowrap}
+.themebtn:hover{border-color:var(--ink)}
+.themebtn .ti{display:inline-flex;font-size:1.05em;line-height:1}
+.hhead-r{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+.hhead-r.stack{flex-direction:column;align-items:flex-end;gap:4px}
+@media (max-width:480px){.hhead-r.stack{align-items:flex-start}}
+.saved-tag.dirty{color:var(--warn);font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.leave{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;padding:10px 12px;margin:0 0 12px;background:var(--brass-soft);border:1px solid var(--brass);border-radius:3px}
+.leave b{margin-right:auto}
+/* faction flags + flag picker */
+.flag{display:inline-block;width:2em;height:1.35em;object-fit:cover;border:1px solid var(--rule);border-radius:2px;flex:none;background:var(--sunk);vertical-align:middle}
+.flag.lg{width:3.2em;height:2.15em}
+img.flag{object-fit:contain;background:none;border:0;border-radius:0}
+.fpick{position:relative;min-width:0}
+.fpick select{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
+.fpick-btn{display:flex;align-items:center;gap:8px;width:100%;min-width:11em;background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:3px 8px 3px 4px;cursor:pointer;text-align:left}
+.fpick-btn{padding-block:5px}
+.fpick-btn .flag{width:1.7em;height:1.15em}
+.fpick-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fpick-btn::after{content:"▾";margin-left:auto;padding-left:6px;color:var(--muted)}
+.fpick-btn[aria-expanded="true"]{border-color:var(--ink)}
+.fpick-list{position:absolute;z-index:15;top:calc(100% + 4px);left:0;min-width:100%;max-height:60vh;overflow:auto;margin:0;padding:4px;list-style:none;background:var(--panel);border:1px solid var(--ink);border-radius:3px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.fpick-list:focus{outline:none}
+.fpick-list li{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:2px;cursor:pointer;white-space:nowrap}
+.fpick-list li .flag{width:2.8em;height:1.9em}
+.fpick-list li[aria-selected="true"]{font-weight:700}
+.fpick-list li.act,.fpick-list li:hover{background:var(--sunk)}
+.ptitle{display:flex;align-items:center;gap:8px;min-width:0}
+.fmeta{display:inline-flex;align-items:center;gap:6px}
+.fmeta .flag{width:1.6em;height:1.08em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bar">
+  <div class="wrap">
+    <button class="brandbtn" id="homeBtn" aria-label="Go to Factions"><span class="brand"><small>Quar · Clash of Rhyfles</small><b>Patrol Builder</b></span></button>
+    <div class="controls">
+      <div class="field"><label for="patrolName">Patrol name</label><input id="patrolName" type="text" placeholder="Unnamed patrol" autocomplete="off"></div>
+      <div class="field"><label for="faction">Faction</label><select id="faction"></select></div>
+      <div class="field"><label for="limit">Points</label><select id="limit"></select></div>
+      <div class="field" id="customWrap" hidden><label for="customPts">Custom</label><input id="customPts" type="number" min="50" max="2000" step="5" value="450"></div>
+    </div>
+    <div class="gauge" id="gauge" aria-live="polite">
+      <div class="nums"><span class="used" id="used">0</span><span class="left" id="left">of 300 pts</span></div>
+      <div class="track"><i id="fill"></i></div>
+    </div>
+    <button class="themebtn" id="themeBtn" type="button"></button>
+    <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a></nav>
+  </div>
+</div>
+
+<div class="wrap main">
+  <section id="view-factions" class="home" aria-label="Factions">
+    <div class="hhead"><h1>Factions</h1><div class="hhead-r"><label class="switch" for="showPagesFac"><input type="checkbox" id="showPagesFac" class="pgtoggle"> Show rulebook pages</label></div></div>
+    <div class="fgrid" id="fgrid"></div>
+  </section>
+  <section id="view-ref" aria-label="Faction reference"></section>
+  <section id="view-changes" class="home" aria-label="Rules changelog"></section>
+  <section id="view-home" class="home" aria-label="My patrols">
+    <div class="hhead"><h1>My Patrols</h1><div class="hhead-r stack"><span class="hint">Saved in this browser on this device</span><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
+    <div class="card">
+      <header><h2>New Patrol</h2></header>
+      <form class="newp" id="newForm">
+        <div class="field"><label for="newName">Patrol name</label><input id="newName" type="text" placeholder="e.g. 2nd Harlech Rhyflers" autocomplete="off"></div>
+        <div class="field"><label for="newFaction">Faction</label><select id="newFaction"></select></div>
+        <div class="field"><label for="newLimit">Points</label><select id="newLimit"></select></div>
+        <div class="field" id="newCustomWrap" hidden><label for="newCustom">Custom</label><input id="newCustom" type="number" min="50" max="2000" step="5" value="450"></div>
+        <button class="btn" type="submit">Create patrol</button>
+      </form>
+    </div>
+    <div id="pgrid"></div>
+  </section>
+  <div class="viewbar" id="buildBar">
+    <button class="btn ghost" id="backBtn">← My patrols</button>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-build" aria-selected="true" aria-controls="view-build">Build</button>
+      <button class="tab" role="tab" id="tab-roster" aria-selected="false" aria-controls="view-roster">Roster</button>
+    </div>
+    <label class="switch" for="showPages"><input type="checkbox" id="showPages" class="pgtoggle"> Show rulebook pages</label>
+  </div>
+  <div class="leave" id="leaveBar" hidden><b>This patrol has unsaved changes.</b><button class="btn" id="leaveSave">Save and go back</button><button class="btn danger" id="leaveDiscard">Discard changes</button><button class="btn ghost" id="leaveStay">Keep editing</button></div>
+
+  <div id="view-build" class="build" role="tabpanel" aria-labelledby="tab-build">
+    <section class="card" aria-label="Muster roll">
+      <header><h2>Muster Roll</h2><span class="hint pg" id="facPages"></span></header>
+      <div id="catalog"><p class="empty">Loading profiles…</p></div>
+    </section>
+    <section class="card" aria-label="Your patrol" id="patrolCard">
+      <header><div class="ptitle"><span id="pFlag"></span><h2 id="pTitle">Your Patrol</h2></div><span class="hint" id="pCount">0 units</span></header>
+      <ul class="checks" id="checks"></ul>
+      <div class="plist" id="plist"></div>
+      <div class="pfoot">
+        <button class="btn" id="saveBtn">Save patrol</button>
+        <button class="btn ghost" id="copyBtn">Copy as text</button>
+        <span class="saved-tag" id="savedTag"></span>
+        <span class="sp"></span>
+        <button class="btn danger" id="clearBtn">Remove all units</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="view-roster" class="roster" role="tabpanel" aria-labelledby="tab-roster" hidden></div>
+  <p class="foot" id="foot"></p>
+  <footer class="credits" aria-label="Credits">
+    <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles (10/26) and remain the property of Zombiesmith.</p>
+    <p>Rules design: Joshua Qualtieri &amp; Anthony Brown · World design: Joshua Qualtieri, Pete Murray, Pete McKenna &amp; Edward McEneely · Art: Joshua Qualtieri</p>
+    <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith. Please support the creators by getting the rulebooks from <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">zombiesmith.com</a>.<br>Spotted a mistake? Let me know.</p>
+  </footer>
+</div>
+<div class="mbar" id="mbar"><span class="mleft"><span><span class="mused" id="mused">0 / 300</span> <span id="mstate">pts</span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
+<textarea id="copyArea" aria-hidden="true" tabindex="-1"></textarea>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const STORE = "quar-patrol-builder-v1";
+let DATA = null, FAC = null, UNITS = {};
+let state = {view:"home", status:"empty", name:"", faction:null, limit:300, items:{}, open:{}, saved:[], editingId:null, showPages:false};
+
+function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE) || "null"); if(s){ if(Array.isArray(s.saved)) state.saved = s.saved; state.showPages = !!s.showPages; if (["auto","light","dark"].includes(s.theme)) state.theme = s.theme; } }catch(e){} }
+// Only saved patrols and settings are stored. The patrol being edited is kept only when the user presses Save.
+function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({saved: state.saved, showPages: state.showPages, theme: state.theme})); }catch(e){} }
+
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),1800); }
+
+// find a weapon by its table name or by the name used in a unit's Equipment column (e.g. "Sketych Rifle")
+const findW = n => FAC.weapons.find(w=>w.name===n || (w.aka||[]).includes(n));
+// Bracketed book references, e.g. "(Profiles p27)", are wrapped so the "Show rulebook pages" toggle can hide them
+const PGRX = /\s*\([^()]*?(?:Profiles|Full Book|Core Rules)[^()]*\)/g;
+const pgWrap = s => esc(s).replace(PGRX, m => `<span class="pg">${m}</span>`);
+const baseName = a => a.replace(/\s*\(.*\)\s*$/, "").trim();
+function abilityInfo(a){ const k = baseName(a); return DATA.abilities[k] || null; }
+
+const splitList = str => String(str||"").split(/,\s*(?![^()]*\))/).map(x=>x.trim()).filter(Boolean);
+function tip(lbl){
+  const w = FAC && findW(lbl);
+  if (w) return `<button type="button" class="rl" data-weapon="${esc(w.name)}" aria-expanded="false">${esc(lbl)}</button>`;
+  if (abilityInfo(lbl)) return `<button type="button" class="rl" data-rule="${esc(lbl)}" aria-expanded="false">${esc(lbl)}</button>`;
+  return esc(lbl);
+}
+const cap = t => t.charAt(0).toUpperCase()+t.slice(1);
+const tips = list => list.length ? list.map(tip).join(", ") : "–";
+function count(ids){ return [].concat(ids).reduce((n,id)=>n+(state.items[id]||0),0); }
+function faMult(){ return state.limit >= DATA.rules.faDoublesAt ? 2 : 1; }
+function groupIds(u){ return u.faGroup ? FAC.units.filter(x=>x.faGroup===u.faGroup).map(x=>x.id) : [u.id]; }
+function faLifted(u){ return u.faLiftedBy && count(u.faLiftedBy) > 0; }
+function faLimit(u){ return u.fa == null || faLifted(u) ? null : u.fa * faMult(); }
+function perPointsMax(r){ return r.max * Math.max(1, Math.floor(state.limit / r.per)); }
+
+function total(){ return Object.entries(state.items).reduce((s,[id,q])=>s+(UNITS[id]?UNITS[id].pts*q:0),0); }
+
+function checks(){
+  const out = [], bad = new Set();
+  const t = total();
+  if (t > state.limit) out.push({lvl:"err", kind:"pts", msg:`Over the points limit by ${t-state.limit}.`});
+  const seenGroups = new Set();
+  for (const u of FAC.units){
+    const q = state.items[u.id]||0; if(!q) continue;
+    const lim = faLimit(u);
+    const key = u.faGroup || u.id;
+    if (lim != null && !seenGroups.has(key)){
+      seenGroups.add(key);
+      const n = count(groupIds(u));
+      if (n > lim){ out.push({lvl:"err", kind:"many", who:u.faGroup ? u.name : label(u), msg:`${u.faGroup ? u.name+" (all loadouts)" : label(u)}: ${n} taken, Force Allowance is ${lim}.`}); groupIds(u).forEach(id=>bad.add(id)); }
+    }
+    for (const r of (u.rules||[])){
+      if (r.type==="perPoints" && !(r.liftedBy && count(r.liftedBy)>0)){
+        const ids = FAC.units.filter(x=>(x.rules||[]).some(y=>y.group===r.group)).map(x=>x.id);
+        const n = count(ids), m = perPointsMax(r);
+        if (n > m && !seenGroups.has("pp:"+r.group) && !ids.every(id=>bad.has(id))){ seenGroups.add("pp:"+r.group); out.push({lvl:"err", kind:"many", who:FAC.units.filter(x=>ids.includes(x.id)&&state.items[x.id]).map(x=>x.name).filter((v,i,a)=>a.indexOf(v)===i).join(", "), msg:`${r.text} You have ${n}; the limit at ${state.limit} pts is ${m}.`}); ids.forEach(id=>bad.add(id)); }
+      }
+      if (r.type==="requires"){
+        const n = count(r.units);
+        if (n < r.min){ out.push({lvl:r.soft?"warn":"err", msg:`${label(u)}: ${r.text}`}); if(!r.soft) bad.add(u.id); }
+      }
+    }
+  }
+  // Tollyn Maeryn: Crusader "Advisor" and Crusader Specialists (Profiles p53, footnote 4)
+  if (FAC.advisor){
+    const av = FAC.advisor, pool = FAC.units.filter(u=>u.advisorPool).map(u=>u.id);
+    const nPool = count(pool), nAdv = count(av.advisor);
+    const markPool = () => pool.forEach(id=>{ if(state.items[id]) bad.add(id); });
+    if (nPool && !nAdv){ out.push({lvl:"err", msg:`Crusader Specialists can only be taken with a Crusader "Advisor" in the Patrol.`}); markPool(); }
+    if (nPool > av.max){ out.push({lvl:"err", msg:`The Advisor allows up to ${av.max} Crusader Specialists; you have ${nPool}.`}); markPool(); }
+    if (nPool || nAdv){
+      const pts = ids => ids.reduce((s,id)=>s+(state.items[id]||0)*(UNITS[id]?UNITS[id].pts:0),0);
+      const spent = pts([...pool, av.advisor]), basic = pts(av.basic);
+      if (spent > basic){ out.push({lvl:"err", msg:`The Advisor and Crusader Specialists cost ${spent} pts, more than your Militia Rhyflers (${basic} pts). Their total may not exceed the Militia Rhyflers' points.`}); markPool(); if(nAdv) bad.add(av.advisor); }
+    }
+  }
+  // Staff rhyflers may only be taken as part of a Retinue (Profiles p47)
+  const staffN = FAC.units.filter(u=>u.staff).reduce((n,u)=>n+(state.items[u.id]||0),0);
+  if (staffN){
+    const cap = FAC.units.reduce((n,u)=>n+(u.retinue||0)*(state.items[u.id]||0),0);
+    if (staffN > cap){ out.push({lvl:"err", msg:`Staff rhyflers (${staffN}) must be part of a Retinue. Your Retinue has room for ${cap}; add a Gamesquar or Noblebuck Lancer, or remove Staff.`}); FAC.units.filter(u=>u.staff && state.items[u.id]).forEach(u=>bad.add(u.id)); }
+  }
+  const spot = FAC.units.find(u=>/spotter/i.test(u.name));
+  if (spot && state.items[spot.id]){
+    const shooters = count(FAC.units.filter(u=>u.name==="Sharpshooter").map(u=>u.id));
+    if (state.items[spot.id] > shooters && shooters>0) out.push({lvl:"warn", msg:`More Spotters (${state.items[spot.id]}) than Sharpshooters (${shooters}) to assign them to.`});
+  }
+  const hasUnits = Object.values(state.items).some(q=>q>0);
+  if (hasUnits && !out.some(c=>c.lvl==="err")) out.unshift({lvl:"ok", msg:`Legal at ${state.limit} points${faMult()>1?" (Force Allowance doubled)":""}.`});
+  if (!hasUnits) out.push({lvl:"warn", msg:"Add units from the Muster Roll to start your patrol."});
+  return {out, bad};
+}
+
+const label = u => `${u.name} (${u.variant})`;
+
+function statBlock(u){
+  let h = "";
+  if (u.profiles){
+    const showD = u.profiles.some(p=>p.d);
+    h += `<div class="scroll"><table class="stats"><thead><tr>${u.profiles.some(p=>p.label)?"<th></th>":""}<th>Sk</th><th>Mt</th><th>MA</th><th>T</th>${showD?"<th>D</th>":""}<th>Abilities</th></tr></thead><tbody>`;
+    for (const p of u.profiles) h += `<tr>${u.profiles.some(x=>x.label)?`<td class="t"><b>${esc(p.label||"")}</b></td>`:""}<td>${p.sk}</td><td>${esc(p.mt)}</td><td>${esc(p.ma)}</td><td>${p.t}</td>${showD?`<td>${p.d||"–"}</td>`:""}<td class="t">${tips(p.abilities)}</td></tr>`;
+    h += `</tbody></table></div>`;
+  }
+  if (u.crew){ const c=u.crew; h += `<div class="scroll"><table class="stats"><thead><tr><th>Crew</th><th>Sk</th><th>T</th><th>D</th><th>Break</th><th>MA</th></tr></thead><tbody><tr><td>${c.crew}</td><td>${c.sk}</td><td>${c.t}</td><td>${c.d}</td><td>${esc(c.brk)}</td><td>${esc(c.ma)}</td></tr></tbody></table></div>`; }
+  if (u.vehicle){ const v=u.vehicle; h += `<div class="scroll"><table class="stats"><thead><tr><th>Crew</th><th>Activation</th><th>Sk</th><th>MA</th>${v.t?"<th>T</th>":""}</tr></thead><tbody><tr><td>${v.crew}</td><td class="t">${esc(v.activation)}</td><td>${v.sk}</td><td>${esc(v.ma)}</td>${v.t?`<td>${v.t}</td>`:""}</tr></tbody></table></div>`; }
+  if (u.weapons){ h += `<div class="scroll"><table class="stats"><thead><tr><th>Weapon</th><th>Rn</th><th>Arc</th><th>Abilities</th></tr></thead><tbody>${u.weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.rn)}</td><td>${esc(w.arc)}</td><td class="t">${tips(splitList(w.abilities||w.type||""))}</td></tr>`).join("")}</tbody></table></div>`; }
+  if (u.abilities && u.abilities.length) h += `<p class="hint" style="margin:4px 0">Abilities: ${tips(u.abilities)}</p>`;
+  if (u.armor){ const a=u.armor; h += `<div class="scroll"><table class="stats"><thead><tr><th colspan="2">Locations: ${esc(a.locations)}</th></tr></thead><tbody><tr><td class="t"><b>Front</b></td><td>${esc(a.front)}</td></tr><tr><td class="t"><b>Side</b></td><td>${esc(a.side)}</td></tr><tr><td class="t"><b>Rear</b></td><td>${esc(a.rear)}</td></tr></tbody></table></div>`; }
+  return h;
+}
+function allAbilities(u){
+  const set = new Set();
+  (u.profiles||[]).forEach(p=>{ p.abilities.forEach(a=>set.add(a)); p.equip.forEach(e=>{ const w=findW(e); if(w) w.traits.forEach(t=>set.add(t)); }); });
+  (u.abilities||[]).forEach(a=>set.add(a));
+  (u.weapons||[]).forEach(w=>String(w.abilities||"").split(/,\s*(?![^()]*\))/).filter(Boolean).forEach(a=>set.add(a.trim())));
+  const seen = new Set(), out=[];
+  for (const a of set){ const k=baseName(a); if(seen.has(k)) continue; seen.add(k); const inf=abilityInfo(a); if(inf) out.push({name:k, full:a, ...inf}); }
+  const c = (u.profiles||[]).some(p=>p.abilities.includes("Cadier"));
+  if (c){ for (const k of ["Thunderous Hooves","Skittish"]) if(!seen.has(k)) out.push({name:k, full:k, ...DATA.abilities[k]}); }
+  return out;
+}
+const rulesOpen = new Set();
+function abilityList(u){
+  const a = allAbilities(u);
+  const body = x => { const m = x.text.match(/^[^:]{1,40}\([^)]*\):\s*/); return (m && x.text.startsWith(x.name)) ? cap(x.text.slice(m[0].length)) : x.text; };
+  return a.length ? `<details class="rdd" data-key="${u.id}"${rulesOpen.has(u.id)?" open":""}><summary>Rules <span class="n">(${a.length})</span></summary><ul class="abl">${a.map(x=>`<li><b>${esc(x.full)}</b> ${pgWrap(body(x))}<span class="src pg">${esc(x.src)}</span></li>`).join("")}</ul></details>` : "";
+}
+// Every piece of gear the unit carries, shown once. Ranged weapons show R/Sn/Traits from the faction weapon table;
+// melee and other gear (Sword, Lance, Goad...) show dashes. Gear carried by only some profiles names them, e.g. "(Dismounted)".
+function weaponLine(u){
+  const profs = u.profiles||[], labelled = profs.length>1 && profs.some(p=>p.label);
+  const items = new Map();
+  profs.forEach((p,i)=>p.equip.forEach(e=>{
+    const w = findW(e), key = w ? "w:"+w.name+(/^\d/.test(e)?":"+e:"") : "e:"+e.toLowerCase();
+    if (!items.has(key)) items.set(key, {w, e, on:new Set()});
+    items.get(key).on.add(i);
+  }));
+  if (!items.size) return "";
+  const rows = [...items.values()].map(it=>{
+    const where = labelled && it.on.size<profs.length ? ` <span class="eqwhere">(${[...it.on].map(i=>esc(profs[i].label||"")).join(", ")})</span>` : "";
+    const nm = it.w ? esc(!/^\d/.test(it.e) ? it.w.name : it.e) : tip(it.e);
+    return it.w ? `<tr><td class="t">${nm}${where}</td><td>${esc(typeof it.w.r==="number"?it.w.r:it.w.r)}</td><td>${esc(it.w.sn)}</td><td class="t">${tips(it.w.traits)}</td></tr>`
+                : `<tr><td class="t">${nm}${where}</td><td>–</td><td>–</td><td class="t">–</td></tr>`;
+  });
+  return `<div class="scroll"><table class="stats"><thead><tr><th>Equipment</th><th>R</th><th>Sn</th><th>Traits</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+}
+function rulesText(u){
+  const r = (u.rules||[]).map(x=>x.text);
+  if (u.faLiftedText) r.push(u.faLiftedText);
+  if (u.flag) r.push(u.flag);
+  if (u.notes) r.push(u.notes);
+  return r.map(t=>`<p class="rule">${pgWrap(t)}</p>`).join("");
+}
+
+function faText(u){
+  const lim = faLimit(u), n = count(groupIds(u));
+  if (u.fa == null) return {t:"no limit", c:""};
+  if (lim == null) return {t:`${n} · lifted`, c:""};
+  return {t:`${n}/${lim}`, c: n>lim?"over": n===lim?"at":""};
+}
+
+const catOpen = {};
+function ddKey(fid,c){ return fid+"|"+c; }
+document.addEventListener("toggle", e=>{ const d=e.target; if(d.matches && d.matches("details.catdd")) catOpen[d.dataset.dd]=d.open; }, true);
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-ddall]"); if(!b) return; const on=b.dataset.ddall==="1"; document.querySelectorAll("#view-ref details.catdd").forEach(d=>{ d.open=on; catOpen[d.dataset.dd]=on; }); });
+function renderCatalog(){
+  const cats = FAC.categories.filter(c=>FAC.units.some(u=>u.cat===c));
+  $("#catalog").innerHTML = cats.map(c=>{ const us=FAC.units.filter(u=>u.cat===c), k=ddKey(FAC.id,c); return `<div class="cat"><details class="catdd" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h3>${esc(c)}</h3><span class="ccount">${us.length}</span></summary>${us.map(u=>{
+    const f = faText(u), open = state.open[u.id];
+    return `<div class="unit${open?" open":""}" data-id="${u.id}">
+      <div class="urow">
+        <button class="uname" data-act="toggle" aria-expanded="${!!open}"><span class="chev">▸</span><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span></button>
+        <span class="fa ${f.c}" title="Force Allowance">${esc(f.t)}</span>
+        <span class="pts">${u.pts}</span>
+        <span class="btns"><button class="add sub" data-act="remove" aria-label="Remove one ${esc(label(u))}"${state.items[u.id]?"":" disabled"}>−</button><button class="add" data-act="add" aria-label="Add ${esc(label(u))}">+</button></span>
+      </div>
+      ${open?`<div class="detail">${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}<p class="hint pg">${esc(u.page)}</p></div>`:""}
+    </div>`;}).join("")}</details></div>`;}).join("");
+}
+
+
+function renderPatrol(){
+  const {out, bad} = checks();
+  state.status = !Object.keys(state.items).length ? "empty" : out.some(c=>c.lvl==="err") ? "err" : "ok";
+  $("#checks").innerHTML = out.map(c=>`<li class="${c.lvl}"><span class="tag">${c.lvl==="err"?"FIX":c.lvl==="warn"?"NOTE":"OK"}</span><span>${pgWrap(c.msg)}</span></li>`).join("");
+  const rows = FAC.units.filter(u=>state.items[u.id]>0);
+  const n = rows.reduce((a,u)=>a+state.items[u.id],0);
+  $("#pCount").textContent = `${n} unit${n===1?"":"s"}`;
+  $("#pTitle").textContent = state.name || "Your Patrol";
+  $("#plist").innerHTML = rows.length ? rows.map(u=>{ const q=state.items[u.id]; return `<div class="prow${bad.has(u.id)?" bad":""}" data-id="${u.id}">
+      <div class="pname"><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span></div>
+      <div class="step"><button data-act="dec" aria-label="Remove one">−</button><output>${q}</output><button data-act="inc" aria-label="Add one">+</button></div>
+      <span class="pts">${u.pts*q}</span></div>`;}).join("")
+    : `<p class="empty">No units yet. Tap + on the Muster Roll to add units.</p>`;
+  const t = total(), g=$("#gauge");
+  $("#used").textContent = t;
+  $("#left").textContent = t>state.limit ? `${t-state.limit} over ${state.limit}` : `of ${state.limit} · ${state.limit-t} left`;
+  $("#fill").style.width = Math.min(100, t/state.limit*100) + "%";
+  g.classList.toggle("over", t>state.limit); g.classList.toggle("full", t===state.limit);
+  $("#mused").textContent = `${t} / ${state.limit}`;
+  $("#mstate").textContent = t>state.limit ? `pts · ${t-state.limit} over` : `pts · ${n} unit${n===1?"":"s"}`;
+  const errs = out.filter(c=>c.lvl==="err"), many = errs.filter(c=>c.kind==="many"), other = errs.filter(c=>!c.kind).length;
+  const parts = [];
+  if (many.length) parts.push("Too many: " + many.map(c=>c.who).join(", "));
+  if (other) parts.push(`${other} other problem${other===1?"":"s"}`);
+  $("#mprob").textContent = parts.join(" · "); $("#mprob").hidden = !parts.length;
+  $("#mbar").classList.toggle("over", errs.length>0); $("#mbar").classList.toggle("ptsover", t>state.limit);
+}
+
+const facName = id => (DATA.factions.find(f=>f.id===id)||{}).name || id;
+const fmtDate = t => { try{ return new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}); }catch(e){ return ""; } };
+let confirmDel = null;
+function renderHome(){
+  const list = state.saved.filter(Boolean).sort((a,b)=>(b.updated||0)-(a.updated||0));
+  $("#pgrid").innerHTML = list.length ? `<div class="pgrid">${list.map(p=>{
+    const over = p.total>p.limit, st = p.status || (p.count? "ok":"empty");
+    const pill = st==="empty" ? `<span class="pill empty">EMPTY</span>` : st==="err" ? `<span class="pill err">NEEDS FIXES</span>` : `<span class="pill ok">LEGAL</span>`;
+    const fc = (facById(p.faction)||{}).color;
+    return `<article class="pcard${over?" over":""}"${fc?` style="--fac:${fc}"`:""}>
+      <header style="display:flex;justify-content:space-between;gap:8px;align-items:start"><h3>${esc(p.name||"Unnamed patrol")}</h3>${pill}</header>
+      <div class="meta"><span class="fmeta">${flagImg(facById(p.faction))}${esc(facName(p.faction))}</span><span>${p.count||0} unit${p.count===1?"":"s"}</span>${p.updated?`<span>Edited ${esc(fmtDate(p.updated))}</span>`:""}</div>
+      <div><div class="ptot"><b>${p.total||0} / ${p.limit}</b><span class="hint">${over?`${p.total-p.limit} over`:`${p.limit-(p.total||0)} left`}</span></div><div class="track"><i style="width:${Math.min(100,(p.total||0)/p.limit*100)}%"></i></div></div>
+      <div class="acts"><button class="btn" data-open="${p.id}">Open</button><button class="btn ghost" data-dup="${p.id}">Duplicate</button><span class="sp"></span><button class="btn danger" data-del="${p.id}">${confirmDel===p.id?"Confirm delete":"Delete"}</button></div>
+    </article>`;}).join("")}</div>`
+  : `<div class="hempty">No patrols yet. Create your first one above.</div>`;
+}
+const itemsKey = o => Object.keys(o||{}).filter(k=>o[k]>0).sort().map(k=>k+":"+o[k]).join(",");
+const isSavedRec = () => !!state.editingId && state.saved.some(s=>s.id===state.editingId);
+function isDirty(){
+  const rec = state.editingId && state.saved.find(s=>s.id===state.editingId);
+  if (!rec) return true;
+  return (rec.name||"")!==(state.name||"") || rec.faction!==state.faction || rec.limit!==state.limit || itemsKey(rec.items)!==itemsKey(state.items);
+}
+function updateSaveState(){
+  const d = isDirty(), isNew = !isSavedRec();
+  $("#saveBtn").disabled = !d;
+  const t = $("#savedTag"); t.textContent = isNew ? "Not saved yet" : d ? "Unsaved changes" : "Saved"; t.classList.toggle("dirty", d);
+}
+function savePatrol(){
+  if (!isSavedRec()){ state.editingId = newId(); state.saved.push({id: state.editingId}); }
+  if (!state.name){ state.name = `${FAC.name} ${state.limit}`; $("#patrolName").value = state.name; $("#pTitle").textContent = state.name; }
+  saveCurrent(); persist(); updateSaveState(); toast("Patrol saved");
+}
+let pendingNav = null;
+function tryLeave(t){
+  if (!t || !t.v) t = {v:"home"};
+  if (state.view!=="edit") return showView(t.v, t.arg);
+  pendingNav = t;
+  const blankNew = !isSavedRec() && !Object.keys(state.items).length;
+  if (isDirty() && !blankNew){ $("#leaveBar").hidden=false; window.scrollTo(0,0); return; }
+  leave();
+}
+function leave(){ const t = pendingNav || {v:"home"}; pendingNav = null; $("#leaveBar").hidden=true; state.editingId=null; state.items={}; showView(t.v, t.arg); }
+function saveCurrent(){
+  if (!state.editingId) return;
+  const rec = state.saved.find(s=>s.id===state.editingId); if(!rec) return;
+  Object.assign(rec, {name: state.name, faction: state.faction, limit: state.limit, items: {...state.items}, total: total(),
+    count: Object.values(state.items).reduce((a,q)=>a+q,0), status: state.status, updated: Date.now()});
+}
+const facById = id => DATA.factions.find(f=>f.id===id);
+const flagImg = (f, cls="flag") => f && f.flag ? `<img class="${cls}" src="${esc(f.flag)}" alt="" title="${esc(f.name)} flag">` : `<span class="${cls}"></span>`;
+const pickers = [];
+function syncPickers(){ pickers.forEach(f=>f()); }
+// Faction dropdown with flags. The hidden <select> keeps the value so the rest of the page works as before.
+function makePicker(sel){
+  const wrap = document.createElement("div"); wrap.className = "fpick";
+  const btn = document.createElement("button"); btn.type="button"; btn.className="fpick-btn"; btn.id=sel.id+"-btn";
+  btn.setAttribute("aria-haspopup","listbox"); btn.setAttribute("aria-expanded","false");
+  const list = document.createElement("ul"); list.className="fpick-list"; list.id=sel.id+"-list"; list.setAttribute("role","listbox"); list.tabIndex=-1; list.hidden=true;
+  btn.setAttribute("aria-controls", list.id);
+  sel.parentNode.insertBefore(wrap, sel); wrap.append(sel, btn, list);
+  sel.tabIndex=-1; sel.setAttribute("aria-hidden","true");
+  const lab = document.querySelector(`label[for="${sel.id}"]`); if (lab){ lab.htmlFor = btn.id; lab.id = sel.id+"-lab"; list.setAttribute("aria-labelledby", lab.id); }
+  let act = 0;
+  const opts = () => [...list.children];
+  const sync = () => { const f = facById(sel.value) || DATA.factions[0]; btn.innerHTML = `${flagImg(f)}<span>${esc(f.name)}</span>`; if (f.color) btn.style.setProperty("--fac", f.color); else btn.style.removeProperty("--fac"); };
+  const setAct = i => { const o=opts(); act=(i+o.length)%o.length; o.forEach((li,j)=>li.classList.toggle("act", j===act)); list.setAttribute("aria-activedescendant", o[act].id); o[act].scrollIntoView({block:"nearest"}); };
+  const open = () => { list.innerHTML = DATA.factions.map((f,i)=>`<li role="option" id="${sel.id}-o${i}" data-v="${f.id}" aria-selected="${f.id===sel.value}"${f.color?` style="--fac:${f.color}"`:""}>${flagImg(f)}<span>${esc(f.name)}</span></li>`).join("");
+    list.hidden=false; btn.setAttribute("aria-expanded","true"); setAct(Math.max(0, DATA.factions.findIndex(f=>f.id===sel.value))); list.focus(); };
+  const close = focus => { if(list.hidden) return; list.hidden=true; btn.setAttribute("aria-expanded","false"); if(focus) btn.focus(); };
+  const choose = v => { close(true); if (v!==sel.value){ sel.value=v; sel.dispatchEvent(new Event("change",{bubbles:true})); } sync(); };
+  btn.addEventListener("click", ()=> list.hidden ? open() : close());
+  btn.addEventListener("keydown", e=>{ if (e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); open(); } });
+  list.addEventListener("click", e=>{ const li=e.target.closest("li"); if(li) choose(li.dataset.v); });
+  list.addEventListener("keydown", e=>{
+    if (e.key==="ArrowDown"){ e.preventDefault(); setAct(act+1); } else if (e.key==="ArrowUp"){ e.preventDefault(); setAct(act-1); }
+    else if (e.key==="Home"){ e.preventDefault(); setAct(0); } else if (e.key==="End"){ e.preventDefault(); setAct(-1); }
+    else if (e.key==="Enter"||e.key===" "){ e.preventDefault(); choose(opts()[act].dataset.v); }
+    else if (e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); close(true); } else if (e.key==="Tab"){ close(false); } });
+  document.addEventListener("click", e=>{ if(!wrap.contains(e.target)) close(false); });
+  pickers.push(sync); sync();
+}
+function syncControls(){
+  $("#faction").value = FAC.id; $("#patrolName").value = state.name || "";
+  if (DATA.rules.presetLimits.includes(state.limit)){ $("#limit").value=String(state.limit); $("#customWrap").hidden=true; }
+  else { $("#limit").value="custom"; $("#customWrap").hidden=false; $("#customPts").value=state.limit; }
+  syncPickers();
+}
+// Views: "factions" (default), "ref" (one faction's reference page), "home" (My Patrols), "edit" (the builder).
+// The address bar keeps a link to each (#/factions, #/faction/<id>, #/builder) so pages can be bookmarked or shared.
+function route(h){
+  const m = String(h||"").replace(/^#\/?/,"").split("/");
+  if (m[0]==="faction" && facById(m[1])) return {v:"ref", arg:m[1]};
+  if (m[0]==="builder") return {v:"home"};
+  if (m[0]==="changes") return {v:"changes"};
+  return {v:"factions"};
+}
+const hashFor = (v,arg) => v==="ref" ? "#/faction/"+arg : v==="factions" ? "#/factions" : v==="changes" ? "#/changes" : v==="edit" ? "#/builder/edit" : "#/builder";
+function showView(v, arg, push=true){
+  state.view = v; document.body.classList.toggle("on-home", v!=="edit"); document.body.dataset.view = v;
+  document.querySelectorAll(".navtab").forEach(a=>a.classList.toggle("on", a.dataset.nav === (v==="factions"||v==="ref" ? "factions" : v==="changes" ? "" : "builder")));
+  if (v==="home"){ confirmDel=null; document.body.style.removeProperty("--fac"); renderHome(); }
+  else if (v==="factions"){ document.body.style.removeProperty("--fac"); renderFactions(); }
+  else if (v==="ref"){ renderRef(arg); }
+  else if (v==="changes"){ document.body.style.removeProperty("--fac"); renderChanges(); }
+  else { $("#tab-build").click(); }
+  const h = hashFor(v,arg); if (push && location.hash!==h) history.pushState(null,"",h);
+  window.scrollTo(0,0);
+}
+function navTo(t){ if (state.view==="edit") tryLeave(t); else showView(t.v, t.arg); }
+const slug = c => c.toLowerCase().replace(/[^a-z0-9]+/g,"-");
+function renderChanges(){
+  const log = DATA.changelog||[];
+  const fname = id => { const f = facById(id); return f ? `<b class="clfac">${esc(f.name)}</b>` : ""; };
+  $("#view-changes").innerHTML = `
+  <div class="hhead"><h1>Rules Changelog</h1><div class="hhead-r"><label class="switch" for="showPagesCl"><input type="checkbox" id="showPagesCl" class="pgtoggle"${state.showPages?" checked":""}> Show rulebook pages</label></div></div>
+  <p class="refintro hint">Changes to unit profiles and rules in this builder: new rulebook versions, and corrections where the printed book has a mistake. Newest first.</p>
+  ${log.map(r=>`<article class="clrel"><header><h2>${esc(r.title)}</h2><span class="hint">${esc(new Date(r.date+"T12:00").toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"}))} · ${esc(r.source)}</span></header>
+    ${r.intro?`<p>${pgWrap(r.intro)}</p>`:""}
+    ${r.changes&&r.changes.length?`<ul class="cllist">${r.changes.map(c=>`<li${facById(c.faction)&&facById(c.faction).color?` style="--fac:${esc(facById(c.faction).color)}"`:""}>${fname(c.faction)}${c.faction?" ":""}${pgWrap(c.text)}</li>`).join("")}</ul>`:""}
+  </article>`).join("") || `<p class="empty">No changes yet.</p>`}`;
+}
+function renderFactions(){
+  $("#fgrid").innerHTML = DATA.factions.map(f=>{
+    const n = f.units.length, cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
+    const desc = f.intro ? esc(f.intro) : `${n} unit profiles: ${esc(cats.join(", "))}.`;
+    return `<a class="fcard" href="#/faction/${f.id}" data-go="#/faction/${f.id}"${f.color?` style="--fac:${f.color}"`:""}>
+      <span class="fart">${f.art?`<img src="${esc(f.art)}" alt="" loading="lazy">`:""}</span>
+      <span class="fbody"><span class="fname">${esc(f.name)}</span>${f.tagline?`<span class="ftag">${esc(f.tagline)}</span>`:""}<span class="fdesc">${desc}</span><span class="fmeta2">${n} units<span class="pg"> · ${esc(f.pages)}</span></span></span></a>`;
+  }).join("");
+}
+function useFaction(id){
+  FAC = DATA.factions.find(f=>f.id===id) || DATA.factions[0]; UNITS = {}; FAC.units.forEach(u=>UNITS[u.id]=u);
+  if (FAC.color) document.body.style.setProperty("--fac", FAC.color); else document.body.style.removeProperty("--fac");
+}
+function refCard(u){
+  return `<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3>${esc(u.name)}</h3><span class="pts">${u.pts}${u.fa!=null?`<span class="facnt" title="Force Allowance">(${u.fa})</span>`:""}</span></header><p class="sub">${esc(u.variant)}<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</article>`;
+}
+function renderRef(id){
+  useFaction(id); const f = FAC;
+  const cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
+  const rules = new Map(); f.units.forEach(u=>allAbilities(u).forEach(a=>{ if(!rules.has(a.name)) rules.set(a.name,a); }));
+  f.weapons.forEach(w=>w.traits.forEach(t=>{ const i=abilityInfo(t); if(i && !rules.has(baseName(t))) rules.set(baseName(t),{name:baseName(t),full:t,...i}); }));
+  const rl = [...rules.values()].sort((a,b)=>a.name.localeCompare(b.name));
+  $("#view-ref").innerHTML = `
+  <div class="viewbar"><a class="btn ghost" href="#/factions" data-go="#/factions" style="text-decoration:none">← All factions</a><span style="margin-right:auto"></span><label class="switch" for="showPagesRef"><input type="checkbox" id="showPagesRef" class="pgtoggle"${state.showPages?" checked":""}> Show rulebook pages</label></div>
+  <div class="refhero"><span class="fart">${f.art?`<img src="${esc(f.art)}" alt="">`:""}</span><div>
+    <div class="ptitle">${flagImg(f,"flag lg")}<h1>${esc(f.name)}</h1></div>${f.tagline?`<span class="ftag">${esc(f.tagline)}</span>`:""}
+    ${f.intro?`<p class="refintro">${esc(f.intro)}<span class="pg"> (${esc(f.introSrc)})</span></p>`:`<p class="refintro hint">The rulebooks have no introduction for this faction.</p>`}
+    <div class="refacts"><button class="btn" data-build="${f.id}">Build a patrol</button><span class="hint">${f.units.length} units<span class="pg"> · ${esc(f.pages)}</span></span></div>
+  </div></div>
+  <nav class="refjump" aria-label="Jump to">${cats.map(c=>`<a href="#" data-jump="ref-${slug(c)}">${esc(c)}</a>`).join("")}<a href="#" data-jump="ref-weapons">Weapons</a><a href="#" data-jump="ref-rules">Special rules</a></nav>
+  <div class="ddall"><button type="button" data-ddall="1">Open all</button><button type="button" data-ddall="0">Close all</button></div>
+  ${cats.map(c=>{ const us=f.units.filter(u=>u.cat===c), k=ddKey("ref:"+f.id,c); return `<details class="catdd ref" id="ref-${slug(c)}" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">${esc(c)}</h2><span class="ccount">${us.length} unit${us.length===1?"":"s"}</span></summary><div class="rgrid">${us.map(refCard).join("")}</div></details>`;}).join("")}
+  ${(k=>`<details class="catdd ref" id="ref-weapons" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Weapons</h2><span class="ccount">${f.weapons.length} weapon${f.weapons.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__weapons"))}
+  <div class="rrules scroll"><table class="stats" style="margin:8px 0"><thead><tr><th>Weapon</th><th>R</th><th>Sn</th><th>Traits</th></tr></thead><tbody>${f.weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${tips(w.traits)}</td></tr>`).join("")}</tbody></table></div>
+  </details>
+  ${(k=>`<details class="catdd ref" id="ref-rules" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Special rules</h2><span class="ccount">${rl.length} rule${rl.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__rules"))}
+  <div class="rrules">${rl.map(a=>`<div class="rrule"><b>${esc(a.name)}</b> ${pgWrap(a.text)}<span class="src pg">${esc(a.src)}</span></div>`).join("")}</div></details>`;
+}
+function openPatrol(id){
+  const p = state.saved.find(x=>x.id===id); if(!p) return;
+  editDraft(p);
+}
+function editDraft(p){
+  $("#leaveBar").hidden=true;
+  state.editingId=p.id||null; state.name=p.name||""; state.limit=p.limit; state.items={...p.items}; state.open={};
+  setFaction(p.faction); syncControls(); showView("edit"); renderAll();
+}
+function newId(){ return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+
+function renderRoster(){
+  const rows = FAC.units.filter(u=>state.items[u.id]>0);
+  const t = total();
+  const v = $("#view-roster");
+  if(!rows.length){ v.innerHTML = `<p class="empty">Add units on the Build tab and they'll appear here as reference cards.</p>`; return; }
+  v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span></div>
+  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}</article>`).join("")}</div>`;
+}
+
+function renderAll(){ if(state.view==="edit"){ renderCatalog(); renderPatrol(); if(!$("#view-roster").hidden) renderRoster(); updateSaveState(); } }
+
+function setFaction(id){
+  useFaction(id); state.faction = FAC.id;
+  for (const k of Object.keys(state.items)) if(!UNITS[k]) delete state.items[k];
+  $("#facPages").textContent = FAC.pages;
+  $("#pFlag").innerHTML = flagImg(FAC);
+}
+
+function textList(){
+  const rows = FAC.units.filter(u=>state.items[u.id]>0);
+  const {out, bad} = checks();
+  const errs = out.filter(c=>c.lvl==="err"), notes = out.filter(c=>c.lvl==="warn" && rows.length);
+  const clean = s => state.showPages ? s : s.replace(/\s*\((?:Profiles|Full Book|Core Rules)[^)]*\)/g, "");
+  const lines = [`${state.name||"Unnamed patrol"} — ${FAC.name}, ${total()}/${state.limit} pts`, rows.length ? (errs.length ? `NOT LEGAL: ${errs.length} problem${errs.length===1?"":"s"} (see below)` : `Legal at ${state.limit} points`) : "", ""];
+  let cat="";
+  for (const u of rows){ if(u.cat!==cat){ cat=u.cat; lines.push(cat.toUpperCase()); } lines.push(`  ${state.items[u.id]}x ${u.name} (${u.variant}) — ${u.pts*state.items[u.id]} pts${bad.has(u.id)?"  [!]":""}`); }
+  if (errs.length){ lines.push("", "PROBLEMS"); errs.forEach(c=>lines.push(`  [!] ${clean(c.msg)}`)); }
+  if (notes.length){ lines.push("", "NOTES"); notes.forEach(c=>lines.push(`  - ${clean(c.msg)}`)); }
+  return lines.join("\n");
+}
+
+async function init(){
+  load(); applyTheme(state.theme || "auto");
+  try{ const r = await fetch("data/quar-data.json"); DATA = await r.json(); }
+  catch(e){ $("#catalog").innerHTML = `<p class="empty">Couldn't load the unit data file (data/quar-data.json). Open this page from the published link or a web server.</p>`; return; }
+  const facOpts = DATA.factions.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join("");
+  const limOpts = DATA.rules.presetLimits.map(p=>`<option value="${p}">${p}</option>`).join("") + `<option value="custom">Custom…</option>`;
+  $("#faction").innerHTML = facOpts; $("#newFaction").innerHTML = facOpts;
+  makePicker($("#faction")); makePicker($("#newFaction"));
+  $("#limit").innerHTML = limOpts; $("#newLimit").innerHTML = limOpts;
+  setFaction(state.faction);
+  setShowPages(!!state.showPages, false);
+  $("#faction").value = FAC.id;
+  if (DATA.rules.presetLimits.includes(state.limit)) $("#limit").value = String(state.limit);
+  else { $("#limit").value = "custom"; $("#customWrap").hidden=false; $("#customPts").value = state.limit; }
+  $("#patrolName").value = state.name || "";
+  // refresh totals/status for every saved patrol
+  for (const p of state.saved){ const f=DATA.factions.find(x=>x.id===p.faction); if(!f) continue; const keepE=state.editingId, keepN=state.name, keepL=state.limit, keepI=state.items, keepF=state.faction;
+    state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; setFaction(p.faction); state.status = !Object.keys(state.items).length?"empty":checks().out.some(c=>c.lvl==="err")?"err":"ok"; const up=p.updated; saveCurrent(); p.updated=up||Date.now();
+    state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; setFaction(keepF||p.faction); }
+  $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
+  $("#foot").innerHTML = pgWrap(`Data from Clash of Rhyfles Faction Profiles ${DATA.meta.profilesVersion} and the Full Book.`) + ` · <a href="#/changes" data-go="#/changes">Rules changelog</a>` + `<span class="pnote"><br>${pgWrap(DATA.rules.patrolNote)}</span>`;
+  const r = route(location.hash); showView(r.v, r.arg, false); history.replaceState(null,"",hashFor(r.v,r.arg)); persist();
+}
+
+/* events */
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b || !DATA) return;
+  const row = b.closest("[data-id]"); const id = row && row.dataset.id;
+  const act = b.dataset.act;
+  if (act==="toggle"){ state.open[id] = !state.open[id]; renderCatalog(); return; }
+  if (act==="add" || act==="inc"){ state.items[id]=(state.items[id]||0)+1; if(act==="add") toast(`Added ${UNITS[id].name}`); renderAll(); return; }
+  if (act==="remove"){ if(!state.items[id]) return; state.items[id]--; if(!state.items[id]) delete state.items[id]; toast(`Removed ${UNITS[id].name}`); renderAll(); return; }
+  if (act==="dec"){ state.items[id]=Math.max(0,(state.items[id]||0)-1); if(!state.items[id]) delete state.items[id]; renderAll(); return; }
+  if (b.dataset.open){ openPatrol(b.dataset.open); return; }
+  if (b.dataset.build){ const f=facById(b.dataset.build); editDraft({id:null, name:`${f.name} 300`, faction:f.id, limit:300, items:{}}); toast("New patrol: press Save to keep it"); return; }
+  if (b.dataset.dup){ const p=state.saved.find(x=>x.id===b.dataset.dup); if(!p) return; const c={...p, items:{...p.items}, id:newId(), name:(p.name||"Unnamed patrol")+" (copy)", updated:Date.now()}; state.saved.push(c); toast(`Duplicated ${p.name||"patrol"}`); renderHome(); persist(); return; }
+  if (b.dataset.del){ if(confirmDel!==b.dataset.del){ confirmDel=b.dataset.del; renderHome(); return; }
+    const p=state.saved.find(x=>x.id===b.dataset.del); state.saved=state.saved.filter(x=>x.id!==b.dataset.del); if(state.editingId===b.dataset.del) state.editingId=null; confirmDel=null; toast(`Deleted ${p&&p.name||"patrol"}`); renderHome(); persist(); return; }
+});
+$("#clearBtn").addEventListener("click", ()=>{ if(!Object.keys(state.items).length) return; state.items={}; toast("Removed all units"); renderAll(); });
+$("#homeBtn").addEventListener("click", ()=>{ if(DATA) navTo({v:"factions"}); });
+// links inside the page: tabs, faction cards, "All factions"; and jump links on reference pages
+document.addEventListener("click", e=>{
+  if (e.defaultPrevented || !DATA) return;
+  const a = e.target.closest("a[data-go]"); if (a){ e.preventDefault(); navTo(route(a.dataset.go)); return; }
+  const j = e.target.closest("a[data-jump]"); if (j){ e.preventDefault(); const t=document.getElementById(j.dataset.jump); if(t && t.tagName==="DETAILS" && !t.open){ t.open=true; catOpen[t.dataset.dd]=true; } if(t) t.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"}); }
+});
+window.addEventListener("popstate", ()=>{ if(!DATA) return; const r = route(location.hash);
+  if (state.view==="edit"){ history.pushState(null,"","#/builder/edit"); tryLeave(r); } else showView(r.v, r.arg, false); });
+$("#backBtn").addEventListener("click", ()=>tryLeave({v:"home"}));
+$("#themeBtn").addEventListener("click", ()=>{ const order=["auto","light","dark"]; applyTheme(order[(order.indexOf(state.theme||"auto")+1)%3]); persist(); });
+$("#saveBtn").addEventListener("click", ()=>{ if(isDirty()) savePatrol(); leave(); });
+$("#leaveSave").addEventListener("click", ()=>{ savePatrol(); leave(); });
+$("#leaveDiscard").addEventListener("click", ()=>{ leave(); toast("Changes discarded"); });
+$("#leaveStay").addEventListener("click", ()=>{ pendingNav=null; $("#leaveBar").hidden=true; });
+window.addEventListener("beforeunload", e=>{ if(state.view==="edit" && isDirty() && Object.keys(state.items).length){ e.preventDefault(); e.returnValue=""; } });
+$("#newLimit").addEventListener("change", e=>{ $("#newCustomWrap").hidden = e.target.value!=="custom"; });
+$("#newForm").addEventListener("submit", e=>{
+  e.preventDefault(); if(!DATA) return;
+  const lim = $("#newLimit").value==="custom" ? Math.max(50, +$("#newCustom").value||300) : +$("#newLimit").value;
+  const fac = $("#newFaction").value, f = DATA.factions.find(x=>x.id===fac);
+  const items = {};
+  const name = $("#newName").value.trim() || `${f.name} ${lim}`;
+  $("#newName").value=""; editDraft({id:null, name, faction: fac, limit: lim, items}); toast("New patrol: press Save to keep it");
+});
+$("#copyBtn").addEventListener("click", ()=>{
+  if(!DATA) return; const txt = textList();
+  const fallback = ()=>{ const a=$("#copyArea"); a.value=txt; a.select(); try{ document.execCommand("copy"); toast("Copied"); }catch(e){ toast("Select and copy the list manually"); } };
+  try{ navigator.clipboard.writeText(txt).then(()=>toast("Copied patrol list"), fallback); }catch(e){ fallback(); }
+});
+// Colour theme: Auto follows the device, Light and Dark override it
+function applyTheme(t){
+  state.theme = t;
+  if (t==="auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
+  const ico = {
+    auto:'<svg viewBox="0 0 16 16" width="1em" height="1em" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/></svg>',
+    light:'<svg viewBox="0 0 16 16" width="1em" height="1em" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></g></svg>',
+    dark:'<svg viewBox="0 0 16 16" width="1em" height="1em" aria-hidden="true"><path d="M10.5 1.8A6.3 6.3 0 1 0 14.2 11 5 5 0 0 1 10.5 1.8z" fill="currentColor"/></svg>'};
+  const L = {auto:[ico.auto,"Auto"], light:[ico.light,"Light"], dark:[ico.dark,"Dark"]}[t];
+  const b = $("#themeBtn"); b.innerHTML = `<span class="ti">${L[0]}</span><span class="tl">${L[1]}</span>`;
+  b.setAttribute("aria-label", `Colour theme: ${L[1]}. Click to change.`); b.title = `Theme: ${L[1]} (click to change)`;
+}
+function setShowPages(v, save=true){
+  state.showPages = v; document.querySelectorAll(".pgtoggle").forEach(i=>i.checked = v);
+  document.body.classList.toggle("hide-pages", !v);
+  if (typeof popFor!=="undefined" && popFor) showPop(popFor);
+  if (save) persist();
+}
+document.addEventListener("change", e=>{ if (e.target.classList && e.target.classList.contains("pgtoggle")) setShowPages(e.target.checked); });
+$("#patrolName").addEventListener("input", e=>{ state.name=e.target.value; $("#pTitle").textContent=state.name||"Your Patrol"; updateSaveState(); });
+$("#faction").addEventListener("change", e=>{ setFaction(e.target.value); renderAll(); });
+$("#limit").addEventListener("change", e=>{
+  if (e.target.value==="custom"){ $("#customWrap").hidden=false; state.limit = Math.max(50, +$("#customPts").value||300); }
+  else { $("#customWrap").hidden=true; state.limit = +e.target.value; }
+  renderAll();
+});
+$("#customPts").addEventListener("input", e=>{ const v=+e.target.value; if(v>=50){ state.limit=v; renderAll(); } });
+$("#mjump").addEventListener("click", e=>{ e.preventDefault(); if($("#view-build").hidden) $("#tab-build").click(); $("#patrolCard").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"}); });
+for (const t of ["build","roster"]) $("#tab-"+t).addEventListener("click", ()=>{
+  for (const o of ["build","roster"]){ $("#tab-"+o).setAttribute("aria-selected", o===t); $("#view-"+o).hidden = o!==t; }
+  if (t==="roster") renderRoster();
+});
+
+document.addEventListener("toggle", e=>{ const d=e.target; if(!d.classList || !d.classList.contains("rdd")) return; if(d.open) rulesOpen.add(d.dataset.key); else rulesOpen.delete(d.dataset.key); }, true);
+
+/* rule popups */
+const pop = document.createElement("div"); pop.className="pop"; pop.id="rulePop"; pop.setAttribute("role","tooltip"); pop.hidden=true; document.body.appendChild(pop);
+let popFor=null, pinned=false, hideT=null;
+function popHTML(el){
+  if (el.dataset.weapon){ const w=FAC.weapons.find(x=>x.name===el.dataset.weapon);
+    return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p8)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
+  const full=el.dataset.rule, i=abilityInfo(full), body=i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/, m=>i.text.startsWith(baseName(full))?"":m);
+  const sub = /^Cadier/.test(full) ? ["Thunderous Hooves","Skittish"].map(k=>`<p style="margin-top:4px"><b>${k}</b> ${pgWrap(DATA.abilities[k].text)}</p>`).join("") : "";
+  return `<h4>${esc(full)}</h4><p>${pgWrap(cap(body))}</p>${sub}<span class="src pg">${esc(i.src)}</span>`;
+}
+function showPop(el){
+  clearTimeout(hideT);
+  if (popFor && popFor!==el) popFor.setAttribute("aria-expanded","false");
+  popFor=el; el.setAttribute("aria-expanded","true"); el.setAttribute("aria-describedby","rulePop");
+  pop.innerHTML=popHTML(el); pop.hidden=false;
+  const r=el.getBoundingClientRect(), pw=pop.offsetWidth, ph=pop.offsetHeight, m=12;
+  let left=Math.min(Math.max(m, r.left), window.innerWidth-pw-m);
+  let top=r.bottom+6; if (top+ph > window.innerHeight-m) top=Math.max(m, r.top-ph-6);
+  pop.style.left=left+"px"; pop.style.top=top+"px";
+}
+function hidePop(){ if(popFor){ popFor.setAttribute("aria-expanded","false"); popFor.removeAttribute("aria-describedby"); } popFor=null; pinned=false; pop.hidden=true; }
+const canHover = matchMedia("(hover: hover)").matches;
+document.addEventListener("mouseover", e=>{ if(!canHover || pinned) return; const el=e.target.closest(".rl"); if(el) showPop(el); else if(popFor && !e.target.closest(".pop")) hideT=setTimeout(hidePop,120); });
+document.addEventListener("focusin", e=>{ const el=e.target.closest(".rl"); if(el) showPop(el); });
+document.addEventListener("focusout", e=>{ if(e.target.closest(".rl") && !pinned) hideT=setTimeout(hidePop,120); });
+document.addEventListener("click", e=>{
+  const el=e.target.closest(".rl");
+  if (el){ e.stopPropagation(); if(popFor===el && pinned){ hidePop(); } else { showPop(el); pinned=true; } return; }
+  if (!e.target.closest(".pop") && popFor) hidePop();
+}, true);
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && popFor){ const el=popFor; hidePop(); el.focus(); } });
+window.addEventListener("scroll", ()=>{ if(popFor && !pinned) hidePop(); else if(popFor) showPop(popFor); }, {passive:true});
+window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
+
+init();
+})();
+(()=>{ const bar=document.querySelector(".bar"), vb=document.getElementById("buildBar"); if(!bar) return; const set=()=>{ const r=document.documentElement.style; r.setProperty("--barh", bar.offsetHeight+"px"); if(vb && vb.offsetHeight) r.setProperty("--vbh", vb.offsetHeight+"px"); }; set(); if(window.ResizeObserver){ const o=new ResizeObserver(set); o.observe(bar); if(vb) o.observe(vb); } else addEventListener("resize", set); })();
+</script>
