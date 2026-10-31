@@ -678,13 +678,15 @@ function weaponLine(u){
   });
   return `<div class="scroll"><table class="stats"><thead><tr><th>Equipment</th><th>R</th><th>Sn</th><th>Traits</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
 }
-function rulesText(u){
+// Every note printed for a unit: list-building limits, Force Allowance exceptions, flags and unit-specific rules.
+function unitNotes(u){
   const r = (u.rules||[]).map(x=>x.text);
   if (u.faLiftedText) r.push(u.faLiftedText);
   if (u.flag) r.push(u.flag);
   if (u.notes) r.push(u.notes);
-  return r.map(t=>`<p class="rule">${pgWrap(t)}</p>`).join("");
+  return r;
 }
+function rulesText(u){ return unitNotes(u).map(t=>`<p class="rule">${pgWrap(t)}</p>`).join(""); }
 
 function faText(u){
   const lim = faLimit(u), n = count(groupIds(u));
@@ -995,7 +997,8 @@ function renderPrintSheet(){
     const blank = (lbl) => `<td></td><td class="u sub">${esc(lbl)}</td><td></td>`;
     let h = profs.map((p,i)=>`<tr${i?' class="cont"':""}>${i?blank(p.label||""):head(p.label?` <em>${esc(p.label)}</em>`:"")}<td>${esc(p.sk)}</td><td>${esc(p.mt)}</td><td>${esc(p.ma)}</td><td>${esc(p.t)}</td>${showD?`<td>${esc(p.d||"")}</td>`:""}<td class="w">${p.equip.map(wtxt).join("; ")}</td><td class="a">${esc(p.abilities.join(", "))}</td></tr>`).join("");
     if (rest) h += `<tr${profs.length?' class="cont"':""}>${profs.length?blank(""):head("")}<td colspan="${cols+1}" class="w">${rest}</td></tr>`;
-    if (u.notes) h += `<tr class="cont note"><td></td><td colspan="${cols+3}">${pgWrap(u.notes)}</td></tr>`;
+    const notes = unitNotes(u);
+    if (notes.length) h += `<tr class="cont note"><td></td><td colspan="${cols+3}">${notes.map(pgWrap).join("<br>")}</td></tr>`;
     return `<tbody>${h}</tbody>`; }).join("");
   const rules = new Map(); rows.forEach(u=>allAbilities(u).forEach(a=>{ if(!rules.has(a.name)) rules.set(a.name,a); }));
   const rtext = x => { const m = x.text.match(/^[^:]{1,40}\([^)]*\):\s*/); return (m && x.text.startsWith(x.name)) ? cap(x.text.slice(m[0].length)) : x.text; };
@@ -1015,7 +1018,7 @@ function renderRoster(){
   const errs = checks().out.filter(c=>c.lvl==="err");
   v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span><button class="btn ghost noprint" type="button" data-print>Print quick-reference sheet</button></div>
   <p class="rstatus ${errs.length?"bad":"good"}">${errs.length ? `Not legal: ${errs.map(c=>esc(c.msg)).join(" ")}` : `Legal at ${state.limit} points.`}</p>
-  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${u.notes?`<p class="rule">${pgWrap(u.notes)}</p>`:""}${abilityList(u)}</article>`).join("")}</div>`;
+  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${rulesText(u)}${abilityList(u)}</article>`).join("")}</div>`;
 }
 
 function renderAll(){ if(state.view==="edit"){ renderCatalog(); renderPatrol(); if(!$("#view-roster").hidden) renderRoster(); updateSaveState(); } }
@@ -1204,7 +1207,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-10-31.91";
+const APP_VERSION = "2026-10-31.92";
 let updDismissed = false;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
