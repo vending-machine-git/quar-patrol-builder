@@ -9816,5 +9816,328 @@
    "sizes": "",
    "objectives": []
   }
+ ],
+ "quarNames": [
+  "Venn",
+  "Marrick",
+  "Rask",
+  "Trost",
+  "Fynn",
+  "Darl",
+  "Klay",
+  "Hest",
+  "Brey",
+  "Vorn",
+  "Tyne",
+  "Vance",
+  "Cammot",
+  "Merrt",
+  "Bing",
+  "Faeli",
+  "Dov",
+  "Kerrin",
+  "Losh",
+  "Pav",
+  "Ryn",
+  "Samm",
+  "Tully",
+  "Brint",
+  "Kell",
+  "Varlo",
+  "Marn",
+  "Peli",
+  "Drenn",
+  "Coryl",
+  "Fask",
+  "Grenn",
+  "Halv",
+  "Jori",
+  "Kest",
+  "Lurr",
+  "Miv",
+  "Nall",
+  "Orven",
+  "Prynn",
+  "Quill",
+  "Redd",
+  "Sorn",
+  "Tavel",
+  "Ull",
+  "Vesk",
+  "Werr",
+  "Yall",
+  "Zenn",
+  "Braerch",
+  "Maegeeto",
+  "Bynyt",
+  "Bynsyt",
+  "Korti",
+  "Chythun",
+  "Preet",
+  "Polli",
+  "Naerturni",
+  "Blumsit",
+  "Fidgolly",
+  "Staethn",
+  "Swoap",
+  "Ffaerdyny",
+  "Ffleckle",
+  "Plurti",
+  "Abnaewyn",
+  "Aengoowa",
+  "Mylgit",
+  "Fwypyt",
+  "Baendillo",
+  "Haegl",
+  "Nahr",
+  "Nul",
+  "Pren",
+  "Oraan",
+  "Baryyca",
+  "Norgen",
+  "Sorto",
+  "Bynsyk",
+  "Bachen",
+  "Mykaena",
+  "Moorae",
+  "Daetyn",
+  "Smyth",
+  "Tsae",
+  "Bryt",
+  "Ungaeryr",
+  "Braewn",
+  "Baegylo",
+  "Waenquar",
+  "Daenyvyn",
+  "Shaew",
+  "Laempy",
+  "Maeyirs",
+  "Straeblyn",
+  "Caetlyr",
+  "Baelechi",
+  "Kaedyl",
+  "Raessi",
+  "Jaenstyn",
+  "Haetywyr",
+  "Pael",
+  "Chaechyn",
+  "Laedaer",
+  "Cwaelkyr",
+  "Maesly",
+  "Daemyro",
+  "Daemloo",
+  "Blaekynsip",
+  "Haefquar",
+  "Tumblty",
+  "Aen",
+  "Aet",
+  "Ynfaenti",
+  "Staer",
+  "Waer",
+  "Caenqyst",
+  "Faec",
+  "Vaeng",
+  "Syrvis",
+  "Haemyr",
+  "Haenryhyn",
+  "Raegyaero",
+  "Myntysa",
+  "Maet",
+  "Ory",
+  "Waelgi",
+  "Lyw",
+  "Chir",
+  "Haeng",
+  "Chyrls",
+  "Dryp",
+  "Baex",
+  "Cyntriler",
+  "Braegee",
+  "Dymloo",
+  "Bibyl",
+  "Alchaehyl",
+  "Ounz",
+  "Mynstaer",
+  "Bymbil",
+  "Cas",
+  "Flindwin",
+  "Pilsityr",
+  "Caendoit",
+  "Splynseed",
+  "Aesis",
+  "Aecur",
+  "Shyld",
+  "Baegpyn",
+  "Booogo",
+  "Aewyk",
+  "Dyrth",
+  "Daeku",
+  "Daenagi",
+  "Snyk",
+  "Twoofys",
+  "Ryggle",
+  "Wyntinok",
+  "Grybble",
+  "Pryggle",
+  "Chythswol",
+  "Lodytsnaed",
+  "Bagubyl",
+  "Neftyr",
+  "Daecryt",
+  "Baeon",
+  "Craeb",
+  "Blyk",
+  "Gydchyl",
+  "Kybaern",
+  "Vystoria"
+ ],
+ "quarNamesSrc": "Quar Squad Record Generator by Joshua Qualtieri (rhyfler.com/files/quar_squad_gen), quar_names.json, used with permission",
+ "starterPatrols": [
+  {
+   "faction": "coftyrans",
+   "name": "Coftyran Squad",
+   "limit": 300,
+   "items": [
+    [
+     "cof-yawdryl",
+     1
+    ],
+    [
+     "cof-milwer",
+     1
+    ],
+    [
+     "cof-rhyfler-cryfen",
+     1
+    ],
+    [
+     "cof-rhyfler-harlech",
+     7
+    ],
+    [
+     "cof-sharpshooter",
+     1
+    ]
+   ],
+   "src": "Unit choices: the Quar website, rhyfler.com/example-patrols. Points: Faction Profiles 10/26.",
+   "note": "This list comes to 303 points, 3 over a standard 300-point game, so it isn't technically legal, but it is approved as a starter patrol.",
+   "approvedOver": 3
+  },
+  {
+   "faction": "creevin",
+   "name": "Creevish Starter Patrol",
+   "limit": 300,
+   "items": [
+    [
+     "cv-yawdryl",
+     1
+    ],
+    [
+     "cv-milwer",
+     1
+    ],
+    [
+     "cv-scout",
+     1
+    ],
+    [
+     "cv-rhyfler-lmg",
+     2
+    ],
+    [
+     "cv-rhyfler",
+     5
+    ]
+   ],
+   "src": "Unit choices: the Quar website, rhyfler.com/example-patrols. Points: Faction Profiles 10/26."
+  },
+  {
+   "faction": "western-arnyara",
+   "name": "Arnyaran Starter Patrol",
+   "limit": 300,
+   "items": [
+    [
+     "wa-bosun",
+     1
+    ],
+    [
+     "wa-mate",
+     1
+    ],
+    [
+     "wa-able-first",
+     1
+    ],
+    [
+     "wa-able-smg",
+     1
+    ],
+    [
+     "wa-able-blade",
+     2
+    ],
+    [
+     "wa-able-2pistols",
+     2
+    ],
+    [
+     "wa-able-keegy",
+     3
+    ]
+   ],
+   "src": "Unit choices: the Quar website, rhyfler.com/example-patrols. Points: Faction Profiles 10/26."
+  },
+  {
+   "faction": "crusaders",
+   "name": "Crusader Squad",
+   "limit": 300,
+   "items": [
+    [
+     "cr-yawdryl",
+     1
+    ],
+    [
+     "cr-milwer",
+     1
+    ],
+    [
+     "cr-rhyfler-ryshi",
+     3
+    ],
+    [
+     "cr-rhyfler-bogen",
+     5
+    ],
+    [
+     "cr-marksquar",
+     1
+    ]
+   ],
+   "src": "Unit choices: the Quar website, rhyfler.com/example-patrols. Points: Faction Profiles 10/26."
+  },
+  {
+   "faction": "fidwog",
+   "name": "Fidwog FOD Squad",
+   "limit": 300,
+   "items": [
+    [
+     "fid-yawdryl",
+     1
+    ],
+    [
+     "fid-han-gaefyn",
+     1
+    ],
+    [
+     "fid-gaefyn",
+     7
+    ],
+    [
+     "fid-fynrydhad",
+     1
+    ]
+   ],
+   "src": "Unit choices: the Quar website, rhyfler.com/example-patrols. Points: Faction Profiles 10/26."
+  }
  ]
 }

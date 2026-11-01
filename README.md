@@ -12,7 +12,9 @@ Build a patrol, see your points and Force Allowance as you go, and get warned th
   - live points total and Force Allowance counts;
   - checks the limits printed in the book: Force Allowance, "one per X points" limits, units that require other units, Retinue/Staff and the Tollyn Maeryn Advisor;
   - tap any trait or ability to read what it does.
-- **Save your patrols** in your browser.
+- **Starter patrols**: Beginner-friendly example patrols from the Quar website (Coftyrans, Creevin, Western Arnyara, Crusaders and Fidwog, from [rhyfler.com/example-patrols](https://rhyfler.com/example-patrols/)) appear at the top of the Muster Roll when you build one of those factions. Tap **Use starter patrol** to fill in the list, then save or change it. Points always come from the Faction Profiles. The Coftyran starter comes to 303 points: that exact list shows as **Approved** (3 over 300, not technically legal), and any other list over the limit is still an error.
+- **Name your rhyflers**: tap **Name** next to any unit in your patrol for a random Quar name (from Joshua Qualtieri's Quar Squad Record Generator), re-roll it with the dice, or type your own. Names show on the Roster, the print sheet, share links, text lists, the Game Tracker and battle reports, with the unit's name kept beside them.
+- **Save your patrols** in your browser, and sort them by last edited, name, faction or points, or drag them into your own order.
 - **Share a patrol as a link.** The whole patrol is stored inside the link, so anyone who opens it sees your list and can save their own copy. No accounts needed.
 - **Print a quick-reference sheet**: one line per unit with stats and weapons, then every rule your patrol uses written out once. Most patrols fit on a single page.
 - **Copy a list as text**, with any rule problems included, and **import it back**: paste the text (or open a .txt file) to rebuild the patrol.
@@ -57,5 +59,7 @@ Built by vending_machine with help from Claude (AI). Every stat was checked by h
 - Rules design: Joshua Qualtieri & Anthony Brown
 - World design: Joshua Qualtieri, Pete Murray, Pete McKenna & Edward McEneely
 - Art: Joshua Qualtieri
+- Starter patrols: Joshua Qualtieri, [rhyfler.com/example-patrols](https://rhyfler.com/example-patrols/), used with permission
+- Random rhyfler names: Joshua Qualtieri's [Quar Squad Record Generator](https://www.rhyfler.com/files/quar_squad_gen/QuarSquadGenerator.html), used with permission
 
 This is an unofficial fan project. It is not affiliated with or endorsed by Zombiesmith. Please support the creators by getting the rulebooks from [zombiesmith.com](https://www.zombiesmith.com).
