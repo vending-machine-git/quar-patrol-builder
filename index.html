@@ -242,7 +242,7 @@ table.stats td.t{font-family:var(--f-body)}
 .gsetup{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end;padding:12px}
 .gsetup select,.gsetup input{background:var(--paper);color:var(--ink);border:1px solid var(--rule);border-radius:3px;padding:6px 8px;font:inherit;max-width:100%}
 .gnote{margin:0;padding:0 12px 12px}
-.gsave{margin:0 12px 12px}
+.gsave{margin:0}
 .btn.gendg{background:var(--brass);border-color:var(--brass);color:var(--on)}
 .btn.gnewg{background:var(--slate);border-color:var(--slate);color:var(--on)}
 .btn.gendg:hover,.btn.gnewg:hover{filter:brightness(1.1)}
@@ -1440,7 +1440,8 @@ function renderGame(){
   if (!game || (game.faction && !facById(game.faction))){
     document.body.style.removeProperty("--fac");
     const list = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0));
-    v.innerHTML = head + `<div class="card"><header><h2>Start a game</h2></header>${`<div class="gsetup">
+    // same spot as the warning on My Patrols: straight under the page title
+    v.innerHTML = head + `<p class="savewarn gsave" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>The game is saved in this browser until you start a new one.</b></span></p>` + `<div class="card"><header><h2>Start a game</h2></header>${`<div class="gsetup">
       <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}<option value="">No patrol: just track the game</option></select></div>
       <div class="field" id="gPtsWrap"${list.length?" hidden":""}><label for="gPts">Patrol size (points)</label><input id="gPts" type="number" min="50" max="5000" step="50" value="200" inputmode="numeric"></div>
       <div class="field"><label for="gOpp">Opponent's name (optional)</label><input id="gOpp" type="text" maxlength="40" placeholder="Uses their patrol's name if blank" autocomplete="off"></div>
@@ -1449,7 +1450,7 @@ function renderGame(){
       </div><div class="gminfo" id="gMissionInfo"></div>${importBox("gMeSetup", false)}${importBox("gOppSetup", false)}<div class="gsetup"><button class="btn" type="button" data-g="start">Start game</button></div>`}
       ${list.length ? "" : `<p class="hint gnote">No saved patrols on this device. Use <b>Import Your Patrol</b> to bring one over, build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, or just track Turns, Pluck, Victory Points and losses.</p>`}
       <p class="hint gnote">Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too. The mission sets the number of Turns, who goes first and the starting Pluck.</p>
-      <p class="savewarn gsave" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>The game is saved in this browser until you start a new one.</b></span></p></div>`;
+</div>`;
     missionInfo();
     return;
   }
@@ -2512,7 +2513,7 @@ try{ new IntersectionObserver(es=>{ if (es.some(e=>e.isIntersecting)) kofiShine(
 addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true});
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
-const APP_VERSION = "2026-11-01.37";
+const APP_VERSION = "2026-11-01.38";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
