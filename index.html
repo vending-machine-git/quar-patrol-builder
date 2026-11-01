@@ -994,7 +994,16 @@ function pdragStart(){ const d = pdrag; if (!d || d.started) return; d.started =
   document.body.appendChild(g); d.ghost = g; d.offX = d.x - r.left; d.offY = d.y - r.top;
   d.card.classList.add("dragging"); document.body.classList.add("pdragging"); if (navigator.vibrate && d.type!=="mouse") try{ navigator.vibrate(15); }catch(e){} }
 document.addEventListener("input", e=>{ const t = e.target; if (t.tagName==="TEXTAREA" && t.dataset && t.dataset.imp){ impState.text[t.dataset.imp] = t.value; return; } if (!t.dataset || t.dataset.nm==null) return;
-  const id = t.dataset.nm, i = +t.dataset.i; state.names[id] = state.names[id] || []; state.names[id][i] = cleanNm(t.value); updateSaveState(); });
+  const id = t.dataset.nm, i = +t.dataset.i; state.names[id] = state.names[id] || []; state.names[id][i] = cleanNm(t.value); updateSaveState(); liveNameTags(id); });
+// Redraw just one row's dog tags while typing, so the text box keeps focus.
+function liveNameTags(id){
+  const row = document.querySelector(`#plist .prow[data-id="${id}"]`); if (!row) return;
+  const nm = namesOf(state.names, id, state.items[id]||0), named = nm.some(Boolean), box = row.querySelector(".pnm");
+  let tags = box && box.querySelector(".pnames");
+  if (!named){ if (tags) tags.remove(); }
+  else { if (!tags){ tags = document.createElement("div"); tags.className = "pnames"; box.appendChild(tags); } tags.innerHTML = nm.filter(Boolean).map(dtag).join(""); }
+  const pb = row.querySelector(".nmbtn"); if (pb) pb.classList.toggle("has", named);
+}
 document.addEventListener("keydown", e=>{ const t = e.target; if (e.key==="Enter" && t.dataset && t.dataset.nm!=null){ e.preventDefault(); state.nameOpen[t.dataset.nm] = false; renderPatrol(); } });
 document.addEventListener("pointerdown", e=>{
   if (e.pointerType==="mouse" && e.button!==0) return;
@@ -2157,19 +2166,25 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-10-31.136";
-let updDismissed = false;
+const APP_VERSION = "2026-10-31.137";
+let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
   fetch(location.pathname, {cache:"no-store"}).then(r=>r.ok ? r.text() : "").then(t=>{
     const m = t.match(/const APP_VERSION = "([^"]+)"/);
-    if (m && m[1] !== APP_VERSION) $("#updBar").hidden = false;
+    if (m && m[1] !== APP_VERSION){ updVersion = m[1]; $("#updBar").hidden = false; }
   }).catch(()=>{});
 }
 $("#updBtn").addEventListener("click", ()=>{
   if (state.view==="edit" && isDirty() && Object.keys(state.items).length){ toast("Save your patrol first, then refresh"); return; }
-  location.reload();
+  // A plain reload can come back from the browser's cache (GitHub Pages caches for ~10 min), so fetch fresh copies
+  // first and then open the page at a new address, which always loads the new version.
+  const b = $("#updBtn"); b.disabled = true; b.textContent = "Updating…";
+  Promise.all([fetch(location.pathname, {cache:"reload"}), fetch("data/quar-data.json", {cache:"reload"})]).catch(()=>{})
+    .finally(()=>{ location.replace(location.pathname + "?v=" + encodeURIComponent(updVersion || Date.now()) + location.hash); });
 });
+// Tidy the address after an update refresh (drop the ?v=… part, keep the page you were on).
+if (/[?&]v=/.test(location.search)) try{ history.replaceState(null, "", location.pathname + location.hash); }catch(e){}
 $("#updLater").addEventListener("click", ()=>{ updDismissed = true; $("#updBar").hidden = true; });
 document.addEventListener("visibilitychange", ()=>{ if (!document.hidden) checkForUpdate(); });
 setTimeout(checkForUpdate, 4000); setInterval(checkForUpdate, 20*60*1000);
