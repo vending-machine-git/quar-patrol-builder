@@ -519,9 +519,20 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 .cllist{margin:6px 0 2px;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;line-height:1.45;max-width:80ch}
 .clfac{font-weight:700;color:var(--accent)}
 .foot a{color:inherit;text-underline-offset:2px}
-.foot .kofi{display:flex;width:max-content;align-items:center;gap:5px;margin:0 0 8px;padding:2px 9px 2px 7px;border:1px solid var(--rule);border-radius:999px;text-decoration:none;color:var(--ink);white-space:nowrap;vertical-align:1px;transition:border-color .15s,color .15s}
-.foot .kofi svg{width:1.15em;height:1.15em;color:var(--accent)}
-.foot .kofi:hover,.foot .kofi:focus-visible{border-color:var(--accent);color:var(--accent)}
+.credits .kofi,.kofi{display:flex;width:max-content;align-items:center;gap:5px;margin:4px 0 0;font-size:1.05em;padding:2px 9px 2px 7px;border:1px solid var(--rule);border-radius:999px;text-decoration:none;color:var(--ink);white-space:nowrap;vertical-align:1px;transition:border-color .15s,color .15s}
+.kofi svg{width:1.15em;height:1.15em;color:var(--accent)}
+.credits .kofi:hover,.credits .kofi:focus-visible,.kofi:hover,.kofi:focus-visible{border-color:var(--accent);color:var(--accent)}
+.foot .fsrc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 7px}
+.foot .fsl{display:inline-flex;align-items:center;gap:5px}
+.foot .fsl svg,.foot .fchg svg{width:1.15em;height:1.15em;flex:0 0 auto}
+.foot .fbadge{font-family:var(--f-mono);font-size:.8em;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--sunk);border:1px solid var(--rule);border-radius:3px;padding:1px 7px;white-space:nowrap}
+.foot .fbadge b{font-weight:600;color:var(--accent)}
+.foot .fdot{opacity:.6}
+.foot .fchg{display:inline-flex;align-items:center;gap:5px;color:var(--ink);text-decoration:none;font-weight:600;white-space:nowrap}
+.foot .fchg .farr{transition:transform .15s}
+.foot .fchg:hover,.foot .fchg:focus-visible{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.foot .fchg:hover .farr,.foot .fchg:focus-visible .farr{transform:translateX(3px)}
+@media (max-width:480px){ .foot .fdot{display:none} .foot .fchg{flex-basis:100%} }
 body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view="changes"] .pnote{display:none}
 .rrule:first-child{border-top:0}
 .rrule b{color:var(--accent)}
@@ -614,7 +625,7 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
 .tsfoot{display:flex;justify-content:space-between;align-items:center;font-family:var(--f-mono);font-size:14px;color:var(--ink)}
 .tsreset{all:unset;cursor:pointer;font-family:var(--f-body);font-size:14px;color:var(--accent);font-weight:600}
 .tsreset:hover,.tsreset:focus-visible{text-decoration:underline}
-@media print{ .hdrtools{display:none!important} }
+@media print{ .hdrtools,#kofiSlot{display:none!important} }
 .themebtn .ti{display:inline-flex;font-size:1.05em;line-height:1}
 .hhead-r{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
 .hhead-r.stack{flex-direction:column;align-items:flex-end;gap:4px}
@@ -764,6 +775,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
     <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles (10/26) and remain the property of Zombiesmith.</p>
     <p>Rules design: Joshua Qualtieri &amp; Anthony Brown · World design: Joshua Qualtieri, Pete Murray, Pete McKenna &amp; Edward McEneely · Art: Joshua Qualtieri · Random rhyfler names from Joshua Qualtieri's <a href="https://www.rhyfler.com/files/quar_squad_gen/QuarSquadGenerator.html" target="_blank" rel="noopener">Quar Squad Record Generator</a></p>
     <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith. Please support the creators by getting the rulebooks from <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">zombiesmith.com</a>.<br>Spotted a mistake? Let me know on Discord.</p>
+    <p id="kofiSlot"></p>
   </footer>
 </div>
 <div class="mbar" id="mbar"><span class="mleft"><span><span class="mused" id="mused">0 / 300</span> <span id="mstate">pts</span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
@@ -2219,7 +2231,9 @@ async function init(){
     state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; state.names=copyNames(p.names); setFaction(p.faction); { const o = checks().out; state.status = !Object.keys(state.items).length?"empty":o.some(c=>c.lvl==="err")?"err":o.some(c=>c.lvl==="approved")?"approved":"ok"; } const up=p.updated; saveCurrent(); p.updated=up||Date.now();
     state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; state.names=keepNm; setFaction(keepF||p.faction); }
   $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
-  $("#foot").innerHTML = KOFI_LINK + pgWrap(`Data from Clash of Rhyfles Faction Profiles ${DATA.meta.profilesVersion} and the Full Book.`) + ` · <a href="#/changes" data-go="#/changes">Rules changelog</a>`;
+    { const k = $("#kofiSlot"); if (k) k.innerHTML = KOFI_LINK; }
+  // Footer:  the data sources as small badges and the changelog link
+  $("#foot").innerHTML = `<span class="fsrc"><span class="fsl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.2 5 7.6 4.5 4 4.8v12.6c3.6-.3 6.2.2 8 1.7m0-12.6c1.8-1.5 4.4-2 8-1.7v12.6c-3.6-.3-6.2.2-8 1.7m0-12.6v12.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Data from</span><span class="fbadge">Faction Profiles <b>${esc(DATA.meta.profilesVersion)}</b></span><span class="fbadge">Full Book</span><span class="fdot" aria-hidden="true">·</span><a class="fchg" href="#/changes" data-go="#/changes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.3h4.3M12 8v4.2l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Rules changelog<span class="farr" aria-hidden="true">→</span></a></span>`;
   const r = route(location.hash);
   if (r.v==="shared"){ history.replaceState(null,"","#/builder"); openShared(r.arg); persist(); return; }
   showView(r.v, r.arg, false); history.replaceState(null,"",hashFor(r.v,r.arg)); persist();
@@ -2406,7 +2420,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 // Small "support" link in the footer (shown on every page; quiet, no pop-ups).
 const KOFI_URL = "https://ko-fi.com/vending_machine0890";
 const KOFI_LINK = `<a class="kofi" href="${KOFI_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8zM16 9.5h1.5a2.5 2.5 0 0 1 0 5H16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 11.2c-.9-1-2.4-.3-2 .9.3.9 2 2.2 2 2.2s1.7-1.3 2-2.2c.4-1.2-1.1-1.9-2-.9z" fill="currentColor"/></svg>Support the builder on Ko-fi</a>`;
-const APP_VERSION = "2026-11-01.24";
+const APP_VERSION = "2026-11-01.26";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
