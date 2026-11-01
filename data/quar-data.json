@@ -81,8 +81,8 @@
    "src": "Full Book p31"
   },
   "Dead-eye": {
-   "text": "May perform the Aimed Shot Task (+1 Pluck): a Ranged Attack that ignores Range Band modifiers.",
-   "src": "Full Book p30"
+   "text": "May perform the Aimed Shot Task (+1 Pluck): a Ranged Attack that ignores Range Band modifiers. Only rhyflers with Dead-eye can use Aimed Shot.",
+   "src": "Full Book p30; Profiles p58 (FAQ)"
   },
   "Blunt Round": {
    "text": "After a Prepare Weapon Task, its shots against tractors have a 1d6+2 Might roll. No bonus against rhyflers.",
@@ -109,8 +109,8 @@
    "src": "Profiles p6"
   },
   "Automatic": {
-   "text": "Automatic (X): may perform Area Fire. Place a Medium template; roll to hit each target in it separately with an extra -X. Reduces Obstructing Cover by 1. Not usable as a Reaction.",
-   "src": "Full Book p36"
+   "text": "Automatic (X): may perform Area Fire. Place a Medium template; each target in it chooses to Skedaddle or Return Fire, then roll to hit each one separately with an extra -X. Reduces Obstructing Cover by 1 (Light ignored, Normal becomes -1). If the firer is wounded by Return Fire, finish the remaining attacks before marking it OOA. Not usable as a Reaction.",
+   "src": "Profiles p8 (errata to Full Book p36)"
   },
   "Loader": {
    "text": "If the firer is in base contact with its designated Loader (a basic squad rhyfler for squad weapons), +1 to the Skill Check.",
@@ -173,8 +173,8 @@
    "src": "Profiles p13"
   },
   "Large Caliber": {
-   "text": "Reduces Obstructing Cover modifiers by 1 (Light ignored, Normal becomes -1), including on Return Fire, Snapshot and Overwatch. Armored vehicles hit suffer a 1d6+2 Might roll.",
-   "src": "Full Book p37"
+   "text": "Reduces Obstructing Cover modifiers by 1 (Light ignored, Normal becomes -1), including on Return Fire, Snapshot and Overwatch. Against an Armored Vehicle: roll to hit on the standard Ranged Combat Result chart; on a hit roll the location, then a 1d6+2 Might roll on the Might v. AV chart. A Skill Check roll of 3 triples the Might; 4 or 5 doubles it.",
+   "src": "Full Book p37; Profiles p8 (errata to Full Book p54)"
   },
   "Shotgun": {
    "text": "No Range penalties. 1st Range Band: target only, +1 Skill. 2nd: target plus 1 more rhyfler within 1\". 3rd: target plus up to 2 more within 2\", each at -2. Cannot fire beyond 3 Range Bands. Extra targets may only Skedaddle.",
