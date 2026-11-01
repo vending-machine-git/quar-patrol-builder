@@ -21,7 +21,7 @@ Build a patrol, see your points and Force Allowance as you go, and get warned th
 - **Game Tracker**: pick one of the Full Book's 10 missions (or a custom game), which sets the number of Turns, who goes first and starting Pluck, then load one of your saved patrols, import one from a share link or text list (handy on a shared tablet), or play without one (and optionally load your opponent's, from their share link or text list) and track Turns, Rounds (9 per Turn, alternating sides), Pluck and Victory Points for both sides, end the game for a results summary and a designed **battle report** you can print or save as a PDF, download as a standalone page, or copy as text, with each side's starting and ending units, the notable Rounds, an outcome headline such as Landslide, Close Battle or Stalemate, and your own notes, plus every rhyfler's Status and Tasks used this Round. Statuses follow the rulebooks for each unit type: rhyflers (Engaged, Overwatch, Prone, Gobsmacked, Prepared, Primed, Flesh Wound, Incapacitated, Carried Off, Out of Action, Killed), cavalry (Dismounted, Mount Wounded, Mount Disabled, Rattled), weapon crews (crew damage, HMG Heat markers, Rattled, Disabled) and vehicles (Rattled, Immobilized, Main Gun Jammed, Needs Reload, Buttoned Up/Unbuttoned, Disabled, and damage per location).
 - **Show rulebook pages** switch: turn on page references to look anything up in your books.
 - **Rules changelog**: lists every place where the builder differs from the printed book, and what changes in each new rulebook version.
-- Light and dark themes; works on desktop and phone.
+- Light and dark themes, plus a **Text size** button under the theme button that opens a slider (85%–140%); works on desktop and phone.
 
 ## Where the data comes from
 

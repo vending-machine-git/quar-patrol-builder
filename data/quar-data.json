@@ -1817,7 +1817,12 @@
    "intro": "The main fighting force of Creevin is the Trench Watch. Their numbers are dwindling but those that remain are hardened veterans, held back only by the weight of the forces arrayed against them, and their increasing lack of supply.",
    "introSrc": "Full Book p114",
    "art": "data/art/creevin.jpg",
-   "artPage": "Profiles p16"
+   "artPage": "Profiles p16",
+   "artCrop": {
+    "x": 30,
+    "y": 30,
+    "zoom": 1
+   }
   },
   {
    "id": "crusaders",
@@ -3850,7 +3855,12 @@
    "intro": "Fidwog, in Alwyd’s East, has successfully resisted being conquered by the Crusade. Because of Fidwog’s difficult geography and fierce resistance to the Crusade’s message, Alykinder chose to focus most of the military operations to the west of Alwyd.",
    "introSrc": "Full Book p102",
    "art": "data/art/fidwog.jpg",
-   "artPage": "Profiles p25"
+   "artPage": "Profiles p25",
+   "artCrop": {
+    "x": 30,
+    "y": 40,
+    "zoom": 1
+   }
   },
   {
    "id": "western-arnyara",
@@ -4522,7 +4532,14 @@
    "intro": "Descending from the merchant clans of the Nodd Ffae, the Foskyldae are known for their enormous Iron Houses that carry them across Alwyd as sharp-eyed merchants, shrewd intelligence agents, brave soldiers, and firmly self-reliant quar.",
    "introSrc": "Full Book p108",
    "art": "data/art/western-arnyara.jpg",
-   "artPage": "Profiles p28"
+   "artPage": "Profiles p28",
+   "artCrop": {
+    "x": 35.5,
+    "y": 4.2,
+    "w": 26.8,
+    "h": 47.3,
+    "r": 1.667
+   }
   },
   {
    "id": "gwynt",
@@ -7601,7 +7618,14 @@
    "intro": "Gloams are the sacred marshlands of the quar, teeming with life and the bounty of Alwyd. It takes a special kind of quar to make their home there, such as the freeholders of Gloam Hynn in Coftyr.",
    "introSrc": "Full Book p92",
    "art": "data/art/gloam-hyyn.jpg",
-   "artPage": "Profiles p44"
+   "artPage": "Profiles p44",
+   "artCrop": {
+    "x": 46.1,
+    "y": 2.0,
+    "w": 52.3,
+    "h": 90.0,
+    "r": 1.753
+   }
   },
   {
    "id": "hoblyn-valley",
@@ -8133,7 +8157,12 @@
    "intro": "Having never been trained well, or regularly, the bulk of the Hoblyn Valley Rangers are very tentative on the battlefield.",
    "introSrc": "Profiles p46",
    "art": "data/art/hoblyn-valley.jpg",
-   "artPage": "Profiles p46"
+   "artPage": "Profiles p46",
+   "artCrop": {
+    "x": 0,
+    "y": 30,
+    "zoom": 1
+   }
   },
   {
    "id": "maebwysh",
@@ -9560,7 +9589,12 @@
    "intro": "The rhyflers of the Tollyn Maeryn Militia are gathered from local youth, both bucks and dynas, enlisted to protect their homes and families.",
    "introSrc": "Profiles p54",
    "art": "data/art/tollyn-maeryn.jpg",
-   "artPage": "Profiles p53"
+   "artPage": "Profiles p53",
+   "artCrop": {
+    "x": 0,
+    "y": 40,
+    "zoom": 1
+   }
   }
  ],
  "changelog": [
