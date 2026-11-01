@@ -539,7 +539,6 @@ body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view=
 .pill.ok{background:var(--ok)} .pill.approved{background:var(--brass)} .pill.err{background:var(--bad)} .pill.empty{background:var(--muted)}
 .pcard .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
 .pcard .acts .sp{flex:1}
-.pmove{display:inline-flex;gap:2px}.pmove .btn{padding:5px 9px;font-weight:700}.pmove .btn:disabled{opacity:.35}
 .pgrid .pcard{cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .pcard.dragging{opacity:.28;outline:2px dashed var(--accent);outline-offset:2px;box-shadow:none}
 .pcard.pghost{position:fixed;z-index:1000;margin:0;pointer-events:none;box-sizing:border-box;transform:rotate(1.2deg) scale(1.03);box-shadow:0 14px 34px rgba(0,0,0,.28),0 3px 8px rgba(0,0,0,.18);cursor:grabbing;will-change:left,top}
@@ -670,7 +669,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
       </details>
     </div>
     <div class="psort" id="psortBar" hidden><label for="pSort">Sort patrols</label><select id="pSort">
-      <option value="edited">Last edited</option><option value="name">Name (A–Z)</option><option value="faction">Faction</option><option value="points">Points (high to low)</option><option value="custom">My order (move them yourself)</option></select>
+      <option value="custom">My order</option><option value="edited">Last edited</option><option value="name">Name (A–Z)</option><option value="faction">Faction</option><option value="points">Points (high to low)</option></select>
       <span class="hint" id="pSortHint"></span></div>
     <div id="pgrid"></div>
   </section>
@@ -725,7 +724,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const STORE = "quar-patrol-builder-v1";
 let DATA = null, FAC = null, UNITS = {};
-let state = {view:"home", status:"empty", name:"", faction:null, limit:300, items:{}, names:{}, nameOpen:{}, open:{}, saved:[], editingId:null, showPages:false};
+let state = {sortBy:"custom", view:"home", status:"empty", name:"", faction:null, limit:300, items:{}, names:{}, nameOpen:{}, open:{}, saved:[], editingId:null, showPages:false};
 
 function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE) || "null"); if(s){ if(Array.isArray(s.saved)) state.saved = s.saved; state.showPages = !!s.showPages; if (["auto","light","dark"].includes(s.theme)) state.theme = s.theme; if (["edited","name","faction","points","custom"].includes(s.sortBy)) state.sortBy = s.sortBy; } }catch(e){} }
 // Only saved patrols and settings are stored. The patrol being edited is kept only when the user presses Save.
@@ -946,7 +945,7 @@ const fmtDate = t => { try{ return new Date(t).toLocaleDateString(undefined,{mon
 let confirmDel = null;
 // Patrol order on My Patrols (and the Game Tracker list). "custom" keeps the order of state.saved, changed with the arrow buttons.
 function sortedPatrols(){
-  const list = state.saved.filter(Boolean), by = state.sortBy || "edited";
+  const list = state.saved.filter(Boolean), by = state.sortBy || "custom";
   const nm = p => (p.name||"").toLowerCase();
   if (by==="custom") return list;
   if (by==="name") return list.sort((a,b)=>nm(a).localeCompare(nm(b)));
@@ -1064,7 +1063,7 @@ function renderStarterBar(){
 }
 function renderHome(){
   const list = sortedPatrols(), custom = state.sortBy==="custom";
-  const bar = $("#psortBar"); if (bar){ bar.hidden = list.length < 2; $("#pSort").value = state.sortBy || "edited"; $("#pSortHint").textContent = custom ? "Drag a patrol to move it (on touch screens, press and hold first), or use the arrows." : ""; }
+  const bar = $("#psortBar"); if (bar){ bar.hidden = list.length < 2; $("#pSort").value = state.sortBy || "custom"; $("#pSortHint").textContent = custom ? "Drag a patrol to move it (on touch screens, press and hold first)." : ""; }
   $("#pgrid").innerHTML = list.length ? `<div class="pgrid${custom?" custom":""}">${list.map((p,i)=>{
     const st = p.status || (p.count? "ok":"empty"), over = p.total>p.limit && st!=="approved";
     const pill = st==="empty" ? `<span class="pill empty">EMPTY</span>` : st==="err" ? `<span class="pill err">NEEDS FIXES</span>` : st==="approved" ? `<span class="pill approved" title="Approved starter patrol: a few points over, but approved">APPROVED</span>` : `<span class="pill ok">LEGAL</span>`;
@@ -1073,7 +1072,7 @@ function renderHome(){
       <header style="display:flex;justify-content:space-between;gap:8px;align-items:start"><h3>${esc(p.name||"Unnamed patrol")}</h3>${pill}</header>
       <div class="meta"><span class="fmeta">${flagImg(facById(p.faction))}${esc(facName(p.faction))}</span><span>${p.count||0} unit${p.count===1?"":"s"}</span>${p.updated?`<span>Edited ${esc(fmtDate(p.updated))}</span>`:""}</div>
       <div><div class="ptot"><b>${p.total||0} / ${p.limit}</b><span class="hint">${over?`${p.total-p.limit} over`:`${p.limit-(p.total||0)} left`}</span></div><div class="track"><i style="width:${Math.min(100,(p.total||0)/p.limit*100)}%"></i></div></div>
-      <div class="acts">${custom ? `<span class="pmove"><button class="btn ghost" data-move="${p.id}" data-d="-1" aria-label="Move ${esc(p.name||"patrol")} earlier" title="Move earlier"${i===0?" disabled":""}>↑</button><button class="btn ghost" data-move="${p.id}" data-d="1" aria-label="Move ${esc(p.name||"patrol")} later" title="Move later"${i===list.length-1?" disabled":""}>↓</button></span>` : ""}<button class="btn" data-open="${p.id}">Open</button><button class="btn ghost" data-dup="${p.id}">Duplicate</button><span class="sp"></span><button class="btn danger" data-del="${p.id}">${confirmDel===p.id?"Confirm delete":"Delete"}</button></div>
+      <div class="acts"><button class="btn" data-open="${p.id}">Open</button><button class="btn ghost" data-dup="${p.id}">Duplicate</button><span class="sp"></span><button class="btn danger" data-del="${p.id}">${confirmDel===p.id?"Confirm delete":"Delete"}</button></div>
     </article>`;}).join("")}</div>`
   : `<div class="hempty">No patrols yet. Create your first one above.</div>`;
 }
@@ -2033,8 +2032,6 @@ document.addEventListener("click", e=>{
     if (!state.name || /^\S.* \d+$/.test(state.name) && state.name.startsWith(FAC.name)) { state.name = st.name; $("#patrolName").value = st.name; }
     renderAll(); toast(`${st.name} loaded. Press Save to keep it`); return; }
   if (b.dataset.build){ const f=facById(b.dataset.build); editDraft({id:null, name:`${f.name} 300`, faction:f.id, limit:300, items:{}}); toast("New patrol: press Save to keep it"); return; }
-  if (b.dataset.move){ const arr = state.saved, i = arr.findIndex(x=>x && x.id===b.dataset.move), j = i + (+b.dataset.d); if (i<0 || j<0 || j>=arr.length) return;
-    [arr[i], arr[j]] = [arr[j], arr[i]]; persist(); renderHome(); const nb = document.querySelector(`[data-move="${b.dataset.move}"][data-d="${b.dataset.d}"]`); if (nb && !nb.disabled) nb.focus(); return; }
   if (b.dataset.dup){ const p=state.saved.find(x=>x.id===b.dataset.dup); if(!p) return; const c={...p, items:{...p.items}, names:copyNames(p.names), id:newId(), name:(p.name||"Unnamed patrol")+" (copy)", updated:Date.now()}; state.saved.splice(state.saved.indexOf(p)+1, 0, c); toast(`Duplicated ${p.name||"patrol"}`); renderHome(); persist(); return; }
   if (b.dataset.del){ if(confirmDel!==b.dataset.del){ confirmDel=b.dataset.del; renderHome(); return; }
     const p=state.saved.find(x=>x.id===b.dataset.del); state.saved=state.saved.filter(x=>x.id!==b.dataset.del); if(state.editingId===b.dataset.del) state.editingId=null; confirmDel=null; toast(`Deleted ${p&&p.name||"patrol"}`); renderHome(); persist(); return; }
@@ -2166,7 +2163,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-10-31.137";
+const APP_VERSION = "2026-11-01.2";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
