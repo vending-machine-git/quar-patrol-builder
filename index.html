@@ -524,6 +524,16 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 #kofiSlot{display:flex;flex-wrap:wrap;gap:6px 8px;margin:0 0 6px}
 #kofiSlot .kofi{margin:0}
 .kofi .ext{width:.9em;height:.9em;color:var(--muted)}
+/* Shimmer: a light sweep + soft glow when the buttons come into view (once per page view) */
+#kofiSlot .kofi{position:relative;overflow:hidden;isolation:isolate}
+#kofiSlot .kofi::after{content:"";position:absolute;top:0;bottom:0;left:0;width:60%;pointer-events:none;z-index:-1;transform:translateX(-160%) skewX(-20deg);
+  background:linear-gradient(90deg,transparent,color-mix(in oklab, var(--accent) 22%, transparent) 30%,rgba(255,255,255,.55) 50%,color-mix(in oklab, var(--accent) 22%, transparent) 70%,transparent)}
+#kofiSlot .kofi.shine::after{animation:kofiSweep 1.15s cubic-bezier(.4,0,.2,1) var(--d,0s) 1 both}
+#kofiSlot .kofi.shine{animation:kofiGlow 2.6s ease-out var(--d,0s) both}
+#kofiSlot .kofi + .kofi{--d:.22s}
+@keyframes kofiSweep{from{transform:translateX(-160%) skewX(-20deg)}to{transform:translateX(260%) skewX(-20deg)}}
+@keyframes kofiGlow{0%{box-shadow:0 0 0 0 transparent}25%{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent),0 0 14px color-mix(in oklab, var(--accent) 35%, transparent)}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion: reduce){ #kofiSlot .kofi.shine,#kofiSlot .kofi.shine::after{animation:none} }
 .credits .kofi:hover,.credits .kofi:focus-visible,.kofi:hover,.kofi:focus-visible{border-color:var(--accent);color:var(--accent)}
 .foot .fsrc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 7px}
 .foot .fsl{display:inline-flex;align-items:center;gap:5px}
@@ -1270,7 +1280,7 @@ function showView(v, arg, push=true){
   else if (v==="game"){ renderGame(); }
   else { $("#tab-build").click(); }
   const h = hashFor(v,arg); if (push && location.hash!==h) history.pushState(null,"",h);
-  window.scrollTo(0,0);
+  window.scrollTo(0,0); if (typeof kofiReset==="function") kofiReset();
 }
 function navTo(t){ if (state.view==="edit") tryLeave(t); else showView(t.v, t.arg); }
 const slug = c => c.toLowerCase().replace(/[^a-z0-9]+/g,"-");
@@ -2490,7 +2500,19 @@ function wogParty(){
 $("#wogBtn").addEventListener("click", ()=>{ if (wogOn()) wogParty(); });
 // Zombiesmith (publisher) link, shown beside the Ko-fi button in the credits
 const ZS_LINK = `<a class="kofi zs" href="https://www.zombiesmith.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5C6.8 4.6 8.9 4.5 12 5.6c3.1-1.1 5.2-1 7 0V19c-1.8-1-3.9-1.1-7 0-3.1-1.1-5.2-1-7 0z M12 5.6V19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Get the rulebook and models at Zombiesmith<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8M17 14v5H5V7h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
-const APP_VERSION = "2026-11-01.32";
+// Shimmer the Zombiesmith / Ko-fi buttons the first time they're on screen, once per visit
+// (remembered in sessionStorage: refreshing or changing pages won't replay it; closing the site and coming back will)
+const KOFI_SESS = "quar-kofi-shone";
+var kofiShone = false; try{ kofiShone = sessionStorage.getItem(KOFI_SESS)==="1"; }catch(e){}
+function kofiShine(){ const slot = $("#kofiSlot"); if (!slot || kofiShone) return;
+  const r = slot.getBoundingClientRect(); if (!r.height || r.bottom <= 0 || r.top >= innerHeight) return;
+  kofiShone = true; try{ sessionStorage.setItem(KOFI_SESS,"1"); }catch(e){} slot.querySelectorAll(".kofi").forEach(b=>{ b.classList.remove("shine"); void b.offsetWidth; b.classList.add("shine"); });
+  setTimeout(()=>slot.querySelectorAll(".kofi").forEach(b=>b.classList.remove("shine")), 3200); }
+try{ new IntersectionObserver(es=>{ if (es.some(e=>e.isIntersecting)) kofiShine(); }, {threshold:0.6}).observe($("#kofiSlot")); }catch(e){}
+addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true});
+// after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
+function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
+const APP_VERSION = "2026-11-01.35";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
