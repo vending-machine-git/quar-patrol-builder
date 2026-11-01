@@ -917,7 +917,7 @@ function renderPatrol(){
   $("#pTitle").textContent = state.name || "Your Patrol";
   $("#plist").innerHTML = rows.length ? rows.map(u=>{ const q=state.items[u.id], nm = namesOf(state.names, u.id, q), named = nm.some(Boolean), open = state.nameOpen[u.id];
     const title = `<b>${esc(u.name)}</b> <span>${esc(u.variant)}</span>`;
-    const list = named ? `<div class="pnames">${Array.from({length:q},(_,i)=>nm[i]?dtag(nm[i]):`<i>unnamed</i>`).join("")}</div>` : "";
+    const list = named ? `<div class="pnames">${nm.filter(Boolean).map(dtag).join("")}</div>` : "";
     const editor = open ? `<div class="pnedit">${Array.from({length:q},(_,i)=>`<div class="pnrow"><label for="nm-${u.id}-${i}">${q>1?`#${i+1}`:"Name"}</label><input id="nm-${u.id}-${i}" data-nm="${u.id}" data-i="${i}" type="text" maxlength="30" value="${esc(nm[i]||"")}" placeholder="No name" autocomplete="off" spellcheck="false"><button type="button" class="nmdice" data-act="nmroll" data-i="${i}" title="Random name" aria-label="Random name for ${q>1?`#${i+1}`:"this rhyfler"}">🎲</button></div>`).join("")}
       <div class="pnacts">${q>1?`<button type="button" class="btn ghost" data-act="nmall">Randomise all</button>`:""}<button type="button" class="btn ghost" data-act="nmclear">Clear name${q>1?"s":""}</button><button type="button" class="btn" data-act="nmdone">Done</button></div></div>` : "";
     return `<div class="prow${bad.has(u.id)?" bad":""}" data-id="${u.id}">
@@ -1920,7 +1920,7 @@ function renderPrintSheet(){
     return t.join("<br>"); };
   const cols = showD ? 6 : 5;
   const body = rows.map(u=>{ const q = state.items[u.id], profs = u.profiles||[], rest = other(u);
-    const nmTxt = hasNames(state.names,u.id,q) ? `<div class="nm">${Array.from({length:q},(_,i)=>{ const n = namesOf(state.names,u.id,q)[i]; return n ? dtag(n) : "<i>–</i>"; }).join("")}</div>` : "";
+    const nmTxt = hasNames(state.names,u.id,q) ? `<div class="nm">${namesOf(state.names,u.id,q).filter(Boolean).map(dtag).join("")}</div>` : "";
     const head = (extra) => `<td class="q">${q}×</td><td class="u"><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span>${extra||""}${nmTxt}</td><td class="p">${u.pts*q}${q>1?`<small> (${u.pts} ea)</small>`:""}</td>`;
     const blank = (lbl) => `<td></td><td class="u sub">${esc(lbl)}</td><td></td>`;
     let h = profs.map((p,i)=>`<tr${i?' class="cont"':""}>${i?blank(p.label||""):head(p.label?` <em>${esc(p.label)}</em>`:"")}<td>${esc(p.sk)}</td><td>${esc(p.mt)}</td><td>${esc(p.ma)}</td><td>${esc(p.t)}</td>${showD?`<td>${esc(p.d||"")}</td>`:""}<td class="w">${p.equip.map(wtxt).join("; ")}</td><td class="a">${esc(p.abilities.join(", "))}</td></tr>`).join("");
@@ -1946,7 +1946,7 @@ function renderRoster(){
   const errs = checks().out.filter(c=>c.lvl==="err");
   v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span><button class="btn ghost noprint" type="button" data-print>Print quick-reference sheet</button></div>
   <p class="rstatus ${errs.length?"bad":"good"}">${errs.length ? `Not legal: ${errs.map(c=>esc(c.msg)).join(" ")}` : approvedStarter() ? `Approved starter patrol: ${approvedStarter().over} over ${state.limit} points, so not technically legal, but approved.` : `Legal at ${state.limit} points.`}</p>
-  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${hasNames(state.names,u.id,state.items[u.id])?`<p class="rnames">${Array.from({length:state.items[u.id]},(_,i)=>{ const n = namesOf(state.names,u.id,state.items[u.id])[i]; return n ? dtag(n) : "<i>unnamed</i>"; }).join("")}</p>`:""}${statBlock(u)}${weaponLine(u)}${rulesText(u)}${abilityList(u)}</article>`).join("")}</div>`;
+  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${hasNames(state.names,u.id,state.items[u.id])?`<p class="rnames">${namesOf(state.names,u.id,state.items[u.id]).filter(Boolean).map(dtag).join("")}</p>`:""}${statBlock(u)}${weaponLine(u)}${rulesText(u)}${abilityList(u)}</article>`).join("")}</div>`;
 }
 
 function renderAll(){ if(state.view==="edit"){ renderStarterBar(); renderCatalog(); renderPatrol(); if(!$("#view-roster").hidden) renderRoster(); updateSaveState(); } }
@@ -2157,7 +2157,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-10-31.135";
+const APP_VERSION = "2026-10-31.136";
 let updDismissed = false;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
