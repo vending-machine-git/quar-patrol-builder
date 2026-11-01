@@ -121,6 +121,7 @@ h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.25em;letter
 .cat h3::after{content:"";flex:1;border-top:1px solid var(--accent-line)}
 .unit{border-radius:3px;padding:0 8px}
 .unit.alt{background:var(--stripe)}
+#catalog .urow{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .urow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:6px 0}
 .uname{background:none;border:0;padding:0;text-align:left;cursor:pointer;min-width:0}
 .uname b{font-weight:700}
@@ -2222,6 +2223,13 @@ async function init(){
 }
 
 /* events */
+// Muster Roll: tapping anywhere on a unit's row (name, allowance, points) opens or closes its details; the − and + buttons still just add/remove.
+document.addEventListener("click", e=>{
+  const r = e.target.closest("#catalog .urow"); if (!r || e.target.closest("button,a,input,select,label")) return;
+  try{ if (String(getSelection()).length) return; }catch(_){}
+  const u = r.closest(".unit[data-id]"); if (!u) return; const id = u.dataset.id;
+  state.open[id] = !state.open[id]; renderCatalog();
+});
 document.addEventListener("click", e=>{
   const b = e.target.closest("button"); if(!b || !DATA) return;
   const row = b.closest("[data-id]"); const id = row && row.dataset.id;
@@ -2392,7 +2400,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-11-01.20";
+const APP_VERSION = "2026-11-01.21";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
