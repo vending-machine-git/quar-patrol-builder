@@ -465,8 +465,8 @@ body:not([data-view="home"]) #view-home, body:not([data-view="factions"]) #view-
 .fcard:hover,.fcard:focus-visible{border-color:var(--accent);box-shadow:0 5px 16px rgba(0,0,0,.18);transform:translateY(-1px)}
 .fart{background:#f5f1e4;display:flex;align-items:center;justify-content:center;overflow:hidden;border-right:3px solid var(--accent)}
 .fart img{width:100%;height:100%;object-fit:cover;object-position:var(--ax,50%) var(--ay,30%);transform:scale(var(--az,1));transform-origin:var(--ax,50%) var(--ay,30%);mix-blend-mode:multiply;display:block}
-.fart.crop{position:relative;container-type:size}
-.fart.crop img{--iw:min(96cqw / var(--rw), 96cqh * var(--r) / var(--rh));position:absolute;max-width:none;width:var(--iw);height:auto;transform:none;left:calc(50cqw - var(--iw) * (var(--rx) + var(--rw) / 2));top:calc(50cqh - var(--iw) / var(--r) * (var(--ry) + var(--rh) / 2));clip-path:inset(calc(var(--ry) * 100%) calc((1 - var(--rx) - var(--rw)) * 100%) calc((1 - var(--ry) - var(--rh)) * 100%) calc(var(--rx) * 100%))}
+.fart.zoom{position:relative}
+.fart.zoom img{position:absolute;left:50%;top:50%;width:auto;height:calc(var(--z) * 100%);max-width:none;object-fit:fill;transform:translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%))}
 .fbody{padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
 .fname{font-family:var(--f-display);text-transform:uppercase;font-size:1.15em;letter-spacing:.03em;color:var(--accent);line-height:1.1}
 .ftag{font-size:.8em;font-style:italic;color:var(--muted)}
@@ -1488,26 +1488,76 @@ function forceProblems(fid, units, limit){
    Built from the game log (casualties, VP changes) recorded while playing. The outcome names and
    thresholds below are the builder's own flavour text, not rules from the book. */
 const NOTE_KEYS = ["killed","ooa","disabled","carried","immob","mountd","incap","flesh"];
+// Battle report headlines: each outcome has several wordings; one is picked per game (stays the same for that game).
 const OUTCOMES = {
-  annihilation:{h:"Annihilation",        s:"{W} wiped {L} from the field."},
-  flawless:    {h:"Flawless Victory",    s:"{W} won without losing a single rhyfler."},
-  pyrrhic:     {h:"Pyrrhic Victory",     s:"{W} took the day, but paid dearly for it."},
-  comeback:    {h:"Comeback Victory",    s:"{W} clawed back from behind to snatch the win."},
-  wire:        {h:"Down to the Wire",    s:"The lead changed hands late, and {W} held on at the very end."},
-  landslide:   {h:"Landslide",           s:"{W} dominated {L} from start to finish."},
-  decisive:    {h:"Decisive Victory",    s:"{W} beat {L} clearly and convincingly."},
-  clear:       {h:"Clear Victory",       s:"{W} came out comfortably ahead of {L}."},
-  close:       {h:"Close Battle",        s:"{W} edged out {L} by the narrowest of margins."},
-  objective:   {h:"Mission Accomplished",s:"{W} completed the mission against {L}."},
-  bloodyDraw:  {h:"Bloody Stalemate",    s:"Both patrols were shattered and neither side could claim the field."},
-  standoff:    {h:"Cagey Standoff",      s:"Neither commander committed, and the battle fizzled out."},
-  stalemate:   {h:"Stalemate",           s:"Honours even: neither side could break the other."},
-  undecided:   {h:"Battle Over",         s:"Choose who won the mission to complete the report."}
+  annihilation:[{h:"Annihilation", s:"{W} wiped {L} from the field."},{h:"Total Wipeout", s:"Not one of {L}'s rhyflers was left standing when {W} was done."},{h:"Swept From the Field", s:"{W} left nothing of {L} but boot prints and spent cartridges."}],
+  flawless:    [{h:"Flawless Victory", s:"{W} won without losing a single rhyfler."},{h:"Not a Scratch", s:"{W} beat {L} and every rhyfler marched home."},{h:"Clean Sweep", s:"{W} took the day without a single casualty."}],
+  lastGasp:    [{h:"Last Gasp Victory", s:"{W} won with a single rhyfler still standing."},{h:"One Quar Army", s:"Down to the very last rhyfler, {W} still came out on top."}],
+  pyrrhic:     [{h:"Pyrrhic Victory", s:"{W} took the day, but paid dearly for it."},{h:"A Costly Win", s:"{W} beat {L}, but the butcher's bill was a long one."},{h:"Victory at a Price", s:"{W} won the field and lost half the patrol doing it."}],
+  rout:        [{h:"Rout!", s:"{L} broke and scattered before {W}."},{h:"Sent Packing", s:"{W} tore through {L}, leaving only stragglers."},{h:"Running for the Hills", s:"What was left of {L} fled from {W}."}],
+  blitz:       [{h:"Blitz!", s:"{W} won it all inside the very first Turn."},{h:"Over Before It Began", s:"{L} barely had time to fix bayonets before {W} won."}],
+  comeback:    [{h:"Comeback Victory", s:"{W} clawed back from behind to snatch the win."},{h:"Back From the Brink", s:"Written off early, {W} fought back to beat {L}."},{h:"The Great Turnaround", s:"{L} had it in hand, until {W} turned the whole thing around."}],
+  wire:        [{h:"Down to the Wire", s:"The lead changed hands late, and {W} held on at the very end."},{h:"Last-Minute Heroics", s:"{W} snatched the lead from {L} at the death."},{h:"Photo Finish", s:"{W} took the lead late and never gave it back."}],
+  shutout:     [{h:"Shutout", s:"{W} won and {L} never got on the scoreboard."},{h:"Nothing Doing", s:"{L} couldn't score a single VP against {W}."}],
+  landslide:   [{h:"Landslide", s:"{W} dominated {L} from start to finish."},{h:"Steamrollered", s:"{W} rolled over {L} without breaking stride."},{h:"No Contest", s:"{W} ran rings around {L}."}],
+  objective:   [{h:"Mission Accomplished", s:"{W} completed the mission against {L}."},{h:"Job Done", s:"{W} did what the mission asked and beat {L}."}],
+  decisive:    [{h:"Decisive Victory", s:"{W} beat {L} clearly and convincingly."},{h:"Firm Hand", s:"{W} took control and beat {L} with room to spare."}],
+  clear:       [{h:"Clear Victory", s:"{W} came out comfortably ahead of {L}."},{h:"Well Earned", s:"{W} outfought {L} and deserved the win."}],
+  close:       [{h:"Close Battle", s:"{W} edged out {L} by the narrowest of margins."},{h:"Nail-Biter", s:"Only a single point split them, and {W} had it."},{h:"By a Whisker", s:"{W} squeaked past {L}."}],
+  bloodyDraw:  [{h:"Bloody Stalemate", s:"Both patrols were shattered and neither side could claim the field."},{h:"Nobody Won", s:"Both sides bled for it and neither could call it theirs."}],
+  standoff:    [{h:"Cagey Standoff", s:"Neither commander committed, and the battle fizzled out."},{h:"Phoney War", s:"A lot of staring across the field, and not much else."}],
+  stalemate:   [{h:"Stalemate", s:"Honours even: neither side could break the other."},{h:"Honours Even", s:"Neither side could find the killer blow."}],
+  undecided:   [{h:"Battle Over", s:"Choose who won the mission to complete the report."}]
 };
 const TAGS = {
   bloodbath:"Bloodbath", attrition:"War of Attrition", lastStand:"Last One Standing", seesaw:"Seesaw Battle",
-  noPluck:"Out of Pluck", distance:"Went the Distance", sharp:"Short and Sharp", firstBlood:"First Blood"
+  noPluck:"Out of Pluck", distance:"Went the Distance", sharp:"Short and Sharp", firstBlood:"First Blood",
+  gobfest:"Heads Ringing", tank:"Tractor Down", cavalry:"Cavalry Unhorsed", medic:"Medic!", rescue:"Daring Rescue",
+  overwatch:"Overwatch Duel", grenades:"Fire in the Hole", melee:"Up Close and Personal", rattled:"Frayed Nerves",
+  shutout:"Shutout", nailbiter:"Nail-Biter", cleanSheet:"Clean Sheet", lightning:"Lightning Start", slowBurn:"Slow Burn",
+  jinx:"Jammed!", lateDrama:"Late Drama", pinned:"Heads Down"
 };
+// Small helper: the same game always gets the same wording.
+const poss = n => /s$/i.test(n) ? n+"'" : n+"'s";
+const strHash = str => { let h = 2166136261; for (let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h>>>0; };
+// Honours in the same family (e.g. the kill titles) never appear together for one player.
+const HON_FAMILY = {exterminator:"kill", bloodthirsty:"kill", headtaker:"kill", quickdraw:"kill", thumper:"gob", bellringer:"gob", surgeon:"medic", medic:"medic", stretcher:"medic", flagsnatcher:"vp", objective:"vp", victor:"end", gallant:"end", steadfast:"end", sightseer:"end"};
+// Commanders' honours: a title for each player based on how they played (from the battle log).
+// Each honour: score(m) > 0 means earned (higher = more fitting); why(m) explains it.
+const HONOURS = [
+  {id:"exterminator", t:"The Exterminator", score:m=>m.enemyWiped?100:0, why:m=>`Wiped out every one of ${poss(m.foe)} ${m.eN} rhyflers.`},
+  {id:"bloodthirsty", t:"Bloodthirsty", score:m=>m.K>=4&&m.early>=2?62+m.K*5:0, why:m=>`Took ${m.K} enemy rhyflers out of the fight, ${m.early} of them early on.`},
+  {id:"headtaker", t:"Head Taker", score:m=>m.K>=3?40+m.K*5:0, why:m=>`Took ${m.K} of ${poss(m.foe)} rhyflers out of the fight.`},
+  {id:"reaper", t:"The Grim Reaper", score:m=>m.Kk>=2?44+m.Kk*6:0, why:m=>`${m.Kk} enemy rhyflers were Killed outright.`},
+  {id:"quickdraw", t:"Quick Draw", score:m=>m.firstBlood&&m.K<3?24:0, why:m=>`Drew first blood (${m.fbWhen}).`},
+  {id:"thumper", t:"Head Thumper", score:m=>m.G>=3?42+m.G*6:0, why:m=>`Left the enemy Gobsmacked ${m.G} times.`},
+  {id:"bellringer", t:"Bell Ringer", score:m=>m.G===2?30:0, why:m=>`Rang ${poss(m.foe)} bells twice: two rhyflers Gobsmacked.`},
+  {id:"shredder", t:"Nerve Shredder", score:m=>m.Rt>=3?35+m.Rt*5:0, why:m=>`Rattled the enemy ${m.Rt} times.`},
+  {id:"pindown", t:"Pin-Down Specialist", score:m=>m.P>=4?24+m.P*3:0, why:m=>`Kept ${m.foe} face-down in the mud: ${m.P} times Prone.`},
+  {id:"tractorbreaker", t:"Tractor Breaker", score:m=>m.V>=1?50+m.V*10:0, why:m=>`Disabled or immobilised ${m.V} enemy tractor${m.V===1?"":"s"}.`},
+  {id:"saddle", t:"Saddle Emptier", score:m=>m.Mt>=1?40+m.Mt*8:0, why:m=>`Wounded, disabled or unseated ${m.Mt} enemy mount${m.Mt===1?"":"s"}.`},
+  {id:"watchful", t:"Ever Watchful", score:m=>m.OW>=3?30+m.OW*4:0, why:m=>`Put rhyflers on Overwatch ${m.OW} times.`},
+  {id:"knife", t:"Knife Fighter", score:m=>m.EN>=3?30+m.EN*4:0, why:m=>`Got stuck in hand-to-hand ${m.EN} times.`},
+  {id:"bomber", t:"Mad Bomber", score:m=>m.BOOM>=3?30+m.BOOM*4:0, why:m=>`Primed or Prepared weapons ${m.BOOM} times.`},
+  {id:"stretcher", t:"Stretcher Bearer", score:m=>m.CO>=1?38+m.CO*8:0, why:m=>`Carried ${m.CO} wounded rhyfler${m.CO===1?"":"s"} off to safety.`},
+  {id:"surgeon", t:"Field Surgeon", score:m=>m.TW>=2?30+m.TW*5:0, why:m=>`Tended ${m.TW} wounded rhyflers back into the fight.`},
+  {id:"medic", t:"Medic!", score:m=>m.TW===1?18:0, why:m=>`Tended a wounded rhyfler under fire.`},
+  {id:"untouchable", t:"Untouchable", score:m=>m.N>0&&m.L===0&&(m.K>0||m.win)?55:0, why:m=>`Didn't lose a single rhyfler.`},
+  {id:"laststanding", t:"Last Quar Standing", score:m=>m.N>1&&m.N-m.L===1?45:0, why:m=>`Only ${m.lastName||"one rhyfler"} was still standing at the end.`},
+  {id:"ironprice", t:"Iron Price", score:m=>m.win&&m.N&&m.L/m.N>=0.5?40:0, why:m=>`Won, but lost ${m.L} of ${m.N} rhyflers doing it.`},
+  {id:"neversaydie", t:"Never Say Die", score:m=>m.win&&m.deficit>=2?58:0, why:m=>`Came back from ${m.deficit} VP down to win.`},
+  {id:"blitz", t:"Lightning Commander", score:m=>m.win&&m.turn1?50:0, why:m=>`Won it inside the first Turn.`},
+  {id:"flagsnatcher", t:"Flag Snatcher", score:m=>m.VP>=3&&m.K<=1?45:0, why:m=>`Scored ${m.VP} VP while taking out ${m.K===0?"no one":"just one enemy rhyfler"}.`},
+  {id:"objective", t:"Objective Hunter", score:m=>m.vpN>=3?32+m.vpN*3:0, why:m=>`Scored VP on ${m.vpN} separate occasions.`},
+  {id:"unshakeable", t:"Unshakeable", score:m=>m.L>=2&&m.pluck>=m.startPluck?35:0, why:m=>`Lost ${m.L} rhyflers and still finished with ${m.pluck} Pluck.`},
+  {id:"hatch", t:"Head Out the Hatch", score:m=>m.UB>=2?25:0, why:m=>`Popped the hatch open ${m.UB} times.`},
+  {id:"jinxed", t:"Jinxed", score:m=>m.JAM>=2?20:0, why:m=>`Weapons jammed or needed reloading ${m.JAM} times.`},
+  {id:"outofpluck", t:"Out of Pluck", score:m=>m.pluck===0?22:0, why:m=>`Ran out of Pluck before the end.`},
+  {id:"sightseer", t:"The Sightseer", score:m=>m.recorded&&m.K===0&&m.VP<=0&&!m.win?15:0, why:m=>`Took no enemy rhyflers out and scored no VP. Lovely view, though.`},
+  {id:"victor", t:"Victor of the Field", score:m=>m.win?5:0, why:m=>`Led the patrol to victory.`},
+  {id:"gallant", t:"Gallant in Defeat", score:m=>m.lose?4:0, why:m=>`Fought it out to the end.`},
+  {id:"steadfast", t:"Steadfast Commander", score:m=>!m.win&&!m.lose?3:0, why:m=>`Held the line to the end.`}
+];
 function logEvent(s, k, d, uid){ game.log = game.log || []; game.log.push({t:game.turn, r:game.round, s, k, d, u:uid}); }
 function unlogEvent(uid, k, sameRound){ const L = game.log || []; for (let i=L.length-1;i>=0;i--) if (L[i].u===uid && L[i].k===k){ if (!sameRound || (L[i].t===game.turn && L[i].r===game.round)) L.splice(i,1); return; } }
 const sideOf = g => game.units.includes(g) ? "me" : "opp";
@@ -1524,19 +1574,26 @@ function battleReport(){
   let w = end.winner && end.winner!=="auto" ? end.winner : (ms.noVP ? null : a>b ? "me" : b>a ? "opp" : "draw");
   // VP story: biggest deficit each side came back from, lead changes and when the final lead was taken
   let run = [0,0], deficit = {me:0, opp:0}, changes = 0, leader = null, leadAt = null;
+  const leadChange = new Set(), levelled = new Set();
   log.filter(e=>e.k==="vp").forEach(e=>{ run[e.s==="me"?0:1] += e.d;
     deficit.me = Math.max(deficit.me, run[1]-run[0]); deficit.opp = Math.max(deficit.opp, run[0]-run[1]);
     const now = run[0]>run[1] ? "me" : run[1]>run[0] ? "opp" : null;
-    if (now && now!==leader){ if (leader) changes++; leader = now; leadAt = e; } });
+    if (!now && leader && run[0]>0) levelled.add(e);
+    if (now && now!==leader){ if (leader){ changes++; leadChange.add(e); } leader = now; leadAt = e; } });
   let key;
   if (w==="me" || w==="opp"){
     const L = w==="me" ? "opp" : "me", wl = frac(w), ll = frac(L), m = Math.abs(a-b), top = Math.max(a,b);
+    const loserVP = w==="me" ? b : a;
     if (ll===1) key = "annihilation";
     else if (loss[w] && loss[w].n===0 && loss[L] && loss[L].n>0) key = "flawless";
+    else if (loss[w] && loss[w].of>1 && loss[w].of-loss[w].n===1) key = "lastGasp";
     else if (wl!=null && ll!=null && wl>=0.5 && wl>=ll) key = "pyrrhic";
+    else if (ll!=null && ll>=0.75) key = "rout";
+    else if (end.turn===1 && end.round<RPT()) key = "blitz";
     else if (ms.noVP || (end.winner && end.winner!=="auto" && !(w==="me"?a>b:b>a))) key = "objective";
     else if (deficit[w]>=2) key = "comeback";
     else if (changes>=1 && leadAt && leadAt.t===end.turn && end.turn>1) key = "wire";
+    else if (loserVP===0 && top>=3) key = "shutout";
     else if (m>=5 || (top>=4 && m/top>=0.6)) key = "landslide";
     else if (m>=3) key = "decisive";
     else if (m>=2) key = "clear";
@@ -1546,7 +1603,9 @@ function battleReport(){
     key = (fm!=null || fo!=null) && (fm==null || fm>=0.5) && (fo==null || fo>=0.5) ? "bloodyDraw" : (a+b===0 && lostAll<=2) ? "standoff" : "stalemate";
   } else key = "undecided";
   const W = w==="me" ? names.me : w==="opp" ? names.opp : "", Lname = w==="me" ? names.opp : names.me;
-  const o = OUTCOMES[key];
+  const seed = `${game.started||""}|${names.me}|${names.opp}|${game.mission}`;
+  const pickV = (arr, salt) => arr[strHash(seed+"|"+salt) % arr.length];
+  const o = pickV(OUTCOMES[key], key);
   const tags = [];
   const kn = s => loss[s] && loss[s].of, allN = ["me","opp"].reduce((t,s)=>t+(kn(s)?loss[s].of:0),0), allLost = ["me","opp"].reduce((t,s)=>t+(kn(s)?loss[s].n:0),0);
   if (allN && allLost/allN >= 0.6) tags.push(TAGS.bloodbath);
@@ -1559,6 +1618,25 @@ function battleReport(){
   const firstOut = new Set(), seenOut = new Set(); log.forEach(e=>{ if (OUT.includes(e.k) && e.u && !seenOut.has(e.u)){ seenOut.add(e.u); firstOut.add(e); } });
   const isCas = e => e.k==="lost" || firstOut.has(e);
   const fb = log.find(isCas);
+  // More tags from what happened in the battle
+  const nK = (ks, side) => log.filter(e=>ks.includes(e.k) && (!side || e.s===side)).length;
+  const posOf = e => ((e.t-1)*RPT() + e.r) / Math.max(1, (end.turn-1)*RPT() + end.round);
+  const lastPos = e => e.t===end.turn && e.r===end.round;
+  if (nK(["gob"])>=4) tags.push(TAGS.gobfest);
+  if (nK(["disabled","immob"])) tags.push(TAGS.tank);
+  if (nK(["mountd","dismounted"])) tags.push(TAGS.cavalry);
+  if (nK(["carried"])) tags.push(TAGS.rescue); else if (nK(["flesh","incap"])>=2) tags.push(TAGS.medic);
+  if (nK(["overwatch"],"me")>=2 && nK(["overwatch"],"opp")>=2) tags.push(TAGS.overwatch);
+  if (nK(["primed"])>=2) tags.push(TAGS.grenades);
+  if (nK(["engaged"])>=4) tags.push(TAGS.melee);
+  if (nK(["rattled"])>=3) tags.push(TAGS.rattled);
+  if (nK(["prone"])>=6) tags.push(TAGS.pinned);
+  if (nK(["jammed"])>=2) tags.push(TAGS.jinx);
+  if (!ms.noVP && (w==="me"||w==="opp") && Math.max(a,b)>=3 && Math.min(a,b)===0) tags.push(TAGS.shutout);
+  else if (!ms.noVP && (w==="me"||w==="opp") && Math.abs(a-b)===1) tags.push(TAGS.nailbiter);
+  if ((w==="me"||w==="opp") && loss[w] && loss[w].of && loss[w].n===0) tags.push(TAGS.cleanSheet);
+  if (fb && posOf(fb)<=0.12) tags.push(TAGS.lightning); else if (fb && posOf(fb)>=0.5) tags.push(TAGS.slowBurn); else if (fb) tags.push(TAGS.firstBlood);
+  if (end.turn>1 && log.some(e=>lastPos(e) && (isCas(e) || (e.k==="vp" && e.d>0)))) tags.push(TAGS.lateDrama);
   // Each side: starting units grouped, then what was left at the end
   const sideRep = (s, us, fid, limit) => {
     const counts = {}; us.forEach(g=>{ const u = unitOf(g); const k = u ? `${u.name}${u.variant?` (${u.variant})`:""}` : "Unknown unit"; counts[k] = (counts[k]||0)+1; });
@@ -1578,6 +1656,10 @@ function battleReport(){
   const cas = R => R.ev.filter(isCas).length;
   const list = Object.values(rounds).sort((x,y)=>x.t-y.t||x.r-y.r);
   const bloodiest = list.reduce((best,R)=> cas(R)>=2 && (!best || cas(R)>cas(best)) ? R : best, null);
+  // Walk the casualties in order to spot a side's last rhyfler and a side being wiped out
+  const alive = {me: loss.me && loss.me.of, opp: loss.opp && loss.opp.of}, downToOne = new Set(), wipedAt = new Set();
+  log.forEach(e=>{ if (isCas(e) && alive[e.s]){ alive[e.s]--; if (alive[e.s]===1) downToOne.add(e); if (alive[e.s]===0) wipedAt.add(e); } });
+  const finalBlow = [...log].reverse().find(isCas);
   const moments = list.map(R=>{
     const items = [], itemsX = [], vp = {me:0, opp:0};
     const lostBy = s => R.ev.filter(e=>e.k==="lost" && e.s===s).length;
@@ -1587,15 +1669,65 @@ function battleReport(){
     const flags = [];
     if (fb && R.ev.includes(fb)) flags.push("First blood");
     if (bloodiest===R) flags.push("Bloodiest Round");
-    if (leadAt && R.ev.includes(leadAt) && (w===leader) && changes>=1) flags.push("Decisive moment");
-    return {when: when(R), items, itemsX, flags};
+    const decisive = leadAt && R.ev.includes(leadAt) && (w===leader) && changes>=1;
+    if (decisive) flags.push("Decisive moment");
+    const has = ks => R.ev.filter(e=>ks.includes(e.k)).length;
+    const outBy = s => R.ev.filter(e=>isCas(e) && e.s!==s).length;
+    if (R.ev.some(e=>wipedAt.has(e))) flags.push("Wiped out");
+    else if (R.ev.some(e=>downToOne.has(e))) flags.push("Last one standing");
+    if (["me","opp"].some(s=>outBy(s)>=3)) flags.push("Massacre"); else if (!bloodiest || bloodiest!==R){ if (["me","opp"].some(s=>outBy(s)===2)) flags.push("Double take-down"); }
+    if (has(["gob"])>=2) flags.push("Heads ringing"); else if (has(["gob"])===1 && !flags.length) flags.push("Gobsmacked!");
+    if (has(["disabled","immob"])) flags.push("Tractor down");
+    if (has(["mountd","dismounted"])) flags.push("Unhorsed");
+    if (has(["carried"])) flags.push("Daring rescue");
+    if (has(["primed"])) flags.push("Fire in the hole");
+    if (!decisive && R.ev.some(e=>leadChange.has(e))) flags.push("Lead change");
+    if (R.ev.some(e=>levelled.has(e))) flags.push("All square");
+    if (!flags.length && has(["flesh","incap"])) flags.push("Patched up");
+    if (finalBlow && R.ev.includes(finalBlow) && !R.ev.some(e=>wipedAt.has(e)) && (end.turn>1 || end.round>1)) flags.push("Final blow");
+    return {when: when(R), items, itemsX, flags: flags.slice(0,4)};
   }).filter(m=>m.items.length);
   const result = ms.noVP ? (!(end.winner && end.winner!=="auto") ? "Decided by the mission objectives (winner not chosen)" : w==="draw" ? "Draw on the mission objectives" : `${W} ${W==="You"?"win":"wins"} on the mission objectives`) :
     `${names.me} ${a} VP · ${names.opp} ${b} VP${w==="draw"?" · Draw":W?` · ${W} ${W==="You"?"win":"wins"}`:""}`;
   const meta = [`Mission: ${ms.name}${ms.page?` (${ms.page})`:""}`,
     `Ended on Turn ${end.turn}${lim?` of ${lim}`:""}, Round ${end.round}`,
     new Date(end.at||Date.now()).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})];
-  return {headline: o.h, sentence: o.s.replace("{W}", W).replace("{L}", Lname), tags, result, meta, sides, moments, notes: (end.notes||"").trim(), winner: w, oppName: names.opp, oppVP: b, oppPluck: game.pluck[1],
+  // Commanders' honours: score every honour for each side, give each player their best one as a title (never the same title twice) and up to two more as "also earned".
+  const metrics = s => {
+    const e = s==="me" ? "opp" : "me", casOnFoe = log.filter(x=>x.s===e && isCas(x));
+    const cnt = (side, ks) => log.filter(x=>x.s===side && ks.includes(x.k)).length;
+    const us = s==="me" ? mineU : (oppU||[]);
+    const standing = us.filter(g=>!OUT.some(k=>g.st[k]));
+    const vpUp = log.filter(x=>x.k==="vp" && x.s===s && x.d>0);
+    return {
+      foe: names[e], K: casOnFoe.length, Kk: cnt(e,["killed"]), early: casOnFoe.filter(x=>posOf(x)<=0.35).length,
+      G: cnt(e,["gob"]), Rt: cnt(e,["rattled"]), P: cnt(e,["prone"]), V: cnt(e,["disabled","immob"]), Mt: cnt(e,["mountw","mountd","dismounted"]),
+      OW: cnt(s,["overwatch"]), EN: cnt(s,["engaged"]), BOOM: cnt(s,["primed","prepared"]), CO: cnt(s,["carried"]), TW: cnt(s,["flesh","incap"]),
+      UB: cnt(s,["unbuttoned"]), JAM: cnt(s,["jammed","reload"]),
+      N: loss[s] && loss[s].of || 0, L: loss[s] ? loss[s].n : 0, eN: loss[e] && loss[e].of || 0,
+      enemyWiped: !!(loss[e] && loss[e].of && loss[e].n===loss[e].of),
+      lastName: standing.length===1 ? uLabel(standing[0]) : "",
+      VP: game.vp[s==="me"?0:1], vpN: vpUp.length, deficit: deficit[s],
+      pluck: game.pluck[s==="me"?0:1], startPluck: ms.pluck || 5,
+      win: w===s, lose: w===e, turn1: end.turn===1,
+      firstBlood: !!(fb && fb.s===e), fbWhen: fb ? when(fb) : "",
+      recorded: us.length>0 || !!(game[(s==="me"?"my":"opp")+"Size"])
+    };
+  };
+  const ranked = s => { const m = metrics(s); return HONOURS.map(h=>({h, sc:h.score(m)})).filter(x=>x.sc>0).sort((x,y)=>y.sc-x.sc).map(x=>({id:x.h.id, sc:x.sc, title:x.h.t, why:x.h.why(m)})); };
+  const honours = {};
+  if (key!=="undecided"){
+    const rk = {me: ranked("me"), opp: ranked("opp")};
+    const order = ["me","opp"].sort((x,y)=>((rk[y][0]||{}).sc||0)-((rk[x][0]||{}).sc||0)); // the stronger claim picks first
+    // Titles are unique across both players; one per family for each player.
+    const taken = new Set(), fam = x => HON_FAMILY[x.id] || x.id;
+    const mains = {};
+    order.forEach(sd=>{ const main = rk[sd].find(x=>!taken.has(x.id)) || rk[sd][0]; if (main){ taken.add(main.id); mains[sd] = main; } });
+    order.forEach(sd=>{ const main = mains[sd]; if (!main) return; const fams = new Set([fam(main)]), also = [];
+      rk[sd].forEach(x=>{ if (also.length<2 && !taken.has(x.id) && !fams.has(fam(x)) && fam(x)!=="end"){ also.push(x); fams.add(fam(x)); taken.add(x.id); } });
+      honours[sd] = {title: main.title, why: main.why, also: also.map(x=>x.title), name: names[sd], color: colorOf(sd)}; });
+  }
+  return {honours, headline: o.h, sentence: o.s.replace("{W}", W).replace("{L}", Lname), tags: tags.slice(0,7), result, meta, sides, moments, notes: (end.notes||"").trim(), winner: w, oppName: names.opp, oppVP: b, oppPluck: game.pluck[1],
     simple: {me: mineU.length ? null : {key:"me", name:names.me, vp:a, pluck:game.pluck[0], lost:game.myLost||0, size:game.mySize||0, color:colorOf("me")},
              opp: oppU ? null : {key:"opp", name:names.opp, vp:b, pluck:game.pluck[1], lost:game.oppLost||0, size:game.oppSize||0, color:colorOf("opp")}}};
 }
@@ -1613,6 +1745,8 @@ function reportText(R){
   L.push("", "", "NOTABLE MOMENTS");
   if (R.moments.length) R.moments.forEach(m=>{ L.push(`${m.when}${m.flags.length?`  [${m.flags.join(", ")}]`:""}`, ...m.items.map(x=>"  "+x)); });
   else L.push("  Nothing was recorded during the battle.");
+  if (R.honours && (R.honours.me || R.honours.opp)){ L.push("", "", "COMMANDERS' HONOURS");
+    ["me","opp"].forEach(k=>{ const H = R.honours[k]; if (H) L.push(`${H.name}: ${H.title.toUpperCase()}`, `  ${H.why}`, ...(H.also.length?[`  Also earned: ${H.also.join(", ")}`]:[])); }); }
   if (R.notes) L.push("", "", "COMMANDER'S NOTES", R.notes);
   L.push("", "", "Made with the unofficial Quar Patrol Builder: https://vending-machine-git.github.io/quar-patrol-builder/");
   return L.join("\n");
@@ -1673,6 +1807,14 @@ const BREP_CSS = `
 .brep .tl .tlf{font-size:.66em;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--red);padding:1px 6px;margin-left:6px;border-radius:2px;vertical-align:1px}
 .brep .tl p{margin:1px 0;font-size:.95em}
 .brep .tl p i{display:inline-block;width:8px;height:8px;background:var(--c);margin-right:6px;vertical-align:1px}
+.brep .hon{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px 16px;margin:0 0 16px}
+.brep .honc{position:relative;background:rgba(255,255,255,.35);border:1px solid var(--ln);border-left:6px solid var(--c);padding:10px 12px 12px;break-inside:avoid;min-width:0}
+.brep .honc .hw{font-size:.72em;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mu);overflow-wrap:anywhere}
+.brep .honc .ht{font-family:"Saira Stencil One",Impact,sans-serif;font-size:1.75em;line-height:1.05;margin:4px 0 5px;color:var(--c2);text-transform:uppercase;letter-spacing:.02em;overflow-wrap:anywhere}
+.brep .honc .hy{margin:0;font-style:italic}
+.brep .honc .hx{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;font-size:.78em}
+.brep .honc .hx b{font-size:.85em;letter-spacing:.14em;text-transform:uppercase;color:var(--mu);margin-right:2px}
+.brep .honc .hx span{font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1.5px solid var(--ik);padding:1px 7px;border-radius:2px}
 .brep .notes{font-family:"Special Elite","Courier New",monospace;background:rgba(255,255,255,.45);border:1px solid var(--ln);padding:10px 14px;transform:rotate(-.4deg);margin:0 0 16px;white-space:pre-wrap;break-inside:avoid;box-shadow:2px 3px 0 rgba(60,40,10,.12)}
 .brep .foot{border-top:3px double var(--ik);padding-top:6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;font-size:.72em;color:var(--mu);letter-spacing:.06em}
 @media (max-width:560px){.brep{padding:20px 16px 16px;font-size:calc(14px * var(--fs, 1))}.brep .score{grid-template-columns:1fr}.brep .vs{text-align:center}.brep .kick{flex-direction:column;align-items:center}}
@@ -1712,6 +1854,10 @@ function brepHTML(R, flagSrc){
     <h3>Notable moments</h3>
     ${R.moments.length ? `<section class="tl">${R.moments.map(m=>`<div${m.flags.length?' class="hot"':""}><span class="when">${esc(m.when)}</span>${m.flags.map(f=>`<span class="tlf">${esc(f)}</span>`).join("")}
       ${m.itemsX.map(x=>`<p style="--c:${esc(x.color)}"><i></i>${esc(x.text)}</p>`).join("")}</div>`).join("")}</section>` : `<p class="none" style="margin-bottom:16px">Nothing was recorded during the battle.</p>`}
+    ${R.honours && (R.honours.me || R.honours.opp) ? `<h3>Commanders' honours</h3>
+    <section class="hon">${["me","opp"].filter(k=>R.honours[k]).map(k=>{ const H = R.honours[k]; return `<div class="honc" style="--c:${esc(H.color)};--c2:color-mix(in oklab, ${esc(H.color)} 70%, #000)">
+      <div class="hw">${esc(H.name)} earns the title</div><div class="ht">${esc(H.title)}</div><p class="hy">${esc(H.why)}</p>
+      ${H.also.length?`<div class="hx"><b>Also earned</b>${H.also.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}</div>`; }).join("")}</section>` : ""}
     ${R.notes?`<h3>Commander's notes</h3><div class="notes">${esc(R.notes)}</div>`:""}
     <footer class="foot"><span>Made with the unofficial Quar Patrol Builder</span><span>vending-machine-git.github.io/quar-patrol-builder</span></footer>
   </article>`;
@@ -1845,14 +1991,15 @@ function renderFactions(){
     const n = f.units.length, cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
     const desc = f.intro ? esc(f.intro) : `${n} unit profiles: ${esc(cats.join(", "))}.`;
     return `<a class="fcard" href="#/faction/${f.id}" data-go="#/faction/${f.id}"${f.color?` style="--fac:${f.color}"`:""}>
-      <span class="fart${f.artCrop&&f.artCrop.w?" crop":""}">${f.art?`<img src="${esc(f.art)}" alt="" loading="lazy"${artCropStyle(f.artCrop)}>`:""}</span>
+      <span class="fart${f.artCrop&&f.artCrop.z?" zoom":""}">${f.art?`<img src="${esc(f.art)}" alt="" loading="lazy"${artCropStyle(f.artCrop)}>`:""}</span>
       <span class="fbody"><span class="fname">${esc(f.name)}</span>${f.tagline?`<span class="ftag">${esc(f.tagline)}</span>`:""}<span class="fdesc">${desc}</span><span class="fmeta2">${n} units<span class="pg"> · ${esc(f.pages)}</span></span></span></a>`;
   }).join("");
 }
-// Card picture framing. Rect mode {x,y,w,h,r}: show exactly that area of the picture (in % of its size; r = width÷height), fitted into the panel.
-// Focus mode {x,y,zoom}: fill the panel, centred on that point.
+// Card picture framing (always fills the panel, no empty space).
+// Zoom mode {cx,cy,z}: the point cx%,cy% of the picture sits in the middle of the panel, and the picture is z × the panel's height.
+// Focus mode {x,y,zoom}: cropped to fill, centred on that point.
 function artCropStyle(c){ if(!c) return "";
-  if (c.w) return ` style="--rx:${(+c.x)/100};--ry:${(+c.y)/100};--rw:${(+c.w)/100};--rh:${(+c.h)/100};--r:${+c.r||1}"`;
+  if (c.z) return ` style="--cx:${+c.cx};--cy:${+c.cy};--z:${+c.z}"`;
   return ` style="--ax:${+c.x}%;--ay:${+c.y}%;--az:${+c.zoom||1}"`; }
 function useFaction(id){
   FAC = DATA.factions.find(f=>f.id===id) || DATA.factions[0]; UNITS = {}; FAC.units.forEach(u=>UNITS[u.id]=u);
@@ -2245,7 +2392,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-11-01.16";
+const APP_VERSION = "2026-11-01.20";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
