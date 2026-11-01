@@ -528,7 +528,7 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 #kofiSlot .kofi{position:relative;overflow:hidden;isolation:isolate}
 #kofiSlot .kofi::after{content:"";position:absolute;top:0;bottom:0;left:0;width:60%;pointer-events:none;z-index:-1;transform:translateX(-160%) skewX(-20deg);
   background:linear-gradient(90deg,transparent,color-mix(in oklab, var(--accent) 22%, transparent) 30%,rgba(255,255,255,.55) 50%,color-mix(in oklab, var(--accent) 22%, transparent) 70%,transparent)}
-#kofiSlot .kofi.shine::after{animation:kofiSweep 1.15s cubic-bezier(.4,0,.2,1) var(--d,0s) 1 both}
+#kofiSlot .kofi.shine::after{animation:kofiSweep 1.15s cubic-bezier(.4,0,.2,1) var(--d,0s) 2 both}
 #kofiSlot .kofi.shine{animation:kofiGlow 2.6s ease-out var(--d,0s) both}
 #kofiSlot .kofi + .kofi{--d:.22s}
 @keyframes kofiSweep{from{transform:translateX(-160%) skewX(-20deg)}to{transform:translateX(260%) skewX(-20deg)}}
@@ -2512,7 +2512,7 @@ try{ new IntersectionObserver(es=>{ if (es.some(e=>e.isIntersecting)) kofiShine(
 addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true});
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
-const APP_VERSION = "2026-11-01.36";
+const APP_VERSION = "2026-11-01.37";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
