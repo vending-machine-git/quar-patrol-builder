@@ -539,6 +539,7 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 .foot .fsl{display:inline-flex;align-items:center;gap:5px}
 .foot .fsl svg,.foot .fchg svg{width:1.15em;height:1.15em;flex:0 0 auto}
 .foot .fbadge{font-family:var(--f-mono);font-size:.8em;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--sunk);border:1px solid var(--rule);border-radius:3px;padding:1px 7px;white-space:nowrap}
+.foot .fbadge .cor{text-transform:none}
 .foot .fbadge b{font-weight:600;color:var(--accent)}
 .foot .fdot{opacity:.6}
 .foot .fchg{display:inline-flex;align-items:center;gap:5px;color:var(--ink);text-decoration:none;font-weight:600;white-space:nowrap}
@@ -2265,7 +2266,7 @@ async function init(){
   $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
     { const k = $("#kofiSlot"); if (k) k.innerHTML = ZS_LINK + KOFI_LINK; }
   // Footer:  the data sources as small badges and the changelog link
-  $("#foot").innerHTML = `<span class="fsrc"><span class="fsl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.2 5 7.6 4.5 4 4.8v12.6c3.6-.3 6.2.2 8 1.7m0-12.6c1.8-1.5 4.4-2 8-1.7v12.6c-3.6-.3-6.2.2-8 1.7m0-12.6v12.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Data from</span><span class="fbadge">Faction Profiles <b>${esc(DATA.meta.profilesVersion)}</b></span><span class="fbadge">Full Book</span><span class="fdot" aria-hidden="true">·</span><a class="fchg" href="#/changes" data-go="#/changes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.3h4.3M12 8v4.2l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Rules changelog<span class="farr" aria-hidden="true">→</span></a></span>`;
+  $("#foot").innerHTML = `<span class="fsrc"><span class="fsl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.2 5 7.6 4.5 4 4.8v12.6c3.6-.3 6.2.2 8 1.7m0-12.6c1.8-1.5 4.4-2 8-1.7v12.6c-3.6-.3-6.2.2-8 1.7m0-12.6v12.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Data from</span><span class="fbadge"><span class="cor">CoR</span> Faction Profiles <b>${esc(DATA.meta.profilesVersion)}</b></span><span class="fbadge"><span class="cor">CoR</span> Full Rulebook</span><span class="fdot" aria-hidden="true">·</span><a class="fchg" href="#/changes" data-go="#/changes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.3h4.3M12 8v4.2l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Rules changelog<span class="farr" aria-hidden="true">→</span></a></span>`;
   const r = route(location.hash);
   if (r.v==="shared"){ history.replaceState(null,"","#/builder"); openShared(r.arg); persist(); return; }
   showView(r.v, r.arg, false); history.replaceState(null,"",hashFor(r.v,r.arg)); persist();
@@ -2513,7 +2514,7 @@ try{ new IntersectionObserver(es=>{ if (es.some(e=>e.isIntersecting)) kofiShine(
 addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true});
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
-const APP_VERSION = "2026-11-01.39";
+const APP_VERSION = "2026-11-01.40";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
