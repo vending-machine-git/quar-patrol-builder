@@ -593,11 +593,12 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
 .pcard.over .track i{background:var(--bad)}
 .hempty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--rule);border-radius:3px}
 .saved-tag{font-size:.82em;color:var(--muted)}
-.hdrtools{grid-column:-2/-1;justify-self:end;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
-.themebtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:3px;padding:5px 10px;cursor:pointer;font-weight:600;white-space:nowrap}
+.hdrtools{grid-column:-2/-1;justify-self:end;display:flex;flex-direction:column;align-items:stretch;gap:5px}
+.themebtn,.tsbtn{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:3px;padding:5px 10px;min-height:2.2em;cursor:pointer;font-weight:600;white-space:nowrap;font-size:.85em;line-height:1.2}
+.themebtn .ti,.tsbtn .tsaa{display:inline-flex;justify-content:center;min-width:1.4em}
 .themebtn:hover{border-color:var(--ink)}
-.tswrap{position:relative}
-.tsbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:3px;padding:4px 9px;cursor:pointer;font-weight:600;white-space:nowrap;font-size:.85em}
+.tswrap{position:relative;display:flex}
+.tswrap>.tsbtn{flex:1}
 .tsbtn:hover,.tsbtn[aria-expanded="true"]{border-color:var(--ink)}
 .tsbtn .tsaa{font-weight:800;line-height:1;letter-spacing:-.02em}
 .tsbtn .tsaa small{font-size:.72em}
@@ -622,7 +623,9 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
   .brand{min-width:0}
   .brand small{white-space:nowrap;letter-spacing:.06em;font-size:min(.68em, 3.1vw)}
   .brand b{white-space:nowrap;font-size:min(1.3em, 5.8vw)}
-  .hdrtools{grid-column:2;grid-row:1;flex-direction:row;align-items:center;gap:6px}
+  .hdrtools{grid-column:2;grid-row:1;flex-direction:row;align-items:stretch;gap:6px}
+  .themebtn,.tsbtn{justify-content:center;width:2.75em;padding:5px 0}
+  .tswrap>.tsbtn{flex:none}
   .tsbtn .tsl{display:none}
   .gauge{grid-column:1/-1;order:2;min-width:0}
 }
@@ -2238,7 +2241,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-11-01.14";
+const APP_VERSION = "2026-11-01.15";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
