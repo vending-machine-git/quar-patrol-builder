@@ -519,6 +519,9 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 .cllist{margin:6px 0 2px;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;line-height:1.45;max-width:80ch}
 .clfac{font-weight:700;color:var(--accent)}
 .foot a{color:inherit;text-underline-offset:2px}
+.foot .kofi{display:flex;width:max-content;align-items:center;gap:5px;margin:0 0 8px;padding:2px 9px 2px 7px;border:1px solid var(--rule);border-radius:999px;text-decoration:none;color:var(--ink);white-space:nowrap;vertical-align:1px;transition:border-color .15s,color .15s}
+.foot .kofi svg{width:1.15em;height:1.15em;color:var(--accent)}
+.foot .kofi:hover,.foot .kofi:focus-visible{border-color:var(--accent);color:var(--accent)}
 body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view="changes"] .pnote{display:none}
 .rrule:first-child{border-top:0}
 .rrule b{color:var(--accent)}
@@ -2216,7 +2219,7 @@ async function init(){
     state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; state.names=copyNames(p.names); setFaction(p.faction); { const o = checks().out; state.status = !Object.keys(state.items).length?"empty":o.some(c=>c.lvl==="err")?"err":o.some(c=>c.lvl==="approved")?"approved":"ok"; } const up=p.updated; saveCurrent(); p.updated=up||Date.now();
     state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; state.names=keepNm; setFaction(keepF||p.faction); }
   $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
-  $("#foot").innerHTML = pgWrap(`Data from Clash of Rhyfles Faction Profiles ${DATA.meta.profilesVersion} and the Full Book.`) + ` · <a href="#/changes" data-go="#/changes">Rules changelog</a>`;
+  $("#foot").innerHTML = KOFI_LINK + pgWrap(`Data from Clash of Rhyfles Faction Profiles ${DATA.meta.profilesVersion} and the Full Book.`) + ` · <a href="#/changes" data-go="#/changes">Rules changelog</a>`;
   const r = route(location.hash);
   if (r.v==="shared"){ history.replaceState(null,"","#/builder"); openShared(r.arg); persist(); return; }
   showView(r.v, r.arg, false); history.replaceState(null,"",hashFor(r.v,r.arg)); persist();
@@ -2400,7 +2403,10 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-11-01.21";
+// Small "support" link in the footer (shown on every page; quiet, no pop-ups).
+const KOFI_URL = "https://ko-fi.com/vending_machine0890";
+const KOFI_LINK = `<a class="kofi" href="${KOFI_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8zM16 9.5h1.5a2.5 2.5 0 0 1 0 5H16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 11.2c-.9-1-2.4-.3-2 .9.3.9 2 2.2 2 2.2s1.7-1.3 2-2.2c.4-1.2-1.1-1.9-2-.9z" fill="currentColor"/></svg>Support the builder on Ko-fi</a>`;
+const APP_VERSION = "2026-11-01.24";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;

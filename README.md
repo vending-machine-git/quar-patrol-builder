@@ -36,6 +36,10 @@ Every points value and stat was checked by hand against the printed page. Where 
 
 Please open an **Issue** on this repository, or contact **vending_machine** (@tsuiki2664) on Discord. Include the faction, the unit and the page number if you can.
 
+## Support
+
+If the builder helps your games, you can buy me a coffee on [Ko-fi](https://ko-fi.com/vending_machine0890). Thank you!
+
 ## How it's made
 
 The site is a single `index.html` page plus a data file. There's no server, no accounts and no tracking. Saved patrols stay in your own browser.
