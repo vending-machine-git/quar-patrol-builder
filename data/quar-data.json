@@ -4534,11 +4534,9 @@
    "art": "data/art/western-arnyara.jpg",
    "artPage": "Profiles p28",
    "artCrop": {
-    "x": 35.5,
-    "y": 4.2,
-    "w": 26.8,
-    "h": 47.3,
-    "r": 1.667
+    "cx": 48,
+    "cy": 32,
+    "z": 1.6
    }
   },
   {
@@ -7620,11 +7618,9 @@
    "art": "data/art/gloam-hyyn.jpg",
    "artPage": "Profiles p44",
    "artCrop": {
-    "x": 46.1,
-    "y": 2.0,
-    "w": 52.3,
-    "h": 90.0,
-    "r": 1.753
+    "cx": 71,
+    "cy": 50,
+    "z": 1
    }
   },
   {
