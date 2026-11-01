@@ -45,7 +45,7 @@
 html{background:var(--paper)}
 /* Faction colour: --fac is set to the open patrol's faction colour (book table colour); --accent adapts it to the theme */
 :root{--fac:var(--brass)}
-body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce{--accent:color-mix(in oklab, var(--fac) var(--acc-mix), var(--ink)); --accent-soft:color-mix(in oklab, var(--fac) 15%, var(--panel)); --accent-line:color-mix(in oklab, var(--fac) 45%, var(--rule))}
+body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce,.stcard{--accent:color-mix(in oklab, var(--fac) var(--acc-mix), var(--ink)); --accent-soft:color-mix(in oklab, var(--fac) 15%, var(--panel)); --accent-line:color-mix(in oklab, var(--fac) 45%, var(--rule))}
 /* Where supported, keep the book's colours saturated: deepen them on light, brighten them on dark */
 @supports (color: oklch(from red l c h)){
   body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce{--accent:oklch(from var(--fac) min(l, 0.5) calc(c * 1.2) h)}
@@ -84,6 +84,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .track{height:.55em;background:var(--sunk);border-radius:2px;overflow:hidden;margin-top:4px}
 .track i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
 .gauge.over .used{color:var(--bad)} .gauge.over .track i{background:var(--bad)}
+.gauge.approved .used{color:var(--brass)} .gauge.approved .track i{background:var(--brass)}
 .gauge.full .track i{background:var(--brass)}
 
 .viewbar{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:8px 16px;margin:14px 0 10px}
@@ -153,13 +154,39 @@ table.stats td.t{font-family:var(--f-body)}
 .checks{list-style:none;margin:0;padding:8px 12px;display:flex;flex-direction:column;gap:5px;border-bottom:1px solid var(--rule)}
 .checks li{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;font-size:.9em}
 .checks .tag{font-family:var(--f-mono);font-size:.72em;font-weight:600;padding:1px 6px;border-radius:2px;color:var(--on)}
-.checks .err .tag{background:var(--bad)} .checks .warn .tag{background:var(--warn)} .checks .ok .tag{background:var(--ok)}
+.checks .err .tag{background:var(--bad)} .checks .warn .tag{background:var(--warn)} .checks .ok .tag{background:var(--ok)} .checks .approved .tag{background:var(--brass)}
 .plist{padding:4px 12px 8px}
 .prow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 0;border-top:1px dotted var(--rule)}
 .prow:first-of-type{border-top:0}
 .prow.bad .pname b{color:var(--bad)}
 .pname{min-width:0}
 .pname span{color:var(--muted);font-size:.9em}
+.dtag{display:inline-flex;align-items:center;gap:.38em;max-width:100%;border:1.25px solid currentColor;border-radius:.4em .95em .95em .4em;padding:.16em .26em .16em .42em;font-size:.8em;font-weight:600;font-style:normal;letter-spacing:.03em;line-height:1.35;color:var(--ink);background:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:.1em}
+.dtag::before{content:"";flex:0 0 auto;width:.36em;height:.36em;border:1.25px solid currentColor;border-radius:50%}
+.dtag .dtn{border:1px solid currentColor;border-radius:.25em .6em .6em .25em;padding:0 .4em;line-height:1.3;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pnames{display:flex;flex-wrap:wrap;gap:4px 5px;align-items:center}
+.pnames .dtag,.rnames .dtag,.ps-units td.u .nm .dtag{margin:0}
+.prow .pname{display:flex;align-items:flex-start;gap:5px}
+.pnm{min-width:0;flex:1;line-height:1.45}
+.nmbtn{all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:1.45em;height:1.45em;margin-top:0;border-radius:4px;color:var(--muted);border:1px solid var(--rule)}
+.nmbtn svg{width:.92em;height:.92em;display:block}
+.nmbtn.has{color:var(--accent);border-color:var(--accent-line)}
+.nmbtn:hover,.nmbtn.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line)}
+.nmbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.pnames{font-size:.9em;color:var(--ink);margin-top:3px}
+.pnames i{color:var(--muted)}
+.pnedit{grid-column:1/-1;background:var(--sunk);border:1px solid var(--rule);border-radius:3px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.pnrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px;align-items:center}
+.pnrow label{font-size:.78em;font-weight:700;color:var(--muted);min-width:2.2em}
+.pnrow input{font:inherit;padding:4px 7px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);color:var(--ink);min-width:0}
+.nmdice{all:unset;cursor:pointer;font-size:1.05em;padding:2px 6px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);line-height:1.3}
+.nmdice:hover{border-color:var(--ink)}
+.nmdice:focus-visible{outline:2px solid var(--accent)}
+.pnacts{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.rnames{margin:3px 0 6px;display:flex;flex-wrap:wrap;gap:4px 5px;align-items:center;font-size:.95em}
+.rnames i{color:var(--muted)}
+.ps-units td.u .nm{display:flex;flex-wrap:wrap;gap:2px 4px;margin-top:2px;font-size:.9em}
+.gunit header .dtag{font-size:.78em;margin-right:2px}
 .step{display:flex;align-items:center;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
 .step button{width:1.9em;height:1.9em;border:0;background:transparent;cursor:pointer;font-weight:700}
 .step button{transition:background .12s,color .12s}
@@ -509,9 +536,45 @@ body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view=
 .pcard .ptot{display:flex;justify-content:space-between;align-items:baseline;font-variant-numeric:tabular-nums}
 .pcard .ptot b{font-family:var(--f-mono);font-size:1.15em}
 .pill{flex:none;white-space:nowrap;font-family:var(--f-mono);font-size:.72em;font-weight:600;padding:1px 7px;border-radius:2px;color:var(--on)}
-.pill.ok{background:var(--ok)} .pill.err{background:var(--bad)} .pill.empty{background:var(--muted)}
+.pill.ok{background:var(--ok)} .pill.approved{background:var(--brass)} .pill.err{background:var(--bad)} .pill.empty{background:var(--muted)}
 .pcard .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
 .pcard .acts .sp{flex:1}
+.pmove{display:inline-flex;gap:2px}.pmove .btn{padding:5px 9px;font-weight:700}.pmove .btn:disabled{opacity:.35}
+.pgrid .pcard{cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.pcard.dragging{opacity:.28;outline:2px dashed var(--accent);outline-offset:2px;box-shadow:none}
+.pcard.pghost{position:fixed;z-index:1000;margin:0;pointer-events:none;box-sizing:border-box;transform:rotate(1.2deg) scale(1.03);box-shadow:0 14px 34px rgba(0,0,0,.28),0 3px 8px rgba(0,0,0,.18);cursor:grabbing;will-change:left,top}
+body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
+.squadbtn{margin:10px 12px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 10px;background:var(--brass-soft);border-radius:3px;font-size:.9em}
+.btn.sqbtn{display:inline-flex;align-items:center;gap:6px;background:var(--brass);border-color:var(--brass);color:var(--on);font-weight:700;padding:7px 14px;box-shadow:0 2px 0 color-mix(in oklab, var(--brass) 60%, #000)}
+.btn.sqbtn svg{width:1em;height:1em}
+.btn.sqbtn:hover{filter:brightness(1.1)}
+.btn.sqbtn:active{transform:translateY(1px);box-shadow:none}
+.btn.sqbtn.danger{background:var(--bad);border-color:var(--bad);color:var(--on);box-shadow:none}
+.sqdd{margin:10px 12px 0;background:var(--brass-soft);border-radius:3px;font-size:.9em}
+.sqdd>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:6px;padding:8px 10px;user-select:none}
+.sqdd>summary::-webkit-details-marker{display:none}
+.sqdd>summary .chev{display:inline-block;transition:transform .15s;color:var(--muted);font-size:.85em}
+.sqdd[open]>summary .chev{transform:rotate(90deg)}
+.sqdd>summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.sqdd .squadbtn{margin:0;padding:0 10px 10px;background:none;font-size:1em}
+.sqtxt{flex:1;min-width:14em}
+.sqtxt .sqsrc{color:var(--ink);font-weight:700}
+.sqnote{flex:1 0 100%;display:flex;gap:8px;align-items:flex-start;margin:0;padding:7px 10px;border:1.5px solid var(--warn);border-left-width:4px;border-radius:3px;background:color-mix(in oklab, var(--warn) 12%, var(--panel));line-height:1.4;color:var(--ink)}
+.sqnote svg{width:1.25em;height:1.25em;flex:0 0 auto;color:var(--warn);margin-top:.05em}
+.stlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(19em,100%),1fr));gap:10px;padding:4px 0 10px}
+.stcard{border:1px solid var(--rule);border-top:4px solid var(--accent);border-radius:3px;background:var(--panel);padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stcard header{display:flex;align-items:center;gap:8px}
+.stcard header>div{flex:1;min-width:0;display:flex;flex-direction:column}
+.stacts{margin-top:auto;padding-top:2px}
+.stcard ul{list-style:none;margin:0;padding:0;font-size:.92em}
+.stcard li{display:flex;gap:5px;padding:2px 0;border-bottom:1px dotted var(--rule)}
+.stcard li:last-child{border-bottom:0}
+.stcard li .q{font-weight:700;min-width:1.8em}
+.stcard li .v{color:var(--muted)}
+.stcard li .p{margin-left:auto;font-family:var(--f-mono);font-weight:600}
+.stnote{margin:0;font-size:.82em;color:var(--muted);font-style:italic}
+.psort{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px}
+.psort label{font-size:.8em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .pcard.over .track i{background:var(--bad)}
 .hempty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--rule);border-radius:3px}
 .saved-tag{font-size:.82em;color:var(--muted)}
@@ -606,6 +669,9 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
         <div class="impacts"><button class="btn" type="button" id="importBtn">Import</button><label class="btn ghost filebtn">Open .txt file<input type="file" id="importFile" accept=".txt,text/plain"></label><span class="hint" id="importMsg" role="status"></span></div>
       </details>
     </div>
+    <div class="psort" id="psortBar" hidden><label for="pSort">Sort patrols</label><select id="pSort">
+      <option value="edited">Last edited</option><option value="name">Name (A–Z)</option><option value="faction">Faction</option><option value="points">Points (high to low)</option><option value="custom">My order (move them yourself)</option></select>
+      <span class="hint" id="pSortHint"></span></div>
     <div id="pgrid"></div>
   </section>
   <div class="viewbar" id="buildBar">
@@ -621,6 +687,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <div id="view-build" class="build" role="tabpanel" aria-labelledby="tab-build">
     <section class="card" aria-label="Muster roll">
       <header><h2>Muster Roll</h2><span class="hint pg" id="facPages"></span></header>
+      <div id="starterBar"></div>
       <div id="catalog"><p class="empty">Loading profiles…</p></div>
     </section>
     <section class="card" aria-label="Your patrol" id="patrolCard">
@@ -643,7 +710,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <p class="foot" id="foot"></p>
   <footer class="credits" aria-label="Credits">
     <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles (10/26) and remain the property of Zombiesmith.</p>
-    <p>Rules design: Joshua Qualtieri &amp; Anthony Brown · World design: Joshua Qualtieri, Pete Murray, Pete McKenna &amp; Edward McEneely · Art: Joshua Qualtieri</p>
+    <p>Rules design: Joshua Qualtieri &amp; Anthony Brown · World design: Joshua Qualtieri, Pete Murray, Pete McKenna &amp; Edward McEneely · Art: Joshua Qualtieri · Random rhyfler names from Joshua Qualtieri's <a href="https://www.rhyfler.com/files/quar_squad_gen/QuarSquadGenerator.html" target="_blank" rel="noopener">Quar Squad Record Generator</a></p>
     <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith. Please support the creators by getting the rulebooks from <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">zombiesmith.com</a>.<br>Spotted a mistake? Let me know on Discord.</p>
   </footer>
 </div>
@@ -658,11 +725,11 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const STORE = "quar-patrol-builder-v1";
 let DATA = null, FAC = null, UNITS = {};
-let state = {view:"home", status:"empty", name:"", faction:null, limit:300, items:{}, open:{}, saved:[], editingId:null, showPages:false};
+let state = {view:"home", status:"empty", name:"", faction:null, limit:300, items:{}, names:{}, nameOpen:{}, open:{}, saved:[], editingId:null, showPages:false};
 
-function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE) || "null"); if(s){ if(Array.isArray(s.saved)) state.saved = s.saved; state.showPages = !!s.showPages; if (["auto","light","dark"].includes(s.theme)) state.theme = s.theme; } }catch(e){} }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE) || "null"); if(s){ if(Array.isArray(s.saved)) state.saved = s.saved; state.showPages = !!s.showPages; if (["auto","light","dark"].includes(s.theme)) state.theme = s.theme; if (["edited","name","faction","points","custom"].includes(s.sortBy)) state.sortBy = s.sortBy; } }catch(e){} }
 // Only saved patrols and settings are stored. The patrol being edited is kept only when the user presses Save.
-function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({saved: state.saved, showPages: state.showPages, theme: state.theme})); }catch(e){} }
+function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({saved: state.saved, showPages: state.showPages, theme: state.theme, sortBy: state.sortBy})); }catch(e){} }
 
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),Math.max(1800, msg.length*55)); }
 
@@ -695,7 +762,9 @@ function total(){ return Object.entries(state.items).reduce((s,[id,q])=>s+(UNITS
 function checks(){
   const out = [], bad = new Set();
   const t = total();
-  if (t > state.limit) out.push({lvl:"err", kind:"pts", msg:`Over the points limit by ${t-state.limit}.`});
+  const apr = t > state.limit ? approvedStarter() : null;
+  if (apr) out.push({lvl:"approved", kind:"approved", msg:`Approved starter patrol. ${apr.name} is ${apr.over} point${apr.over===1?"":"s"} over the ${state.limit}-point limit, so it isn't technically legal, but this exact list is approved as a starter patrol (from the Quar website). Any other change that goes over the limit is not allowed.`});
+  else if (t > state.limit) out.push({lvl:"err", kind:"pts", msg:`Over the points limit by ${t-state.limit}.`});
   const seenGroups = new Set();
   for (const u of FAC.units){
     const q = state.items[u.id]||0; if(!q) continue;
@@ -743,7 +812,7 @@ function checks(){
     if (state.items[spot.id] > shooters && shooters>0) out.push({lvl:"warn", msg:`More Spotters (${state.items[spot.id]}) than Sharpshooters (${shooters}) to assign them to.`});
   }
   const hasUnits = Object.values(state.items).some(q=>q>0);
-  if (hasUnits && !out.some(c=>c.lvl==="err")) out.unshift({lvl:"ok", msg:`Legal at ${state.limit} points${faMult()>1?" (Force Allowance doubled)":""}.`});
+  if (hasUnits && !out.some(c=>c.lvl==="err" || c.lvl==="approved")) out.unshift({lvl:"ok", msg:`Legal at ${state.limit} points${faMult()>1?" (Force Allowance doubled)":""}.`});
   if (!hasUnits) out.push({lvl:"warn", msg:"Add units from the Muster Roll to start your patrol."});
   return {out, bad};
 }
@@ -840,46 +909,162 @@ function renderCatalog(){
 
 function renderPatrol(){
   const {out, bad} = checks();
-  state.status = !Object.keys(state.items).length ? "empty" : out.some(c=>c.lvl==="err") ? "err" : "ok";
-  $("#checks").innerHTML = out.map(c=>`<li class="${c.lvl}"><span class="tag">${c.lvl==="err"?"FIX":c.lvl==="warn"?"NOTE":"OK"}</span><span>${pgWrap(c.msg)}</span></li>`).join("");
+  state.status = !Object.keys(state.items).length ? "empty" : out.some(c=>c.lvl==="err") ? "err" : out.some(c=>c.lvl==="approved") ? "approved" : "ok";
+  $("#checks").innerHTML = out.map(c=>`<li class="${c.lvl}"><span class="tag">${c.lvl==="err"?"FIX":c.lvl==="warn"?"NOTE":c.lvl==="approved"?"APPROVED":"OK"}</span><span>${pgWrap(c.msg)}</span></li>`).join("");
   const rows = FAC.units.filter(u=>state.items[u.id]>0);
   const n = rows.reduce((a,u)=>a+state.items[u.id],0);
   $("#pCount").textContent = `${n} unit${n===1?"":"s"}`;
   $("#pTitle").textContent = state.name || "Your Patrol";
-  $("#plist").innerHTML = rows.length ? rows.map(u=>{ const q=state.items[u.id]; return `<div class="prow${bad.has(u.id)?" bad":""}" data-id="${u.id}">
-      <div class="pname"><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span></div>
+  $("#plist").innerHTML = rows.length ? rows.map(u=>{ const q=state.items[u.id], nm = namesOf(state.names, u.id, q), named = nm.some(Boolean), open = state.nameOpen[u.id];
+    const title = `<b>${esc(u.name)}</b> <span>${esc(u.variant)}</span>`;
+    const list = named ? `<div class="pnames">${Array.from({length:q},(_,i)=>nm[i]?dtag(nm[i]):`<i>unnamed</i>`).join("")}</div>` : "";
+    const editor = open ? `<div class="pnedit">${Array.from({length:q},(_,i)=>`<div class="pnrow"><label for="nm-${u.id}-${i}">${q>1?`#${i+1}`:"Name"}</label><input id="nm-${u.id}-${i}" data-nm="${u.id}" data-i="${i}" type="text" maxlength="30" value="${esc(nm[i]||"")}" placeholder="No name" autocomplete="off" spellcheck="false"><button type="button" class="nmdice" data-act="nmroll" data-i="${i}" title="Random name" aria-label="Random name for ${q>1?`#${i+1}`:"this rhyfler"}">🎲</button></div>`).join("")}
+      <div class="pnacts">${q>1?`<button type="button" class="btn ghost" data-act="nmall">Randomise all</button>`:""}<button type="button" class="btn ghost" data-act="nmclear">Clear name${q>1?"s":""}</button><button type="button" class="btn" data-act="nmdone">Done</button></div></div>` : "";
+    return `<div class="prow${bad.has(u.id)?" bad":""}" data-id="${u.id}">
+      <div class="pname"><button type="button" class="nmbtn${open?" on":""}${named?" has":""}" data-act="names" aria-expanded="${!!open}" title="${named?"Edit names":(q>1?"Name these rhyflers":"Name this rhyfler")}" aria-label="${named?"Edit names":(q>1?"Name these rhyflers":"Name this rhyfler")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="pnm">${title}${list}</div></div>
       <div class="step"><button data-act="dec" aria-label="Remove one">−</button><output>${q}</output><button data-act="inc" aria-label="Add one">+</button></div>
-      <span class="pts">${u.pts*q}</span></div>`;}).join("")
+      <span class="pts">${u.pts*q}</span>${editor}</div>`;}).join("")
     : `<p class="empty">No units yet. Tap + on the Muster Roll to add units.</p>`;
   const t = total(), g=$("#gauge");
   $("#used").textContent = t;
-  $("#left").textContent = t>state.limit ? `${t-state.limit} over ${state.limit}` : `of ${state.limit} · ${state.limit-t} left`;
+  const apr = t>state.limit ? approvedStarter() : null;
+  $("#left").textContent = apr ? `${t-state.limit} over ${state.limit} · approved starter` : t>state.limit ? `${t-state.limit} over ${state.limit}` : `of ${state.limit} · ${state.limit-t} left`;
   $("#fill").style.width = Math.min(100, t/state.limit*100) + "%";
-  g.classList.toggle("over", t>state.limit); g.classList.toggle("full", t===state.limit);
+  g.classList.toggle("over", t>state.limit && !apr); g.classList.toggle("approved", !!apr); g.classList.toggle("full", t===state.limit);
   $("#mused").textContent = `${t} / ${state.limit}`;
-  $("#mstate").textContent = t>state.limit ? `pts · ${t-state.limit} over` : `pts · ${n} unit${n===1?"":"s"}`;
+  $("#mstate").textContent = apr ? `pts · ${t-state.limit} over (approved)` : t>state.limit ? `pts · ${t-state.limit} over` : `pts · ${n} unit${n===1?"":"s"}`;
   const errs = out.filter(c=>c.lvl==="err"), many = errs.filter(c=>c.kind==="many"), other = errs.filter(c=>!c.kind).length;
   const parts = [];
   if (many.length) parts.push("Too many: " + many.map(c=>c.who).join(", "));
   if (other) parts.push(`${other} other problem${other===1?"":"s"}`);
   $("#mprob").textContent = parts.join(" · "); $("#mprob").hidden = !parts.length;
-  $("#mbar").classList.toggle("over", errs.length>0); $("#mbar").classList.toggle("ptsover", t>state.limit);
+  $("#mbar").classList.toggle("over", errs.length>0); $("#mbar").classList.toggle("ptsover", t>state.limit && !apr);
 }
 
 const facName = id => (DATA.factions.find(f=>f.id===id)||{}).name || id;
 const fmtDate = t => { try{ return new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}); }catch(e){ return ""; } };
 let confirmDel = null;
+// Patrol order on My Patrols (and the Game Tracker list). "custom" keeps the order of state.saved, changed with the arrow buttons.
+function sortedPatrols(){
+  const list = state.saved.filter(Boolean), by = state.sortBy || "edited";
+  const nm = p => (p.name||"").toLowerCase();
+  if (by==="custom") return list;
+  if (by==="name") return list.sort((a,b)=>nm(a).localeCompare(nm(b)));
+  if (by==="faction") return list.sort((a,b)=>facName(a.faction).localeCompare(facName(b.faction)) || nm(a).localeCompare(nm(b)));
+  if (by==="points") return list.sort((a,b)=>(b.limit||0)-(a.limit||0) || (b.total||0)-(a.total||0) || nm(a).localeCompare(nm(b)));
+  return list.sort((a,b)=>(b.updated||0)-(a.updated||0));
+}
+// Drag to reorder (My order only). Mouse: drag straight away. Touch/pen: press and hold ~0.35 s, then drag.
+let pdrag = null, pdragClickBlock = false;
+const pdragCalm = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Slide the other cards from their old spots to their new ones (FLIP) instead of letting them jump.
+function pdragFlip(grid, change){
+  const cards = [...grid.querySelectorAll(".pcard:not(.dragging)")], before = new Map(cards.map(c=>[c, c.getBoundingClientRect()]));
+  change();
+  if (pdragCalm()) return;
+  cards.forEach(c=>{ const a = before.get(c), b = c.getBoundingClientRect(), dx = a.left-b.left, dy = a.top-b.top; if (!dx && !dy) return;
+    c.style.transition = "none"; c.style.transform = `translate(${dx}px,${dy}px)`; c.dataset.anim = "1";
+    requestAnimationFrame(()=>{ c.style.transition = "transform .22s cubic-bezier(.2,.8,.2,1)"; c.style.transform = "";
+      setTimeout(()=>{ c.style.transition = ""; delete c.dataset.anim; }, 240); }); });
+}
+function pdragEnd(commit){
+  const d = pdrag; pdrag = null; if (!d) return; clearTimeout(d.timer);
+  document.body.classList.remove("pdragging");
+  if (!d.started) return;
+  const finish = () => { if (d.ghost) d.ghost.remove(); d.card.classList.remove("dragging"); after(); };
+  const after = () => { if (commit){
+    const ids = [...document.querySelectorAll("#pgrid .pcard")].map(c=>c.dataset.id);
+    const byId = Object.fromEntries(state.saved.filter(Boolean).map(p=>[p.id,p]));
+    state.saved = ids.map(id=>byId[id]).filter(Boolean).concat(state.saved.filter(p=>p && !ids.includes(p.id)));
+    persist(); toast("Order saved");
+  }
+  renderHome(); };
+  pdragClickBlock = true; setTimeout(()=>{ pdragClickBlock = false; }, 0);
+  // Glide the floating card into its new slot, then drop it in.
+  if (d.ghost && !pdragCalm()){ const r = d.card.getBoundingClientRect();
+    d.ghost.style.transition = "left .18s ease-out, top .18s ease-out, transform .18s ease-out, box-shadow .18s";
+    d.ghost.style.left = r.left+"px"; d.ghost.style.top = r.top+"px"; d.ghost.style.transform = "none"; d.ghost.style.boxShadow = "none";
+    setTimeout(finish, 190); }
+  else finish();
+}
+function pdragStart(){ const d = pdrag; if (!d || d.started) return; d.started = true;
+  if (state.sortBy!=="custom"){ state.saved = sortedPatrols(); state.sortBy = "custom"; const sel = $("#pSort"); if (sel) sel.value = "custom"; toast("Switched to My order"); } const r = d.card.getBoundingClientRect(), g = d.card.cloneNode(true);
+  g.classList.add("pghost"); g.removeAttribute("data-id"); g.setAttribute("aria-hidden","true");
+  Object.assign(g.style, {left:r.left+"px", top:r.top+"px", width:r.width+"px", height:r.height+"px"});
+  document.body.appendChild(g); d.ghost = g; d.offX = d.x - r.left; d.offY = d.y - r.top;
+  d.card.classList.add("dragging"); document.body.classList.add("pdragging"); if (navigator.vibrate && d.type!=="mouse") try{ navigator.vibrate(15); }catch(e){} }
+document.addEventListener("input", e=>{ const t = e.target; if (t.tagName==="TEXTAREA" && t.dataset && t.dataset.imp){ impState.text[t.dataset.imp] = t.value; return; } if (!t.dataset || t.dataset.nm==null) return;
+  const id = t.dataset.nm, i = +t.dataset.i; state.names[id] = state.names[id] || []; state.names[id][i] = cleanNm(t.value); updateSaveState(); });
+document.addEventListener("keydown", e=>{ const t = e.target; if (e.key==="Enter" && t.dataset && t.dataset.nm!=null){ e.preventDefault(); state.nameOpen[t.dataset.nm] = false; renderPatrol(); } });
+document.addEventListener("pointerdown", e=>{
+  if (e.pointerType==="mouse" && e.button!==0) return;
+  const card = e.target.closest("#pgrid .pcard"); if (!card || e.target.closest("button,a,input,select,textarea,label")) return;
+  if (e.pointerType==="mouse") e.preventDefault();
+  pdrag = {card, x:e.clientX, y:e.clientY, type:e.pointerType, started:false, timer:null};
+  if (e.pointerType!=="mouse") pdrag.timer = setTimeout(pdragStart, 350);
+});
+document.addEventListener("pointermove", e=>{
+  const d = pdrag; if (!d) return;
+  const moved = Math.hypot(e.clientX-d.x, e.clientY-d.y);
+  if (!d.started){ if (d.type==="mouse"){ if (moved > 5) pdragStart(); else return; } else { if (moved > 10) pdragEnd(false); return; } }
+  e.preventDefault();
+  if (d.ghost){ d.ghost.style.left = (e.clientX - d.offX)+"px"; d.ghost.style.top = (e.clientY - d.offY)+"px"; }
+  const el = document.elementFromPoint(e.clientX, e.clientY), over = el && el.closest("#pgrid .pcard");
+  if (over && over!==d.card && !over.dataset.anim){ const grid = over.parentNode, cards = [...grid.children], from = cards.indexOf(d.card), to = cards.indexOf(over);
+    pdragFlip(grid, ()=>grid.insertBefore(d.card, from < to ? over.nextSibling : over)); }
+  if (e.clientY < 70) window.scrollBy(0, -14); else if (e.clientY > innerHeight - 70) window.scrollBy(0, 14);
+}, {passive:false});
+document.addEventListener("touchmove", e=>{ if (pdrag && pdrag.started) e.preventDefault(); }, {passive:false});
+document.addEventListener("pointerup", ()=>pdragEnd(true));
+document.addEventListener("pointercancel", ()=>pdragEnd(!!(pdrag && pdrag.started)));
+document.addEventListener("contextmenu", e=>{ if (pdrag && e.target.closest("#pgrid .pcard")) e.preventDefault(); });
+document.addEventListener("dragstart", e=>{ if (e.target.closest && e.target.closest("#pgrid .pgrid.custom")) e.preventDefault(); });
+document.addEventListener("click", e=>{ if (pdragClickBlock){ e.stopPropagation(); e.preventDefault(); } }, true);
+// Starter patrols: beginner-friendly lists Joshua Qualtieri published on rhyfler.com/example-patrols (data file "starterPatrols").
+const startersFor = fid => ((DATA && DATA.starterPatrols) || []).map((s,i)=>({...s, i})).filter(s=>!fid || s.faction===fid);
+function starterCard(s, compact){
+  const f = facById(s.faction); if (!f) return "";
+  const units = s.items.map(([id,q])=>{ const u = f.units.find(x=>x.id===id); return u ? {u, q} : null; }).filter(Boolean);
+  const tot = units.reduce((t,x)=>t+x.u.pts*x.q, 0), n = units.reduce((t,x)=>t+x.q, 0);
+  return `<article class="stcard"${f.color?` style="--fac:${f.color}"`:""}>
+    <header>${compact?"":flagImg(f)}<div><b>${esc(s.name)}</b><span class="hint">${compact?"":esc(f.name)+" · "}${tot} pts · ${n} units</span></div></header>
+    <ul>${units.map(x=>`<li><span class="q">${x.q}×</span> ${esc(x.u.name)} <span class="v">${esc(x.u.variant)}</span><span class="p">${x.u.pts*x.q}</span></li>`).join("")}</ul>
+    ${s.note?`<p class="stnote">${esc(s.note)}</p>`:""}
+    <div class="stacts"><button type="button" class="btn" data-starter="${s.i}">Use this patrol</button></div></article>`;
+}
+// Starter patrol banner at the top of the Muster Roll for the faction being built.
+// A starter patrol that is a few points over is "approved" (not legal): only that exact list, at that patrol's normal limit.
+function approvedStarter(items, limit, fid){
+  items = items || state.items; limit = limit==null ? state.limit : limit; fid = fid || (FAC && FAC.id);
+  const st = startersFor(fid).find(s=>s.approvedOver && s.limit===limit && itemsKey(Object.fromEntries(s.items.map(([id,q])=>[id,q])))===itemsKey(items));
+  if (!st || !UNITS) return null;
+  const t = Object.entries(items).reduce((a,[id,q])=>a+(UNITS[id]?UNITS[id].pts*q:0),0);
+  return t > limit && t - limit <= st.approvedOver ? {...st, over: t - limit, total: t} : null;
+}
+function renderStarterBar(){
+  const el = $("#starterBar"); if (!el) return;
+  const prev = el.querySelector("details.sqdd"); if (prev) renderStarterBar.open = prev.open;
+  el.innerHTML = startersFor(FAC && FAC.id).map(st=>{
+    const units = st.items.map(([id,q])=>UNITS[id] ? {u:UNITS[id], q} : null).filter(Boolean);
+    const pts = units.reduce((t,x)=>t+x.u.pts*x.q, 0);
+    const desc = units.map(x=>`${x.q}× ${x.u.name} (${x.u.variant})`).join(", ");
+    const has = Object.keys(state.items).length > 0;
+    return `<details class="sqdd"${renderStarterBar.open?" open":""}><summary><span class="chev">▸</span><b>Starter patrol</b><span class="hint"> · ${esc(st.name)} · ${pts} pts</span></summary><div class="squadbtn"><div class="sqtxt"><span class="hint"><b class="sqsrc">${esc(st.name)}, a beginner-friendly list from the Quar website (rhyfler.com)</b>: ${esc(desc)}.</span></div>
+      <button class="btn sqbtn" type="button" data-starteruse="${st.i}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>${has?"Replace with starter patrol":"Use starter patrol"}</button>
+      ${st.note?`<p class="sqnote" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${esc(st.note)}</span></p>`:""}</div></details>`; }).join("");
+}
 function renderHome(){
-  const list = state.saved.filter(Boolean).sort((a,b)=>(b.updated||0)-(a.updated||0));
-  $("#pgrid").innerHTML = list.length ? `<div class="pgrid">${list.map(p=>{
-    const over = p.total>p.limit, st = p.status || (p.count? "ok":"empty");
-    const pill = st==="empty" ? `<span class="pill empty">EMPTY</span>` : st==="err" ? `<span class="pill err">NEEDS FIXES</span>` : `<span class="pill ok">LEGAL</span>`;
+  const list = sortedPatrols(), custom = state.sortBy==="custom";
+  const bar = $("#psortBar"); if (bar){ bar.hidden = list.length < 2; $("#pSort").value = state.sortBy || "edited"; $("#pSortHint").textContent = custom ? "Drag a patrol to move it (on touch screens, press and hold first), or use the arrows." : ""; }
+  $("#pgrid").innerHTML = list.length ? `<div class="pgrid${custom?" custom":""}">${list.map((p,i)=>{
+    const st = p.status || (p.count? "ok":"empty"), over = p.total>p.limit && st!=="approved";
+    const pill = st==="empty" ? `<span class="pill empty">EMPTY</span>` : st==="err" ? `<span class="pill err">NEEDS FIXES</span>` : st==="approved" ? `<span class="pill approved" title="Approved starter patrol: a few points over, but approved">APPROVED</span>` : `<span class="pill ok">LEGAL</span>`;
     const fc = (facById(p.faction)||{}).color;
-    return `<article class="pcard${over?" over":""}"${fc?` style="--fac:${fc}"`:""}>
+    return `<article class="pcard${over?" over":""}" data-id="${esc(p.id)}"${fc?` style="--fac:${fc}"`:""}>
       <header style="display:flex;justify-content:space-between;gap:8px;align-items:start"><h3>${esc(p.name||"Unnamed patrol")}</h3>${pill}</header>
       <div class="meta"><span class="fmeta">${flagImg(facById(p.faction))}${esc(facName(p.faction))}</span><span>${p.count||0} unit${p.count===1?"":"s"}</span>${p.updated?`<span>Edited ${esc(fmtDate(p.updated))}</span>`:""}</div>
       <div><div class="ptot"><b>${p.total||0} / ${p.limit}</b><span class="hint">${over?`${p.total-p.limit} over`:`${p.limit-(p.total||0)} left`}</span></div><div class="track"><i style="width:${Math.min(100,(p.total||0)/p.limit*100)}%"></i></div></div>
-      <div class="acts"><button class="btn" data-open="${p.id}">Open</button><button class="btn ghost" data-dup="${p.id}">Duplicate</button><span class="sp"></span><button class="btn danger" data-del="${p.id}">${confirmDel===p.id?"Confirm delete":"Delete"}</button></div>
+      <div class="acts">${custom ? `<span class="pmove"><button class="btn ghost" data-move="${p.id}" data-d="-1" aria-label="Move ${esc(p.name||"patrol")} earlier" title="Move earlier"${i===0?" disabled":""}>↑</button><button class="btn ghost" data-move="${p.id}" data-d="1" aria-label="Move ${esc(p.name||"patrol")} later" title="Move later"${i===list.length-1?" disabled":""}>↓</button></span>` : ""}<button class="btn" data-open="${p.id}">Open</button><button class="btn ghost" data-dup="${p.id}">Duplicate</button><span class="sp"></span><button class="btn danger" data-del="${p.id}">${confirmDel===p.id?"Confirm delete":"Delete"}</button></div>
     </article>`;}).join("")}</div>`
   : `<div class="hempty">No patrols yet. Create your first one above.</div>`;
 }
@@ -888,7 +1073,7 @@ const isSavedRec = () => !!state.editingId && state.saved.some(s=>s.id===state.e
 function isDirty(){
   const rec = state.editingId && state.saved.find(s=>s.id===state.editingId);
   if (!rec) return true;
-  return (rec.name||"")!==(state.name||"") || rec.faction!==state.faction || rec.limit!==state.limit || itemsKey(rec.items)!==itemsKey(state.items);
+  return (rec.name||"")!==(state.name||"") || rec.faction!==state.faction || rec.limit!==state.limit || itemsKey(rec.items)!==itemsKey(state.items) || namesKey(rec.names, rec.items)!==namesKey(state.names, state.items);
 }
 function updateSaveState(){
   const d = isDirty(), isNew = !isSavedRec();
@@ -909,11 +1094,12 @@ function tryLeave(t){
   if (isDirty() && !blankNew){ $("#leaveBar").hidden=false; window.scrollTo(0,0); return; }
   leave();
 }
-function leave(){ const t = pendingNav || {v:"home"}; pendingNav = null; $("#leaveBar").hidden=true; state.editingId=null; state.items={}; showView(t.v, t.arg); }
+function leave(){ const t = pendingNav || {v:"home"}; pendingNav = null; $("#leaveBar").hidden=true; state.editingId=null; state.items={}; state.names={}; showView(t.v, t.arg); }
 function saveCurrent(){
   if (!state.editingId) return;
   const rec = state.saved.find(s=>s.id===state.editingId); if(!rec) return;
-  Object.assign(rec, {name: state.name, faction: state.faction, limit: state.limit, items: {...state.items}, total: total(),
+  const nm = {}; Object.keys(state.items).forEach(id=>{ if (hasNames(state.names, id, state.items[id])) nm[id] = namesOf(state.names, id, state.items[id]); });
+  Object.assign(rec, {name: state.name, faction: state.faction, limit: state.limit, items: {...state.items}, names: nm, total: total(),
     count: Object.values(state.items).reduce((a,q)=>a+q,0), status: state.status, updated: Date.now()});
 }
 const facById = id => DATA.factions.find(f=>f.id===id);
@@ -1054,14 +1240,14 @@ function applyDamageRules(g, u){
   if (u.armor){ locsOf(u).forEach(L=>{ const taken = (g.c.loc||{})[L.name]||0; if (taken >= L.max){ if (/tread|wheel/i.test(L.name)) g.st.immob = true; else g.st.disabled = true; } }); }
   if (u.crew && (g.c.dmg||0) >= u.crew.d) g.st.disabled = true;
 }
-function expandUnits(f, items, prefix){
+function expandUnits(f, items, prefix, names){
   const units = [];
-  f.units.forEach(u=>{ const q = (items||{})[u.id]||0; for (let i=1;i<=q;i++) units.push({uid:prefix+u.id+"#"+i, unitId:u.id, f:f.id, n:i, of:q, st:{}, c:{}, tasks:0}); });
+  f.units.forEach(u=>{ const q = (items||{})[u.id]||0; for (let i=1;i<=q;i++) units.push({uid:prefix+u.id+"#"+i, unitId:u.id, f:f.id, n:i, of:q, nm: cleanNm(((names||{})[u.id]||[])[i-1]), st:{}, c:{}, tasks:0}); });
   return units;
 }
 function newGame(pid, o){
   o = o || {};
-  const p = o.force ? {id:o.savedId||null, name:o.force.name || `${(facById(o.force.faction)||{}).name||""} ${o.force.limit}`.trim(), faction:o.force.faction, limit:o.force.limit, items:o.force.items}
+  const p = o.force ? {id:o.savedId||null, name:o.force.name || `${(facById(o.force.faction)||{}).name||""} ${o.force.limit}`.trim(), faction:o.force.faction, limit:o.force.limit, items:o.force.items, names:o.force.names}
     : pid ? state.saved.find(x=>x.id===pid) : {id:null, name:"You", faction:null, limit: Math.max(50, Math.min(5000, o.points||200)), items:{}};
   if (!p) return;
   const f = p.faction ? facById(p.faction) : null; if (p.faction && !f) return; const m = missionOf(o.mission || "custom");
@@ -1069,7 +1255,7 @@ function newGame(pid, o){
   const pl = r => typeof m.pluck==="object" ? (m.pluck[r] ?? 5) : (m.pluck ?? 5);
   const first = m.firstRole && roles ? (m.firstRole===myRole ? "me" : "opp") : (o.first==="opp" ? "opp" : "me");
   game = {v:3, patrolId:p.id, name:p.name||(f&&f.name)||"You", faction:f?f.id:null, limit:p.limit, opp:"", oppForce:null, mission:m.id, role:myRole, oppRole, first,
-    turn:1, round:1, pluck:[pl(myRole), pl(oppRole)], vp:[0,0], units: f ? expandUnits(f, p.items, "") : [], hideOut:false, started:Date.now(), ended:null, log:[]};
+    turn:1, round:1, pluck:[pl(myRole), pl(oppRole)], vp:[0,0], units: f ? expandUnits(f, p.items, "", p.names) : [], hideOut:false, started:Date.now(), ended:null, log:[]};
   saveGame();
 }
 // Opponent's patrol: from a share link (…#/p/faction/limit/items/name) or a "Copy as text" list.
@@ -1082,23 +1268,24 @@ function parseForce(txt){
     const parts = m[1].split("/"), f = facById(parts[0]);
     if (!f) return {error:"That share link's faction isn't in this builder."};
     const items = {}; let missed = 0;
-    String(parts[2]||"").split(",").filter(Boolean).forEach(x=>{ const [id,q] = x.split(":"); if (f.units.some(u=>u.id===id)) items[id] = Math.min(99,(items[id]||0)+Math.max(1,parseInt(q,10)||1)); else missed++; });
+    const names = {};
+    String(parts[2]||"").split(",").filter(Boolean).forEach(x=>{ const [id,q,nm] = x.split(":"); if (f.units.some(u=>u.id===id)){ items[id] = Math.min(99,(items[id]||0)+Math.max(1,parseInt(q,10)||1)); if (nm) names[id] = decNames(nm).slice(0, items[id]); } else missed++; });
     if (!Object.keys(items).length) return {error:"No units in that share link matched the rulebook data."};
     let name = ""; try{ name = decodeURIComponent(parts.slice(3).join("/")); }catch(e){ name = parts.slice(3).join("/"); }
     const limit = parseInt(parts[1],10);
-    return {faction:f.id, name:name.slice(0,80), limit: limit>0 && limit<=5000 ? limit : 300, items, missed: missed ? [`${missed} unknown unit${missed===1?"":"s"}`] : []};
+    return {faction:f.id, name:name.slice(0,80), limit: limit>0 && limit<=5000 ? limit : 300, items, names, missed: missed ? [`${missed} unknown unit${missed===1?"":"s"}`] : []};
   }
   return parseTextList(txt);
 }
 function saveImported(r){
   const f = facById(r.faction); if (!f) return null;
   const tot = Object.entries(r.items).reduce((t,[id,q])=>{ const u = f.units.find(x=>x.id===id); return t + (u ? u.pts*q : 0); }, 0);
-  const rec = {id:newId(), name: r.name || `${f.name} ${r.limit}`, faction:f.id, limit:r.limit, items:{...r.items}, total:tot, updated:Date.now()};
+  const rec = {id:newId(), name: r.name || `${f.name} ${r.limit}`, faction:f.id, limit:r.limit, items:{...r.items}, names:copyNames(r.names), total:tot, updated:Date.now()};
   state.saved.push(rec); persist(); return rec;
 }
 function setOppForce(r){
   const f = facById(r.faction);
-  game.oppForce = {name: r.name || `${f.name} ${r.limit}`, faction:f.id, limit:r.limit, units:expandUnits(f, r.items, "o:")};
+  game.oppForce = {name: r.name || `${f.name} ${r.limit}`, faction:f.id, limit:r.limit, units:expandUnits(f, r.items, "o:", r.names)};
 }
 const unitOf = g => { const f = facById(g.f || game.faction); return f && f.units.find(u=>u.id===g.unitId); };
 const oppLabel = () => game.opp || (game.oppForce && game.oppForce.name) || "Opponent";
@@ -1108,9 +1295,10 @@ const IMPBOX = {
   gMeSetup:{t:"Import Your Patrol (optional)", who:"your", note:"Use this on a tablet or another device where your patrol isn't saved. It's used instead of the patrol picked above.", save:true},
   gMeNew:{t:"Add your patrol", who:"your", note:"Track each of your rhyflers from here on.", btn:["addme","Add my patrol"], save:true}
 };
-const importBox = (id, open) => { const c = IMPBOX[id]; return `<details class="imp gimp" id="${id}Box"${open?" open":""}><summary>${c.t}</summary>
+const impState = {open:{}, text:{}}; // remembers open boxes and pasted text while the tracker redraws
+const importBox = (id, open) => { const c = IMPBOX[id]; open = open || impState.open[id]; return `<details class="imp gimp" id="${id}Box" data-imp="${id}"${open?" open":""}><summary>${c.t}</summary>
   <p class="hint">${c.note?c.note+" ":""}Paste ${c.who} <b>share link</b>, or a list made with <b>Copy as text</b>, or open a .txt file with one in it.</p>
-  <textarea id="${id}Text" rows="4" spellcheck="false" placeholder="https://…/#/p/… or a text list"></textarea>
+  <textarea id="${id}Text" data-imp="${id}" rows="4" spellcheck="false" placeholder="https://…/#/p/… or a text list">${esc(impState.text[id]||"")}</textarea>
   ${c.save?`<label class="gsavechk"><input type="checkbox" id="${id}Save"> Also save it to My Patrols on this device</label>`:""}
   <div class="impacts">${c.btn?`<button class="btn" type="button" data-g="${c.btn[0]}">${c.btn[1]}</button>`:""}<label class="btn ghost filebtn">Open .txt file<input type="file" class="gOppFile" data-target="${id}Text" accept=".txt,text/plain"></label><span class="hint" id="${id}Msg" role="status"></span></div></details>`; };
 // Mission summary on the setup screen (names and numbers only; the rules themselves are in the book).
@@ -1135,7 +1323,7 @@ function renderGame(){
   const head = `<div class="hhead"><h1>Game Tracker</h1><div class="hhead-r">${game?`<div class="gendbtns">${game.ended?"":`<button class="btn gendg" type="button" data-g="endgame">End Game</button>`}<button class="btn gnewg" type="button" data-g="end">New game</button></div>`:""}</div></div>`;
   if (!game || (game.faction && !facById(game.faction))){
     document.body.style.removeProperty("--fac");
-    const list = state.saved.filter(p=>p && Object.values(p.items||{}).some(q=>q>0)).sort((a,b)=>(b.updated||0)-(a.updated||0));
+    const list = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0));
     v.innerHTML = head + `<div class="card"><header><h2>Start a game</h2></header>${`<div class="gsetup">
       <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}<option value="">No patrol: just track the game</option></select></div>
       <div class="field" id="gPtsWrap"${list.length?" hidden":""}><label for="gPts">Patrol size (points)</label><input id="gPts" type="number" min="50" max="5000" step="50" value="200" inputmode="numeric"></div>
@@ -1176,7 +1364,7 @@ function renderGame(){
     const spent = !out && (g.tasks||0) >= 2; if (spent) now.unshift("Spent");
     if (t==="veh" && u.armor && !g.st.unbuttoned && !out) now.unshift("Buttoned Up");
     return `<article class="gunit${out?" out":""}${spent?" spent":""}${g.st.killed?" killed":""}">
-      <header><div><b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span><div class="gstats">${stats}</div></div>${out?"":tasks}</header>
+      <header><div>${g.nm ? `${dtag(g.nm)} <b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>` : `<b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>`}<div class="gstats">${stats}</div></div>${out?"":tasks}</header>
       <div class="gnow">${now.length ? now.map(x=>`<span${x==="Buttoned Up"?' class="info"':x==="Spent"?' class="spentb" title="Used both Tasks this Round. Ready again after End Round."':""}>${esc(x)}</span>`).join("") : `<span class="ready">Ready</span>`}</div>
       ${cx?`<div class="gctrs">${cx}</div>`:""}
       <div class="gchips">${chips}</div>
@@ -1196,7 +1384,7 @@ function renderGame(){
       <div class="ggrid">${shown.map(card).join("") || `<p class="hempty">Every rhyfler is out of the fight.</p>`}</div></details>`;
   };
   const myHtml = me ? force(game.name, me, game.units, `${game.limit} pts`, false, game.limit) : `<div class="card">${importBox("gMeNew", false)}</div>`;
-  const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card">${importBox("gOppNew", true)}</div>`;
+  const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card">${importBox("gOppNew", false)}</div>`;
   if (game.faction) useFaction(game.faction); else document.body.style.removeProperty("--fac");
   const opp = esc(oppLabel());
   v.innerHTML = head + `
@@ -1209,7 +1397,7 @@ function renderGame(){
       <div class="gctr"><span class="gl">&nbsp;</span><button class="btn" type="button" data-g="endround">End Round</button><span class="gsub">${lim && game.turn>=lim && game.round>=RPT() ? "Last Round of the battle" : "End Round clears Task dots"}</span></div>
     </div>`}
     <div class="gcounters two">
-      <div class="gside"><span class="gwho">You</span>${ctr("pluck",0,"Pluck")}${ctr("vp",0,"Victory Points")}${me ? "" : lossBox("my","Your losses")}</div>
+      <div class="gside"><span class="gwho">You</span>${ctr("pluck",0,"Pluck")}${ctr("vp",0,"Victory Points")}${me ? "" : lossBox("my","My losses")}</div>
       <div class="gside"><span class="gwho">${opp}</span>${ctr("pluck",1,"Pluck")}${ctr("vp",1,"Victory Points")}${game.oppForce ? "" : lossBox("opp","Their losses")}</div>
     </div>
   </div>
@@ -1254,7 +1442,7 @@ const TAGS = {
 function logEvent(s, k, d, uid){ game.log = game.log || []; game.log.push({t:game.turn, r:game.round, s, k, d, u:uid}); }
 function unlogEvent(uid, k){ const L = game.log || []; for (let i=L.length-1;i>=0;i--) if (L[i].u===uid && L[i].k===k){ L.splice(i,1); return; } }
 const sideOf = g => game.units.includes(g) ? "me" : "opp";
-const uLabel = g => { const u = unitOf(g); return u ? `${u.name}${g.of>1?" #"+g.n:""}${u.variant?` (${u.variant})`:""}` : "Unknown unit"; };
+const uLabel = g => { const u = unitOf(g); if (!u) return g.nm || "Unknown unit"; return g.nm ? `${g.nm} (${u.name}${u.variant?`, ${u.variant}`:""})` : `${u.name}${g.of>1?" #"+g.n:""}${u.variant?` (${u.variant})`:""}`; };
 const when = e => `Turn ${e.t}, Round ${e.r}`;
 function battleReport(){
   const ms = missionOf(game.mission), [a,b] = game.vp, log = game.log || [], end = game.ended || {turn:game.turn, round:game.round};
@@ -1507,7 +1695,7 @@ document.addEventListener("click", e=>{
     if (otxt){ r = parseForce(otxt); if (r.error){ $("#gOppSetupBox").open = true; gMsg("gOppSetup", r.error, true); return; } }
     if (mine && ($("#gMeSetupSave")||{}).checked){ const rec = saveImported(mine); if (rec) savedId = rec.id; }
     newGame($("#gPatrol").value, {force: mine, savedId, points: +(($("#gPts")||{}).value)||200, mission: ($("#gMission")||{}).value, role: ($("#gRole")||{}).value, first: ($("#gFirst")||{}).value});
-    if (game){ game.opp = opp; if (r) setOppForce(r); saveGame(); renderGame(); window.scrollTo(0,0);
+    if (game){ impState.open = {}; impState.text = {}; game.opp = opp; if (r) setOppForce(r); saveGame(); renderGame(); window.scrollTo(0,0);
       const miss = [...((mine||{}).missed||[]), ...((r||{}).missed||[])];
       toast(miss.length ? `Game started. Couldn't match: ${miss.join(", ")}` : savedId ? "Game started. Your patrol was saved to My Patrols" : "Game started. Good luck!"); }
     return;
@@ -1515,10 +1703,11 @@ document.addEventListener("click", e=>{
   if (!game) return;
   if (a==="addme"){ const r = parseForce(($("#gMeNewText")||{}).value); if (r.error){ gMsg("gMeNew", r.error, true); return; }
     const f = facById(r.faction); if (($("#gMeNewSave")||{}).checked){ const rec = saveImported(r); if (rec) game.patrolId = rec.id; }
-    game.faction = f.id; game.units = expandUnits(f, r.items, ""); game.limit = r.limit; if (!game.name || game.name==="You") game.name = r.name || `${f.name} ${r.limit}`;
+    game.faction = f.id; game.units = expandUnits(f, r.items, "", r.names); game.limit = r.limit; if (!game.name || game.name==="You") game.name = r.name || `${f.name} ${r.limit}`;
+    delete impState.open.gMeNew; delete impState.text.gMeNew;
     toast(r.missed && r.missed.length ? `Patrol added. Couldn't match: ${r.missed.join(", ")}` : `Added ${game.name}`); }
   if (a==="addopp"){ const r = parseForce(($("#gOppNewText")||{}).value); if (r.error){ gMsg("gOppNew", r.error, true); return; }
-    setOppForce(r); toast(r.missed && r.missed.length ? `Opponent added. Couldn't match: ${r.missed.join(", ")}` : `Added ${game.oppForce.name}`); }
+    setOppForce(r); delete impState.open.gOppNew; delete impState.text.gOppNew; toast(r.missed && r.missed.length ? `Opponent added. Couldn't match: ${r.missed.join(", ")}` : `Added ${game.oppForce.name}`); }
   if (a==="removeopp"){ if (!b.dataset.sure){ b.dataset.sure = "1"; b.textContent = "Tap again to remove"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "Remove"; b.classList.remove("danger"); } }, 3500); return; }
     game.oppForce = null; toast("Opponent's patrol removed"); }
   if (a==="end"){ if (b.dataset.sure){ game = null; saveGame(); renderGame(); toast("Game cleared"); } else { b.dataset.sure = "1"; b.textContent = "Tap again to clear this game"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "New game"; b.classList.remove("danger"); } }, 3500); } return; }
@@ -1541,7 +1730,7 @@ document.addEventListener("click", e=>{
     if (key.startsWith("loc:")){ const n = key.slice(4); g.c.loc = g.c.loc || {}; g.c.loc[n] = Math.max(0, Math.min(max, (g.c.loc[n]||0)+d)); }
     else g.c[key] = Math.max(0, Math.min(max, (g.c[key]||0)+d));
     if (d>0) applyDamageRules(g, unitOf(g)); }
-  if (a==="task" && g){ const n = +b.dataset.n; g.tasks = g.tasks>=n ? n-1 : n; if (g.tasks>=2){ const u = unitOf(g); toast(`${u?u.name:"Unit"}${g.of>1?" #"+g.n:""} is Spent until next Round`); } }
+  if (a==="task" && g){ const n = +b.dataset.n; g.tasks = g.tasks>=n ? n-1 : n; if (g.tasks>=2){ const u = unitOf(g); toast(`${g.nm || (u?u.name:"Unit")+(g.of>1?" #"+g.n:"")} is Spent until next Round`); } }
   if (g && before){ const after = NOTE_KEYS.filter(k=>g.st[k]);
     after.filter(k=>!before.includes(k)).forEach(k=>logEvent(sideOf(g), k, 1, g.uid));
     before.filter(k=>!after.includes(k)).forEach(k=>unlogEvent(g.uid, k)); }
@@ -1555,8 +1744,9 @@ document.addEventListener("click", e=>{
   saveGame();
   const y = window.scrollY; renderGame(); window.scrollTo(0, y);
 });
-document.addEventListener("toggle", e=>{ const d = e.target; if (game && d.classList && d.classList.contains("goppl")){ game[(d.dataset.loss||"opp")+"LossOpen"] = d.open; saveGame(); return; } if (game && d.classList && d.classList.contains("gforce")){ game.closed = game.closed || {}; game.closed[d.dataset.side] = !d.open; saveGame(); } }, true);
+document.addEventListener("toggle", e=>{ const d = e.target; if (d.classList && d.classList.contains("sqdd")){ renderStarterBar.open = d.open; return; } if (d.classList && d.classList.contains("gimp") && d.dataset.imp){ impState.open[d.dataset.imp] = d.open; return; } if (game && d.classList && d.classList.contains("goppl")){ game[(d.dataset.loss||"opp")+"LossOpen"] = d.open; saveGame(); return; } if (game && d.classList && d.classList.contains("gforce")){ game.closed = game.closed || {}; game.closed[d.dataset.side] = !d.open; saveGame(); } }, true);
 document.addEventListener("change", e=>{
+  if (e.target.id==="pSort"){ const shown = sortedPatrols(); if (e.target.value==="custom" && state.sortBy!=="custom") state.saved = shown; state.sortBy = e.target.value; persist(); renderHome(); return; }
   if (e.target.id==="gPatrol"){ const w = $("#gPtsWrap"); if (w) w.hidden = !!e.target.value; return; }
   if (e.target.id==="gWinner" && game && game.ended){ game.ended.winner = e.target.value; saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
   if (e.target.id==="gNotes" && game && game.ended){ game.ended.notes = e.target.value.slice(0,2000); saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
@@ -1566,7 +1756,7 @@ document.addEventListener("change", e=>{
     if (!f || !ta) return;
     if (f.size > 200000){ gMsg(id, "That file is too large to be a patrol list.", true); e.target.value = ""; return; }
     if (f.type && !/^text\//.test(f.type) && !/\.txt$/i.test(f.name)){ gMsg(id, "Please choose a .txt file.", true); e.target.value = ""; return; }
-    const rd = new FileReader(); rd.onload = ()=>{ ta.value = rd.result; const r = parseForce(rd.result); gMsg(id, r.error ? r.error : `Ready: ${r.name || facById(r.faction).name}`, !!r.error); e.target.value = ""; }; rd.readAsText(f);
+    const rd = new FileReader(); rd.onload = ()=>{ ta.value = rd.result; if (ta.dataset.imp) impState.text[ta.dataset.imp] = rd.result; const r = parseForce(rd.result); gMsg(id, r.error ? r.error : `Ready: ${r.name || facById(r.faction).name}`, !!r.error); e.target.value = ""; }; rd.readAsText(f);
   }
 });
 function renderChanges(){
@@ -1637,9 +1827,24 @@ function openPatrol(id){
 }
 function editDraft(p){
   $("#leaveBar").hidden=true;
-  state.editingId=p.id||null; state.name=p.name||""; state.limit=p.limit; state.items={...p.items}; state.open={};
+  state.editingId=p.id||null; state.name=p.name||""; state.limit=p.limit; state.items={...p.items}; state.names=copyNames(p.names); state.nameOpen={}; state.open={};
   setFaction(p.faction); syncControls(); showView("edit"); renderAll();
 }
+// Rhyfler names. The random list is the Quar name list from Joshua Qualtieri's Quar Squad Record Generator
+// (data file "quarNames"). Names are kept per unit as an array, one slot per rhyfler: state.names[unitId][i].
+const dtag = n => `<span class="dtag" title="Rhyfler name"><span class="dtn">${esc(n)}</span></span>`;
+const cleanNm = x => String(x||"").replace(/[\r\n|,]/g," ").replace(/\s+/g," ").trim().slice(0,30);
+function usedNames(except){ const u = new Set(); Object.entries(state.names||{}).forEach(([id,a])=>(a||[]).forEach((n,i)=>{ if (n && !(except && except[0]===id && except[1]===i)) u.add(n); })); return u; }
+function randName(used){ const all = (DATA && DATA.quarNames) || []; const pool = all.filter(n=>!used.has(n)); const L = pool.length ? pool : all; return L.length ? L[Math.floor(Math.random()*L.length)] : ""; }
+const namesOf = (names, id, q) => ((names||{})[id]||[]).slice(0, q);
+const hasNames = (names, id, q) => namesOf(names, id, q).some(Boolean);
+const namesKey = (names, items) => Object.keys(items||{}).sort().map(id=>id+"="+namesOf(names,id,items[id]).join("|")).join(";");
+const copyNames = n => JSON.parse(JSON.stringify(n||{}));
+// Share-link encoding: encodeURIComponent leaves ' ( ) * ! ~ alone, and an apostrophe cut links short when pasted
+// into the Game Tracker, so those are encoded too.
+const encLink = x => encodeURIComponent(x||"").replace(/['()*!~]/g, c=>'%'+c.charCodeAt(0).toString(16).toUpperCase());
+const encNames = arr => arr.map(encLink).join("|");
+const decNames = str => String(str||"").split("|").map(x=>{ try{ return cleanNm(decodeURIComponent(x)); }catch(e){ return cleanNm(x); } });
 function newId(){ return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
 
 // Import: read a list made with "Copy as text" and rebuild it. Matches each "3x Name (Variant)" line to a unit profile.
@@ -1658,10 +1863,17 @@ function parseTextList(txt){
   if (!fac){ // fall back to whichever faction recognises the most lines
     let best = 0; DATA.factions.forEach(f=>{ const n = unitLines.filter(x=>find(f,x.label)).length; if (n>best){ best=n; fac=f; } }); }
   if (!fac) return {error:"Couldn't recognise this list. Paste the text exactly as Copy as text made it."};
-  const items = {}, missed = [];
-  unitLines.forEach(x=>{ const u = find(fac,x.label); if (u) items[u.id] = Math.min(99,(items[u.id]||0)+x.q); else missed.push(x.label); });
+  const items = {}, names = {}, missed = []; let last = null;
+  lines.forEach(l=>{
+    const m = l.match(/^\s*(\d+)\s*x\s+(.+?)(?:\s[—–-]\s*\d+\s*pts.*)?$/i);
+    if (m){ const label = m[2].replace(/\s*\[!\]\s*$/,"").trim(), u = find(fac,label); last = null;
+      if (u){ items[u.id] = Math.min(99,(items[u.id]||0)+parseInt(m[1],10)); last = u.id; } else missed.push(label); return; }
+    const nm = l.match(/^\s*Named:\s*(.+)$/i);
+    if (nm && last){ names[last] = (names[last]||[]).concat(nm[1].split(",").map(x=>{ const t = x.trim(); return t==="–"||t==="-" ? "" : cleanNm(t); })); }
+  });
   if (!Object.keys(items).length) return {error:`No units matched the ${fac.name} profiles.`};
-  return {faction:fac.id, name, limit: limit>0 && limit<=5000 ? limit : 300, items, missed};
+  Object.keys(names).forEach(id=>{ names[id] = names[id].slice(0, items[id]||0); if (!names[id].some(Boolean)) delete names[id]; });
+  return {faction:fac.id, name, limit: limit>0 && limit<=5000 ? limit : 300, items, names, missed};
 }
 function importTextList(txt){
   const msg = $("#importMsg");
@@ -1670,23 +1882,24 @@ function importTextList(txt){
   if (r.error){ msg.textContent = r.error; msg.classList.add("bad"); return; }
   msg.textContent = ""; msg.classList.remove("bad"); $("#importText").value = ""; $("#importBox").open = false;
   const f = facById(r.faction);
-  editDraft({id:null, name: r.name || `${f.name} ${r.limit}`, faction:r.faction, limit:r.limit, items:r.items});
+  editDraft({id:null, name: r.name || `${f.name} ${r.limit}`, faction:r.faction, limit:r.limit, items:r.items, names:r.names});
   toast(r.missed.length ? `Imported. Couldn't match: ${r.missed.join(", ")}` : "Patrol imported. Press Save to keep it");
 }
 // Share link: the whole patrol lives in the address, e.g. #/p/gwynt/300/gw-rhyfler:3,gw-milwer/My%20Patrol
 function shareUrl(){
-  const items = FAC.units.filter(u=>state.items[u.id]>0).map(u=>state.items[u.id]>1 ? `${u.id}:${state.items[u.id]}` : u.id).join(",");
-  return location.origin + location.pathname + `#/p/${FAC.id}/${state.limit}/${items}/${encodeURIComponent(state.name||"")}`;
+  const items = FAC.units.filter(u=>state.items[u.id]>0).map(u=>{ const q = state.items[u.id], nm = namesOf(state.names, u.id, q);
+    return nm.some(Boolean) ? `${u.id}:${q}:${encNames(nm)}` : q>1 ? `${u.id}:${q}` : u.id; }).join(",");
+  return location.origin + location.pathname + `#/p/${FAC.id}/${state.limit}/${items}/${encLink(state.name||"")}`;
 }
 function openShared(a){
   const f = facById(a.faction);
   if (!f){ toast("That shared patrol's faction isn't in this builder"); return showView("factions"); }
-  const items = {}; let missing = 0;
-  String(a.items||"").split(",").filter(Boolean).forEach(x=>{ const [id,q] = x.split(":"); const n = Math.max(1, Math.min(99, parseInt(q,10)||1));
-    if (f.units.some(u=>u.id===id)) items[id] = (items[id]||0) + n; else missing++; });
+  const items = {}, names = {}; let missing = 0;
+  String(a.items||"").split(",").filter(Boolean).forEach(x=>{ const [id,q,nm] = x.split(":"); const n = Math.max(1, Math.min(99, parseInt(q,10)||1));
+    if (f.units.some(u=>u.id===id)){ items[id] = (items[id]||0) + n; if (nm) names[id] = decNames(nm).slice(0,n); } else missing++; });
   const limit = a.limit>0 && a.limit<=5000 ? a.limit : 300;
   let name = ""; try{ name = decodeURIComponent(a.name||""); }catch(e){ name = a.name||""; }
-  editDraft({id:null, name: name.slice(0,80) || `${f.name} ${limit}`, faction:f.id, limit, items});
+  editDraft({id:null, name: name.slice(0,80) || `${f.name} ${limit}`, faction:f.id, limit, items, names});
   toast(missing ? `${missing} unit${missing===1?"":"s"} in this link ${missing===1?"is":"are"} no longer in the rulebook data and ${missing===1?"was":"were"} left out` : "Shared patrol opened. Press Save to keep a copy");
 }
 // Compact print sheet: one table row per unit (or per profile), then each rule used in the patrol written out once.
@@ -1707,7 +1920,8 @@ function renderPrintSheet(){
     return t.join("<br>"); };
   const cols = showD ? 6 : 5;
   const body = rows.map(u=>{ const q = state.items[u.id], profs = u.profiles||[], rest = other(u);
-    const head = (extra) => `<td class="q">${q}×</td><td class="u"><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span>${extra||""}</td><td class="p">${u.pts*q}${q>1?`<small> (${u.pts} ea)</small>`:""}</td>`;
+    const nmTxt = hasNames(state.names,u.id,q) ? `<div class="nm">${Array.from({length:q},(_,i)=>{ const n = namesOf(state.names,u.id,q)[i]; return n ? dtag(n) : "<i>–</i>"; }).join("")}</div>` : "";
+    const head = (extra) => `<td class="q">${q}×</td><td class="u"><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span>${extra||""}${nmTxt}</td><td class="p">${u.pts*q}${q>1?`<small> (${u.pts} ea)</small>`:""}</td>`;
     const blank = (lbl) => `<td></td><td class="u sub">${esc(lbl)}</td><td></td>`;
     let h = profs.map((p,i)=>`<tr${i?' class="cont"':""}>${i?blank(p.label||""):head(p.label?` <em>${esc(p.label)}</em>`:"")}<td>${esc(p.sk)}</td><td>${esc(p.mt)}</td><td>${esc(p.ma)}</td><td>${esc(p.t)}</td>${showD?`<td>${esc(p.d||"")}</td>`:""}<td class="w">${p.equip.map(wtxt).join("; ")}</td><td class="a">${esc(p.abilities.join(", "))}</td></tr>`).join("");
     if (rest) h += `<tr${profs.length?' class="cont"':""}>${profs.length?blank(""):head("")}<td colspan="${cols+1}" class="w">${rest}</td></tr>`;
@@ -1717,7 +1931,7 @@ function renderPrintSheet(){
   const rules = new Map(); rows.forEach(u=>allAbilities(u).forEach(a=>{ if(!rules.has(a.name)) rules.set(a.name,a); }));
   const rtext = x => { const m = x.text.match(/^[^:]{1,40}\([^)]*\):\s*/); return (m && x.text.startsWith(x.name)) ? cap(x.text.slice(m[0].length)) : x.text; };
   const rl = [...rules.values()].sort((a,b)=>a.name.localeCompare(b.name));
-  el.innerHTML = `<header class="ps-head"><h1>${esc(state.name||"Unnamed patrol")}</h1><span>${esc(FAC.name)} · <b>${total()} / ${state.limit} pts</b> · ${n} unit${n===1?"":"s"} · ${errs.length?`<b class="bad">NOT LEGAL</b>`:"Legal"}</span></header>
+  el.innerHTML = `<header class="ps-head"><h1>${esc(state.name||"Unnamed patrol")}</h1><span>${esc(FAC.name)} · <b>${total()} / ${state.limit} pts</b> · ${n} unit${n===1?"":"s"} · ${errs.length?`<b class="bad">NOT LEGAL</b>`:approvedStarter()?"<b>Approved starter patrol</b>":"Legal"}</span></header>
   ${errs.length?`<p class="ps-errs">${errs.map(c=>pgWrap(c.msg)).join(" ")}</p>`:""}
   <table class="ps-units"><thead><tr><th>#</th><th>Unit</th><th>Pts</th><th>Sk</th><th>Mt</th><th>MA</th><th>T</th>${showD?"<th>D</th>":""}<th>Weapons (R/Sn, traits)</th><th>Abilities</th></tr></thead>${body}</table>
   ${warns.length?`<p class="ps-notes">${warns.map(c=>pgWrap(c.msg)).join(" ")}</p>`:""}
@@ -1731,11 +1945,11 @@ function renderRoster(){
   if(!rows.length){ v.innerHTML = `<p class="empty">Add units on the Build tab and they'll appear here as reference cards.</p>`; return; }
   const errs = checks().out.filter(c=>c.lvl==="err");
   v.innerHTML = `<div class="rhead"><h2 class="ptitle">${flagImg(FAC,"flag lg")}${esc(state.name||"Unnamed patrol")}</h2><span class="meta">${esc(FAC.name)} · ${t} / ${state.limit} pts · ${rows.reduce((a,u)=>a+state.items[u.id],0)} units</span><button class="btn ghost noprint" type="button" data-print>Print quick-reference sheet</button></div>
-  <p class="rstatus ${errs.length?"bad":"good"}">${errs.length ? `Not legal: ${errs.map(c=>esc(c.msg)).join(" ")}` : `Legal at ${state.limit} points.`}</p>
-  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${rulesText(u)}${abilityList(u)}</article>`).join("")}</div>`;
+  <p class="rstatus ${errs.length?"bad":"good"}">${errs.length ? `Not legal: ${errs.map(c=>esc(c.msg)).join(" ")}` : approvedStarter() ? `Approved starter patrol: ${approvedStarter().over} over ${state.limit} points, so not technically legal, but approved.` : `Legal at ${state.limit} points.`}</p>
+  <div class="rgrid">${rows.map(u=>`<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${state.items[u.id]}×</span>${esc(u.name)}</h3><span class="pts">${u.pts*state.items[u.id]}</span></header><p class="sub">${esc(u.variant)} · ${u.pts} pts each<span class="pg"> · ${esc(u.page)}</span></p>${hasNames(state.names,u.id,state.items[u.id])?`<p class="rnames">${Array.from({length:state.items[u.id]},(_,i)=>{ const n = namesOf(state.names,u.id,state.items[u.id])[i]; return n ? dtag(n) : "<i>unnamed</i>"; }).join("")}</p>`:""}${statBlock(u)}${weaponLine(u)}${rulesText(u)}${abilityList(u)}</article>`).join("")}</div>`;
 }
 
-function renderAll(){ if(state.view==="edit"){ renderCatalog(); renderPatrol(); if(!$("#view-roster").hidden) renderRoster(); updateSaveState(); } }
+function renderAll(){ if(state.view==="edit"){ renderStarterBar(); renderCatalog(); renderPatrol(); if(!$("#view-roster").hidden) renderRoster(); updateSaveState(); } }
 
 function setFaction(id){
   useFaction(id); state.faction = FAC.id;
@@ -1749,9 +1963,10 @@ function textList(){
   const {out, bad} = checks();
   const errs = out.filter(c=>c.lvl==="err"), notes = out.filter(c=>c.lvl==="warn" && rows.length);
   const clean = s => state.showPages ? s : s.replace(/\s*\((?:Profiles|Full Book|Core Rules)[^)]*\)/g, "");
-  const lines = [`${state.name||"Unnamed patrol"} — ${FAC.name}, ${total()}/${state.limit} pts`, rows.length ? (errs.length ? `NOT LEGAL: ${errs.length} problem${errs.length===1?"":"s"} (see below)` : `Legal at ${state.limit} points`) : "", ""];
+  const lines = [`${state.name||"Unnamed patrol"} — ${FAC.name}, ${total()}/${state.limit} pts`, rows.length ? (errs.length ? `NOT LEGAL: ${errs.length} problem${errs.length===1?"":"s"} (see below)` : approvedStarter() ? `APPROVED STARTER PATROL: ${approvedStarter().over} over ${state.limit} points, not technically legal but approved` : `Legal at ${state.limit} points`) : "", ""];
   let cat="";
-  for (const u of rows){ if(u.cat!==cat){ cat=u.cat; lines.push(cat.toUpperCase()); } lines.push(`  ${state.items[u.id]}x ${u.name} (${u.variant}) — ${u.pts*state.items[u.id]} pts${bad.has(u.id)?"  [!]":""}`); }
+  for (const u of rows){ if(u.cat!==cat){ cat=u.cat; lines.push(cat.toUpperCase()); } lines.push(`  ${state.items[u.id]}x ${u.name} (${u.variant}) — ${u.pts*state.items[u.id]} pts${bad.has(u.id)?"  [!]":""}`);
+    const nm = namesOf(state.names, u.id, state.items[u.id]); if (nm.some(Boolean)) lines.push(`      Named: ${Array.from({length:state.items[u.id]},(_,i)=>nm[i]||"–").join(", ")}`); }
   if (errs.length){ lines.push("", "PROBLEMS"); errs.forEach(c=>lines.push(`  [!] ${clean(c.msg)}`)); }
   if (notes.length){ lines.push("", "NOTES"); notes.forEach(c=>lines.push(`  - ${clean(c.msg)}`)); }
   return lines.join("\n");
@@ -1773,9 +1988,9 @@ async function init(){
   else { $("#limit").value = "custom"; $("#customWrap").hidden=false; $("#customPts").value = state.limit; }
   $("#patrolName").value = state.name || "";
   // refresh totals/status for every saved patrol
-  for (const p of state.saved){ const f=DATA.factions.find(x=>x.id===p.faction); if(!f) continue; const keepE=state.editingId, keepN=state.name, keepL=state.limit, keepI=state.items, keepF=state.faction;
-    state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; setFaction(p.faction); state.status = !Object.keys(state.items).length?"empty":checks().out.some(c=>c.lvl==="err")?"err":"ok"; const up=p.updated; saveCurrent(); p.updated=up||Date.now();
-    state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; setFaction(keepF||p.faction); }
+  for (const p of state.saved){ const f=DATA.factions.find(x=>x.id===p.faction); if(!f) continue; const keepE=state.editingId, keepN=state.name, keepL=state.limit, keepI=state.items, keepNm=state.names, keepF=state.faction;
+    state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; state.names=copyNames(p.names); setFaction(p.faction); { const o = checks().out; state.status = !Object.keys(state.items).length?"empty":o.some(c=>c.lvl==="err")?"err":o.some(c=>c.lvl==="approved")?"approved":"ok"; } const up=p.updated; saveCurrent(); p.updated=up||Date.now();
+    state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; state.names=keepNm; setFaction(keepF||p.faction); }
   $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
   $("#foot").innerHTML = pgWrap(`Data from Clash of Rhyfles Faction Profiles ${DATA.meta.profilesVersion} and the Full Book.`) + ` · <a href="#/changes" data-go="#/changes">Rules changelog</a>`;
   const r = route(location.hash);
@@ -1789,16 +2004,33 @@ document.addEventListener("click", e=>{
   const row = b.closest("[data-id]"); const id = row && row.dataset.id;
   const act = b.dataset.act;
   if (act==="toggle"){ state.open[id] = !state.open[id]; renderCatalog(); return; }
-  if (act==="add" || act==="inc"){ state.items[id]=(state.items[id]||0)+1; if(act==="add") toast(`Added ${UNITS[id].name}`); renderAll(); return; }
+  if (act==="names"){ const q = state.items[id]||0; if (!q) return;
+    if (!state.nameOpen[id] && !hasNames(state.names, id, q)){ const a = []; for (let i=0;i<q;i++){ const used = usedNames(); a.forEach(x=>used.add(x)); a.push(randName(used)); } state.names[id] = a; }
+    state.nameOpen[id] = !state.nameOpen[id]; renderPatrol(); updateSaveState();
+    const nb = document.querySelector(`#plist .prow[data-id="${id}"] [data-act="names"]`); if (nb) nb.focus({preventScroll:true}); return; }
+  if (act==="nmroll"){ const i = +b.dataset.i; state.names[id] = state.names[id] || []; state.names[id][i] = randName(usedNames([id,i])); renderPatrol(); updateSaveState(); const db = document.querySelector(`#plist .prow[data-id="${id}"] [data-act="nmroll"][data-i="${i}"]`); if (db) db.focus({preventScroll:true}); return; }
+  if (act==="nmall"){ const q = state.items[id]||0; state.names[id] = []; for (let i=0;i<q;i++) state.names[id][i] = randName(usedNames()); renderPatrol(); updateSaveState(); return; }
+  if (act==="nmclear"){ delete state.names[id]; state.nameOpen[id] = false; renderPatrol(); updateSaveState(); return; }
+  if (act==="nmdone"){ state.nameOpen[id] = false; renderPatrol(); return; }
+  if (act==="add" || act==="inc"){ state.items[id]=(state.items[id]||0)+1; if (hasNames(state.names, id, state.items[id]-1)){ const a = state.names[id]; if (!a[state.items[id]-1]) a[state.items[id]-1] = randName(usedNames()); } if(act==="add") toast(`Added ${UNITS[id].name}`); renderAll(); return; }
   if (act==="remove"){ if(!state.items[id]) return; state.items[id]--; if(!state.items[id]) delete state.items[id]; toast(`Removed ${UNITS[id].name}`); renderAll(); return; }
   if (act==="dec"){ state.items[id]=Math.max(0,(state.items[id]||0)-1); if(!state.items[id]) delete state.items[id]; renderAll(); return; }
   if (b.dataset.open){ openPatrol(b.dataset.open); return; }
+  if (b.dataset.starteruse!=null){ const st = ((DATA.starterPatrols)||[])[+b.dataset.starteruse]; if (!st || st.faction!==FAC.id) return;
+    if (Object.keys(state.items).length && !b.dataset.sure){ b.dataset.sure = "1"; b.dataset.label = b.innerHTML; b.textContent = "Tap again to replace your units"; b.classList.add("danger");
+      setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.innerHTML = b.dataset.label; b.classList.remove("danger"); } }, 3500); return; }
+    state.items = {}; state.names = {}; state.nameOpen = {};
+    st.items.forEach(([id,q])=>{ if (UNITS[id]) state.items[id] = (state.items[id]||0) + q; });
+    if (!state.name || /^\S.* \d+$/.test(state.name) && state.name.startsWith(FAC.name)) { state.name = st.name; $("#patrolName").value = st.name; }
+    renderAll(); toast(`${st.name} loaded. Press Save to keep it`); return; }
   if (b.dataset.build){ const f=facById(b.dataset.build); editDraft({id:null, name:`${f.name} 300`, faction:f.id, limit:300, items:{}}); toast("New patrol: press Save to keep it"); return; }
-  if (b.dataset.dup){ const p=state.saved.find(x=>x.id===b.dataset.dup); if(!p) return; const c={...p, items:{...p.items}, id:newId(), name:(p.name||"Unnamed patrol")+" (copy)", updated:Date.now()}; state.saved.push(c); toast(`Duplicated ${p.name||"patrol"}`); renderHome(); persist(); return; }
+  if (b.dataset.move){ const arr = state.saved, i = arr.findIndex(x=>x && x.id===b.dataset.move), j = i + (+b.dataset.d); if (i<0 || j<0 || j>=arr.length) return;
+    [arr[i], arr[j]] = [arr[j], arr[i]]; persist(); renderHome(); const nb = document.querySelector(`[data-move="${b.dataset.move}"][data-d="${b.dataset.d}"]`); if (nb && !nb.disabled) nb.focus(); return; }
+  if (b.dataset.dup){ const p=state.saved.find(x=>x.id===b.dataset.dup); if(!p) return; const c={...p, items:{...p.items}, names:copyNames(p.names), id:newId(), name:(p.name||"Unnamed patrol")+" (copy)", updated:Date.now()}; state.saved.splice(state.saved.indexOf(p)+1, 0, c); toast(`Duplicated ${p.name||"patrol"}`); renderHome(); persist(); return; }
   if (b.dataset.del){ if(confirmDel!==b.dataset.del){ confirmDel=b.dataset.del; renderHome(); return; }
     const p=state.saved.find(x=>x.id===b.dataset.del); state.saved=state.saved.filter(x=>x.id!==b.dataset.del); if(state.editingId===b.dataset.del) state.editingId=null; confirmDel=null; toast(`Deleted ${p&&p.name||"patrol"}`); renderHome(); persist(); return; }
 });
-$("#clearBtn").addEventListener("click", ()=>{ if(!Object.keys(state.items).length) return; state.items={}; toast("Removed all units"); renderAll(); });
+$("#clearBtn").addEventListener("click", ()=>{ if(!Object.keys(state.items).length) return; state.items={}; state.names={}; state.nameOpen={}; toast("Removed all units"); renderAll(); });
 $("#homeBtn").addEventListener("click", ()=>{ if(DATA) navTo({v:"factions"}); });
 // links inside the page: tabs, faction cards, "All factions"; and jump links on reference pages
 document.addEventListener("click", e=>{
@@ -1925,7 +2157,7 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 
 // Update check: if a newer copy of this page is online, offer a one-tap refresh.
 // Bump APP_VERSION on every release.
-const APP_VERSION = "2026-10-31.110";
+const APP_VERSION = "2026-10-31.135";
 let updDismissed = false;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
