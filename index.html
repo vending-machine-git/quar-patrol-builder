@@ -519,8 +519,11 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 .cllist{margin:6px 0 2px;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;line-height:1.45;max-width:80ch}
 .clfac{font-weight:700;color:var(--accent)}
 .foot a{color:inherit;text-underline-offset:2px}
-.credits .kofi,.kofi{display:flex;width:max-content;align-items:center;gap:5px;margin:4px 0 0;font-size:1.05em;padding:2px 9px 2px 7px;border:1px solid var(--rule);border-radius:999px;text-decoration:none;color:var(--ink);white-space:nowrap;vertical-align:1px;transition:border-color .15s,color .15s}
+.credits .kofi,.kofi{display:flex;width:max-content;align-items:center;gap:5px;margin:0 0 4px;font-size:1.05em;padding:2px 9px 2px 7px;border:1px solid var(--rule);border-radius:999px;text-decoration:none;color:var(--ink);white-space:nowrap;vertical-align:1px;transition:border-color .15s,color .15s}
 .kofi svg{width:1.15em;height:1.15em;color:var(--accent)}
+#kofiSlot{display:flex;flex-wrap:wrap;gap:6px 8px;margin:0 0 6px}
+#kofiSlot .kofi{margin:0}
+.kofi .ext{width:.9em;height:.9em;color:var(--muted)}
 .credits .kofi:hover,.credits .kofi:focus-visible,.kofi:hover,.kofi:focus-visible{border-color:var(--accent);color:var(--accent)}
 .foot .fsrc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 7px}
 .foot .fsl{display:inline-flex;align-items:center;gap:5px}
@@ -671,6 +674,24 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 .fpick-list li[aria-selected="true"]{font-weight:700}
 .fpick-list li.act,.fpick-list li:hover{background:var(--sunk)}
 .ptitle{display:flex;align-items:center;gap:8px;min-width:0}
+.phr{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto}
+.wogbtn{font:inherit;font-size:.78em;font-weight:600;color:#fff;background:#900042;border:0;border-radius:999px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.wogbtn:hover,.wogbtn:focus-visible{background:#b8005a}
+.wog{position:fixed;inset:0;z-index:9999;pointer-events:none;display:grid;place-items:center}
+.wog canvas{position:absolute;inset:0;width:100%;height:100%}
+.wogmsg{position:relative;display:flex;gap:14px;align-items:flex-start;width:min(92vw,600px);box-sizing:border-box;padding:14px 18px 14px 14px;background:#1e1f22;color:#dbdee1;border-radius:10px;box-shadow:0 0 0 3px #900042,0 18px 50px rgba(0,0,0,.55);font-family:"gg sans","Noto Sans","Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.38;text-align:left;animation:wogIn .45s cubic-bezier(.2,1.4,.4,1) both;transition:opacity .6s ease,transform .6s ease}
+.wogmsg .av{width:42px;height:42px;border-radius:50%;flex:0 0 auto;margin-top:2px}
+.wogmsg .wb{min-width:0}
+.wogmsg .wh{display:flex;flex-wrap:wrap;align-items:center;gap:4px 7px;margin-bottom:2px}
+.wogmsg .wh b{color:#f2f3f5;font-weight:600;font-size:1.02em}
+.wogmsg .tag{height:19px;width:auto;border-radius:4px}
+.wogmsg .ts{color:#949ba4;font-size:.76em}
+.wogmsg p{margin:0}
+.wogmsg small{color:#949ba4;font-size:.62em}
+.wog.out .wogmsg{opacity:0;transform:scale(.92) translateY(10px)}
+@keyframes wogIn{from{opacity:0;transform:scale(.6) rotate(-4deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){ .wogmsg{animation:none} }
+@media print{ .wog,.wogbtn{display:none!important} }
 .fmeta{display:inline-flex;align-items:center;gap:6px}
 .fmeta .flag{width:1.6em;height:1.08em}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -754,7 +775,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
       <div id="catalog"><p class="empty">Loading profiles…</p></div>
     </section>
     <section class="card" aria-label="Your patrol" id="patrolCard">
-      <header><div class="ptitle"><span id="pFlag"></span><h2 id="pTitle">Your Patrol</h2></div><span class="hint" id="pCount">0 units</span></header>
+      <header><div class="ptitle"><span id="pFlag"></span><h2 id="pTitle">Your Patrol</h2></div><span class="phr"><button type="button" class="wogbtn" id="wogBtn" hidden title="Replay the celebration">🎉 Do the Wog</button><span class="hint" id="pCount">0 units</span></span></header>
       <ul class="checks" id="checks"></ul>
       <div class="plist" id="plist"></div>
       <div class="pfoot">
@@ -772,10 +793,10 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <div id="printSheet" class="psheet" aria-hidden="true"></div>
   <p class="foot" id="foot"></p>
   <footer class="credits" aria-label="Credits">
+    <p id="kofiSlot"></p>
     <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles (10/26) and remain the property of Zombiesmith.</p>
     <p>Rules design: Joshua Qualtieri &amp; Anthony Brown · World design: Joshua Qualtieri, Pete Murray, Pete McKenna &amp; Edward McEneely · Art: Joshua Qualtieri · Random rhyfler names from Joshua Qualtieri's <a href="https://www.rhyfler.com/files/quar_squad_gen/QuarSquadGenerator.html" target="_blank" rel="noopener">Quar Squad Record Generator</a></p>
-    <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith. Please support the creators by getting the rulebooks from <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">zombiesmith.com</a>.<br>Spotted a mistake? Let me know on Discord.</p>
-    <p id="kofiSlot"></p>
+    <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith.<br>Spotted a mistake? Let me know on Discord.</p>
   </footer>
 </div>
 <div class="mbar" id="mbar"><span class="mleft"><span><span class="mused" id="mused">0 / 300</span> <span id="mstate">pts</span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
@@ -981,7 +1002,7 @@ function renderPatrol(){
   const rows = FAC.units.filter(u=>state.items[u.id]>0);
   const n = rows.reduce((a,u)=>a+state.items[u.id],0);
   $("#pCount").textContent = `${n} unit${n===1?"":"s"}`;
-  $("#pTitle").textContent = state.name || "Your Patrol";
+  $("#pTitle").textContent = state.name || "Your Patrol"; wogCheck();
   $("#plist").innerHTML = rows.length ? rows.map(u=>{ const q=state.items[u.id], nm = namesOf(state.names, u.id, q), named = nm.some(Boolean), open = state.nameOpen[u.id];
     const title = `<b>${esc(u.name)}</b> <span>${esc(u.variant)}</span>`;
     const list = named ? `<div class="pnames">${nm.filter(Boolean).map(dtag).join("")}</div>` : "";
@@ -2231,7 +2252,7 @@ async function init(){
     state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; state.names=copyNames(p.names); setFaction(p.faction); { const o = checks().out; state.status = !Object.keys(state.items).length?"empty":o.some(c=>c.lvl==="err")?"err":o.some(c=>c.lvl==="approved")?"approved":"ok"; } const up=p.updated; saveCurrent(); p.updated=up||Date.now();
     state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; state.names=keepNm; setFaction(keepF||p.faction); }
   $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
-    { const k = $("#kofiSlot"); if (k) k.innerHTML = KOFI_LINK; }
+    { const k = $("#kofiSlot"); if (k) k.innerHTML = ZS_LINK + KOFI_LINK; }
   // Footer:  the data sources as small badges and the changelog link
   $("#foot").innerHTML = `<span class="fsrc"><span class="fsl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.2 5 7.6 4.5 4 4.8v12.6c3.6-.3 6.2.2 8 1.7m0-12.6c1.8-1.5 4.4-2 8-1.7v12.6c-3.6-.3-6.2.2-8 1.7m0-12.6v12.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Data from</span><span class="fbadge">Faction Profiles <b>${esc(DATA.meta.profilesVersion)}</b></span><span class="fbadge">Full Book</span><span class="fdot" aria-hidden="true">·</span><a class="fchg" href="#/changes" data-go="#/changes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.3h4.3M12 8v4.2l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Rules changelog<span class="farr" aria-hidden="true">→</span></a></span>`;
   const r = route(location.hash);
@@ -2365,7 +2386,7 @@ function setShowPages(v, save=true){
   if (save) persist();
 }
 document.addEventListener("change", e=>{ if (e.target.classList && e.target.classList.contains("pgtoggle")) setShowPages(e.target.checked); });
-$("#patrolName").addEventListener("input", e=>{ state.name=e.target.value; $("#pTitle").textContent=state.name||"Your Patrol"; updateSaveState(); });
+$("#patrolName").addEventListener("input", e=>{ state.name=e.target.value; $("#pTitle").textContent=state.name||"Your Patrol"; updateSaveState(); wogCheck(); });
 $("#faction").addEventListener("change", e=>{ setFaction(e.target.value); renderAll(); });
 $("#limit").addEventListener("change", e=>{
   if (e.target.value==="custom"){ $("#customWrap").hidden=false; state.limit = Math.max(50, +$("#customPts").value||300); }
@@ -2420,7 +2441,56 @@ window.addEventListener("resize", ()=>{ if(popFor) hidePop(); });
 // Small "support" link in the footer (shown on every page; quiet, no pop-ups).
 const KOFI_URL = "https://ko-fi.com/vending_machine0890";
 const KOFI_LINK = `<a class="kofi" href="${KOFI_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8zM16 9.5h1.5a2.5 2.5 0 0 1 0 5H16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 11.2c-.9-1-2.4-.3-2 .9.3.9 2 2.2 2 2.2s1.7-1.3 2-2.2c.4-1.2-1.1-1.9-2-.9z" fill="currentColor"/></svg>Support the builder on Ko-fi</a>`;
-const APP_VERSION = "2026-11-01.26";
+/* Easter egg: a Fidwog patrol named "Everyone do the Wog" or a variation (Everybody/Every one/Y'all…, do/does/doing, the/da,
+   wooog, "let's all do the Wog", "Do the Wog, everyone!"; capitals, punctuation and emoji ignored)
+   gets Fidwog-coloured confetti and GamerCouch's Discord message, once per browser. The 🎉 button in the patrol panel replays it,
+   and only shows while the conditions are met. */
+const WOG_KEY = "quar-wog-seen";
+const wogNorm = s => String(s||"").toLowerCase().replace(/[’‘`´']/g,"").replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+const WHO = "(?:every ?(?:one|body|buddy|bod|1)|e1|evry ?(?:one|body)|every ?(?:wog|fidwog)|y ?all|you all|yous|all of (?:you|yall|ya)|all)";
+const DO = "(?:do|doo+|doin|doing|does|did)";
+const THE = "(?:(?:the|da|tha|teh|ze|de|that|this) )?";
+const WOG = "w+o+g+(?:s|gy|gie)?";
+const FILL = "(?:(?:lets|let us|lets all|gotta|must|should|go|now|please|pls|plz|come on|cmon|ok|okay|alright|hey|oi|yo|and|all|just|everybody|everyone) )*";
+const TAIL = "(?:(?: (?:now|please|pls|plz|everyone|everybody|yall|y all|again|all|time|together|yeah|yay|woo+|hoo+|baby|lol|lmao))*)";
+const WOG_RX = new RegExp(`^(?:${FILL}${WHO} ${FILL}${DO} ${THE}${WOG}${TAIL}|${FILL}${DO} ${THE}${WOG} ${WHO}${TAIL}|(?:lets|let us) (?:all )?${DO} ${THE}${WOG}${TAIL})$`);
+const isWog = s => WOG_RX.test(wogNorm(s));
+const wogOn = () => state.view==="edit" && FAC && FAC.id==="fidwog" && isWog(state.name);
+function wogCheck(){
+  const on = wogOn(), b = $("#wogBtn"); if (b) b.hidden = !on;
+  if (!on) return;
+  let seen = false; try{ seen = localStorage.getItem(WOG_KEY)==="1"; }catch(e){}
+  if (!seen){ try{ localStorage.setItem(WOG_KEY,"1"); }catch(e){} wogParty(); }
+}
+function wogParty(){
+  document.querySelectorAll(".wog").forEach(x=>x.remove());
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const wrap = document.createElement("div"); wrap.className = "wog"; wrap.setAttribute("aria-hidden","true");
+  wrap.innerHTML = `<canvas></canvas><div class="wogmsg"><img class="av" src="data/art/extras/gamercouch-avatar.png" alt=""><div class="wb">
+    <div class="wh"><b>GamerCouch</b><img class="tag" src="data/art/extras/quar-tag.png" alt="QUAR"><span class="ts">10/31/2026 7:47 PM</span></div>
+    <p>My fav part is giving them stupid names!</p><p>Everyone do the Wog is so massively stupid. I'm so happy I thought it <small>(edited)</small></p></div></div>`;
+  document.body.appendChild(wrap);
+  const cv = wrap.querySelector("canvas"), cx = cv.getContext("2d"), dpr = Math.min(2, devicePixelRatio||1);
+  const W = innerWidth, H = innerHeight; cv.width = W*dpr; cv.height = H*dpr; cx.scale(dpr,dpr);
+  const cols = ["#900042","#b8005a","#d6336f","#ff7aa8","#ffc2d6","#5e002b","#ffffff"];
+  const N = reduce ? 0 : Math.round(Math.min(220, W/4.5));
+  const P = Array.from({length:N},()=>({x:Math.random()*W, y:-20-Math.random()*H*0.6, vx:(Math.random()-.5)*2.2, vy:2+Math.random()*3.2,
+    w:6+Math.random()*7, h:4+Math.random()*6, r:Math.random()*6.3, vr:(Math.random()-.5)*0.3, sw:Math.random()*6.3, c:cols[Math.floor(Math.random()*cols.length)]}));
+  const t0 = performance.now(), LIFE = 3600;
+  const frame = t => { const el = t-t0; cx.clearRect(0,0,W,H);
+    const fade = el>LIFE-700 ? Math.max(0,(LIFE-el)/700) : 1; cx.globalAlpha = fade;
+    P.forEach(p=>{ p.sw += 0.05; p.x += p.vx + Math.sin(p.sw)*0.9; p.y += p.vy; p.vy = Math.min(p.vy+0.03, 5.5); p.r += p.vr;
+      cx.save(); cx.translate(p.x,p.y); cx.rotate(p.r); cx.scale(1, Math.abs(Math.cos(p.sw*1.3))*0.8+0.2); cx.fillStyle = p.c; cx.fillRect(-p.w/2,-p.h/2,p.w,p.h); cx.restore(); });
+    if (el<LIFE) requestAnimationFrame(frame); };
+  if (N) requestAnimationFrame(frame);
+  // the picture shows for 3 seconds, then fades away
+  setTimeout(()=>wrap.classList.add("out"), 3000);
+  setTimeout(()=>wrap.remove(), Math.max(3700, reduce?3700:LIFE+100));
+}
+$("#wogBtn").addEventListener("click", ()=>{ if (wogOn()) wogParty(); });
+// Zombiesmith (publisher) link, shown beside the Ko-fi button in the credits
+const ZS_LINK = `<a class="kofi zs" href="https://www.zombiesmith.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5C6.8 4.6 8.9 4.5 12 5.6c3.1-1.1 5.2-1 7 0V19c-1.8-1-3.9-1.1-7 0-3.1-1.1-5.2-1-7 0z M12 5.6V19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Get the rulebook and models at Zombiesmith<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8M17 14v5H5V7h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
+const APP_VERSION = "2026-11-01.32";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
