@@ -427,11 +427,13 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
   #patrolCard>.plist{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain}
 }
 @media (max-width:860px){
-  /* Phones and tablets: the header slides away while scrolling down and comes back as soon as you scroll up */
-  .bar{position:sticky;top:0;transition:transform .22s ease, box-shadow .22s ease}
-  .bar.bhide{transform:translateY(calc(-100% - 4px))}
-  .bar.bfloat:not(.bhide){box-shadow:0 4px 14px rgba(0,0,0,.18)}
-  details.catdd.ref{scroll-margin-top:1em}
+  /* Phones and tablets: the header stays at the top while scrolling. Once you scroll down, the Patrol Builder's name / faction / points fields
+     fold away (the points stay in the bottom bar) so only the logo and tabs follow you; they come back at the top of the page. */
+  .bar{position:sticky;top:0;transition:box-shadow .2s ease}
+  .bar.bfloat{box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  .bar.bcompact .controls,.bar.bcompact .gauge{display:none}
+  html{scroll-padding-top:calc(var(--barh,110px) + 8px)}
+  details.catdd.ref{scroll-margin-top:calc(var(--barh,110px) + 10px)}
   .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;gap:12px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper);
     padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
   .mbar .mused{font-family:var(--f-mono);font-weight:600;font-size:1.1em;font-variant-numeric:tabular-nums}
@@ -3037,7 +3039,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-02.60";
+const APP_VERSION = "2026-11-02.61";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3064,18 +3066,15 @@ init();
 })();
 (()=>{ const bar=document.querySelector(".bar"), vb=document.getElementById("buildBar"); if(!bar) return; const set=()=>{ const r=document.documentElement.style; r.setProperty("--barh", bar.offsetHeight+"px"); if(vb && vb.offsetHeight) r.setProperty("--vbh", vb.offsetHeight+"px"); }; set(); if(window.ResizeObserver){ const o=new ResizeObserver(set); o.observe(bar); if(vb) o.observe(vb); } else addEventListener("resize", set); })();
 
-// Phones and tablets: hide the header while scrolling down, bring it back when scrolling up (never while typing in it or with its menu open)
-(()=>{ const bar=document.querySelector(".bar"); if(!bar) return; const mq=matchMedia("(max-width:860px)"); let lastY=scrollY, acc=0, ticking=false;
+// Phones and tablets: keep the header at the top; fold the builder fields away once scrolled down (keeping the page still), back at the top
+(()=>{ const bar=document.querySelector(".bar"); if(!bar) return; const mq=matchMedia("(max-width:860px)"); let ticking=false;
   const busy=()=>{ const a=document.activeElement; return (a && bar.contains(a) && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) || !!document.querySelector("#tsPop:not([hidden])"); };
-  const show=()=>bar.classList.remove("bhide");
-  const run=()=>{ ticking=false; const y=Math.max(0, scrollY), d=y-lastY; lastY=y;
-    if (!mq.matches){ bar.classList.remove("bhide","bfloat"); return; }
+  const run=()=>{ ticking=false; const y=Math.max(0, scrollY);
+    if (!mq.matches){ bar.classList.remove("bfloat","bcompact"); return; }
     bar.classList.toggle("bfloat", y>4);
-    if (y <= bar.offsetHeight){ acc=0; show(); return; }
-    if ((d>0) !== (acc>0)) acc=0; acc+=d;
-    if (acc > 24 && !busy()) bar.classList.add("bhide");
-    else if (acc < -12) show(); };
+    if (!bar.classList.contains("bcompact")){ const h0=bar.offsetHeight; if (y > h0 + 40 && !busy()){ bar.classList.add("bcompact"); const d=h0-bar.offsetHeight; if (d>0) scrollTo(0, Math.max(0, y-d)); } }
+    else if (y < 8) bar.classList.remove("bcompact"); };
   addEventListener("scroll", ()=>{ if(!ticking){ ticking=true; requestAnimationFrame(run); } }, {passive:true});
-  bar.addEventListener("focusin", show); addEventListener("hashchange", ()=>{ show(); lastY=scrollY; acc=0; });
+  addEventListener("hashchange", ()=>requestAnimationFrame(run));
   (mq.addEventListener ? mq.addEventListener("change", run) : mq.addListener(run)); })();
 </script>
