@@ -427,7 +427,11 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
   #patrolCard>.plist{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain}
 }
 @media (max-width:860px){
-  .bar{position:static}
+  /* Phones and tablets: the header slides away while scrolling down and comes back as soon as you scroll up */
+  .bar{position:sticky;top:0;transition:transform .22s ease, box-shadow .22s ease}
+  .bar.bhide{transform:translateY(calc(-100% - 4px))}
+  .bar.bfloat:not(.bhide){box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  details.catdd.ref{scroll-margin-top:1em}
   .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;gap:12px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper);
     padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
   .mbar .mused{font-family:var(--f-mono);font-weight:600;font-size:1.1em;font-variant-numeric:tabular-nums}
@@ -3033,7 +3037,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-02.59";
+const APP_VERSION = "2026-11-02.60";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3059,4 +3063,19 @@ setTimeout(checkForUpdate, 4000); setInterval(checkForUpdate, 20*60*1000);
 init();
 })();
 (()=>{ const bar=document.querySelector(".bar"), vb=document.getElementById("buildBar"); if(!bar) return; const set=()=>{ const r=document.documentElement.style; r.setProperty("--barh", bar.offsetHeight+"px"); if(vb && vb.offsetHeight) r.setProperty("--vbh", vb.offsetHeight+"px"); }; set(); if(window.ResizeObserver){ const o=new ResizeObserver(set); o.observe(bar); if(vb) o.observe(vb); } else addEventListener("resize", set); })();
+
+// Phones and tablets: hide the header while scrolling down, bring it back when scrolling up (never while typing in it or with its menu open)
+(()=>{ const bar=document.querySelector(".bar"); if(!bar) return; const mq=matchMedia("(max-width:860px)"); let lastY=scrollY, acc=0, ticking=false;
+  const busy=()=>{ const a=document.activeElement; return (a && bar.contains(a) && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) || !!document.querySelector("#tsPop:not([hidden])"); };
+  const show=()=>bar.classList.remove("bhide");
+  const run=()=>{ ticking=false; const y=Math.max(0, scrollY), d=y-lastY; lastY=y;
+    if (!mq.matches){ bar.classList.remove("bhide","bfloat"); return; }
+    bar.classList.toggle("bfloat", y>4);
+    if (y <= bar.offsetHeight){ acc=0; show(); return; }
+    if ((d>0) !== (acc>0)) acc=0; acc+=d;
+    if (acc > 24 && !busy()) bar.classList.add("bhide");
+    else if (acc < -12) show(); };
+  addEventListener("scroll", ()=>{ if(!ticking){ ticking=true; requestAnimationFrame(run); } }, {passive:true});
+  bar.addEventListener("focusin", show); addEventListener("hashchange", ()=>{ show(); lastY=scrollY; acc=0; });
+  (mq.addEventListener ? mq.addEventListener("change", run) : mq.addListener(run)); })();
 </script>
