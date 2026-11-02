@@ -524,12 +524,23 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 #kofiSlot{display:flex;flex-wrap:wrap;gap:6px 8px;margin:0 0 6px}
 #kofiSlot .kofi{margin:0}
 .kofi .ext{width:.9em;height:.9em;color:var(--muted)}
+/* Backup bar (My Patrols, Narrative) */
+.bkbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px;padding:8px 12px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);font-size:.92em}
+.bkbar.due{border-color:var(--warn);background:color-mix(in oklab, var(--warn) 10%, var(--panel))}
+.bkt{display:inline-flex;align-items:center;gap:8px;color:var(--muted)}
+.bkbar.due .bkt{color:var(--ink)}
+.bkt svg{width:1.2em;height:1.2em;flex:0 0 auto;color:var(--accent)}
+.bkb{display:flex;flex-wrap:wrap;gap:6px}
+.bkfile{display:inline-flex;align-items:center;cursor:pointer}
+.bkslot:empty{display:none}
+@media print{ .bkslot{display:none!important} }
 /* Narrative */
 .beta{display:inline-block;font-family:var(--f-body,inherit);font-size:.62em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:.22em .45em;border:1.5px solid currentColor;border-radius:3px;vertical-align:.25em;color:var(--brass);margin-left:.15em}
 .navtab .beta{font-size:.68em;vertical-align:.15em;padding:.18em .35em;border-width:1px}
 h1 .beta{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
 @media (max-width:520px){ .navtab .beta{font-size:.5em;padding:.15em .25em;margin-left:1px;vertical-align:.55em;letter-spacing:.04em} .mainnav .navtab{padding-left:6px;padding-right:6px;font-size:min(12.5px, 2.95vw);letter-spacing:.02em} }
 @media (max-width:370px){ .mainnav .navtab{padding-left:4px;padding-right:4px;letter-spacing:0} }
+@media (max-width:520px){ .mainnav{overflow-x:auto;scrollbar-width:none} .mainnav::-webkit-scrollbar{display:none} .navtab{flex:0 0 auto} }
 .nstart{padding:12px;display:flex;flex-direction:column;gap:10px}
 .nstart .hint{margin:0;max-width:70ch}
 .nrow{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end}
@@ -818,7 +829,8 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <section id="view-narr" class="home" aria-label="Narrative"></section>
   <section id="view-home" class="home" aria-label="My patrols">
     <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
-    <details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>They won't appear on your other devices or browsers, and clearing your browsing data (cookies and site data) or using a private window will erase them. To keep a backup, use <b>Share link</b> or <b>Copy as text</b> and save the result somewhere safe; you can bring a text list back with <b>Import a patrol from text</b> below.</p></details>
+    <details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>They won't appear on your other devices or browsers, and clearing your browsing data (cookies and site data) or using a private window will erase them. Use <b>Save backup file</b> now and then: it keeps your patrols, stories and the game in progress in one file, and <b>Load backup file</b> brings them back, on this device or another. To share a single patrol, use <b>Share link</b> or <b>Copy as text</b>.</p></details>
+    <div class="bkslot" id="bkHome"></div>
     <div class="card">
       <header><h2>New Patrol</h2></header>
       <form class="newp" id="newForm">
@@ -1241,6 +1253,7 @@ function renderStarterBar(){
       ${st.note?`<p class="sqnote" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${esc(st.note)}</span></p>`:""}</div></details>`; }).join("");
 }
 function renderHome(){
+  { const bk = $("#bkHome"); if (bk) bk.innerHTML = backupBar(); }
   const list = sortedPatrols(), custom = state.sortBy==="custom";
   const bar = $("#psortBar"); if (bar){ bar.hidden = list.length < 2; $("#pSort").value = state.sortBy || "custom"; $("#pSortHint").textContent = custom ? "Drag a patrol to move it (on touch screens, press and hold first)." : "Choose My order to drag patrols into your own order.";
     const by = state.sortBy || "custom"; $("#pSortDirTxt").textContent = custom ? "Flip order" : SORT_DIR[by][(state.sortRev||{})[by] ? 1 : 0];
@@ -1434,11 +1447,11 @@ function renderNarrative(id){
   const f = facById(s.faction); if (f && f.color) document.body.style.setProperty("--fac", f.color);
   renderStory(v, s);
 }
-const NARR_WARN = `<p class="savewarn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Your stories are saved only in this browser, on this device.</b> Use <b>Save backup file</b> now and then to keep them safe, and <b>Load backup file</b> to bring them to another device.</span></p>`;
+const NARR_WARN = `<p class="savewarn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Your stories are saved only in this browser, on this device.</b> Use <b>Save backup file</b> now and then (it keeps your patrols, stories and the game in progress in one file), and <b>Load backup file</b> to bring them back or to another device.</span></p>`;
 function renderNarrList(v){
   const pats = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0) && facById(p.faction));
   const list = [...narr.stories].sort((a,b)=>(b.updated||0)-(a.updated||0));
-  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="beta">Beta</span></h1></div>${NARR_WARN}
+  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="beta">Beta</span></h1></div>${NARR_WARN}<div class="bkslot">${backupBar()}</div>
   <div class="card"><header><h2>Start a story</h2></header><div class="nstart">
     <p class="hint">Pick one of your patrols. It's copied into a <b>story patrol</b> of its own, so changing one never changes the other. Give every rhyfler a backstory and set out who's friends, rivals, family or sweethearts. This is all for storytelling: it doesn't change any rules or stats.</p>
     ${pats.length ? `<div class="nrow"><div class="field"><label for="nPatrol">Patrol</label><select id="nPatrol">${pats.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc(facById(p.faction).name)} · ${p.total||0} pts</option>`).join("")}</select></div><button class="btn" type="button" data-n="new">Start story</button></div>`
@@ -1449,7 +1462,6 @@ function renderNarrList(v){
       return `<article class="ncard" style="--fac:${esc((f&&f.color)||"#6b5d45")}"><button class="nopen" type="button" data-n="open" data-id="${esc(s.id)}">${flagImg(f)}<span><b>${esc(s.name||"Untitled story")}</b><span class="hint">${esc(f?f.name:"")} · ${s.chars.length} rhyfler${s.chars.length===1?"":"s"} · ${s.rels.length} relationship${s.rels.length===1?"":"s"}${fallen?` · ${fallen} fallen`:""}</span><span class="hint">Updated ${new Date(s.updated||s.created).toLocaleDateString()}</span></span></button>
         <button class="btn ghost ndel${narrUI.confirmDel===s.id?" warn":""}" type="button" data-n="del" data-id="${esc(s.id)}">${narrUI.confirmDel===s.id?"Tap again to delete":"Delete"}</button></article>`; }).join("")}</div>`
       : `<p class="hint nempty">No stories yet. Start one from a patrol above.</p>`}
-    <div class="nback"><button class="btn ghost" type="button" data-n="export"${narr.stories.length?"":" disabled"}>Save backup file</button><label class="btn ghost nfile">Load backup file<input type="file" id="nImport" accept=".json,application/json" hidden></label></div>
   </div>`;
 }
 function relChip(s, r, cid){ const T = REL[r.type], other = r.a===cid ? r.b : r.a, pips = T.tiers.length;
@@ -1517,7 +1529,6 @@ document.addEventListener("input", e=>{
 document.addEventListener("change", e=>{
   const el = e.target; if (!el.closest || !el.closest("#view-narr")) return;
   const s = storyById(narrUI.story);
-  if (el.id==="nImport"){ narrImport(el.files && el.files[0]); el.value = ""; return; }
   if (el.id==="nRelB" && narrUI.editRel){ narrUI.editRel.b = el.value; renderNarrative(narrUI.story); return; }
   if (el.id==="nRelKind" && narrUI.editRel){ narrUI.editRel.kind = el.value; return; }
   if (s && el.dataset.nc==="fallen"){ const c = s.chars.find(x=>x.id===el.closest(".nchar").dataset.cid); if (c){ c.fallen = el.checked; el.closest(".nchar").classList.toggle("fallen", c.fallen); narrTouch(s); } return; }
@@ -1529,7 +1540,6 @@ document.addEventListener("click", e=>{
   if (a==="new"){ const p = state.saved.find(x=>x.id===$("#nPatrol").value); const st = p && storyFromPatrol(p); if (!st) return; narr.stories.push(st); narrSave(); toast("Story started. Your patrol stays as it was."); showView("narr", st.id); return; }
   if (a==="open"){ showView("narr", b.dataset.id); return; }
   if (a==="del"){ const id = b.dataset.id; if (narrUI.confirmDel===id){ narr.stories = narr.stories.filter(x=>x.id!==id); narrUI.confirmDel = null; narrSave(); toast("Story deleted"); } else { narrUI.confirmDel = id; setTimeout(()=>{ if (narrUI.confirmDel===id){ narrUI.confirmDel = null; if (state.view==="narr" && !narrUI.story) renderNarrative(); } }, 4000); } renderNarrative(); return; }
-  if (a==="export"){ narrExport(); return; }
   if (!s) return;
   const card = b.closest(".nchar"), c = card && s.chars.find(x=>x.id===card.dataset.cid);
   if (a==="roll" && c){ const used = new Set(s.chars.map(x=>x.name)); c.name = randName(used); narrTouch(s); renderNarrative(s.id); return; }
@@ -1551,26 +1561,74 @@ document.addEventListener("click", e=>{
     s.rels.push(rec); narrUI.editRel = null; narrTouch(s); renderNarrative(s.id); toast("Relationship saved"); return; }
 });
 document.addEventListener("keydown", e=>{ if (e.key==="Escape" && narrUI.editRel && state.view==="narr"){ narrUI.editRel = null; renderNarrative(narrUI.story); } });
-function narrExport(){
-  const blob = new Blob([JSON.stringify({app:"quar-patrol-builder", kind:"narrative", v:1, saved:new Date().toISOString(), stories:narr.stories}, null, 1)], {type:"application/json"});
-  const url = URL.createObjectURL(blob), l = document.createElement("a"); l.href = url; l.download = `Quar stories backup ${new Date().toISOString().slice(0,10)}.json`;
-  document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 2000); toast("Backup file saved");
+
+/* ---------- Backups ----------
+   One file with everything this browser holds for the builder: saved patrols, Narrative stories and the game in progress.
+   "Last backup" is remembered so we can nudge gently when there are changes that aren't in a backup yet. */
+const BK_KEY = "quar-backup-last", BK_DUE_DAYS = 14;
+const bkLast = () => { try{ return +localStorage.getItem(BK_KEY) || 0; }catch(e){ return 0; } };
+function bkLatestChange(){ let t = 0; (state.saved||[]).forEach(p=>{ t = Math.max(t, +p.updated||0); }); narr.stories.forEach(x=>{ t = Math.max(t, +x.updated||0); }); return t; }
+function bkAgo(ms){ const d = Math.floor((Date.now()-ms)/864e5); if (d<1) return "today"; if (d===1) return "yesterday"; if (d<14) return `${d} days ago`; if (d<60) return `${Math.floor(d/7)} weeks ago`; return `${Math.floor(d/30)} months ago`; }
+function backupBar(){
+  const last = bkLast(), changed = bkLatestChange(), has = (state.saved||[]).length || narr.stories.length;
+  const unsaved = has && changed > last;
+  const due = unsaved && (!last || Date.now()-last > BK_DUE_DAYS*864e5);
+  const txt = !last ? (has ? "No backup yet. Save one so your patrols and stories are safe." : "No backup yet.")
+    : `Last backup: ${bkAgo(last)}${unsaved ? (due ? ". You've made changes since, worth saving a new one." : " (you've made changes since)") : ". Everything's backed up."}`;
+  return `<div class="bkbar${due?" due":""}"><span class="bkt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${esc(txt)}</span>
+    <span class="bkb"><button class="btn${due?"":" ghost"}" type="button" data-bk="save"${has||game?"":" disabled"}>Save backup file</button><label class="btn ghost bkfile">Load backup file<input type="file" data-bk="load" accept=".json,application/json" hidden></label></span></div>`;
 }
-function narrImport(file){
-  if (!file) return; if (file.size > 3e6){ toast("That file is too big to be a stories backup"); return; }
-  const fr = new FileReader(); fr.onload = ()=>{ let d; try{ d = JSON.parse(fr.result); }catch(e){ toast("That isn't a stories backup file"); return; }
-    if (!d || d.kind!=="narrative" || !Array.isArray(d.stories)){ toast("That isn't a stories backup file"); return; }
-    let added = 0, updated = 0;
-    d.stories.forEach(x=>{ if (!x || typeof x!=="object" || !Array.isArray(x.chars) || !facById(x.faction)) return;
-      const clean = {id:String(x.id||narrId()), name:String(x.name||"Story").slice(0,60), faction:x.faction, limit:+x.limit||0, from:String(x.from||"").slice(0,60), created:+x.created||Date.now(), updated:+x.updated||Date.now(), notes:String(x.notes||"").slice(0,6000),
-        chars:x.chars.filter(c=>c&&typeof c==="object").slice(0,200).map(c=>({id:String(c.id), unitId:String(c.unitId||""), name:cleanNm(c.name), backstory:String(c.backstory||"").slice(0,4000), fallen:!!c.fallen})),
-        rels:(Array.isArray(x.rels)?x.rels:[]).filter(r=>r&&REL[r.type]).slice(0,2000).map(r=>({id:String(r.id), a:String(r.a), b:String(r.b), type:r.type, tier:Math.max(0,Math.min(REL[r.type].tiers.length-1, +r.tier||0)), kind:r.kind?String(r.kind):undefined, note:String(r.note||"").slice(0,140)}))};
-      const i = narr.stories.findIndex(s=>s.id===clean.id);
-      if (i>=0){ if ((narr.stories[i].updated||0) < clean.updated){ narr.stories[i] = clean; updated++; } } else { narr.stories.push(clean); added++; } });
-    narrSave(); renderNarrative(); toast(added||updated ? `Loaded: ${added} new, ${updated} updated` : "Nothing new in that backup"); };
+function bkRefresh(){ document.querySelectorAll(".bkslot").forEach(x=>{ x.innerHTML = backupBar(); }); }
+function backupSave(){
+  const data = {app:"quar-patrol-builder", kind:"full", v:1, saved:new Date().toISOString(), patrols:state.saved||[], stories:narr.stories, game:game||null};
+  const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], {type:"application/json"})), l = document.createElement("a");
+  l.href = url; const dt = new Date(), ymd = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+  l.download = `Quar Patrol Builder backup ${ymd}.json`; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  try{ localStorage.setItem(BK_KEY, String(Date.now())); }catch(e){}
+  bkRefresh(); toast("Backup file saved: your patrols, stories and game");
+}
+// Stories from a backup: add new ones, replace one only if the backup's copy is newer
+function narrMerge(list){
+  let added = 0, updated = 0;
+  (list||[]).forEach(x=>{ if (!x || typeof x!=="object" || !Array.isArray(x.chars) || !facById(x.faction)) return;
+    const clean = {id:String(x.id||narrId()), name:String(x.name||"Story").slice(0,60), faction:x.faction, limit:+x.limit||0, from:String(x.from||"").slice(0,60), created:+x.created||Date.now(), updated:+x.updated||Date.now(), notes:String(x.notes||"").slice(0,6000),
+      chars:x.chars.filter(c=>c&&typeof c==="object").slice(0,200).map(c=>({id:String(c.id), unitId:String(c.unitId||""), name:cleanNm(c.name), backstory:String(c.backstory||"").slice(0,4000), fallen:!!c.fallen})),
+      rels:(Array.isArray(x.rels)?x.rels:[]).filter(r=>r&&REL[r.type]).slice(0,2000).map(r=>({id:String(r.id), a:String(r.a), b:String(r.b), type:r.type, tier:Math.max(0,Math.min(REL[r.type].tiers.length-1, +r.tier||0)), kind:r.kind?String(r.kind):undefined, note:String(r.note||"").slice(0,140)}))};
+    const i = narr.stories.findIndex(s=>s.id===clean.id);
+    if (i>=0){ if ((narr.stories[i].updated||0) < clean.updated){ narr.stories[i] = clean; updated++; } } else { narr.stories.push(clean); added++; } });
+  return {added, updated};
+}
+// Patrols from a backup: only known factions and units; add new ones, replace one only if the backup's copy is newer
+function patrolMerge(list){
+  let added = 0, updated = 0; state.saved = state.saved || [];
+  (list||[]).forEach(p=>{ if (!p || typeof p!=="object") return; const f = facById(p.faction); if (!f) return;
+    const items = {}; Object.entries(p.items||{}).forEach(([id,q])=>{ q = Math.floor(+q); if (q>0 && f.units.some(u=>u.id===id)) items[id] = Math.min(99, q); });
+    const names = {}; Object.entries(p.names||{}).forEach(([id,a])=>{ if (items[id] && Array.isArray(a)) names[id] = a.slice(0, items[id]).map(cleanNm); });
+    const clean = {id:String(p.id||("p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6))), name:String(p.name||"").slice(0,60), faction:f.id, limit:Math.max(50, Math.min(5000, +p.limit||300)), items, names, updated:+p.updated||Date.now()};
+    const i = state.saved.findIndex(x=>x.id===clean.id);
+    if (i>=0){ if ((+state.saved[i].updated||0) < clean.updated){ state.saved[i] = Object.assign({}, state.saved[i], clean); updated++; } } else { state.saved.push(clean); added++; } });
+  return {added, updated};
+}
+function backupLoad(file){
+  if (!file) return; if (file.size > 5e6){ toast("That file is too big to be a builder backup"); return; }
+  const fr = new FileReader(); fr.onload = ()=>{ let d; try{ d = JSON.parse(fr.result); }catch(e){ toast("That isn't a backup file from this builder"); return; }
+    if (!d || d.app!=="quar-patrol-builder" || !["full","narrative"].includes(d.kind)){ toast("That isn't a backup file from this builder"); return; }
+    const P = d.kind==="full" ? patrolMerge(d.patrols) : {added:0, updated:0}, S = narrMerge(d.stories);
+    let g = "";
+    if (d.kind==="full" && d.game && typeof d.game==="object" && Array.isArray(d.game.units)){ if (!game){ game = d.game; saveGame(); g = " and the game in progress"; } else if (JSON.stringify(game)!==JSON.stringify(d.game)) g = ". Your current game was kept (finish or end it to load the one in the backup)"; }
+    persist(); narrSave();
+    { const t = Date.parse(d.saved||""); if (t && t > bkLast()) try{ localStorage.setItem(BK_KEY, String(Math.min(t, Date.now()))); }catch(e){} }
+    const n = (k, w, ws) => k ? `${k} ${k===1?w:ws}` : "", parts = [n(P.added,"patrol added","patrols added"), n(P.updated,"patrol updated","patrols updated"), n(S.added,"story added","stories added"), n(S.updated,"story updated","stories updated")].filter(Boolean);
+    if (!parts.length && !g.startsWith(" and")){ toast(`Nothing new in that backup: everything in it is already here${g}`); return; }
+    const msg = `Backup loaded: ${parts.join(", ") || "nothing new"}${g}.`;
+    // reload so every page (patrol checks, totals, the tracker) is rebuilt from the loaded data
+    try{ sessionStorage.setItem("quar-bk-msg", msg); }catch(e){} location.reload(); };
   fr.readAsText(file);
 }
-
+document.addEventListener("click", e=>{ const b = e.target.closest('[data-bk="save"]'); if (b){ backupSave(); } });
+document.addEventListener("change", e=>{ const el = e.target; if (el.matches && el.matches('[data-bk="load"]')){ backupLoad(el.files && el.files[0]); el.value = ""; } });
+// Ask the browser to keep this site's storage (no prompt in most browsers; it's simply granted or not)
+try{ if (navigator.storage && navigator.storage.persist) navigator.storage.persisted().then(p=>{ if (!p) navigator.storage.persist(); }).catch(()=>{}); }catch(e){}
 /* ---------- Game Tracker ----------
    Statuses from Core Rules p5 (Ready, Engaged, Overwatch, Gobsmacked, Prone, Out of Action) and the Full Book
    (Rattled and Disabled for mounts, crews and vehicles; Killed). Each commander starts with 5 Pluck (Full Book p128).
@@ -2800,7 +2858,8 @@ try{ new IntersectionObserver(es=>{ if (es.some(e=>e.isIntersecting)) kofiShine(
 addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true});
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
-const APP_VERSION = "2026-11-01.43";
+setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
+const APP_VERSION = "2026-11-01.45";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
