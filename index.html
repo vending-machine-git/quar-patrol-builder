@@ -891,7 +891,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
     <p id="kofiSlot"></p>
     <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles and remain the property of Zombiesmith. Unit and weapon profiles from the <i>Clash of Rhyfles</i> Full Rulebook are used with permission from Joshua Qualtieri.</p>
     <p>Rules design: Joshua Qualtieri &amp; Anthony Brown · World design: Joshua Qualtieri, Pete Murray, Pete McKenna &amp; Edward McEneely · Art: Joshua Qualtieri · Random rhyfler names from Joshua Qualtieri's <a href="https://www.rhyfler.com/files/quar_squad_gen/QuarSquadGenerator.html" target="_blank" rel="noopener">Quar Squad Record Generator</a></p>
-    <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith.<br>Spotted a mistake? Let me know on Discord.</p>
+    <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith.<br>Spotted a mistake? Let me know on Discord.<br>Visits are counted anonymously with <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter</a> (no cookies, nothing personal).</p>
   </footer>
 </div>
 <div class="mbar" id="mbar"><span class="mleft"><span><span class="mused" id="mused">0 / 300</span> <span id="mstate">pts</span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
@@ -1283,6 +1283,7 @@ function updateSaveState(){
   const t = $("#savedTag"); t.textContent = isNew ? "Not saved yet" : d ? "Unsaved changes" : "Saved"; t.classList.toggle("dirty", d);
 }
 function savePatrol(){
+  try{ gcEvent(isSavedRec() ? "patrol-updated" : "patrol-saved"); }catch(e){}
   if (!isSavedRec()){ state.editingId = newId(); state.saved.push({id: state.editingId}); }
   if (!state.name){ state.name = `${FAC.name} ${state.limit}`; $("#patrolName").value = state.name; $("#pTitle").textContent = state.name; }
   saveCurrent(); persist(); updateSaveState(); toast("Patrol saved");
@@ -1369,6 +1370,7 @@ function showView(v, arg, push=true){
   else { $("#tab-build").click(); }
   const h = hashFor(v,arg); if (push && location.hash!==h) history.pushState(null,"",h);
   window.scrollTo(0,0); if (typeof kofiReset==="function") kofiReset();
+  try{ gcPage(v, v==="ref" ? arg : v==="narr" ? arg : null); }catch(e){}
 }
 function navTo(t){ if (state.view==="edit") tryLeave(t); else showView(t.v, t.arg); }
 const slug = c => c.toLowerCase().replace(/[^a-z0-9]+/g,"-");
@@ -1537,7 +1539,7 @@ document.addEventListener("change", e=>{
 document.addEventListener("click", e=>{
   const b = e.target.closest("[data-n]"); if (!b || !b.closest("#view-narr")) { if (e.target.classList && e.target.classList.contains("nmodal")){ narrUI.editRel = null; renderNarrative(narrUI.story); } return; }
   const a = b.dataset.n, s = storyById(narrUI.story);
-  if (a==="new"){ const p = state.saved.find(x=>x.id===$("#nPatrol").value); const st = p && storyFromPatrol(p); if (!st) return; narr.stories.push(st); narrSave(); toast("Story started. Your patrol stays as it was."); showView("narr", st.id); return; }
+  if (a==="new"){ const p = state.saved.find(x=>x.id===$("#nPatrol").value); const st = p && storyFromPatrol(p); if (!st) return; narr.stories.push(st); narrSave(); gcEvent("story-started"); toast("Story started. Your patrol stays as it was."); showView("narr", st.id); return; }
   if (a==="open"){ showView("narr", b.dataset.id); return; }
   if (a==="del"){ const id = b.dataset.id; if (narrUI.confirmDel===id){ narr.stories = narr.stories.filter(x=>x.id!==id); narrUI.confirmDel = null; narrSave(); toast("Story deleted"); } else { narrUI.confirmDel = id; setTimeout(()=>{ if (narrUI.confirmDel===id){ narrUI.confirmDel = null; if (state.view==="narr" && !narrUI.story) renderNarrative(); } }, 4000); } renderNarrative(); return; }
   if (!s) return;
@@ -1562,6 +1564,24 @@ document.addEventListener("click", e=>{
 });
 document.addEventListener("keydown", e=>{ if (e.key==="Escape" && narrUI.editRel && state.view==="narr"){ narrUI.editRel = null; renderNarrative(narrUI.story); } });
 
+/* ---------- Visit counter (GoatCounter: anonymous, no cookies) ----------
+   Only on the real site (github.io), never in previews or local copies. Each page counts as its own path;
+   story ids, patrol contents and share-link details are never sent. A few actions are counted as events. */
+const GC_ON = /(^|\.)github\.io$/i.test(location.hostname);
+if (GC_ON){ try{ const sc = document.createElement("script"); sc.async = true; sc.src = "https://gc.zgo.at/count.js";
+  sc.setAttribute("data-goatcounter", "https://quarbuilder.goatcounter.com/count"); sc.setAttribute("data-goatcounter-settings", '{"no_onload": true}');
+  document.head.appendChild(sc); }catch(e){} }
+const gcQueue = [];
+function gcSend(o){ if (!GC_ON) return; if (window.goatcounter && window.goatcounter.count){ try{ window.goatcounter.count(o); }catch(e){} } else if (gcQueue.length < 20){ gcQueue.push(o); if (gcQueue.length===1) gcFlush(); } }
+function gcFlush(n=0){ if (window.goatcounter && window.goatcounter.count){ gcQueue.splice(0).forEach(o=>{ try{ window.goatcounter.count(o); }catch(e){} }); } else if (n < 40) setTimeout(()=>gcFlush(n+1), 250); }
+let gcLast = "";
+function gcPage(v, arg){
+  const path = v==="ref" ? `/faction/${arg}` : v==="factions" ? "/factions" : v==="changes" ? "/changes" : v==="game" ? "/game" : v==="narr" ? (arg ? "/narrative/story" : "/narrative") : v==="edit" ? "/builder/edit" : v==="shared" ? "/shared-patrol" : "/builder";
+  if (path===gcLast) return; gcLast = path;
+  const title = v==="ref" ? ((facById(arg)||{}).name || "Faction") : ({"/factions":"Factions","/changes":"Rules changelog","/game":"Game Tracker","/narrative":"Narrative","/narrative/story":"Narrative: a story","/builder/edit":"Patrol Builder: editing","/shared-patrol":"Opened a share link","/builder":"My Patrols"})[path];
+  gcSend({path, title});
+}
+const gcEvent = name => gcSend({path: name, title: name, event: true});
 /* ---------- Backups ----------
    One file with everything this browser holds for the builder: saved patrols, Narrative stories and the game in progress.
    "Last backup" is remembered so we can nudge gently when there are changes that aren't in a backup yet. */
@@ -1585,7 +1605,7 @@ function backupSave(){
   l.href = url; const dt = new Date(), ymd = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
   l.download = `Quar Patrol Builder backup ${ymd}.json`; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 2000);
   try{ localStorage.setItem(BK_KEY, String(Date.now())); }catch(e){}
-  bkRefresh(); toast("Backup file saved: your patrols, stories and game");
+  bkRefresh(); toast("Backup file saved: your patrols, stories and game"); gcEvent("backup-saved");
 }
 // Stories from a backup: add new ones, replace one only if the backup's copy is newer
 function narrMerge(list){
@@ -1622,7 +1642,7 @@ function backupLoad(file){
     if (!parts.length && !g.startsWith(" and")){ toast(`Nothing new in that backup: everything in it is already here${g}`); return; }
     const msg = `Backup loaded: ${parts.join(", ") || "nothing new"}${g}.`;
     // reload so every page (patrol checks, totals, the tracker) is rebuilt from the loaded data
-    try{ sessionStorage.setItem("quar-bk-msg", msg); }catch(e){} location.reload(); };
+    gcEvent("backup-loaded"); try{ sessionStorage.setItem("quar-bk-msg", msg); }catch(e){} setTimeout(()=>location.reload(), 300); };
   fr.readAsText(file);
 }
 document.addEventListener("click", e=>{ const b = e.target.closest('[data-bk="save"]'); if (b){ backupSave(); } });
@@ -2297,7 +2317,7 @@ document.addEventListener("click", e=>{
   const b = e.target.closest("[data-g]"); if (!b || !$("#view-game").contains(b)) return;
   const a = b.dataset.g;
   if (b.closest("summary")) e.preventDefault();
-  if (a==="start"){
+  if (a==="start"){ try{ gcEvent("game-started"); }catch(e){}
     const opp = (($("#gOpp")||{}).value||"").trim().slice(0,40), otxt = (($("#gOppSetupText")||{}).value||"").trim();
     let r = null, mine = null, savedId = null; const mtxt = (($("#gMeSetupText")||{}).value||"").trim();
     if (mtxt){ mine = parseForce(mtxt); if (mine.error){ $("#gMeSetupBox").open = true; gMsg("gMeSetup", mine.error, true); return; } }
@@ -2330,7 +2350,7 @@ document.addEventListener("click", e=>{
     else if (lim && game.turn >= lim){ toast("That was the last Round of the battle. Press End Game to see the result"); }
     else { game.turn++; game.round = 1; toast(`Turn ${game.turn} begins: reshuffle the Activation Deck`); } }
   if (a==="endgame"){ if (!b.dataset.sure){ b.dataset.sure = "1"; b.textContent = "Tap again to end"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "End Game"; b.classList.remove("danger"); } }, 3500); return; }
-    game.ended = {turn: game.turn, round: game.round, at: Date.now(), winner: (game.lastEnd||{}).winner || "auto", notes: (game.lastEnd||{}).notes || ""}; toast("Battle over"); }
+    game.ended = {turn: game.turn, round: game.round, at: Date.now(), winner: (game.lastEnd||{}).winner || "auto", notes: (game.lastEnd||{}).notes || ""}; try{ gcEvent("game-ended"); }catch(e){} toast("Battle over"); }
   if (a==="resume"){ game.lastEnd = {winner: game.ended.winner, notes: game.ended.notes}; game.ended = null; }
   const g = b.dataset.u && allGameUnits().find(x=>x.uid===b.dataset.u);
   const before = g ? NOTE_KEYS.filter(k=>g.st[k]) : null;
@@ -2819,6 +2839,7 @@ function wogCheck(){
   if (!seen){ try{ localStorage.setItem(WOG_KEY,"1"); }catch(e){} wogParty(); }
 }
 function wogParty(){
+  try{ gcEvent("everyone-do-the-wog"); }catch(e){}
   document.querySelectorAll(".wog").forEach(x=>x.remove());
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const wrap = document.createElement("div"); wrap.className = "wog"; wrap.setAttribute("aria-hidden","true");
@@ -2859,7 +2880,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-01.45";
+const APP_VERSION = "2026-11-01.46";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
