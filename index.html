@@ -454,7 +454,7 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 }
 /* home */
 body.on-home .controls, body.on-home .gauge, body.on-home #buildBar, body.on-home #view-build, body.on-home #view-roster, body.on-home .mbar{display:none!important}
-body:not([data-view="home"]) #view-home, body:not([data-view="factions"]) #view-factions, body:not([data-view="ref"]) #view-ref, body:not([data-view="changes"]) #view-changes, body:not([data-view="game"]) #view-game{display:none}
+body:not([data-view="home"]) #view-home, body:not([data-view="factions"]) #view-factions, body:not([data-view="ref"]) #view-ref, body:not([data-view="changes"]) #view-changes, body:not([data-view="game"]) #view-game, body:not([data-view="narr"]) #view-narr{display:none}
 /* main tabs */
 .mainnav{grid-column:1/-1;display:flex;gap:2px;margin:0 0 calc(-15px / 1.15)}
 .navtab{padding:6px 14px 7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.82em;color:var(--muted);text-decoration:none;border-bottom:3px solid transparent}
@@ -524,6 +524,77 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 #kofiSlot{display:flex;flex-wrap:wrap;gap:6px 8px;margin:0 0 6px}
 #kofiSlot .kofi{margin:0}
 .kofi .ext{width:.9em;height:.9em;color:var(--muted)}
+/* Narrative */
+.beta{display:inline-block;font-family:var(--f-body,inherit);font-size:.62em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:.22em .45em;border:1.5px solid currentColor;border-radius:3px;vertical-align:.25em;color:var(--brass);margin-left:.15em}
+.navtab .beta{font-size:.68em;vertical-align:.15em;padding:.18em .35em;border-width:1px}
+h1 .beta{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
+@media (max-width:520px){ .navtab .beta{font-size:.5em;padding:.15em .25em;margin-left:1px;vertical-align:.55em;letter-spacing:.04em} .mainnav .navtab{padding-left:6px;padding-right:6px;font-size:min(12.5px, 2.95vw);letter-spacing:.02em} }
+@media (max-width:370px){ .mainnav .navtab{padding-left:4px;padding-right:4px;letter-spacing:0} }
+.nstart{padding:12px;display:flex;flex-direction:column;gap:10px}
+.nstart .hint{margin:0;max-width:70ch}
+.nrow{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end}
+.nrow .field{min-width:min(100%,22em)}
+.nlist{display:flex;flex-direction:column;gap:8px;padding:12px}
+.ncard{display:flex;align-items:center;gap:10px;border:1px solid var(--rule);border-left:5px solid var(--fac);border-radius:3px;padding:8px 10px;background:var(--panel)}
+.nopen{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.nopen:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.nopen>span{display:flex;flex-direction:column;min-width:0}
+.nopen b{font-size:1.08em;overflow-wrap:anywhere}
+.nopen .flag{width:44px;height:30px;object-fit:cover;border:1px solid var(--rule);flex:0 0 auto}
+.ndel.warn,.nrdel.warn{border-color:var(--bad);color:var(--bad)}
+.nempty{padding:12px;margin:0}
+.nback{display:flex;flex-wrap:wrap;gap:8px;padding:0 12px 12px}
+.nfile{display:inline-flex;align-items:center;cursor:pointer}
+.nhb{padding:12px;display:flex;flex-direction:column;gap:10px}
+.nhb .hint{margin:0}
+.nhb textarea,.nchar textarea{width:100%;box-sizing:border-box;resize:vertical;font:inherit;line-height:1.4}
+#nName{max-width:30em}
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,22em),1fr));gap:14px}
+.nchar>header{align-items:center}
+.nch{display:flex;flex-direction:column;gap:3px;min-width:0}
+.nch .dtag{align-self:flex-start}
+.nfall{display:inline-flex;align-items:center;gap:5px;font-size:.8em;color:var(--muted);cursor:pointer;white-space:nowrap}
+.nchar.fallen{opacity:.72}
+.nchar.fallen .dtn{text-decoration:line-through;text-decoration-color:var(--bad)}
+.ncb{padding:10px 12px 12px;display:flex;flex-direction:column;gap:10px}
+.nnm{display:flex;gap:8px;align-items:end}
+.nnm .field{flex:1}
+.ndice{padding:4px 9px}
+.nrels h4,.nover h4{margin:0 0 6px;font-size:.72em;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.nrels ul,.nover ul{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}
+.nrel{display:flex;align-items:center;gap:8px;border:1px solid color-mix(in oklab, var(--rc) 45%, var(--rule));border-left:4px solid var(--rc);border-radius:3px;padding:5px 6px 5px 8px;background:color-mix(in oklab, var(--rc) 8%, var(--panel))}
+.nri{font-size:1.05em;flex:0 0 auto}
+.nrt{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:0 6px;align-items:baseline}
+.nrt b{color:color-mix(in oklab, var(--rc) 70%, var(--ink))}
+.nro{font-weight:600}
+.nrn{flex-basis:100%;font-size:.85em;color:var(--muted);font-style:italic}
+.npips{display:inline-flex;gap:2px;flex:0 0 auto}
+.npips i{width:7px;height:7px;border-radius:50%;border:1px solid var(--rc);display:block}
+.npips i.on{background:var(--rc)}
+.nrx{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:1em;padding:2px 4px}
+.nrx:hover{color:var(--ink)}
+.nadd{align-self:flex-start}
+.nover{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,20em),1fr));gap:12px 20px}
+.nover section{border-left:4px solid var(--rc);padding-left:10px}
+.nover li{font-size:.92em}
+.nover li span{color:color-mix(in oklab, var(--rc) 70%, var(--ink));font-weight:600}
+.nover li i{color:var(--muted)}
+.nmodal{position:fixed;inset:0;z-index:60;background:rgba(10,12,8,.55);display:flex;align-items:flex-start;justify-content:center;padding:6vh 12px;overflow:auto}
+.nmbox{background:var(--panel);border:1px solid var(--rule);border-top:6px solid var(--rc);border-radius:4px;width:min(100%,640px);padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.nmbox h3{margin:0}
+.nwho{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.ntypes{display:flex;flex-wrap:wrap;gap:6px}
+.ntype{display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:600;padding:5px 11px;border:1.5px solid color-mix(in oklab, var(--rc) 50%, var(--rule));border-radius:999px;background:transparent;color:var(--ink);cursor:pointer}
+.ntype.on{background:var(--rc);border-color:var(--rc);color:#fff}
+.ntiers{display:flex;flex-direction:column;gap:5px}
+.ntier{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:4px 10px;text-align:left;font:inherit;padding:6px 10px;border:1px solid var(--rule);border-radius:3px;background:transparent;color:var(--ink);cursor:pointer}
+.ntier span:last-child{color:var(--muted);font-size:.88em}
+.ntier.on{border-color:var(--rc);background:color-mix(in oklab, var(--rc) 12%, var(--panel));box-shadow:inset 3px 0 0 var(--rc)}
+.nswap{align-self:flex-start;margin-top:4px}
+.nmact{display:flex;gap:8px;align-items:center}
+.nmact span{flex:1}
+@media (max-width:560px){ .ntier{grid-template-columns:auto 1fr} .ntier span:last-child{grid-column:1/-1} .nmodal{padding:12px 8px} }
+@media print{ .nmodal{display:none!important} }
 /* Shimmer: a light sweep + soft glow when the buttons come into view (once per page view) */
 #kofiSlot .kofi{position:relative;overflow:hidden;isolation:isolate}
 #kofiSlot .kofi::after{content:"";position:absolute;top:0;bottom:0;left:0;width:60%;pointer-events:none;z-index:-1;transform:translateX(-160%) skewX(-20deg);
@@ -732,7 +803,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
         </div>
       </div>
     </div>
-    <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a></nav>
+    <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a><a class="navtab" href="#/narrative" data-go="#/narrative" data-nav="narr">Narrative <span class="beta">Beta</span></a></nav>
   </div>
 </div>
 
@@ -744,6 +815,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <section id="view-ref" aria-label="Faction reference"></section>
   <section id="view-changes" class="home" aria-label="Rules changelog"></section>
   <section id="view-game" class="home" aria-label="Game tracker"></section>
+  <section id="view-narr" class="home" aria-label="Narrative"></section>
   <section id="view-home" class="home" aria-label="My patrols">
     <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
     <details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>They won't appear on your other devices or browsers, and clearing your browsing data (cookies and site data) or using a private window will erase them. To keep a backup, use <b>Share link</b> or <b>Copy as text</b> and save the result somewhere safe; you can bring a text list back with <b>Import a patrol from text</b> below.</p></details>
@@ -805,7 +877,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <p class="foot" id="foot"></p>
   <footer class="credits" aria-label="Credits">
     <p id="kofiSlot"></p>
-    <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles and remain the property of Zombiesmith.</p>
+    <p><b>Clash of Rhyfles © Zombiesmith 2025.</b> Quar and Clash of Rhyfles are created and published by <a href="https://www.zombiesmith.com" target="_blank" rel="noopener">Zombiesmith</a>. All rules summaries, unit profiles, faction flags and artwork in this builder are taken from the <i>Clash of Rhyfles</i> Full Book and Faction Profiles and remain the property of Zombiesmith. Unit and weapon profiles from the <i>Clash of Rhyfles</i> Full Rulebook are used with permission from Joshua Qualtieri.</p>
     <p>Rules design: Joshua Qualtieri &amp; Anthony Brown · World design: Joshua Qualtieri, Pete Murray, Pete McKenna &amp; Edward McEneely · Art: Joshua Qualtieri · Random rhyfler names from Joshua Qualtieri's <a href="https://www.rhyfler.com/files/quar_squad_gen/QuarSquadGenerator.html" target="_blank" rel="noopener">Quar Squad Record Generator</a></p>
     <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith.<br>Spotted a mistake? Let me know on Discord.</p>
   </footer>
@@ -1266,25 +1338,239 @@ function route(h){
   if (m[0]==="builder") return {v:"home"};
   if (m[0]==="changes") return {v:"changes"};
   if (m[0]==="game") return {v:"game"};
+  if (m[0]==="narrative") return {v:"narr", arg:m[1]||null};
   if (m[0]==="p" && m[1]) return {v:"shared", arg:{faction:m[1], limit:parseInt(m[2],10), items:m[3]||"", name:m.slice(4).join("/")}};
   return {v:"factions"};
 }
-const hashFor = (v,arg) => v==="ref" ? "#/faction/"+arg : v==="factions" ? "#/factions" : v==="changes" ? "#/changes" : v==="game" ? "#/game" : v==="edit" ? "#/builder/edit" : "#/builder";
+const hashFor = (v,arg) => v==="narr" ? "#/narrative"+(arg?"/"+arg:"") : v==="ref" ? "#/faction/"+arg : v==="factions" ? "#/factions" : v==="changes" ? "#/changes" : v==="game" ? "#/game" : v==="edit" ? "#/builder/edit" : "#/builder";
 function showView(v, arg, push=true){
   if (v==="shared") return openShared(arg);
   state.view = v; document.body.classList.toggle("on-home", v!=="edit"); document.body.dataset.view = v;
-  document.querySelectorAll(".navtab").forEach(a=>a.classList.toggle("on", a.dataset.nav === (v==="factions"||v==="ref" ? "factions" : v==="changes" ? "" : v==="game" ? "game" : "builder")));
+  document.querySelectorAll(".navtab").forEach(a=>a.classList.toggle("on", a.dataset.nav === (v==="factions"||v==="ref" ? "factions" : v==="changes" ? "" : v==="game" ? "game" : v==="narr" ? "narr" : "builder")));
   if (v==="home"){ confirmDel=null; document.body.style.removeProperty("--fac"); renderHome(); }
   else if (v==="factions"){ document.body.style.removeProperty("--fac"); renderFactions(); }
   else if (v==="ref"){ renderRef(arg); }
   else if (v==="changes"){ document.body.style.removeProperty("--fac"); renderChanges(); }
   else if (v==="game"){ renderGame(); }
+  else if (v==="narr"){ narrUI.editRel = null; narrUI.confirmDel = null; renderNarrative(arg); }
   else { $("#tab-build").click(); }
   const h = hashFor(v,arg); if (push && location.hash!==h) history.pushState(null,"",h);
   window.scrollTo(0,0); if (typeof kofiReset==="function") kofiReset();
 }
 function navTo(t){ if (state.view==="edit") tryLeave(t); else showView(t.v, t.arg); }
 const slug = c => c.toLowerCase().replace(/[^a-z0-9]+/g,"-");
+/* ---------- Narrative ----------
+   Story patrols: a copy of a saved patrol that lives on its own (editing either one never changes the other),
+   with a backstory for every rhyfler and relationships between them. Flavour only: nothing here changes any rule or stat.
+   Saved in this browser under "quar-narrative-v1"; back up with the backup file buttons. */
+const NARR_KEY = "quar-narrative-v1";
+let narr = {stories:[]};
+try{ const n = JSON.parse(localStorage.getItem(NARR_KEY) || "null"); if (n && Array.isArray(n.stories)) narr = n; }catch(e){}
+function narrSave(){ try{ localStorage.setItem(NARR_KEY, JSON.stringify(narr)); }catch(e){ toast("Couldn't save: this browser's storage is full or blocked"); } }
+const narrId = () => "s" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const storyById = id => narr.stories.find(s=>s.id===id);
+// Relationship kinds and their tiers (weakest first). Directional kinds read differently from each side.
+const REL = {
+  friend:{label:"Friendship", color:"#3f8f5a", icon:"🤝", tiers:[
+    ["Acquaintance","Know each other by name and not much more."],
+    ["Comrade","Share a trench and a ration tin; trust each other in a scrap."],
+    ["Friend","Look out for each other on and off the field."],
+    ["Close Friend","Share secrets, letters from home and the last of the mothcakes."],
+    ["Best Friend","Inseparable. Where one goes, the other follows."],
+    ["Sworn Kin","Bonded for life. Each would die for the other."]]},
+  rival:{label:"Rivalry", color:"#b5523b", icon:"⚔️", tiers:[
+    ["Friendly Competition","Keep score of everything, all in good fun."],
+    ["Rival","Each wants to outdo the other, and it shows."],
+    ["Bitter Rival","There's real resentment now. Barbs at every muster."],
+    ["Grudge","Something happened that won't be forgiven."],
+    ["Sworn Enemy","Only the war keeps them on the same side."]]},
+  family:{label:"Family", color:"#8a6a2e", icon:"🏠", tiers:[
+    ["Estranged","Kin by blood, strangers by choice."],
+    ["Distant","Family, but rarely close."],
+    ["Cordial","Get along well enough at the table."],
+    ["Close","Look after each other like family should."],
+    ["Inseparable","Family first, always."]],
+    kinds:[["sibling","Sibling","Sibling"],["twin","Twin","Twin"],["parent","Parent of","Child of"],["grand","Grandparent of","Grandkit of"],
+           ["auntuncle","Aunt/Uncle of","Niece/Nephew of"],["cousin","Cousin","Cousin"],["inlaw","In-law","In-law"],["foster","Foster parent of","Foster kit of"]]},
+  romance:{label:"Romance", color:"#b0346b", icon:"❤️", tiers:[
+    ["Old Flame","It's over, but neither has quite forgotten."],
+    ["Admirer","One is sweet on the other, who may not even know."],
+    ["Courting","Walks behind the lines and nervous glances."],
+    ["Sweethearts","Everyone in the patrol knows it."],
+    ["Betrothed","Promised to each other, once this is all over."],
+    ["Wed","Bound for life, in the eyes of every quar."]], dir:[1]},
+  mentor:{label:"Mentorship", color:"#3b6aa3", icon:"🎖️", tiers:[
+    ["Showing the Ropes","Keeps the new kit out of trouble."],
+    ["Mentor","Teaches everything they know."],
+    ["Trusted Mentor","Their word is law to their pupil."],
+    ["Like a Parent","More family than many families."]], dirAll:true, a:"Mentor to", b:"Pupil of"}
+};
+const relTierName = r => (REL[r.type]||{tiers:[]}).tiers[r.tier] ? REL[r.type].tiers[r.tier][0] : "";
+// How a relationship reads from one character's side ("Close Friend", "Parent of", "Admirer of"...)
+function relLabelFor(r, cid){
+  const T = REL[r.type]; if (!T) return "";
+  const fromA = r.a===cid, tier = relTierName(r);
+  if (r.type==="family"){ const k = (T.kinds.find(x=>x[0]===r.kind) || T.kinds[0]); return `${fromA ? k[1] : k[2]} · ${tier}`; }
+  if (r.type==="mentor") return `${fromA ? T.a : T.b} · ${tier}`;
+  if (r.type==="romance" && r.tier===1) return fromA ? "Admirer of" : "Admired by";
+  return tier;
+}
+const charName = (s, cid) => { const c = s.chars.find(x=>x.id===cid); return c ? (c.name || "Unnamed rhyfler") : "?"; };
+function charUnit(s, c){ const f = facById(s.faction); const u = f && f.units.find(x=>x.id===c.unitId); return u ? `${u.name}${u.variant?` · ${u.variant}`:""}` : "Unknown unit"; }
+// Make a story from a saved patrol: a deep copy, one character per rhyfler, using their names (or a random Quar name)
+function storyFromPatrol(p){
+  const f = facById(p.faction); if (!f) return null;
+  const used = new Set(), chars = [];
+  f.units.forEach(u=>{ const q = (p.items||{})[u.id]||0; for (let i=0;i<q;i++){ let nm = cleanNm(((p.names||{})[u.id]||[])[i]);
+    if (!nm || used.has(nm)) nm = randName(used); used.add(nm); chars.push({id:"c"+chars.length+Math.random().toString(36).slice(2,6), unitId:u.id, name:nm, backstory:"", fallen:false}); } });
+  const now = Date.now();
+  return {id:narrId(), name:p.name || `${f.name} story`, faction:f.id, limit:p.limit, from:p.name||"", created:now, updated:now, notes:"", chars, rels:[]};
+}
+let narrUI = {editRel:null, confirmDel:null};
+function renderNarrative(id){
+  const v = $("#view-narr"); const s = id && storyById(id); narrUI.story = s ? s.id : null;
+  if (id && !s){ showView("narr", null); return; }
+  if (!s){ document.body.style.removeProperty("--fac"); renderNarrList(v); return; }
+  const f = facById(s.faction); if (f && f.color) document.body.style.setProperty("--fac", f.color);
+  renderStory(v, s);
+}
+const NARR_WARN = `<p class="savewarn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Your stories are saved only in this browser, on this device.</b> Use <b>Save backup file</b> now and then to keep them safe, and <b>Load backup file</b> to bring them to another device.</span></p>`;
+function renderNarrList(v){
+  const pats = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0) && facById(p.faction));
+  const list = [...narr.stories].sort((a,b)=>(b.updated||0)-(a.updated||0));
+  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="beta">Beta</span></h1></div>${NARR_WARN}
+  <div class="card"><header><h2>Start a story</h2></header><div class="nstart">
+    <p class="hint">Pick one of your patrols. It's copied into a <b>story patrol</b> of its own, so changing one never changes the other. Give every rhyfler a backstory and set out who's friends, rivals, family or sweethearts. This is all for storytelling: it doesn't change any rules or stats.</p>
+    ${pats.length ? `<div class="nrow"><div class="field"><label for="nPatrol">Patrol</label><select id="nPatrol">${pats.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc(facById(p.faction).name)} · ${p.total||0} pts</option>`).join("")}</select></div><button class="btn" type="button" data-n="new">Start story</button></div>`
+      : `<p class="hint">You don't have any saved patrols yet. Build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a> first.</p>`}
+  </div></div>
+  <div class="card"><header><h2>Your stories</h2><span class="hint">${list.length} ${list.length===1?"story":"stories"}</span></header>
+    ${list.length ? `<div class="nlist">${list.map(s=>{ const f = facById(s.faction); const fallen = s.chars.filter(c=>c.fallen).length;
+      return `<article class="ncard" style="--fac:${esc((f&&f.color)||"#6b5d45")}"><button class="nopen" type="button" data-n="open" data-id="${esc(s.id)}">${flagImg(f)}<span><b>${esc(s.name||"Untitled story")}</b><span class="hint">${esc(f?f.name:"")} · ${s.chars.length} rhyfler${s.chars.length===1?"":"s"} · ${s.rels.length} relationship${s.rels.length===1?"":"s"}${fallen?` · ${fallen} fallen`:""}</span><span class="hint">Updated ${new Date(s.updated||s.created).toLocaleDateString()}</span></span></button>
+        <button class="btn ghost ndel${narrUI.confirmDel===s.id?" warn":""}" type="button" data-n="del" data-id="${esc(s.id)}">${narrUI.confirmDel===s.id?"Tap again to delete":"Delete"}</button></article>`; }).join("")}</div>`
+      : `<p class="hint nempty">No stories yet. Start one from a patrol above.</p>`}
+    <div class="nback"><button class="btn ghost" type="button" data-n="export"${narr.stories.length?"":" disabled"}>Save backup file</button><label class="btn ghost nfile">Load backup file<input type="file" id="nImport" accept=".json,application/json" hidden></label></div>
+  </div>`;
+}
+function relChip(s, r, cid){ const T = REL[r.type], other = r.a===cid ? r.b : r.a, pips = T.tiers.length;
+  return `<li class="nrel" style="--rc:${T.color}"><span class="nri" aria-hidden="true">${T.icon}</span><span class="nrt"><b>${esc(relLabelFor(r, cid))}</b> <span class="nro">${esc(charName(s, other))}</span>${r.note?`<span class="nrn">${esc(r.note)}</span>`:""}</span>
+      <span class="npips" title="${esc(T.label)}: ${esc(relTierName(r))} (${r.tier+1} of ${pips})">${Array.from({length:pips},(_,i)=>`<i${i<=r.tier?' class="on"':""}></i>`).join("")}</span>
+      <button class="nrx" type="button" data-n="editrel" data-id="${esc(r.id)}" aria-label="Edit relationship">✎</button></li>`; }
+// A character's relationship list, and the overview of every relationship (redrawn on their own when names change)
+function relsBlock(s, c){ const rs = s.rels.filter(r=>r.a===c.id || r.b===c.id);
+  return `<h4>Relationships</h4>${rs.length?`<ul>${rs.map(r=>relChip(s,r,c.id)).join("")}</ul>`:`<p class="hint">None yet.</p>`}${s.chars.length>1?`<button class="btn ghost nadd" type="button" data-n="addrel">+ Add relationship</button>`:""}`; }
+function overviewBlock(s){ return s.rels.length ? `<header><h2>Relationship overview</h2><span class="hint">${s.rels.length}</span></header><div class="nover">${Object.entries(REL).map(([k,T])=>{ const rs = s.rels.filter(r=>r.type===k); return rs.length ? `<section style="--rc:${T.color}"><h4><span aria-hidden="true">${T.icon}</span> ${T.label}</h4><ul>${rs.map(r=>`<li><b>${esc(charName(s,r.a))}</b> <span>${esc(relLabelFor(r, r.a))}</span> <b>${esc(charName(s,r.b))}</b>${r.note?` <i>${esc(r.note)}</i>`:""}</li>`).join("")}</ul></section>` : ""; }).join("")}</div>` : ""; }
+function narrRefreshRels(s){ document.querySelectorAll("#view-narr .nchar").forEach(card=>{ const c = s.chars.find(x=>x.id===card.dataset.cid), box = card.querySelector(".nrels"); if (c && box) box.innerHTML = relsBlock(s, c); });
+  const o = $("#nOverview"); if (o){ o.innerHTML = overviewBlock(s); o.hidden = !s.rels.length; } }
+function renderStory(v, s){
+  const f = facById(s.faction);
+  const ed = narrUI.editRel && narrUI.editRel.story===s.id ? narrUI.editRel : null;
+  v.innerHTML = `<div class="viewbar"><a class="btn ghost" href="#/narrative" data-go="#/narrative" style="text-decoration:none">← All stories</a></div>
+  <div class="card nhead"><header><div class="ptitle">${flagImg(f)}<h2>${esc(s.name||"Untitled story")}</h2></div><span class="hint">${s.chars.length} rhyfler${s.chars.length===1?"":"s"}</span></header>
+    <div class="nhb"><div class="field"><label for="nName">Story name</label><input id="nName" type="text" maxlength="60" value="${esc(s.name)}" data-nf="name" autocomplete="off"></div>
+    <p class="hint">${esc(f?f.name:"")} · ${s.limit||"?"} points${s.from?` · started from your patrol “${esc(s.from)}”`:""}. Changes here never affect that patrol.</p>
+    <div class="field"><label for="nNotes">The patrol's story so far</label><textarea id="nNotes" rows="3" maxlength="6000" data-nf="notes" placeholder="Where they're from, what they've been through, what they're fighting for…">${esc(s.notes||"")}</textarea></div></div></div>
+  <div class="ngrid">${s.chars.map(c=>{
+    return `<article class="card nchar${c.fallen?" fallen":""}" data-cid="${esc(c.id)}">
+      <header><div class="nch">${dtag(c.name||"Unnamed")}<span class="hint">${esc(charUnit(s,c))}</span></div>
+        <label class="nfall" title="Mark as fallen"><input type="checkbox" data-nc="fallen"${c.fallen?" checked":""}> Fallen</label></header>
+      <div class="ncb">
+        <div class="nnm"><div class="field"><label for="nm-${esc(c.id)}">Name</label><input id="nm-${esc(c.id)}" type="text" maxlength="30" value="${esc(c.name)}" data-nc="name" autocomplete="off"></div><button class="btn ghost ndice" type="button" data-n="roll" title="Random Quar name" aria-label="Random Quar name">🎲</button></div>
+        <div class="field"><label for="bs-${esc(c.id)}">Backstory</label><textarea id="bs-${esc(c.id)}" rows="3" maxlength="4000" data-nc="backstory" placeholder="Where they grew up, why they joined, the habit that drives the Yawdryl mad…">${esc(c.backstory||"")}</textarea></div>
+        <div class="nrels">${relsBlock(s, c)}</div>
+      </div></article>`; }).join("")}</div>
+  <div class="card" id="nOverview"${s.rels.length?"":" hidden"}>${overviewBlock(s)}</div>
+  ${ed ? relEditor(s, ed) : ""}`;
+  if (ed){ const d = $("#nRelDlg"); if (d) d.querySelector("select,button").focus({preventScroll:true}); }
+}
+function relEditor(s, ed){
+  const T = REL[ed.type], others = s.chars.filter(x=>x.id!==ed.a);
+  const dirTxt = ed.type==="mentor" ? [`${charName(s,ed.a)} mentors ${charName(s,ed.b)}`, `${charName(s,ed.b)} mentors ${charName(s,ed.a)}`]
+    : ed.type==="family" ? null : null;
+  const fam = ed.type==="family" ? T.kinds.find(k=>k[0]===ed.kind) || T.kinds[0] : null;
+  return `<div class="nmodal" id="nRelDlg" role="dialog" aria-modal="true" aria-label="Relationship"><div class="nmbox" style="--rc:${T.color}">
+    <h3>${ed.id?"Edit":"New"} relationship</h3>
+    <div class="nmrow"><div class="field"><label>Between</label><div class="nwho"><b>${esc(charName(s,ed.a))}</b><span>and</span>
+      <select id="nRelB" aria-label="Other rhyfler">${others.map(x=>`<option value="${esc(x.id)}"${x.id===ed.b?" selected":""}>${esc(x.name||"Unnamed rhyfler")}</option>`).join("")}</select></div></div></div>
+    <div class="field"><label>Kind</label><div class="ntypes">${Object.entries(REL).map(([k,R])=>`<button type="button" class="ntype${k===ed.type?" on":""}" style="--rc:${R.color}" data-n="rtype" data-k="${k}" aria-pressed="${k===ed.type}"><span aria-hidden="true">${R.icon}</span>${R.label}</button>`).join("")}</div></div>
+    ${fam ? `<div class="field"><label for="nRelKind">How they're related</label><select id="nRelKind">${T.kinds.map(k=>`<option value="${k[0]}"${k[0]===fam[0]?" selected":""}>${k[1]===k[2]?k[1]:`${esc(charName(s,ed.a))} is ${k[1].toLowerCase().replace(/ of$/,"")} of ${esc(charName(s,ed.b))}`}</option>`).join("")}</select>
+      <button class="btn ghost nswap" type="button" data-n="swap">⇄ Swap who's who</button></div>` : ""}
+    ${ed.type==="mentor" ? `<div class="field"><label>Who teaches whom</label><button class="btn ghost nswap" type="button" data-n="swap">${esc(dirTxt[0])} ⇄</button></div>` : ""}
+    ${ed.type==="romance" && ed.tier===1 ? `<div class="field"><label>Who admires whom</label><button class="btn ghost nswap" type="button" data-n="swap">${esc(charName(s,ed.a))} admires ${esc(charName(s,ed.b))} ⇄</button></div>` : ""}
+    <div class="field"><label>Tier</label><div class="ntiers">${T.tiers.map((t,i)=>`<button type="button" class="ntier${i===ed.tier?" on":""}" data-n="rtier" data-i="${i}" aria-pressed="${i===ed.tier}"><span class="npips">${T.tiers.map((_,j)=>`<i${j<=i?' class="on"':""}></i>`).join("")}</span><b>${esc(t[0])}</b><span>${esc(t[1])}</span></button>`).join("")}</div></div>
+    <div class="field"><label for="nRelNote">Note (optional)</label><input id="nRelNote" type="text" maxlength="140" value="${esc(ed.note||"")}" placeholder="e.g. Dragged him out of the river at Bostad" autocomplete="off"></div>
+    <div class="nmact">${ed.id?`<button class="btn ghost nrdel${ed.confirm?" warn":""}" type="button" data-n="relrm">${ed.confirm?"Tap again to remove":"Remove"}</button>`:""}<span></span><button class="btn ghost" type="button" data-n="relcancel">Cancel</button><button class="btn" type="button" data-n="relsave">Save</button></div>
+  </div></div>`;
+}
+function narrTouch(s){ s.updated = Date.now(); narrSave(); }
+// Typing in fields: save as you go, without redrawing (so the cursor stays put)
+document.addEventListener("input", e=>{
+  const el = e.target; if (!el.closest || !el.closest("#view-narr")) return;
+  if (el.id==="nRelNote"){ if (narrUI.editRel) narrUI.editRel.note = el.value; return; }
+  const s = storyById(narrUI.story); if (!s) return;
+  if (el.dataset.nf){ s[el.dataset.nf] = el.value; if (el.dataset.nf==="name"){ const h = document.querySelector("#view-narr .nhead h2"); if (h) h.textContent = el.value || "Untitled story"; } narrTouch(s); return; }
+  const card = el.closest(".nchar"); if (!card || !el.dataset.nc) return; const c = s.chars.find(x=>x.id===card.dataset.cid); if (!c) return;
+  if (el.dataset.nc==="name"){ c.name = cleanNm(el.value); const t = card.querySelector(".dtn"); if (t) t.textContent = c.name || "Unnamed"; }
+  else if (el.dataset.nc==="backstory") c.backstory = el.value;
+  narrTouch(s);
+});
+document.addEventListener("change", e=>{
+  const el = e.target; if (!el.closest || !el.closest("#view-narr")) return;
+  const s = storyById(narrUI.story);
+  if (el.id==="nImport"){ narrImport(el.files && el.files[0]); el.value = ""; return; }
+  if (el.id==="nRelB" && narrUI.editRel){ narrUI.editRel.b = el.value; renderNarrative(narrUI.story); return; }
+  if (el.id==="nRelKind" && narrUI.editRel){ narrUI.editRel.kind = el.value; return; }
+  if (s && el.dataset.nc==="fallen"){ const c = s.chars.find(x=>x.id===el.closest(".nchar").dataset.cid); if (c){ c.fallen = el.checked; el.closest(".nchar").classList.toggle("fallen", c.fallen); narrTouch(s); } return; }
+  if (s && el.dataset.nc==="name") narrRefreshRels(s); // refresh names shown in relationships, leave the text boxes alone
+});
+document.addEventListener("click", e=>{
+  const b = e.target.closest("[data-n]"); if (!b || !b.closest("#view-narr")) { if (e.target.classList && e.target.classList.contains("nmodal")){ narrUI.editRel = null; renderNarrative(narrUI.story); } return; }
+  const a = b.dataset.n, s = storyById(narrUI.story);
+  if (a==="new"){ const p = state.saved.find(x=>x.id===$("#nPatrol").value); const st = p && storyFromPatrol(p); if (!st) return; narr.stories.push(st); narrSave(); toast("Story started. Your patrol stays as it was."); showView("narr", st.id); return; }
+  if (a==="open"){ showView("narr", b.dataset.id); return; }
+  if (a==="del"){ const id = b.dataset.id; if (narrUI.confirmDel===id){ narr.stories = narr.stories.filter(x=>x.id!==id); narrUI.confirmDel = null; narrSave(); toast("Story deleted"); } else { narrUI.confirmDel = id; setTimeout(()=>{ if (narrUI.confirmDel===id){ narrUI.confirmDel = null; if (state.view==="narr" && !narrUI.story) renderNarrative(); } }, 4000); } renderNarrative(); return; }
+  if (a==="export"){ narrExport(); return; }
+  if (!s) return;
+  const card = b.closest(".nchar"), c = card && s.chars.find(x=>x.id===card.dataset.cid);
+  if (a==="roll" && c){ const used = new Set(s.chars.map(x=>x.name)); c.name = randName(used); narrTouch(s); renderNarrative(s.id); return; }
+  if (a==="addrel" && c){ const other = s.chars.find(x=>x.id!==c.id); narrUI.editRel = {story:s.id, id:null, a:c.id, b:other.id, type:"friend", tier:2, kind:"sibling", note:""}; renderNarrative(s.id); return; }
+  if (a==="editrel"){ const r = s.rels.find(x=>x.id===b.dataset.id); if (!r) return; const cid = card ? card.dataset.cid : r.a;
+    // open it from the side of the card it was clicked on, keeping directional meaning
+    narrUI.editRel = {story:s.id, id:r.id, a:r.a, b:r.b, type:r.type, tier:r.tier, kind:r.kind||"sibling", note:r.note||"", from:cid}; renderNarrative(s.id); return; }
+  const ed = narrUI.editRel; if (!ed) return;
+  if (a==="rtype"){ ed.type = b.dataset.k; ed.tier = Math.min(ed.tier, REL[ed.type].tiers.length-1); if (ed.type==="romance" && ed.tier===1) ed.tier = 2; ed.confirm = false; renderNarrative(s.id); return; }
+  if (a==="rtier"){ ed.tier = +b.dataset.i; renderNarrative(s.id); return; }
+  if (a==="swap"){ [ed.a, ed.b] = [ed.b, ed.a]; renderNarrative(s.id); return; }
+  if (a==="relcancel"){ narrUI.editRel = null; renderNarrative(s.id); return; }
+  if (a==="relrm"){ if (!ed.confirm){ ed.confirm = true; renderNarrative(s.id); return; } s.rels = s.rels.filter(x=>x.id!==ed.id); narrUI.editRel = null; narrTouch(s); renderNarrative(s.id); toast("Relationship removed"); return; }
+  if (a==="relsave"){ if (!ed.b || ed.a===ed.b) return; const note = (($("#nRelNote")||{}).value||"").trim().slice(0,140);
+    const rec = {id: ed.id || "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), a:ed.a, b:ed.b, type:ed.type, tier:ed.tier, note};
+    if (ed.type==="family") rec.kind = ed.kind;
+    // one relationship of each kind per pair: replace an existing one instead of doubling up
+    s.rels = s.rels.filter(x=>x.id!==rec.id && !(x.type===rec.type && ((x.a===rec.a&&x.b===rec.b)||(x.a===rec.b&&x.b===rec.a))));
+    s.rels.push(rec); narrUI.editRel = null; narrTouch(s); renderNarrative(s.id); toast("Relationship saved"); return; }
+});
+document.addEventListener("keydown", e=>{ if (e.key==="Escape" && narrUI.editRel && state.view==="narr"){ narrUI.editRel = null; renderNarrative(narrUI.story); } });
+function narrExport(){
+  const blob = new Blob([JSON.stringify({app:"quar-patrol-builder", kind:"narrative", v:1, saved:new Date().toISOString(), stories:narr.stories}, null, 1)], {type:"application/json"});
+  const url = URL.createObjectURL(blob), l = document.createElement("a"); l.href = url; l.download = `Quar stories backup ${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 2000); toast("Backup file saved");
+}
+function narrImport(file){
+  if (!file) return; if (file.size > 3e6){ toast("That file is too big to be a stories backup"); return; }
+  const fr = new FileReader(); fr.onload = ()=>{ let d; try{ d = JSON.parse(fr.result); }catch(e){ toast("That isn't a stories backup file"); return; }
+    if (!d || d.kind!=="narrative" || !Array.isArray(d.stories)){ toast("That isn't a stories backup file"); return; }
+    let added = 0, updated = 0;
+    d.stories.forEach(x=>{ if (!x || typeof x!=="object" || !Array.isArray(x.chars) || !facById(x.faction)) return;
+      const clean = {id:String(x.id||narrId()), name:String(x.name||"Story").slice(0,60), faction:x.faction, limit:+x.limit||0, from:String(x.from||"").slice(0,60), created:+x.created||Date.now(), updated:+x.updated||Date.now(), notes:String(x.notes||"").slice(0,6000),
+        chars:x.chars.filter(c=>c&&typeof c==="object").slice(0,200).map(c=>({id:String(c.id), unitId:String(c.unitId||""), name:cleanNm(c.name), backstory:String(c.backstory||"").slice(0,4000), fallen:!!c.fallen})),
+        rels:(Array.isArray(x.rels)?x.rels:[]).filter(r=>r&&REL[r.type]).slice(0,2000).map(r=>({id:String(r.id), a:String(r.a), b:String(r.b), type:r.type, tier:Math.max(0,Math.min(REL[r.type].tiers.length-1, +r.tier||0)), kind:r.kind?String(r.kind):undefined, note:String(r.note||"").slice(0,140)}))};
+      const i = narr.stories.findIndex(s=>s.id===clean.id);
+      if (i>=0){ if ((narr.stories[i].updated||0) < clean.updated){ narr.stories[i] = clean; updated++; } } else { narr.stories.push(clean); added++; } });
+    narrSave(); renderNarrative(); toast(added||updated ? `Loaded: ${added} new, ${updated} updated` : "Nothing new in that backup"); };
+  fr.readAsText(file);
+}
+
 /* ---------- Game Tracker ----------
    Statuses from Core Rules p5 (Ready, Engaged, Overwatch, Gobsmacked, Prone, Out of Action) and the Full Book
    (Rattled and Disabled for mounts, crews and vehicles; Killed). Each commander starts with 5 Pluck (Full Book p128).
@@ -2514,7 +2800,7 @@ try{ new IntersectionObserver(es=>{ if (es.some(e=>e.isIntersecting)) kofiShine(
 addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true});
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
-const APP_VERSION = "2026-11-01.40";
+const APP_VERSION = "2026-11-01.43";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
