@@ -559,8 +559,8 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 .beta{display:inline-block;font-family:var(--f-body,inherit);font-size:.62em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:.22em .45em;border:1.5px solid currentColor;border-radius:3px;vertical-align:.25em;color:var(--brass);margin-left:.15em}
 .navtab .beta{font-size:.68em;vertical-align:.15em;padding:.18em .35em;border-width:1px}
 h1 .beta{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
-@media (max-width:520px){ .navtab .beta{font-size:.5em;padding:.15em .25em;margin-left:1px;vertical-align:.55em;letter-spacing:.04em} .mainnav .navtab{padding-left:6px;padding-right:6px;font-size:min(12.5px, 2.95vw);letter-spacing:.02em} }
-@media (max-width:370px){ .mainnav .navtab{padding-left:4px;padding-right:4px;letter-spacing:0} }
+@media (max-width:520px){ .navtab .beta{font-size:.5em;padding:.15em .25em;margin-left:1px;vertical-align:.55em;letter-spacing:.04em} .mainnav .navtab{padding:9px 4px 9px;font-size:min(14px, 3.35vw);letter-spacing:.02em} .mainnav{justify-content:space-between} }
+@media (max-width:370px){ .mainnav .navtab{padding-left:3px;padding-right:3px;letter-spacing:0} }
 @media (max-width:520px){ .mainnav{overflow-x:auto;scrollbar-width:none} .mainnav::-webkit-scrollbar{display:none} .navtab{flex:0 0 auto} }
 .nstart{padding:12px;display:flex;flex-direction:column;gap:10px}
 .nstart .hint{margin:0;max-width:70ch}
@@ -756,15 +756,15 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
 @media (max-width:520px){ .navtab{padding:6px 8px 7px;letter-spacing:.03em;font-size:min(.74em, 3.35vw);white-space:nowrap} .mainnav{gap:0} }
 @media (max-width:370px){ .navtab{padding:6px 6px 7px;letter-spacing:.01em;font-size:min(.68em, 3.3vw)} }
 @media (max-width:480px){
-  .bar .wrap{grid-template-columns:minmax(0,1fr) auto}
+  .bar .wrap{grid-template-columns:minmax(0,1fr) auto;column-gap:10px}
   /* Phone header: the logo, title and the two buttons keep a fixed size at every text size, and the title shrinks to fit the space left, so nothing overlaps. */
   .bar .brandbtn{min-width:0;display:flex;width:100%;gap:10px}
-  .brandicon{width:40px;height:40px}
+  .brandicon{width:44px;height:44px}
   .brand{min-width:0;flex:1;container-type:inline-size}
-  .brand small{white-space:nowrap;letter-spacing:.06em;font-size:min(12px, 7cqi)}
-  .brand b{white-space:nowrap;font-size:min(25px, 11.6cqi)}
-  .hdrtools{grid-column:2;grid-row:1;flex-direction:row;align-items:center;gap:6px}
-  .themebtn,.tsbtn{justify-content:center;width:40px;height:40px;min-height:0;padding:0;font-size:16px;line-height:1}
+  .brand small{white-space:nowrap;letter-spacing:.06em;font-size:min(13px, 7cqi)}
+  .brand b{white-space:nowrap;font-size:min(27px, 11.6cqi)}
+  .hdrtools{grid-column:2;grid-row:1;flex-direction:row;align-items:center;gap:5px}
+  .themebtn,.tsbtn{justify-content:center;width:38px;height:38px;min-height:0;padding:0;font-size:16px;line-height:1}
   .themebtn .ti{font-size:20px;min-width:0}
   .tsbtn .tsaa{font-size:18px;min-width:0}
   .tswrap>.tsbtn{flex:none}
@@ -3033,7 +3033,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-01.55";
+const APP_VERSION = "2026-11-02.59";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
