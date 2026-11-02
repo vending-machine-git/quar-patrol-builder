@@ -69,4 +69,6 @@ Built by vending_machine with help from Claude (AI). Every stat was checked by h
 - Unit and weapon profiles from the *Clash of Rhyfles* Full Rulebook: used with permission from Joshua Qualtieri
 - Random rhyfler names: Joshua Qualtieri's [Quar Squad Record Generator](https://www.rhyfler.com/files/quar_squad_gen/QuarSquadGenerator.html), used with permission
 
+Visits are counted anonymously with [GoatCounter](https://www.goatcounter.com): no cookies and nothing personal, just which pages are used and a few actions such as patrols saved and games started.
+
 This is an unofficial fan project. It is not affiliated with or endorsed by Zombiesmith. Please support the creators by getting the rulebooks from [zombiesmith.com](https://www.zombiesmith.com).
