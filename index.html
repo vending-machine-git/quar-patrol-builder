@@ -427,18 +427,28 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
   #patrolCard>.plist{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain}
 }
 @media (max-width:860px){
-  /* Phones and tablets: the header stays at the top while scrolling. Once you scroll down, the Patrol Builder's name / faction / points fields
-     fold away (the points stay in the bottom bar) so only the logo and tabs follow you; they come back at the top of the page. */
+  /* Phones and tablets: the header (logo, theme, text size, tabs) stays at the top on every page. The Patrol Builder's name / faction /
+     points fields and points bar sit just under it and scroll away with the page (moved there by script: #mctl). */
   .bar{position:sticky;top:0;transition:box-shadow .2s ease}
   .bar.bfloat{box-shadow:0 4px 14px rgba(0,0,0,.18)}
-  .bar.bcompact .controls,.bar.bcompact .gauge{display:none}
   html{scroll-padding-top:calc(var(--barh,110px) + 8px)}
   details.catdd.ref{scroll-margin-top:calc(var(--barh,110px) + 10px)}
+  #mctl{display:block;background:color-mix(in oklab, var(--fac) 7%, var(--panel));border-bottom:1px solid var(--rule)}
+  #mctl>.wrap{display:flex;flex-direction:column;gap:10px;padding-block:12px}
+  #mctl .gauge{min-width:0}
+  #mctl .wrap>*{font-size:1.15em}
+  body.on-home #mctl{display:none}
   .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;gap:12px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper);
     padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-  .mbar .mused{font-family:var(--f-mono);font-weight:600;font-size:1.1em;font-variant-numeric:tabular-nums}
-  .mbar.ptsover .mused{color:var(--bad-inv)}
-  .mbar .mleft{display:flex;flex-direction:column;min-width:0;gap:2px}
+  .mbar .mused{font-family:var(--f-mono);font-weight:600;font-size:.95em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .mbar.ptsover .mused,.mbar .mstate{color:var(--bad-inv)}
+  .mbar .mstate{font-size:.85em;font-weight:600;white-space:nowrap}
+  .mbar .mleft{display:flex;flex-direction:column;min-width:0;flex:1;gap:4px}
+  .mbar .mrow{display:flex;align-items:center;gap:10px;min-width:0}
+  .mbar .mtrack{flex:1;min-width:60px;height:12px;border-radius:999px;background:color-mix(in oklab, var(--paper) 22%, transparent);overflow:hidden;box-shadow:inset 0 0 0 1px color-mix(in oklab, var(--paper) 30%, transparent)}
+  .mbar .mtrack i{display:block;height:100%;width:0;background:var(--paper);border-radius:999px;transition:width .2s}
+  .mbar.ptsfull .mtrack i{background:var(--brass)}
+  .mbar.ptsover .mtrack i{background:var(--bad-inv)}
   .mbar .mprob{color:var(--bad-inv);font-size:.85em;font-weight:600;line-height:1.25}
   .mbar a{color:var(--paper);font-weight:600;text-underline-offset:3px}
   .wrap.main{padding-bottom:70px}
@@ -456,7 +466,7 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
   .urow{gap:7px}
   .brand b{font-size:1.3em}
   .themebtn .tl{display:none}
-  .bar .wrap>*{font-size:1em}
+  .bar .wrap>*,#mctl .wrap>*{font-size:1em}
 }
 /* home */
 body.on-home .controls, body.on-home .gauge, body.on-home #buildBar, body.on-home #view-build, body.on-home #view-roster, body.on-home .mbar{display:none!important}
@@ -927,7 +937,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
     <p>This is an unofficial, fan-made patrol builder by <b>vending_machine</b> (@tsuiki2664). It is not affiliated with or endorsed by Zombiesmith.<br>Spotted a mistake? Let me know on Discord.</p>
   </footer>
 </div>
-<div class="mbar" id="mbar"><span class="mleft"><span><span class="mused" id="mused">0 / 300</span> <span id="mstate">pts</span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
+<div class="mbar" id="mbar"><span class="mleft"><span class="mrow"><span class="mtrack" id="mtrack" role="meter" aria-label="Points used" aria-valuemin="0" aria-valuemax="300" aria-valuenow="0"><i id="mfill"></i></span><span class="mused" id="mused">0/300</span><span class="mstate" id="mstate" hidden></span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
 <textarea id="copyArea" aria-hidden="true" tabindex="-1"></textarea>
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
@@ -1147,8 +1157,11 @@ function renderPatrol(){
   $("#left").textContent = apr ? `${t-state.limit} over ${state.limit} · approved starter` : t>state.limit ? `${t-state.limit} over ${state.limit}` : `of ${state.limit} · ${state.limit-t} left`;
   $("#fill").style.width = Math.min(100, t/state.limit*100) + "%";
   g.classList.toggle("over", t>state.limit && !apr); g.classList.toggle("approved", !!apr); g.classList.toggle("full", t===state.limit);
-  $("#mused").textContent = `${t} / ${state.limit}`;
-  $("#mstate").textContent = apr ? `pts · ${t-state.limit} over (approved)` : t>state.limit ? `pts · ${t-state.limit} over` : `pts · ${n} unit${n===1?"":"s"}`;
+  $("#mused").textContent = `${t}/${state.limit}`;
+  $("#mfill").style.width = Math.min(100, t/state.limit*100) + "%";
+  { const mt = $("#mtrack"); mt.setAttribute("aria-valuemax", state.limit); mt.setAttribute("aria-valuenow", Math.min(t, state.limit)); mt.setAttribute("aria-valuetext", `${t} of ${state.limit} points, ${n} unit${n===1?"":"s"}`); }
+  $("#mstate").textContent = apr ? `${t-state.limit} over (approved)` : t>state.limit ? `${t-state.limit} over` : ""; $("#mstate").hidden = !(t>state.limit);
+  $("#mbar").classList.toggle("ptsfull", t===state.limit || !!apr);
   const errs = out.filter(c=>c.lvl==="err"), many = errs.filter(c=>c.kind==="many"), other = errs.filter(c=>!c.kind).length;
   const parts = [];
   if (many.length) parts.push("Too many: " + many.map(c=>c.who).join(", "));
@@ -3039,7 +3052,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-02.61";
+const APP_VERSION = "2026-11-02.63";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3066,15 +3079,15 @@ init();
 })();
 (()=>{ const bar=document.querySelector(".bar"), vb=document.getElementById("buildBar"); if(!bar) return; const set=()=>{ const r=document.documentElement.style; r.setProperty("--barh", bar.offsetHeight+"px"); if(vb && vb.offsetHeight) r.setProperty("--vbh", vb.offsetHeight+"px"); }; set(); if(window.ResizeObserver){ const o=new ResizeObserver(set); o.observe(bar); if(vb) o.observe(vb); } else addEventListener("resize", set); })();
 
-// Phones and tablets: keep the header at the top; fold the builder fields away once scrolled down (keeping the page still), back at the top
-(()=>{ const bar=document.querySelector(".bar"); if(!bar) return; const mq=matchMedia("(max-width:860px)"); let ticking=false;
-  const busy=()=>{ const a=document.activeElement; return (a && bar.contains(a) && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) || !!document.querySelector("#tsPop:not([hidden])"); };
-  const run=()=>{ ticking=false; const y=Math.max(0, scrollY);
-    if (!mq.matches){ bar.classList.remove("bfloat","bcompact"); return; }
-    bar.classList.toggle("bfloat", y>4);
-    if (!bar.classList.contains("bcompact")){ const h0=bar.offsetHeight; if (y > h0 + 40 && !busy()){ bar.classList.add("bcompact"); const d=h0-bar.offsetHeight; if (d>0) scrollTo(0, Math.max(0, y-d)); } }
-    else if (y < 8) bar.classList.remove("bcompact"); };
+// Phones and tablets: a soft shadow under the header once it's following you; the builder's name / faction / points fields and the
+// points bar move out of the header into #mctl just below it, so the header that follows you is only the logo, buttons and tabs.
+(()=>{ const bar=document.querySelector(".bar"); if(!bar) return; let ticking=false;
+  const run=()=>{ ticking=false; bar.classList.toggle("bfloat", scrollY>4); };
   addEventListener("scroll", ()=>{ if(!ticking){ ticking=true; requestAnimationFrame(run); } }, {passive:true});
-  addEventListener("hashchange", ()=>requestAnimationFrame(run));
-  (mq.addEventListener ? mq.addEventListener("change", run) : mq.addListener(run)); })();
+  const ctl=bar.querySelector(".controls"), gauge=bar.querySelector(".gauge"), tools=bar.querySelector(".hdrtools"); if(!ctl || !gauge || !tools) return;
+  const box=document.createElement("div"); box.id="mctl"; box.hidden=true; box.innerHTML='<div class="wrap"></div>'; bar.after(box); const inner=box.firstChild;
+  const mq=matchMedia("(max-width:860px)");
+  const place=()=>{ if (mq.matches){ if (ctl.parentNode!==inner){ inner.append(ctl, gauge); box.hidden=false; } }
+    else if (ctl.parentNode===inner){ tools.before(ctl, gauge); box.hidden=true; } };
+  place(); (mq.addEventListener ? mq.addEventListener("change", place) : mq.addListener(place)); })();
 </script>
