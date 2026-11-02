@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vending-machine-git.github.io/quar-patrol-builder/sitemap.xml
