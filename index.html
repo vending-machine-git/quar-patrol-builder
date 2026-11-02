@@ -585,6 +585,11 @@ h1 .beta{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
 .nchar>header{align-items:center}
 .nch{display:flex;flex-direction:column;gap:3px;min-width:0}
 .nch .dtag{align-self:flex-start}
+.nepi{border:1px solid var(--rule);border-top:3px double var(--muted);border-radius:10px 10px 3px 3px;background:color-mix(in oklab, var(--muted) 10%, var(--panel));padding:8px 10px 10px;text-align:center}
+.nepih{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.06em;font-size:.82em;color:var(--muted);margin-bottom:6px;overflow-wrap:anywhere}
+.nepir{display:flex;gap:8px;align-items:flex-start}
+.nepir textarea{flex:1;font-style:italic;text-align:center;font-family:"Special Elite","Courier New",monospace;background:transparent;border:1px dashed var(--rule);border-radius:3px;resize:vertical;line-height:1.4}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .nanimal{display:inline-block;font-size:.85em;font-weight:600;color:#4f7a6e;border:1px solid currentColor;border-radius:999px;padding:0 6px;margin-left:4px}
 .nfall{display:inline-flex;align-items:center;gap:5px;font-size:.8em;color:var(--muted);cursor:pointer;white-space:nowrap}
 .nchar.fallen{opacity:.72}
@@ -1481,6 +1486,9 @@ function storyFromPatrol(p){
   return {id:narrId(), name:p.name || `${f.name} story`, faction:f.id, limit:p.limit, from:p.name||"", created:now, updated:now, notes:"", chars, rels:[]};
 }
 let narrUI = {editRel:null, confirmDel:null};
+// Epitaph suggestions (the builder's own words; tap 🎲 for another)
+const EPI_QUAR = ["Kept his rifle dry and his word drier.", "First into the wire, last to complain.", "Gone home ahead of the rest of us.", "The tea will never be as bad without them.", "Held the line. Holds it still.", "Steady hands, steadier heart.", "Never found the end of the war, but found the best of us.", "Always shared the last mothcake.", "Sleep well. We'll keep watch from here.", "Brave when it counted, which was always.", "Answered every call but the last one home.", "Remembered at every muster.", "Out of Pluck, never out of heart.", "They said it couldn't be done. Did it anyway.", "Dug the deepest trench in the patrol. Rests easy in it now.", "Owed half the squad a cigarette. Paid it back in courage.", "Mud on the boots, stars in the eyes.", "Their rhyfle is quiet now. Their story isn't.", "Laughed loudest when the shells fell closest.", "Took the long watch so we could sleep.", "Wrote home every week. We'll write for them now.", "The Yawdryl's favourite, though they'd never admit it.", "Lost the coin toss, won our hearts.", "Carried more than their share, every mile of it.", "Gave the enemy no ground and the cook no peace.", "Snored through bombardments. Woke for every friend.", "Never once ran from a fight, or from a pot of stew.", "Their seat by the fire stays empty.", "Steady as the wall, kind as the spring.", "Went over the top singing. We still hear it.",  "A terrible shot, a wonderful friend.", "Promised to come home. Kept every other promise.", "Swapped the rations, swapped the stories, swapped the watch.", "The quiet one. The one we counted on.", "Stood when others would have crawled.", "Gone to find a front where it never rains.", "Mended our boots, our gear and our spirits.", "The best Milwer never promoted.", "Tended the wounded until there was no one left to tend them.", "Here lies a rhyfler who never once polished a button.", "They argued with every order and followed every one.", "Forever young, forever muddy.", "Home is the hearth, and they are home at last.", "Last seen charging. Exactly as expected."];
+const EPI_ANIMAL = ["A good fydo. The best fydo.", "Chased everything. Feared nothing.", "Never once left a quar behind.", "Loyal to the last bark.", "Found their way home, the long way round.", "Ate the rations, earned them twice over.", "Followed us everywhere. Now we'll follow them.", "Teeth, claws and a great big heart.", "Never learned to sit. Always knew when to stay.", "Stole a sausage from a Caerten and lived to brag about it.", "Heard the shells before any of us did.", "Slept on every boot in the trench.", "Dug holes everywhere. Dug us out of one.", "Wagged through the worst of it.", "Bit the enemy. Licked the wounded.", "The bravest nose in the patrol.",  "Warm on cold nights, fierce on dark ones.", "Never understood the war. Understood us.", "Ran ahead so we'd know the way.", "Their bowl is still by the stove.", "Here lies the only one the Yawdryl ever saluted."];
 function renderNarrative(id){
   const v = $("#view-narr"); const s = id && storyById(id); narrUI.story = s ? s.id : null;
   if (id && !s){ showView("narr", null); return; }
@@ -1533,6 +1541,7 @@ function renderStory(v, s){
       <div class="ncb">
         <div class="nnm"><div class="field"><label for="nm-${esc(c.id)}">Name</label><input id="nm-${esc(c.id)}" type="text" maxlength="30" value="${esc(c.name)}" data-nc="name" autocomplete="off"></div><button class="btn ghost ndice" type="button" data-n="roll" title="Random Quar name" aria-label="Random Quar name">🎲</button></div>
         <div class="field"><label for="bs-${esc(c.id)}">Backstory</label><textarea id="bs-${esc(c.id)}" rows="3" maxlength="4000" data-nc="backstory" placeholder="${isAnimalChar(s, c.id) ? "Where they were found, who feeds them, what they chase when nobody's looking…" : "Where they grew up, why they joined, the habit that drives the Yawdryl mad…"}">${esc(c.backstory||"")}</textarea></div>
+        ${c.fallen ? `<div class="nepi"><div class="nepih"><span aria-hidden="true">✝</span> In memory of ${esc(c.name||"a fallen rhyfler")}</div><div class="nepir"><label class="vh" for="ep-${esc(c.id)}">Epitaph</label><textarea id="ep-${esc(c.id)}" rows="2" maxlength="280" data-nc="epitaph" placeholder="${isAnimalChar(s, c.id) ? "A good fydo. The best fydo." : "Here lies… a few words for the ones left behind."}">${esc(c.epitaph||"")}</textarea><button class="btn ghost ndice" type="button" data-n="epiroll" title="Suggest an epitaph" aria-label="Suggest an epitaph">🎲</button></div></div>` : ""}
         <div class="nrels">${relsBlock(s, c)}</div>
       </div></article>`; }).join("")}</div>
   <div class="card" id="nOverview"${s.rels.length?"":" hidden"}>${overviewBlock(s)}</div>
@@ -1566,8 +1575,9 @@ document.addEventListener("input", e=>{
   const s = storyById(narrUI.story); if (!s) return;
   if (el.dataset.nf){ s[el.dataset.nf] = el.value; if (el.dataset.nf==="name"){ const h = document.querySelector("#view-narr .nhead h2"); if (h) h.textContent = el.value || "Untitled story"; } narrTouch(s); return; }
   const card = el.closest(".nchar"); if (!card || !el.dataset.nc) return; const c = s.chars.find(x=>x.id===card.dataset.cid); if (!c) return;
-  if (el.dataset.nc==="name"){ c.name = cleanNm(el.value); const t = card.querySelector(".dtn"); if (t) t.textContent = c.name || "Unnamed"; }
+  if (el.dataset.nc==="name"){ c.name = cleanNm(el.value); const t = card.querySelector(".dtn"); if (t) t.textContent = c.name || "Unnamed"; const h = card.querySelector(".nepih"); if (h) h.innerHTML = `<span aria-hidden="true">✝</span> In memory of ${esc(c.name||"a fallen rhyfler")}`; }
   else if (el.dataset.nc==="backstory") c.backstory = el.value;
+  else if (el.dataset.nc==="epitaph") c.epitaph = el.value.slice(0,280);
   narrTouch(s);
 });
 document.addEventListener("change", e=>{
@@ -1576,7 +1586,8 @@ document.addEventListener("change", e=>{
   if (el.id==="nRelB" && narrUI.editRel){ const ed = narrUI.editRel; ed.b = el.value; const ok = relKindsFor(storyById(narrUI.story), ed.a, ed.b);
     if (!ok.includes(ed.type)){ ed.type = ok[0]; ed.tier = Math.min(2, REL[ed.type].tiers.length-1); } renderNarrative(narrUI.story); return; }
   if (el.id==="nRelKind" && narrUI.editRel){ narrUI.editRel.kind = el.value; return; }
-  if (s && el.dataset.nc==="fallen"){ const c = s.chars.find(x=>x.id===el.closest(".nchar").dataset.cid); if (c){ c.fallen = el.checked; el.closest(".nchar").classList.toggle("fallen", c.fallen); narrTouch(s); } return; }
+  if (s && el.dataset.nc==="fallen"){ const c = s.chars.find(x=>x.id===el.closest(".nchar").dataset.cid); if (c){ c.fallen = el.checked; narrTouch(s); const y = window.scrollY; renderNarrative(s.id); window.scrollTo(0, y);
+    if (c.fallen){ const t = document.getElementById("ep-"+c.id); if (t && !c.epitaph) t.focus({preventScroll:true}); } } return; }
   if (s && el.dataset.nc==="name") narrRefreshRels(s); // refresh names shown in relationships, leave the text boxes alone
 });
 document.addEventListener("click", e=>{
@@ -1587,6 +1598,8 @@ document.addEventListener("click", e=>{
   if (a==="del"){ const id = b.dataset.id; if (narrUI.confirmDel===id){ narr.stories = narr.stories.filter(x=>x.id!==id); narrUI.confirmDel = null; narrSave(); toast("Story deleted"); } else { narrUI.confirmDel = id; setTimeout(()=>{ if (narrUI.confirmDel===id){ narrUI.confirmDel = null; if (state.view==="narr" && !narrUI.story) renderNarrative(); } }, 4000); } renderNarrative(); return; }
   if (!s) return;
   const card = b.closest(".nchar"), c = card && s.chars.find(x=>x.id===card.dataset.cid);
+  if (a==="epiroll" && c){ const pool = isAnimalChar(s, c.id) ? EPI_ANIMAL : EPI_QUAR; let t; do { t = pool[Math.floor(Math.random()*pool.length)]; } while (pool.length>1 && t===c.epitaph);
+    c.epitaph = t; narrTouch(s); const ta = document.getElementById("ep-"+c.id); if (ta) ta.value = t; return; }
   if (a==="roll" && c){ const used = new Set(s.chars.map(x=>x.name)); c.name = randName(used); narrTouch(s); renderNarrative(s.id); return; }
   if (a==="addrel" && c){ const other = s.chars.find(x=>x.id!==c.id); const animal = relKindsFor(s, c.id, other.id)[0]==="animal";
     const k0 = relKindsFor(s, c.id, other.id)[0]; narrUI.editRel = {story:s.id, id:null, a:c.id, b:other.id, type: k0, tier:2, kind:"sibling", note:""}; renderNarrative(s.id); return; }
@@ -1749,7 +1762,7 @@ function narrMerge(list){
   let added = 0, updated = 0;
   (list||[]).forEach(x=>{ if (!x || typeof x!=="object" || !Array.isArray(x.chars) || !facById(x.faction)) return;
     const clean = {id:String(x.id||narrId()), name:String(x.name||"Story").slice(0,60), faction:x.faction, limit:+x.limit||0, from:String(x.from||"").slice(0,60), created:+x.created||Date.now(), updated:+x.updated||Date.now(), notes:String(x.notes||"").slice(0,6000),
-      chars:x.chars.filter(c=>c&&typeof c==="object").slice(0,200).map(c=>({id:String(c.id), unitId:String(c.unitId||""), name:cleanNm(c.name), backstory:String(c.backstory||"").slice(0,4000), fallen:!!c.fallen})),
+      chars:x.chars.filter(c=>c&&typeof c==="object").slice(0,200).map(c=>({id:String(c.id), unitId:String(c.unitId||""), name:cleanNm(c.name), backstory:String(c.backstory||"").slice(0,4000), fallen:!!c.fallen, epitaph:String(c.epitaph||"").slice(0,280)})),
       rels:(Array.isArray(x.rels)?x.rels:[]).filter(r=>r&&REL[r.type]).slice(0,2000).map(r=>({id:String(r.id), a:String(r.a), b:String(r.b), type:r.type, tier:Math.max(0,Math.min(REL[r.type].tiers.length-1, +r.tier||0)), kind:r.kind?String(r.kind):undefined, note:String(r.note||"").slice(0,140)}))};
     const i = narr.stories.findIndex(s=>s.id===clean.id);
     if (i>=0){ if ((narr.stories[i].updated||0) < clean.updated){ narr.stories[i] = clean; updated++; } } else { narr.stories.push(clean); added++; } });
@@ -3020,7 +3033,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-01.52";
+const APP_VERSION = "2026-11-01.55";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
