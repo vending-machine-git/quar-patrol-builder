@@ -525,14 +525,18 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 #kofiSlot .kofi{margin:0}
 .kofi .ext{width:.9em;height:.9em;color:var(--muted)}
 /* Backup bar (My Patrols, Narrative) */
-.bkbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px;padding:8px 12px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);font-size:.92em}
-.bkbar.due{border-color:var(--warn);background:color-mix(in oklab, var(--warn) 10%, var(--panel))}
-.bkt{display:inline-flex;align-items:center;gap:8px;color:var(--muted)}
+.savebox{border:1.5px solid var(--warn);border-left-width:5px;border-radius:3px;background:color-mix(in oklab, var(--warn) 12%, var(--panel))}
+.savebox>.savewarn{border:0;background:none;border-radius:0}
+.bkbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 12px;padding:7px 14px 8px;border-top:1px solid color-mix(in oklab, var(--warn) 35%, transparent);font-size:.88em}
+.bkbar.due .bkt{font-weight:600}
+.bkbar .btn{padding:3px 10px}
+.bkt{display:inline-flex;align-items:center;gap:8px;color:var(--muted);min-width:0}
 .bkbar.due .bkt{color:var(--ink)}
 .bkt svg{width:1.2em;height:1.2em;flex:0 0 auto;color:var(--accent)}
 .bkb{display:flex;flex-wrap:wrap;gap:6px}
 .bkfile{display:inline-flex;align-items:center;cursor:pointer}
 .bkslot:empty{display:none}
+@media (max-width:560px){ .bkw{display:none} .savebox .swfold>summary{padding:9px 12px} .savebox .swfold>p{padding:0 12px 9px 12px;font-size:.92em} .bkbar{padding:6px 12px 8px} .bkt svg{display:none} }
 @media print{ .bkslot{display:none!important} }
 /* Narrative */
 .beta{display:inline-block;font-family:var(--f-body,inherit);font-size:.62em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:.22em .45em;border:1.5px solid currentColor;border-radius:3px;vertical-align:.25em;color:var(--brass);margin-left:.15em}
@@ -829,8 +833,8 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <section id="view-narr" class="home" aria-label="Narrative"></section>
   <section id="view-home" class="home" aria-label="My patrols">
     <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
-    <details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>They won't appear on your other devices or browsers, and clearing your browsing data (cookies and site data) or using a private window will erase them. Use <b>Save backup file</b> now and then: it keeps your patrols, stories and the game in progress in one file, and <b>Load backup file</b> brings them back, on this device or another. To share a single patrol, use <b>Share link</b> or <b>Copy as text</b>.</p></details>
-    <div class="bkslot" id="bkHome"></div>
+    <div class="savebox"><details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories and current game. To share one patrol, use <b>Share link</b> or <b>Copy as text</b>.</p></details>
+    <div class="bkslot" id="bkHome"></div></div>
     <div class="card">
       <header><h2>New Patrol</h2></header>
       <form class="newp" id="newForm">
@@ -1449,11 +1453,14 @@ function renderNarrative(id){
   const f = facById(s.faction); if (f && f.color) document.body.style.setProperty("--fac", f.color);
   renderStory(v, s);
 }
-const NARR_WARN = `<p class="savewarn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Your stories are saved only in this browser, on this device.</b> Use <b>Save backup file</b> now and then (it keeps your patrols, stories and the game in progress in one file), and <b>Load backup file</b> to bring them back or to another device.</span></p>`;
+const NARR_WARN = () => `<div class="savebox"><details class="savewarn swfold" id="nWarn"${foldOpen("nWarn") ? " open" : ""}><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your stories are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories and current game.</p></details><div class="bkslot">${backupBar()}</div></div>`;
+// open/closed memory for fold-out notes other than the My Patrols one (open by default)
+const foldOpen = id => { try{ return localStorage.getItem("quar-fold-"+id)!=="0"; }catch(e){ return true; } };
+document.addEventListener("toggle", e=>{ const d = e.target; if (d && d.id==="nWarn"){ try{ localStorage.setItem("quar-fold-nWarn", d.open ? "1" : "0"); }catch(_){} } }, true);
 function renderNarrList(v){
   const pats = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0) && facById(p.faction));
   const list = [...narr.stories].sort((a,b)=>(b.updated||0)-(a.updated||0));
-  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="beta">Beta</span></h1></div>${NARR_WARN}<div class="bkslot">${backupBar()}</div>
+  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="beta">Beta</span></h1></div>${NARR_WARN()}
   <div class="card"><header><h2>Start a story</h2></header><div class="nstart">
     <p class="hint">Pick one of your patrols. It's copied into a <b>story patrol</b> of its own, so changing one never changes the other. Give every rhyfler a backstory and set out who's friends, rivals, family or sweethearts. This is all for storytelling: it doesn't change any rules or stats.</p>
     ${pats.length ? `<div class="nrow"><div class="field"><label for="nPatrol">Patrol</label><select id="nPatrol">${pats.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc(facById(p.faction).name)} · ${p.total||0} pts</option>`).join("")}</select></div><button class="btn" type="button" data-n="new">Start story</button></div>`
@@ -1593,10 +1600,9 @@ function backupBar(){
   const last = bkLast(), changed = bkLatestChange(), has = (state.saved||[]).length || narr.stories.length;
   const unsaved = has && changed > last;
   const due = unsaved && (!last || Date.now()-last > BK_DUE_DAYS*864e5);
-  const txt = !last ? (has ? "No backup yet. Save one so your patrols and stories are safe." : "No backup yet.")
-    : `Last backup: ${bkAgo(last)}${unsaved ? (due ? ". You've made changes since, worth saving a new one." : " (you've made changes since)") : ". Everything's backed up."}`;
+  const txt = !last ? "No backup yet" : `Last backup: ${bkAgo(last)}${unsaved ? (due ? " · changes since, time for a new one" : " · changes since") : " ✓"}`;
   return `<div class="bkbar${due?" due":""}"><span class="bkt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${esc(txt)}</span>
-    <span class="bkb"><button class="btn${due?"":" ghost"}" type="button" data-bk="save"${has||game?"":" disabled"}>Save backup file</button><label class="btn ghost bkfile">Load backup file<input type="file" data-bk="load" accept=".json,application/json" hidden></label></span></div>`;
+    <span class="bkb"><button class="btn${due?"":" ghost"}" type="button" data-bk="save"${has||game?"":" disabled"}>Save backup<span class="bkw">&nbsp;file</span></button><label class="btn ghost bkfile">Load backup<span class="bkw">&nbsp;file</span><input type="file" data-bk="load" accept=".json,application/json" hidden></label></span></div>`;
 }
 function bkRefresh(){ document.querySelectorAll(".bkslot").forEach(x=>{ x.innerHTML = backupBar(); }); }
 function backupSave(){
@@ -2880,7 +2886,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-01.46";
+const APP_VERSION = "2026-11-01.47";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
