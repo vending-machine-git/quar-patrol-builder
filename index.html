@@ -538,6 +538,23 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 .bkslot:empty{display:none}
 @media (max-width:560px){ .bkw{display:none} .savebox .swfold>summary{padding:9px 12px} .savebox .swfold>p{padding:0 12px 9px 12px;font-size:.92em} .bkbar{padding:6px 12px 8px} .bkt svg{display:none} }
 @media print{ .bkslot{display:none!important} }
+/* Saved battles */
+.gbattles .blist{display:flex;flex-direction:column;gap:8px;padding:12px}
+.bcard{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;border:1px solid var(--rule);border-left:5px solid var(--fac);border-radius:3px;padding:8px 10px;background:var(--panel)}
+.bmain{display:flex;flex-direction:column;min-width:0;flex:1 1 16em}
+.bmain b{font-size:1.05em;overflow-wrap:anywhere}
+.bhead{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.03em;color:var(--accent);font-size:.95em}
+.bacts{display:flex;flex-wrap:wrap;gap:6px}
+.bacts .btn{padding:3px 10px}
+.bacts .warn{border-color:var(--bad);color:var(--bad)}
+.bnone{padding:12px;margin:0}
+.bmodal .nmbox{width:min(100%,960px)}
+.bmtop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bmtop h3{margin:0;overflow-wrap:anywhere}
+.bgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bgrid.four{grid-template-columns:repeat(4,1fr)}
+@media (max-width:560px){ .bgrid.four{grid-template-columns:1fr 1fr} .bgrid{grid-template-columns:1fr} .bgrid.four{grid-template-columns:1fr 1fr} }
+#btDlg textarea,#btDlg input[type=text]{width:100%;box-sizing:border-box}
 /* Narrative */
 .beta{display:inline-block;font-family:var(--f-body,inherit);font-size:.62em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:.22em .45em;border:1.5px solid currentColor;border-radius:3px;vertical-align:.25em;color:var(--brass);margin-left:.15em}
 .navtab .beta{font-size:.68em;vertical-align:.15em;padding:.18em .35em;border-width:1px}
@@ -568,6 +585,7 @@ h1 .beta{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
 .nchar>header{align-items:center}
 .nch{display:flex;flex-direction:column;gap:3px;min-width:0}
 .nch .dtag{align-self:flex-start}
+.nanimal{display:inline-block;font-size:.85em;font-weight:600;color:#4f7a6e;border:1px solid currentColor;border-radius:999px;padding:0 6px;margin-left:4px}
 .nfall{display:inline-flex;align-items:center;gap:5px;font-size:.8em;color:var(--muted);cursor:pointer;white-space:nowrap}
 .nchar.fallen{opacity:.72}
 .nchar.fallen .dtn{text-decoration:line-through;text-decoration-color:var(--bad)}
@@ -833,7 +851,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <section id="view-narr" class="home" aria-label="Narrative"></section>
   <section id="view-home" class="home" aria-label="My patrols">
     <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
-    <div class="savebox"><details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories and current game. To share one patrol, use <b>Share link</b> or <b>Copy as text</b>.</p></details>
+    <div class="savebox"><details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, current game and saved battles. To share one patrol, use <b>Share link</b> or <b>Copy as text</b>.</p></details>
     <div class="bkslot" id="bkHome"></div></div>
     <div class="card">
       <header><h2>New Patrol</h2></header>
@@ -1422,8 +1440,25 @@ const REL = {
     ["Showing the Ropes","Keeps the new kit out of trouble."],
     ["Mentor","Teaches everything they know."],
     ["Trusted Mentor","Their word is law to their pupil."],
-    ["Like a Parent","More family than many families."]], dirAll:true, a:"Mentor to", b:"Pupil of"}
+    ["Like a Parent","More family than many families."]], dirAll:true, a:"Mentor to", b:"Pupil of"},
+  animal:{label:"Animal", color:"#4f7a6e", icon:"🐾", animal:true, tiers:[
+    ["Tool of War","Just another weapon to be pointed at the enemy."],
+    ["Working Beast","Fed, watered and worked hard. Nothing more."],
+    ["Trusted Companion","Knows the commands, and the hand that gives them."],
+    ["Loyal Partner","Shares the trench, the rations and the danger."],
+    ["Man's Best Friend","Would follow them anywhere, and they'd do the same."]]},
+  pack:{label:"Pack", color:"#7a6a3f", icon:"🐕", animal:true, tiers:[
+    ["Wary Sniffs","Circle each other and keep their distance."],
+    ["Tolerated","Share a trench without snapping at each other."],
+    ["Packmates","Hunt, sleep and scrap side by side."],
+    ["Den Mates","Curl up together when the shelling starts."],
+    ["Inseparable Pack","Where one runs, the other is never far behind."]]}
 };
+// Animals are the units whose only equipment is Teeth and Claws (Fydos, Sarf-cyn…), or that have the Creature ability.
+// Quar and animal: only the Animal kind. Two animals: only the Pack kind. Two quar: the usual kinds (never Animal or Pack).
+const isAnimalUnit = u => !!u && (u.profiles||[]).some(p=>{ const eq = p.equip||[]; return (eq.length && eq.every(x=>/teeth and claws/i.test(x))) || (p.abilities||[]).some(a=>/^creature$/i.test(a)); });
+function isAnimalChar(s, cid){ const c = s.chars.find(x=>x.id===cid), f = facById(s.faction); return !!(c && f && isAnimalUnit(f.units.find(u=>u.id===c.unitId))); }
+const relKindsFor = (s, a, b) => { const x = isAnimalChar(s, a), y = isAnimalChar(s, b); return x && y ? ["pack"] : x || y ? ["animal"] : Object.keys(REL).filter(k=>!REL[k].animal); };
 const relTierName = r => (REL[r.type]||{tiers:[]}).tiers[r.tier] ? REL[r.type].tiers[r.tier][0] : "";
 // How a relationship reads from one character's side ("Close Friend", "Parent of", "Admirer of"...)
 function relLabelFor(r, cid){
@@ -1453,10 +1488,10 @@ function renderNarrative(id){
   const f = facById(s.faction); if (f && f.color) document.body.style.setProperty("--fac", f.color);
   renderStory(v, s);
 }
-const NARR_WARN = () => `<div class="savebox"><details class="savewarn swfold" id="nWarn"${foldOpen("nWarn") ? " open" : ""}><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your stories are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories and current game.</p></details><div class="bkslot">${backupBar()}</div></div>`;
+const NARR_WARN = () => `<div class="savebox"><details class="savewarn swfold" id="nWarn"${foldOpen("nWarn") ? " open" : ""}><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your stories are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, current game and saved battles.</p></details><div class="bkslot">${backupBar()}</div></div>`;
 // open/closed memory for fold-out notes other than the My Patrols one (open by default)
 const foldOpen = id => { try{ return localStorage.getItem("quar-fold-"+id)!=="0"; }catch(e){ return true; } };
-document.addEventListener("toggle", e=>{ const d = e.target; if (d && d.id==="nWarn"){ try{ localStorage.setItem("quar-fold-nWarn", d.open ? "1" : "0"); }catch(_){} } }, true);
+document.addEventListener("toggle", e=>{ const d = e.target; if (d && (d.id==="nWarn" || d.id==="gWarn")){ try{ localStorage.setItem("quar-fold-"+d.id, d.open ? "1" : "0"); }catch(_){} } }, true);
 function renderNarrList(v){
   const pats = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0) && facById(p.faction));
   const list = [...narr.stories].sort((a,b)=>(b.updated||0)-(a.updated||0));
@@ -1493,11 +1528,11 @@ function renderStory(v, s){
     <div class="field"><label for="nNotes">The patrol's story so far</label><textarea id="nNotes" rows="3" maxlength="6000" data-nf="notes" placeholder="Where they're from, what they've been through, what they're fighting for…">${esc(s.notes||"")}</textarea></div></div></div>
   <div class="ngrid">${s.chars.map(c=>{
     return `<article class="card nchar${c.fallen?" fallen":""}" data-cid="${esc(c.id)}">
-      <header><div class="nch">${dtag(c.name||"Unnamed")}<span class="hint">${esc(charUnit(s,c))}</span></div>
+      <header><div class="nch">${dtag(c.name||"Unnamed")}<span class="hint">${esc(charUnit(s,c))}${isAnimalChar(s, c.id) ? ` <span class="nanimal">🐾 Animal</span>` : ""}</span></div>
         <label class="nfall" title="Mark as fallen"><input type="checkbox" data-nc="fallen"${c.fallen?" checked":""}> Fallen</label></header>
       <div class="ncb">
         <div class="nnm"><div class="field"><label for="nm-${esc(c.id)}">Name</label><input id="nm-${esc(c.id)}" type="text" maxlength="30" value="${esc(c.name)}" data-nc="name" autocomplete="off"></div><button class="btn ghost ndice" type="button" data-n="roll" title="Random Quar name" aria-label="Random Quar name">🎲</button></div>
-        <div class="field"><label for="bs-${esc(c.id)}">Backstory</label><textarea id="bs-${esc(c.id)}" rows="3" maxlength="4000" data-nc="backstory" placeholder="Where they grew up, why they joined, the habit that drives the Yawdryl mad…">${esc(c.backstory||"")}</textarea></div>
+        <div class="field"><label for="bs-${esc(c.id)}">Backstory</label><textarea id="bs-${esc(c.id)}" rows="3" maxlength="4000" data-nc="backstory" placeholder="${isAnimalChar(s, c.id) ? "Where they were found, who feeds them, what they chase when nobody's looking…" : "Where they grew up, why they joined, the habit that drives the Yawdryl mad…"}">${esc(c.backstory||"")}</textarea></div>
         <div class="nrels">${relsBlock(s, c)}</div>
       </div></article>`; }).join("")}</div>
   <div class="card" id="nOverview"${s.rels.length?"":" hidden"}>${overviewBlock(s)}</div>
@@ -1513,7 +1548,7 @@ function relEditor(s, ed){
     <h3>${ed.id?"Edit":"New"} relationship</h3>
     <div class="nmrow"><div class="field"><label>Between</label><div class="nwho"><b>${esc(charName(s,ed.a))}</b><span>and</span>
       <select id="nRelB" aria-label="Other rhyfler">${others.map(x=>`<option value="${esc(x.id)}"${x.id===ed.b?" selected":""}>${esc(x.name||"Unnamed rhyfler")}</option>`).join("")}</select></div></div></div>
-    <div class="field"><label>Kind</label><div class="ntypes">${Object.entries(REL).map(([k,R])=>`<button type="button" class="ntype${k===ed.type?" on":""}" style="--rc:${R.color}" data-n="rtype" data-k="${k}" aria-pressed="${k===ed.type}"><span aria-hidden="true">${R.icon}</span>${R.label}</button>`).join("")}</div></div>
+    <div class="field"><label>Kind</label><div class="ntypes">${relKindsFor(s, ed.a, ed.b).map(k=>[k,REL[k]]).map(([k,R])=>`<button type="button" class="ntype${k===ed.type?" on":""}" style="--rc:${R.color}" data-n="rtype" data-k="${k}" aria-pressed="${k===ed.type}"><span aria-hidden="true">${R.icon}</span>${R.label}</button>`).join("")}</div></div>
     ${fam ? `<div class="field"><label for="nRelKind">How they're related</label><select id="nRelKind">${T.kinds.map(k=>`<option value="${k[0]}"${k[0]===fam[0]?" selected":""}>${k[1]===k[2]?k[1]:`${esc(charName(s,ed.a))} is ${k[1].toLowerCase().replace(/ of$/,"")} of ${esc(charName(s,ed.b))}`}</option>`).join("")}</select>
       <button class="btn ghost nswap" type="button" data-n="swap">⇄ Swap who's who</button></div>` : ""}
     ${ed.type==="mentor" ? `<div class="field"><label>Who teaches whom</label><button class="btn ghost nswap" type="button" data-n="swap">${esc(dirTxt[0])} ⇄</button></div>` : ""}
@@ -1538,7 +1573,8 @@ document.addEventListener("input", e=>{
 document.addEventListener("change", e=>{
   const el = e.target; if (!el.closest || !el.closest("#view-narr")) return;
   const s = storyById(narrUI.story);
-  if (el.id==="nRelB" && narrUI.editRel){ narrUI.editRel.b = el.value; renderNarrative(narrUI.story); return; }
+  if (el.id==="nRelB" && narrUI.editRel){ const ed = narrUI.editRel; ed.b = el.value; const ok = relKindsFor(storyById(narrUI.story), ed.a, ed.b);
+    if (!ok.includes(ed.type)){ ed.type = ok[0]; ed.tier = Math.min(2, REL[ed.type].tiers.length-1); } renderNarrative(narrUI.story); return; }
   if (el.id==="nRelKind" && narrUI.editRel){ narrUI.editRel.kind = el.value; return; }
   if (s && el.dataset.nc==="fallen"){ const c = s.chars.find(x=>x.id===el.closest(".nchar").dataset.cid); if (c){ c.fallen = el.checked; el.closest(".nchar").classList.toggle("fallen", c.fallen); narrTouch(s); } return; }
   if (s && el.dataset.nc==="name") narrRefreshRels(s); // refresh names shown in relationships, leave the text boxes alone
@@ -1552,17 +1588,19 @@ document.addEventListener("click", e=>{
   if (!s) return;
   const card = b.closest(".nchar"), c = card && s.chars.find(x=>x.id===card.dataset.cid);
   if (a==="roll" && c){ const used = new Set(s.chars.map(x=>x.name)); c.name = randName(used); narrTouch(s); renderNarrative(s.id); return; }
-  if (a==="addrel" && c){ const other = s.chars.find(x=>x.id!==c.id); narrUI.editRel = {story:s.id, id:null, a:c.id, b:other.id, type:"friend", tier:2, kind:"sibling", note:""}; renderNarrative(s.id); return; }
+  if (a==="addrel" && c){ const other = s.chars.find(x=>x.id!==c.id); const animal = relKindsFor(s, c.id, other.id)[0]==="animal";
+    const k0 = relKindsFor(s, c.id, other.id)[0]; narrUI.editRel = {story:s.id, id:null, a:c.id, b:other.id, type: k0, tier:2, kind:"sibling", note:""}; renderNarrative(s.id); return; }
   if (a==="editrel"){ const r = s.rels.find(x=>x.id===b.dataset.id); if (!r) return; const cid = card ? card.dataset.cid : r.a;
     // open it from the side of the card it was clicked on, keeping directional meaning
-    narrUI.editRel = {story:s.id, id:r.id, a:r.a, b:r.b, type:r.type, tier:r.tier, kind:r.kind||"sibling", note:r.note||"", from:cid}; renderNarrative(s.id); return; }
+    const ok = relKindsFor(s, r.a, r.b), typ = ok.includes(r.type) ? r.type : ok[0];
+    narrUI.editRel = {story:s.id, id:r.id, a:r.a, b:r.b, type:typ, tier:Math.min(r.tier, REL[typ].tiers.length-1), kind:r.kind||"sibling", note:r.note||"", from:cid}; renderNarrative(s.id); return; }
   const ed = narrUI.editRel; if (!ed) return;
   if (a==="rtype"){ ed.type = b.dataset.k; ed.tier = Math.min(ed.tier, REL[ed.type].tiers.length-1); if (ed.type==="romance" && ed.tier===1) ed.tier = 2; ed.confirm = false; renderNarrative(s.id); return; }
   if (a==="rtier"){ ed.tier = +b.dataset.i; renderNarrative(s.id); return; }
   if (a==="swap"){ [ed.a, ed.b] = [ed.b, ed.a]; renderNarrative(s.id); return; }
   if (a==="relcancel"){ narrUI.editRel = null; renderNarrative(s.id); return; }
   if (a==="relrm"){ if (!ed.confirm){ ed.confirm = true; renderNarrative(s.id); return; } s.rels = s.rels.filter(x=>x.id!==ed.id); narrUI.editRel = null; narrTouch(s); renderNarrative(s.id); toast("Relationship removed"); return; }
-  if (a==="relsave"){ if (!ed.b || ed.a===ed.b) return; const note = (($("#nRelNote")||{}).value||"").trim().slice(0,140);
+  if (a==="relsave"){ if (!ed.b || ed.a===ed.b) return; if (!relKindsFor(s, ed.a, ed.b).includes(ed.type)){ ed.type = relKindsFor(s, ed.a, ed.b)[0]; ed.tier = Math.min(ed.tier, REL[ed.type].tiers.length-1); } const note = (($("#nRelNote")||{}).value||"").trim().slice(0,140);
     const rec = {id: ed.id || "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), a:ed.a, b:ed.b, type:ed.type, tier:ed.tier, note};
     if (ed.type==="family") rec.kind = ed.kind;
     // one relationship of each kind per pair: replace an existing one instead of doubling up
@@ -1571,6 +1609,99 @@ document.addEventListener("click", e=>{
 });
 document.addEventListener("keydown", e=>{ if (e.key==="Escape" && narrUI.editRel && state.view==="narr"){ narrUI.editRel = null; renderNarrative(narrUI.story); } });
 
+/* ---------- Saved battles ----------
+   A finished game can be saved as a battle (a full copy of the game), listed under "Saved battles" on the Game Tracker.
+   Each one can be viewed as its battle report (print, download, copy) and edited: name, date, sides, mission, VP, Pluck, result, notes.
+   Stored in this browser under "quar-battles-v1" and included in the backup file. */
+const BAT_KEY = "quar-battles-v1";
+let battles = [];
+try{ const b = JSON.parse(localStorage.getItem(BAT_KEY) || "null"); if (Array.isArray(b)) battles = b; }catch(e){}
+function battlesSave(){ try{ localStorage.setItem(BAT_KEY, JSON.stringify(battles)); }catch(e){ toast("Couldn't save: this browser's storage is full or blocked"); } }
+const battleById = id => battles.find(b=>b.id===id);
+const G_WARN = () => `<div class="savebox"><details class="savewarn swfold" id="gWarn"${foldOpen("gWarn") ? " open" : ""}><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your game and saved battles are kept only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, current game and saved battles.</p></details><div class="bkslot">${backupBar()}</div></div>`;
+// Run something (like battleReport) as if a saved battle were the current game
+function withGame(snap, fn){ const keep = game; game = snap; try{ return fn(); } finally{ game = keep; } }
+const battleOpp = g => g.opp || (g.oppForce && g.oppForce.name) || "Opponent";
+let btUI = {view:null, edit:null, confirmDel:null};
+function battlesCard(){
+  const list = [...battles].sort((a,b)=>((b.game.ended||{}).at||b.saved)-((a.game.ended||{}).at||a.saved));
+  return `<div class="card gbattles"><header><h2>Saved battles</h2><span class="hint">${list.length || "none yet"}</span></header>
+    ${list.length ? `<div class="blist">${list.map(b=>{ let R = null; try{ R = withGame(b.game, battleReport); }catch(e){}
+      const g = b.game, ms = missionOf(g.mission), f = facById(g.faction), when = new Date((g.ended||{}).at || b.saved).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+      return `<article class="bcard" style="--fac:${esc((f&&f.color)||"#6b5d45")}"><div class="bmain"><b>${esc(b.name || `${g.name} vs ${battleOpp(g)}`)}</b>
+        <span class="bhead">${esc(R ? R.headline : "Battle")}</span>
+        <span class="hint">${esc(when)} · ${esc(ms.name)} · ${esc(g.name)} ${g.vp[0]}–${g.vp[1]} ${esc(battleOpp(g))}</span></div>
+        <div class="bacts"><button class="btn ghost" type="button" data-bt="view" data-id="${esc(b.id)}">View report</button><button class="btn ghost" type="button" data-bt="edit" data-id="${esc(b.id)}">Edit</button><button class="btn ghost${btUI.confirmDel===b.id?" warn":""}" type="button" data-bt="del" data-id="${esc(b.id)}">${btUI.confirmDel===b.id?"Tap again to delete":"Delete"}</button></div></article>`; }).join("")}</div>`
+      : `<p class="hint bnone">When a game is over, press <b>Save battle</b> on the results to keep it here. You can come back to its battle report and edit it any time.</p>`}
+  </div>${btUI.view ? battleViewModal() : ""}${btUI.edit ? battleEditModal() : ""}`;
+}
+function battleViewModal(){
+  const b = battleById(btUI.view); if (!b) return ""; const R = withGame(b.game, battleReport);
+  return `<div class="nmodal bmodal" id="btDlg" role="dialog" aria-modal="true" aria-label="Battle report"><div class="nmbox" style="--rc:var(--accent)">
+    <div class="bmtop"><h3>${esc(b.name || "Battle report")}</h3><button class="btn ghost" type="button" data-bt="close">Close</button></div>
+    <div class="brepwrap">${brepHTML(R)}</div>
+    <div class="nmact"><button class="btn" type="button" data-bt="print" data-id="${esc(b.id)}">Print / Save as PDF</button><button class="btn ghost" type="button" data-bt="dl" data-id="${esc(b.id)}">Download report</button><button class="btn ghost" type="button" data-bt="copy" data-id="${esc(b.id)}">Copy as text</button><span></span><button class="btn ghost" type="button" data-bt="edit" data-id="${esc(b.id)}">Edit</button></div>
+  </div></div>`;
+}
+function battleEditModal(){
+  const b = battleById(btUI.edit); if (!b) return ""; const g = b.game, ed = g.ended || {};
+  const d = new Date(ed.at || b.saved), ymd = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  const ms = missionOf(g.mission), wv = ed.winner || "auto";
+  const opts = [["auto", ms.noVP ? "Choose who won…" : "By Victory Points"], ["me", `${g.name} won`], ["opp", `${battleOpp(g)} won`], ["draw","Draw"]];
+  const num = (id, v, lab) => `<div class="field"><label for="${id}">${lab}</label><input id="${id}" type="number" min="0" max="999" value="${+v||0}" inputmode="numeric"></div>`;
+  return `<div class="nmodal" id="btDlg" role="dialog" aria-modal="true" aria-label="Edit battle"><div class="nmbox" style="--rc:var(--accent)">
+    <h3>Edit battle</h3>
+    <div class="field"><label for="bName">Battle name</label><input id="bName" type="text" maxlength="80" value="${esc(b.name||"")}" placeholder="${esc(`${g.name} vs ${battleOpp(g)}`)}" autocomplete="off"></div>
+    <div class="bgrid"><div class="field"><label for="bDate">Date</label><input id="bDate" type="date" value="${ymd}"></div>
+      <div class="field"><label for="bMission">Mission</label><select id="bMission">${(DATA.missions||[]).map(m=>`<option value="${esc(m.id)}"${m.id===g.mission?" selected":""}>${esc(m.name)}</option>`).join("")}</select></div></div>
+    <div class="bgrid"><div class="field"><label for="bMe">Your side's name</label><input id="bMe" type="text" maxlength="60" value="${esc(g.name||"")}" autocomplete="off"></div>
+      <div class="field"><label for="bOpp">Opponent's name</label><input id="bOpp" type="text" maxlength="40" value="${esc(battleOpp(g))}" autocomplete="off"></div></div>
+    <div class="bgrid four">${num("bVp0", g.vp[0], "Your VP")}${num("bVp1", g.vp[1], "Their VP")}${num("bPl0", g.pluck[0], "Your Pluck left")}${num("bPl1", g.pluck[1], "Their Pluck left")}</div>
+    <div class="field"><label for="bWin">Result</label><select id="bWin">${opts.map(([v,t])=>`<option value="${v}"${v===wv?" selected":""}>${esc(t)}</option>`).join("")}</select></div>
+    <div class="field"><label for="bNotes">Commander's notes</label><textarea id="bNotes" rows="4" maxlength="2000">${esc(ed.notes||"")}</textarea></div>
+    <p class="hint" style="margin:0">Rhyfler statuses and the Round-by-Round moments stay as they were recorded.</p>
+    <div class="nmact"><span></span><button class="btn ghost" type="button" data-bt="close">Cancel</button><button class="btn" type="button" data-bt="editsave">Save changes</button></div>
+  </div></div>`;
+}
+function btRender(){ const y = window.scrollY; renderGame(); window.scrollTo(0, y); const d = $("#btDlg"); if (d){ const f = d.querySelector("input,button"); if (f) f.focus({preventScroll:true}); } }
+document.addEventListener("click", e=>{
+  const b = e.target.closest("[data-bt]");
+  if (!b){ if (e.target.id==="btDlg" && state.view==="game"){ btUI.view = btUI.edit = null; btRender(); } return; }
+  if (!$("#view-game").contains(b)) return;
+  const a = b.dataset.bt, bt = b.dataset.id && battleById(b.dataset.id);
+  if (a==="save"){ if (!game || !game.ended) return; const snap = JSON.parse(JSON.stringify(game)); const ex = game.savedBattleId && battleById(game.savedBattleId);
+    if (ex){ ex.game = snap; ex.updated = Date.now(); toast("Saved battle updated"); }
+    else { const id = "b"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); game.savedBattleId = id; snap.savedBattleId = id; battles.push({id, name:"", saved:Date.now(), updated:Date.now(), game:snap}); saveGame(); toast("Battle saved. Find it under Saved battles"); try{ gcEvent("battle-saved"); }catch(_){} }
+    battlesSave(); btRender(); return; }
+  if (a==="view" && bt){ btUI.view = bt.id; btUI.edit = null; btRender(); return; }
+  if (a==="edit" && bt){ btUI.edit = bt.id; btUI.view = null; btRender(); return; }
+  if (a==="close"){ btUI.view = btUI.edit = null; btRender(); return; }
+  if (a==="del" && bt){ if (btUI.confirmDel===bt.id){ battles = battles.filter(x=>x.id!==bt.id); btUI.confirmDel = null; battlesSave(); toast("Battle deleted"); }
+    else { btUI.confirmDel = bt.id; setTimeout(()=>{ if (btUI.confirmDel===bt.id){ btUI.confirmDel = null; if (state.view==="game") btRender(); } }, 4000); }
+    btRender(); return; }
+  if (a==="print" && bt){ brepPrint(withGame(bt.game, battleReport)); return; }
+  if (a==="copy" && bt){ const txt = withGame(bt.game, ()=>reportText(battleReport()));
+    const fallback = ()=>{ const t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); toast("Battle report copied"); }catch(_){ toast("Couldn't copy: try Download instead"); } t.remove(); };
+    try{ navigator.clipboard.writeText(txt).then(()=>toast("Battle report copied. Paste it anywhere"), fallback); }catch(_){ fallback(); } return; }
+  if (a==="dl" && bt){ const R = withGame(bt.game, battleReport); brepFile(R).then(html=>{ const url = URL.createObjectURL(new Blob([html], {type:"text/html;charset=utf-8"})); const l = document.createElement("a"); l.href = url; l.download = reportFileName(R); document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 4000); toast("Battle report downloaded"); }); return; }
+  if (a==="editsave"){ const x = battleById(btUI.edit); if (!x) return; const g = x.game; g.ended = g.ended || {turn:g.turn, round:g.round, at:Date.now(), winner:"auto", notes:""};
+    const v = id => ($("#"+id)||{}).value, n = (id, d) => { const k = parseInt(v(id),10); return Number.isFinite(k) ? Math.max(0, Math.min(999, k)) : d; };
+    x.name = String(v("bName")||"").trim().slice(0,80);
+    const dt = v("bDate"); if (dt){ const [Y,M,D] = dt.split("-").map(Number); if (Y && M && D) g.ended.at = new Date(Y, M-1, D, 12).getTime(); }
+    if (missionOf(v("bMission")).id===v("bMission")) g.mission = v("bMission");
+    g.name = String(v("bMe")||"").trim().slice(0,60) || g.name; const on = String(v("bOpp")||"").trim().slice(0,40); g.opp = on;
+    g.vp = [n("bVp0", g.vp[0]), n("bVp1", g.vp[1])]; g.pluck = [n("bPl0", g.pluck[0]), n("bPl1", g.pluck[1])];
+    g.ended.winner = ["auto","me","opp","draw"].includes(v("bWin")) ? v("bWin") : "auto"; g.ended.notes = String(v("bNotes")||"").slice(0,2000);
+    x.updated = Date.now(); battlesSave(); btUI.edit = null; btUI.view = x.id; btRender(); toast("Battle updated"); return; }
+});
+document.addEventListener("keydown", e=>{ if (e.key==="Escape" && state.view==="game" && (btUI.view || btUI.edit)){ btUI.view = btUI.edit = null; btRender(); } });
+// Battles from a backup: add new ones, replace one only if the backup's copy is newer
+function battlesMerge(list){ let added = 0, updated = 0;
+  (Array.isArray(list)?list:[]).slice(0,500).forEach(x=>{ if (!x || typeof x!=="object" || !x.game || typeof x.game!=="object" || !Array.isArray(x.game.units) || !Array.isArray(x.game.vp)) return;
+    const clean = {id:String(x.id||("b"+Date.now().toString(36))), name:String(x.name||"").slice(0,80), saved:+x.saved||Date.now(), updated:+x.updated||Date.now(), game:x.game};
+    const i = battles.findIndex(b=>b.id===clean.id);
+    if (i>=0){ if ((battles[i].updated||0) < clean.updated){ battles[i] = clean; updated++; } } else { battles.push(clean); added++; } });
+  return {added, updated}; }
 /* ---------- Visit counter (GoatCounter: anonymous, no cookies) ----------
    Only on the real site (github.io), never in previews or local copies. Each page counts as its own path;
    story ids, patrol contents and share-link details are never sent. A few actions are counted as events. */
@@ -1594,10 +1725,10 @@ const gcEvent = name => gcSend({path: name, title: name, event: true});
    "Last backup" is remembered so we can nudge gently when there are changes that aren't in a backup yet. */
 const BK_KEY = "quar-backup-last", BK_DUE_DAYS = 14;
 const bkLast = () => { try{ return +localStorage.getItem(BK_KEY) || 0; }catch(e){ return 0; } };
-function bkLatestChange(){ let t = 0; (state.saved||[]).forEach(p=>{ t = Math.max(t, +p.updated||0); }); narr.stories.forEach(x=>{ t = Math.max(t, +x.updated||0); }); return t; }
+function bkLatestChange(){ let t = 0; (state.saved||[]).forEach(p=>{ t = Math.max(t, +p.updated||0); }); narr.stories.forEach(x=>{ t = Math.max(t, +x.updated||0); }); battles.forEach(x=>{ t = Math.max(t, +x.updated||0); }); return t; }
 function bkAgo(ms){ const d = Math.floor((Date.now()-ms)/864e5); if (d<1) return "today"; if (d===1) return "yesterday"; if (d<14) return `${d} days ago`; if (d<60) return `${Math.floor(d/7)} weeks ago`; return `${Math.floor(d/30)} months ago`; }
 function backupBar(){
-  const last = bkLast(), changed = bkLatestChange(), has = (state.saved||[]).length || narr.stories.length;
+  const last = bkLast(), changed = bkLatestChange(), has = (state.saved||[]).length || narr.stories.length || battles.length;
   const unsaved = has && changed > last;
   const due = unsaved && (!last || Date.now()-last > BK_DUE_DAYS*864e5);
   const txt = !last ? "No backup yet" : `Last backup: ${bkAgo(last)}${unsaved ? (due ? " · changes since, time for a new one" : " · changes since") : " ✓"}`;
@@ -1606,12 +1737,12 @@ function backupBar(){
 }
 function bkRefresh(){ document.querySelectorAll(".bkslot").forEach(x=>{ x.innerHTML = backupBar(); }); }
 function backupSave(){
-  const data = {app:"quar-patrol-builder", kind:"full", v:1, saved:new Date().toISOString(), patrols:state.saved||[], stories:narr.stories, game:game||null};
+  const data = {app:"quar-patrol-builder", kind:"full", v:1, saved:new Date().toISOString(), patrols:state.saved||[], stories:narr.stories, game:game||null, battles};
   const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], {type:"application/json"})), l = document.createElement("a");
   l.href = url; const dt = new Date(), ymd = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
   l.download = `Quar Patrol Builder backup ${ymd}.json`; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 2000);
   try{ localStorage.setItem(BK_KEY, String(Date.now())); }catch(e){}
-  bkRefresh(); toast("Backup file saved: your patrols, stories and game"); gcEvent("backup-saved");
+  bkRefresh(); toast("Backup file saved: your patrols, stories, game and battles"); gcEvent("backup-saved");
 }
 // Stories from a backup: add new ones, replace one only if the backup's copy is newer
 function narrMerge(list){
@@ -1639,12 +1770,12 @@ function backupLoad(file){
   if (!file) return; if (file.size > 5e6){ toast("That file is too big to be a builder backup"); return; }
   const fr = new FileReader(); fr.onload = ()=>{ let d; try{ d = JSON.parse(fr.result); }catch(e){ toast("That isn't a backup file from this builder"); return; }
     if (!d || d.app!=="quar-patrol-builder" || !["full","narrative"].includes(d.kind)){ toast("That isn't a backup file from this builder"); return; }
-    const P = d.kind==="full" ? patrolMerge(d.patrols) : {added:0, updated:0}, S = narrMerge(d.stories);
+    const P = d.kind==="full" ? patrolMerge(d.patrols) : {added:0, updated:0}, S = narrMerge(d.stories), Bt = d.kind==="full" ? battlesMerge(d.battles) : {added:0, updated:0};
     let g = "";
     if (d.kind==="full" && d.game && typeof d.game==="object" && Array.isArray(d.game.units)){ if (!game){ game = d.game; saveGame(); g = " and the game in progress"; } else if (JSON.stringify(game)!==JSON.stringify(d.game)) g = ". Your current game was kept (finish or end it to load the one in the backup)"; }
-    persist(); narrSave();
+    persist(); narrSave(); battlesSave();
     { const t = Date.parse(d.saved||""); if (t && t > bkLast()) try{ localStorage.setItem(BK_KEY, String(Math.min(t, Date.now()))); }catch(e){} }
-    const n = (k, w, ws) => k ? `${k} ${k===1?w:ws}` : "", parts = [n(P.added,"patrol added","patrols added"), n(P.updated,"patrol updated","patrols updated"), n(S.added,"story added","stories added"), n(S.updated,"story updated","stories updated")].filter(Boolean);
+    const n = (k, w, ws) => k ? `${k} ${k===1?w:ws}` : "", parts = [n(P.added,"patrol added","patrols added"), n(P.updated,"patrol updated","patrols updated"), n(S.added,"story added","stories added"), n(S.updated,"story updated","stories updated"), n(Bt.added,"battle added","battles added"), n(Bt.updated,"battle updated","battles updated")].filter(Boolean);
     if (!parts.length && !g.startsWith(" and")){ toast(`Nothing new in that backup: everything in it is already here${g}`); return; }
     const msg = `Backup loaded: ${parts.join(", ") || "nothing new"}${g}.`;
     // reload so every page (patrol checks, totals, the tracker) is rebuilt from the loaded data
@@ -1812,7 +1943,7 @@ function renderGame(){
     document.body.style.removeProperty("--fac");
     const list = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0));
     // same spot as the warning on My Patrols: straight under the page title
-    v.innerHTML = head + `<p class="savewarn gsave" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>The game is saved in this browser until you start a new one.</b></span></p>` + `<div class="card"><header><h2>Start a game</h2></header>${`<div class="gsetup">
+    v.innerHTML = head + G_WARN() + `<div class="card"><header><h2>Start a game</h2></header>${`<div class="gsetup">
       <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}<option value="">No patrol: just track the game</option></select></div>
       <div class="field" id="gPtsWrap"${list.length?" hidden":""}><label for="gPts">Patrol size (points)</label><input id="gPts" type="number" min="50" max="5000" step="50" value="200" inputmode="numeric"></div>
       <div class="field"><label for="gOpp">Opponent's name (optional)</label><input id="gOpp" type="text" maxlength="40" placeholder="Uses their patrol's name if blank" autocomplete="off"></div>
@@ -1821,7 +1952,7 @@ function renderGame(){
       </div><div class="gminfo" id="gMissionInfo"></div>${importBox("gMeSetup", false)}${importBox("gOppSetup", false)}<div class="gsetup"><button class="btn" type="button" data-g="start">Start game</button></div>`}
       ${list.length ? "" : `<p class="hint gnote">No saved patrols on this device. Use <b>Import Your Patrol</b> to bring one over, build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, or just track Turns, Pluck, Victory Points and losses.</p>`}
       <p class="hint gnote">Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too. The mission sets the number of Turns, who goes first and the starting Pluck.</p>
-</div>`;
+</div>` + battlesCard();
     missionInfo();
     return;
   }
@@ -1875,7 +2006,7 @@ function renderGame(){
   const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card">${importBox("gOppNew", false)}</div>`;
   if (game.faction) useFaction(game.faction); else document.body.style.removeProperty("--fac");
   const opp = esc(oppLabel());
-  v.innerHTML = head + `
+  v.innerHTML = head + G_WARN() + `
   <div class="gtop card"${me && me.color?` style="--fac:${me.color}"`:""}>
     <div class="gtitle">${me ? flagImg(me) : ""}<div><b>${esc(game.name)}</b><span class="hint">${me ? esc(me.name) : "No patrol loaded"} · ${game.limit} pts · vs ${opp}</span><span class="gmission">${esc(ms.name)}${game.role?` · You are the ${esc(game.role)}`:""}<span class="pg">${ms.page?` (${esc(ms.page)})`:""}</span></span></div></div>
     ${game.ended ? resultsCard(ms) : `<div class="gcounters">
@@ -1892,6 +2023,7 @@ function renderGame(){
   ${allGameUnits().length ? `<div class="gbar"><span></span><label class="switch" for="gHide"><input type="checkbox" id="gHide"${game.hideOut?" checked":""}> Hide units out of the fight</label></div>` : ""}
   ${myHtml}
   ${oppHtml}
+  ${battlesCard()}
   `;
 }
 // Rule check for a force in the tracker: borrow the builder's checks() with that force's units.
@@ -1999,6 +2131,8 @@ function battleReport(){
     const now = run[0]>run[1] ? "me" : run[1]>run[0] ? "opp" : null;
     if (!now && leader && run[0]>0) levelled.add(e);
     if (now && now!==leader){ if (leader){ changes++; leadChange.add(e); } leader = now; leadAt = e; } });
+  // If the final VP were edited afterwards (saved battles), the Round-by-Round VP history no longer adds up: don't use it for comebacks or lead changes
+  if (run[0]!==a || run[1]!==b){ changes = 0; deficit = {me:0, opp:0}; leader = null; leadAt = null; leadChange.clear(); levelled.clear(); }
   let key;
   if (w==="me" || w==="opp"){
     const L = w==="me" ? "opp" : "me", wl = frac(w), ll = frac(L), m = Math.abs(a-b), top = Math.max(a,b);
@@ -2146,7 +2280,7 @@ function battleReport(){
       rk[sd].forEach(x=>{ if (also.length<2 && !taken.has(x.id) && !fams.has(fam(x)) && fam(x)!=="end"){ also.push(x); fams.add(fam(x)); taken.add(x.id); } });
       honours[sd] = {title: main.title, why: main.why, also: also.map(x=>x.title), name: names[sd], color: colorOf(sd)}; });
   }
-  return {honours, headline: o.h, sentence: o.s.replace("{W}", W).replace("{L}", Lname), tags: tags.slice(0,7), result, meta, sides, moments, notes: (end.notes||"").trim(), winner: w, oppName: names.opp, oppVP: b, oppPluck: game.pluck[1],
+  return {myName: names.me, honours, headline: o.h, sentence: o.s.replace("{W}", W).replace("{L}", Lname), tags: tags.slice(0,7), result, meta, sides, moments, notes: (end.notes||"").trim(), winner: w, oppName: names.opp, oppVP: b, oppPluck: game.pluck[1],
     simple: {me: mineU.length ? null : {key:"me", name:names.me, vp:a, pluck:game.pluck[0], lost:game.myLost||0, size:game.mySize||0, color:colorOf("me")},
              opp: oppU ? null : {key:"opp", name:names.opp, vp:b, pluck:game.pluck[1], lost:game.oppLost||0, size:game.oppSize||0, color:colorOf("opp")}}};
 }
@@ -2289,7 +2423,7 @@ async function brepFile(R){
   for (const S of R.sides){ const f = facById(S.fid); if (f && f.flag && !(f.id in flags)) flags[f.id] = await brepDataFlag(f); }
   const body = brepHTML(R, f=> f ? flags[f.id] : null);
   return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(R.headline)}: ${esc(game.name)} vs ${esc(R.oppName)}</title>
+<title>${esc(R.headline)}: ${esc(R.myName)} vs ${esc(R.oppName)}</title>
 <link rel="stylesheet" href="${BREP_FONTS}">
 <style>html{background:#d9cfb8}body{margin:0;padding:24px 12px}${BREP_CSS}
 @media print{html,body{background:#fff;padding:0}@page{margin:10mm}.brep{box-shadow:none;max-width:none;font-size:11.5px;border:none;padding:18px 20px 14px}.brep h1{font-size:3em}}</style></head>
@@ -2304,8 +2438,8 @@ function brepPrint(R){
   window.addEventListener("afterprint", done);
   setTimeout(()=>window.print(), 150);
 }
-function reportFileName(){ const s = x => String(x||"").replace(/[^\w\- ]+/g,"").trim().slice(0,40) || "patrol";
-  return `Battle report - ${s(game.name)} vs ${s(oppLabel())}.html`; }
+function reportFileName(R){ const s = x => String(x||"").replace(/[^\w\- ]+/g,"").trim().slice(0,40) || "patrol";
+  return `Battle report - ${s(R ? R.myName : game.name)} vs ${s(R ? R.oppName : oppLabel())}.html`; }
 function resultsCard(ms){
   const opp = esc(oppLabel()), [a,b] = game.vp, R = battleReport(), wv = game.ended.winner || "auto";
   const opts = [["auto", ms.noVP ? "Choose who won…" : "By Victory Points"], ["me", `${game.name} won`], ["opp", `${oppLabel()} won`], ["draw","Draw"]];
@@ -2315,7 +2449,7 @@ function resultsCard(ms){
     <div class="grow2"><div class="field"><label for="gWinner">Result${ms.noVP?` <span class="hint">(decided by objectives${ms.page?`, ${esc(ms.page)}`:""})</span>`:""}</label><select id="gWinner">${opts.map(([v,t])=>`<option value="${v}"${v===wv?" selected":""}>${esc(t)}</option>`).join("")}</select></div>
     <div class="field"><label for="gNotes">Commander's notes (optional, goes in the report)</label><textarea id="gNotes" rows="2" maxlength="2000" placeholder="Heroic moments, grudges, what you'd change next time…">${esc(game.ended.notes||"")}</textarea></div></div>
     <details class="gmore grepbox" open><summary>Battle report</summary><div class="brepwrap">${brepHTML(R)}</div></details>
-    <div class="gendbtns"><button class="btn" type="button" data-g="printrep">Print / Save as PDF</button><button class="btn ghost" type="button" data-g="dlrep">Download report</button><button class="btn ghost" type="button" data-g="copyrep">Copy as text</button><button class="btn ghost" type="button" data-g="resume">Resume game</button><button class="btn gnewg" type="button" data-g="end">New game</button></div></div>`;
+    <div class="gendbtns"><button class="btn" type="button" data-g="printrep">Print / Save as PDF</button><button class="btn ghost" type="button" data-g="dlrep">Download report</button><button class="btn ghost" type="button" data-g="copyrep">Copy as text</button><button class="btn${game.savedBattleId && battleById(game.savedBattleId) ? " ghost" : ""}" type="button" data-bt="save">${game.savedBattleId && battleById(game.savedBattleId) ? "Update saved battle" : "Save battle"}</button><button class="btn ghost" type="button" data-g="resume">Resume game</button><button class="btn gnewg" type="button" data-g="end">New game</button></div></div>`;
 }
 const allGameUnits = () => game ? [...game.units, ...((game.oppForce||{}).units||[])] : [];
 function gMsg(id, text, bad){ const m = $("#"+id+"Msg"); if (m){ m.textContent = text; m.classList.toggle("bad", !!bad); } }
@@ -2370,7 +2504,7 @@ document.addEventListener("click", e=>{
     after.filter(k=>!before.includes(k)).forEach(k=>logEvent(sideOf(g), k, 1, g.uid));
     before.filter(k=>!after.includes(k) && a==="st" && k===b.dataset.s).forEach(k=>unlogEvent(g.uid, k, true)); }
   if (a==="printrep"){ brepPrint(battleReport()); return; }
-  if (a==="dlrep"){ brepFile(battleReport()).then(html=>{ const url = URL.createObjectURL(new Blob([html], {type:"text/html;charset=utf-8"})); const l = document.createElement("a"); l.href = url; l.download = reportFileName(); document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 4000); toast("Battle report downloaded. Open it in any browser"); }); return; }
+  if (a==="dlrep"){ const R0 = battleReport(); brepFile(R0).then(html=>{ const url = URL.createObjectURL(new Blob([html], {type:"text/html;charset=utf-8"})); const l = document.createElement("a"); l.href = url; l.download = reportFileName(R0); document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 4000); toast("Battle report downloaded. Open it in any browser"); }); return; }
   if (a==="copyrep"){ const txt = reportText(battleReport());
     { const fallback = ()=>{ const t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); toast("Battle report copied"); }catch(e){ toast("Couldn't copy: try Download instead"); } t.remove(); };
       try{ navigator.clipboard.writeText(txt).then(()=>toast("Battle report copied. Paste it anywhere"), fallback); }catch(e){ fallback(); } }
@@ -2886,7 +3020,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-01.48";
+const APP_VERSION = "2026-11-01.52";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
