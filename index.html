@@ -3058,7 +3058,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-02.65";
+const APP_VERSION = "2026-11-02.66";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3082,6 +3082,45 @@ document.addEventListener("visibilitychange", ()=>{ if (!document.hidden) checkF
 setTimeout(checkForUpdate, 4000); setInterval(checkForUpdate, 20*60*1000);
 
 init();
+// Browser translation (Chrome, Edge, Safari "Translate this page"): game terms stay in English, as printed in the books.
+// Unit, weapon, ability, trait, faction and mission names from the data, plus the words below, are wrapped in <quar-t translate="no">
+// as the page draws them, so the buttons and explanations get translated but the rules words still match the rulebooks.
+// Character dog tags (rhyfler names) are left as they are too.
+(()=>{
+  const HAND = ["Clash of Rhyfles","Quar","quar","Rhyfler","Rhyflers","rhyfler","rhyflers","Rhyfles","Zombiesmith","Alwyd","Pluck","Out of Action","OOA","Rattled","Prone","Overwatch","Engaged","Prepared","Primed",
+    "Flesh Wound","Incapacitated","Carried off","Immobilised","Immobilized","Buttoned Up","Unbuttoned","Dismounted","Mounted","Supporting Fire","Force Allowance","Muster Roll","Task","Tasks","Leadership Task",
+    "VP","Yawdryl","Master Yawdryl","Caerten","is-Caerten","Milwer","Fydo","Fydos","fydo","fydos","Gob","Gobbed","Teeth and Claws","Creature"];
+  let RX = null, pend = [], queued = false;
+  const build = ()=>{ const t = new Set(HAND), add = s=>{ if (!s) return; s = String(s).replace(/\s*\([^)]*\)\s*$/,"").trim(); if (s.length>=3 && /[A-Za-z]/.test(s)) t.add(s); };
+    DATA.factions.forEach(f=>{ add(f.name); (f.units||[]).forEach(u=>{ add(u.name); add(u.variant); (u.profiles||[]).forEach(p=>{ (p.equip||[]).forEach(add); (p.abilities||[]).forEach(add); }); });
+      (Array.isArray(f.weapons)?f.weapons:[]).forEach(w=>{ add(w.name); (w.traits||[]).forEach(add); }); });
+    Object.keys(DATA.abilities||{}).forEach(add); (DATA.missions||[]).forEach(m=>add(m.name));
+    try{ Object.values(ST).forEach(x=>add(x.t)); }catch(e){}
+    const list = [...t].sort((a,b)=>b.length-a.length).map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"));
+    RX = new RegExp(`(?<![\\p{L}\\p{N}'’-])(?:${list.join("|")})(?![\\p{L}\\p{N}'’-])`, "gu"); };
+  const SKIP = /^(SCRIPT|STYLE|TEXTAREA|INPUT|SELECT|OPTION|NOSCRIPT|SVG|FONT|QUAR-T|CODE|PRE)$/;
+  const lay = new WeakMap(), isBox = el => { if (!lay.has(el)) lay.set(el, /flex|grid/.test(getComputedStyle(el).display)); return lay.get(el); };
+  const wrapIn = root=>{
+    if (root.nodeType===1){ if (root.matches && root.matches(".dtag,.dtn")) root.setAttribute("translate","no"); root.querySelectorAll && root.querySelectorAll(".dtag,.dtn").forEach(e=>e.setAttribute("translate","no")); }
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), nodes = []; let n;
+    if (root.nodeType===3) nodes.push(root); else while ((n = w.nextNode())) nodes.push(n);
+    nodes.forEach(tn=>{ const par = tn.parentElement; if (!par || !tn.isConnected) return; const v = tn.nodeValue; if (!v || !/[A-Za-z]/.test(v)) return;
+      for (let e = par; e && e!==document.body; e = e.parentElement){ if (SKIP.test(e.tagName) || e.getAttribute("translate")==="no") return; }
+      RX.lastIndex = 0; if (!RX.test(v)) return; RX.lastIndex = 0;
+      if (isBox(par)){ // in a flex or grid box, splitting the text would split it into separate items: only protect it if it's a game term on its own
+        const m = v.trim().match(RX); if (m && m[0]===v.trim()){ const q = document.createElement("quar-t"); q.setAttribute("translate","no"); tn.replaceWith(q); q.appendChild(tn); } return; }
+      const frag = document.createDocumentFragment(); let last = 0, m; RX.lastIndex = 0;
+      while ((m = RX.exec(v))){ if (m.index>last) frag.appendChild(document.createTextNode(v.slice(last, m.index)));
+        const q = document.createElement("quar-t"); q.setAttribute("translate","no"); q.textContent = m[0]; frag.appendChild(q); last = m.index + m[0].length; }
+      if (last < v.length) frag.appendChild(document.createTextNode(v.slice(last)));
+      tn.replaceWith(frag); }); };
+  const flush = ()=>{ queued = false; if (!DATA) { pend = []; return; }
+    if (!RX){ build(); pend = []; wrapIn(document.body); return; }
+    const todo = pend; pend = []; todo.forEach(x=>{ if (x.isConnected) wrapIn(x); }); };
+  new MutationObserver(recs=>{ recs.forEach(r=>{ if (r.type==="characterData") pend.push(r.target); else r.addedNodes.forEach(x=>{ if (x.nodeType===1 ? x.tagName!=="QUAR-T" : x.nodeType===3) pend.push(x); }); });
+    if (!queued){ queued = true; requestAnimationFrame(flush); } }).observe(document.body, {childList:true, subtree:true, characterData:true});
+  if (!queued){ queued = true; requestAnimationFrame(flush); }
+})();
 })();
 (()=>{ const bar=document.querySelector(".bar"), vb=document.getElementById("buildBar"); if(!bar) return; const set=()=>{ const r=document.documentElement.style; r.setProperty("--barh", bar.offsetHeight+"px"); if(vb && vb.offsetHeight) r.setProperty("--vbh", vb.offsetHeight+"px"); }; set(); if(window.ResizeObserver){ const o=new ResizeObserver(set); o.observe(bar); if(vb) o.observe(vb); } else addEventListener("resize", set); })();
 
@@ -3096,4 +3135,5 @@ init();
   const place=()=>{ if (mq.matches){ if (ctl.parentNode!==inner){ inner.append(ctl, gauge); box.hidden=false; } }
     else if (ctl.parentNode===inner){ tools.before(ctl, gauge); box.hidden=true; } };
   place(); (mq.addEventListener ? mq.addEventListener("change", place) : mq.addListener(place)); })();
+
 </script>
