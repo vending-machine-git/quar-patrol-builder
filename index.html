@@ -645,6 +645,7 @@ h1 .beta{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
 .ntier span:last-child{color:var(--muted);font-size:.88em}
 .ntier.on{border-color:var(--rc);background:color-mix(in oklab, var(--rc) 12%, var(--panel));box-shadow:inset 3px 0 0 var(--rc)}
 .nswap{align-self:flex-start;margin-top:4px}
+.nkhint{margin:6px 0 0;font-size:.85em}
 .nmact{display:flex;gap:8px;align-items:center}
 .nmact span{flex:1}
 @media (max-width:560px){ .ntier{grid-template-columns:auto 1fr} .ntier span:last-child{grid-column:1/-1} .nmodal{padding:12px 8px} }
@@ -1482,7 +1483,12 @@ const REL = {
 // Quar and animal: only the Animal kind. Two animals: only the Pack kind. Two quar: the usual kinds (never Animal or Pack).
 const isAnimalUnit = u => !!u && (u.profiles||[]).some(p=>{ const eq = p.equip||[]; return (eq.length && eq.every(x=>/teeth and claws/i.test(x))) || (p.abilities||[]).some(a=>/^creature$/i.test(a)); });
 function isAnimalChar(s, cid){ const c = s.chars.find(x=>x.id===cid), f = facById(s.faction); return !!(c && f && isAnimalUnit(f.units.find(u=>u.id===c.unitId))); }
-const relKindsFor = (s, a, b) => { const x = isAnimalChar(s, a), y = isAnimalChar(s, b); return x && y ? ["pack"] : x || y ? ["animal"] : Object.keys(REL).filter(k=>!REL[k].animal); };
+// Family members can't also have a Romance (and sweethearts can't be made family): whichever the pair already has rules out the other.
+// "skip" is the relationship being edited, so changing it from one to the other still works.
+const relPairHas = (s, a, b, type, skip) => s.rels.some(r=>r.id!==skip && r.type===type && ((r.a===a&&r.b===b)||(r.a===b&&r.b===a)));
+const relKindsFor = (s, a, b, skip) => { const x = isAnimalChar(s, a), y = isAnimalChar(s, b); if (x && y) return ["pack"]; if (x || y) return ["animal"];
+  const fam = relPairHas(s, a, b, "family", skip), rom = relPairHas(s, a, b, "romance", skip);
+  return Object.keys(REL).filter(k=>!REL[k].animal && !(k==="romance" && fam) && !(k==="family" && rom)); };
 const relTierName = r => (REL[r.type]||{tiers:[]}).tiers[r.tier] ? REL[r.type].tiers[r.tier][0] : "";
 // How a relationship reads from one character's side ("Close Friend", "Parent of", "Admirer of"...)
 function relLabelFor(r, cid){
@@ -1576,14 +1582,14 @@ function relEditor(s, ed){
     <h3>${ed.id?"Edit":"New"} relationship</h3>
     <div class="nmrow"><div class="field"><label>Between</label><div class="nwho"><b>${esc(charName(s,ed.a))}</b><span>and</span>
       <select id="nRelB" aria-label="Other rhyfler">${others.map(x=>`<option value="${esc(x.id)}"${x.id===ed.b?" selected":""}>${esc(x.name||"Unnamed rhyfler")}</option>`).join("")}</select></div></div></div>
-    <div class="field"><label>Kind</label><div class="ntypes">${relKindsFor(s, ed.a, ed.b).map(k=>[k,REL[k]]).map(([k,R])=>`<button type="button" class="ntype${k===ed.type?" on":""}" style="--rc:${R.color}" data-n="rtype" data-k="${k}" aria-pressed="${k===ed.type}"><span aria-hidden="true">${R.icon}</span>${R.label}</button>`).join("")}</div></div>
+    <div class="field"><label>Kind</label><div class="ntypes">${relKindsFor(s, ed.a, ed.b, ed.id).map(k=>[k,REL[k]]).map(([k,R])=>`<button type="button" class="ntype${k===ed.type?" on":""}" style="--rc:${R.color}" data-n="rtype" data-k="${k}" aria-pressed="${k===ed.type}"><span aria-hidden="true">${R.icon}</span>${R.label}</button>`).join("")}</div>${relPairHas(s, ed.a, ed.b, "family", ed.id) ? `<p class="hint nkhint">They're family, so Romance isn't an option.</p>` : relPairHas(s, ed.a, ed.b, "romance", ed.id) ? `<p class="hint nkhint">They're in a romance, so Family isn't an option.</p>` : ""}</div>
     ${fam ? `<div class="field"><label for="nRelKind">How they're related</label><select id="nRelKind">${T.kinds.map(k=>`<option value="${k[0]}"${k[0]===fam[0]?" selected":""}>${k[1]===k[2]?k[1]:`${esc(charName(s,ed.a))} is ${k[1].toLowerCase().replace(/ of$/,"")} of ${esc(charName(s,ed.b))}`}</option>`).join("")}</select>
       <button class="btn ghost nswap" type="button" data-n="swap">⇄ Swap who's who</button></div>` : ""}
     ${ed.type==="mentor" ? `<div class="field"><label>Who teaches whom</label><button class="btn ghost nswap" type="button" data-n="swap">${esc(dirTxt[0])} ⇄</button></div>` : ""}
     ${ed.type==="romance" && ed.tier===1 ? `<div class="field"><label>Who admires whom</label><button class="btn ghost nswap" type="button" data-n="swap">${esc(charName(s,ed.a))} admires ${esc(charName(s,ed.b))} ⇄</button></div>` : ""}
     <div class="field"><label>Tier</label><div class="ntiers">${T.tiers.map((t,i)=>`<button type="button" class="ntier${i===ed.tier?" on":""}" data-n="rtier" data-i="${i}" aria-pressed="${i===ed.tier}"><span class="npips">${T.tiers.map((_,j)=>`<i${j<=i?' class="on"':""}></i>`).join("")}</span><b>${esc(t[0])}</b><span>${esc(t[1])}</span></button>`).join("")}</div></div>
     <div class="field"><label for="nRelNote">Note (optional)</label><input id="nRelNote" type="text" maxlength="140" value="${esc(ed.note||"")}" placeholder="e.g. Dragged him out of the river at Bostad" autocomplete="off"></div>
-    <div class="nmact">${ed.id?`<button class="btn ghost nrdel${ed.confirm?" warn":""}" type="button" data-n="relrm">${ed.confirm?"Tap again to remove":"Remove"}</button>`:""}<span></span><button class="btn ghost" type="button" data-n="relcancel">Cancel</button><button class="btn" type="button" data-n="relsave">Save</button></div>
+    <div class="nmact">${ed.id?`<button class="btn ghost nrdel warn" type="button" data-n="relrm">Remove</button>`:""}<span></span><button class="btn ghost" type="button" data-n="relcancel">Cancel</button><button class="btn" type="button" data-n="relsave">Save</button></div>
   </div></div>`;
 }
 function narrTouch(s){ s.updated = Date.now(); narrSave(); }
@@ -1602,7 +1608,7 @@ document.addEventListener("input", e=>{
 document.addEventListener("change", e=>{
   const el = e.target; if (!el.closest || !el.closest("#view-narr")) return;
   const s = storyById(narrUI.story);
-  if (el.id==="nRelB" && narrUI.editRel){ const ed = narrUI.editRel; ed.b = el.value; const ok = relKindsFor(storyById(narrUI.story), ed.a, ed.b);
+  if (el.id==="nRelB" && narrUI.editRel){ const ed = narrUI.editRel; ed.b = el.value; const ok = relKindsFor(storyById(narrUI.story), ed.a, ed.b, ed.id);
     if (!ok.includes(ed.type)){ ed.type = ok[0]; ed.tier = Math.min(2, REL[ed.type].tiers.length-1); } renderNarrative(narrUI.story); return; }
   if (el.id==="nRelKind" && narrUI.editRel){ narrUI.editRel.kind = el.value; return; }
   if (s && el.dataset.nc==="fallen"){ const c = s.chars.find(x=>x.id===el.closest(".nchar").dataset.cid); if (c){ c.fallen = el.checked; narrTouch(s); const y = window.scrollY; renderNarrative(s.id); window.scrollTo(0, y);
@@ -1624,15 +1630,15 @@ document.addEventListener("click", e=>{
     const k0 = relKindsFor(s, c.id, other.id)[0]; narrUI.editRel = {story:s.id, id:null, a:c.id, b:other.id, type: k0, tier:2, kind:"sibling", note:""}; renderNarrative(s.id); return; }
   if (a==="editrel"){ const r = s.rels.find(x=>x.id===b.dataset.id); if (!r) return; const cid = card ? card.dataset.cid : r.a;
     // open it from the side of the card it was clicked on, keeping directional meaning
-    const ok = relKindsFor(s, r.a, r.b), typ = ok.includes(r.type) ? r.type : ok[0];
+    const ok = relKindsFor(s, r.a, r.b, r.id), typ = ok.includes(r.type) ? r.type : ok[0];
     narrUI.editRel = {story:s.id, id:r.id, a:r.a, b:r.b, type:typ, tier:Math.min(r.tier, REL[typ].tiers.length-1), kind:r.kind||"sibling", note:r.note||"", from:cid}; renderNarrative(s.id); return; }
   const ed = narrUI.editRel; if (!ed) return;
   if (a==="rtype"){ ed.type = b.dataset.k; ed.tier = Math.min(ed.tier, REL[ed.type].tiers.length-1); if (ed.type==="romance" && ed.tier===1) ed.tier = 2; ed.confirm = false; renderNarrative(s.id); return; }
   if (a==="rtier"){ ed.tier = +b.dataset.i; renderNarrative(s.id); return; }
   if (a==="swap"){ [ed.a, ed.b] = [ed.b, ed.a]; renderNarrative(s.id); return; }
   if (a==="relcancel"){ narrUI.editRel = null; renderNarrative(s.id); return; }
-  if (a==="relrm"){ if (!ed.confirm){ ed.confirm = true; renderNarrative(s.id); return; } s.rels = s.rels.filter(x=>x.id!==ed.id); narrUI.editRel = null; narrTouch(s); renderNarrative(s.id); toast("Relationship removed"); return; }
-  if (a==="relsave"){ if (!ed.b || ed.a===ed.b) return; if (!relKindsFor(s, ed.a, ed.b).includes(ed.type)){ ed.type = relKindsFor(s, ed.a, ed.b)[0]; ed.tier = Math.min(ed.tier, REL[ed.type].tiers.length-1); } const note = (($("#nRelNote")||{}).value||"").trim().slice(0,140);
+  if (a==="relrm"){ s.rels = s.rels.filter(x=>x.id!==ed.id); narrUI.editRel = null; narrTouch(s); renderNarrative(s.id); toast("Relationship removed"); return; }
+  if (a==="relsave"){ if (!ed.b || ed.a===ed.b) return; if (!relKindsFor(s, ed.a, ed.b, ed.id).includes(ed.type)){ ed.type = relKindsFor(s, ed.a, ed.b, ed.id)[0]; ed.tier = Math.min(ed.tier, REL[ed.type].tiers.length-1); } const note = (($("#nRelNote")||{}).value||"").trim().slice(0,140);
     const rec = {id: ed.id || "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), a:ed.a, b:ed.b, type:ed.type, tier:ed.tier, note};
     if (ed.type==="family") rec.kind = ed.kind;
     // one relationship of each kind per pair: replace an existing one instead of doubling up
@@ -3052,7 +3058,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-02.63";
+const APP_VERSION = "2026-11-02.65";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
