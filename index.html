@@ -1492,13 +1492,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-05.41">
-<script src="campaign-rules.js?v=2026-11-05.41"></script>
-<script src="tales-rules.js?v=2026-11-05.41"></script>
-<script src="tales.js?v=2026-11-05.41"></script>
-<script src="mhuddball-rules.js?v=2026-11-05.41"></script>
-<script src="mhuddball.js?v=2026-11-05.41"></script>
-<script src="campaign.js?v=2026-11-05.41"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-05.52">
+<script src="campaign-rules.js?v=2026-11-05.52"></script>
+<script src="tales-rules.js?v=2026-11-05.52"></script>
+<script src="tales.js?v=2026-11-05.52"></script>
+<script src="mhuddball-rules.js?v=2026-11-05.52"></script>
+<script src="mhuddball.js?v=2026-11-05.52"></script>
+<script src="campaign.js?v=2026-11-05.52"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3760,7 +3760,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*3)+"s"); ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-05.41";
+const APP_VERSION = "2026-11-05.52";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3793,7 +3793,7 @@ const narrUIx = {
   tip:tipFold,
   // Who made each community mode (their Discord names and pictures, shown with their OK, 5 Nov). Pictures: data/art/extras/credits/.
   credit:key => { const C = {eq:["WAR_TROUT","war-trout"], tales:["Dr. Michael","dr-michael"], mhudd:["TomDrawsThings","tomdrawsthings"]}[key]; if (!C) return "";
-    return `<div class="cp-credit c-${key}"><img src="data/art/extras/credits/${C[1]}.png" alt="" width="48" height="48" loading="lazy"><span><small>Made by</small><b translate="no">${esc(C[0])}</b><i>on Discord</i></span></div>`; },
+    return `<div class="cp-credit c-${key}"${key === "mhudd" ? ' data-egg="mhudd"' : ""}><img src="data/art/extras/credits/${C[1]}.png" alt="" width="48" height="48" loading="lazy"><span><small>Made by</small><b translate="no">${esc(C[0])}</b><i>on Discord</i></span></div>`; },
   // A unit's full rules, drawn by the Patrol Builder's own functions (stats, equipment R/Sn/Traits, Rules fold, notes) with pop-ups.
   withFac:(fid, fn) => { const keep = FAC, keepU = UNITS, f = facById(fid); if (!f) return fn(); FAC = f; UNITS = {}; f.units.forEach(u => UNITS[u.id] = u); try{ return fn(); } finally{ FAC = keep; UNITS = keepU; } },
   unitRules:(fid, u) => narrUIx.withFac(fid, () => `<div class="cp-urules">${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</div>`),
@@ -3815,6 +3815,23 @@ const narrUIx = {
       const off = opts.disabled ? opts.disabled(u) : false;
       return `<div class="unit${i % 2 ? " alt" : ""}"><div class="urow"><button type="button" class="uname" data-roll="toggle" aria-expanded="false"><span class="chev">&#9656;</span><b>${esc(u.name)}</b> <span>${esc(u.variant || "")}</span></button><span class="fa">${esc(opts.note ? opts.note(u) : "")}</span><span class="pts">${Number.isFinite(u.pts) ? u.pts : "–"}<small>${esc(opts.unit || "")}</small></span><span class="btns">${opts.removable ? `<button type="button" class="add sub" ${opts.attr}="dismiss" data-unit="${esc(u.id)}" aria-label="Remove the latest ${esc(u.name)} recruit for a full refund"${opts.removable(u) ? "" : " disabled"}>&minus;</button>` : ""}<button type="button" class="add" ${opts.attr}="recruit" data-unit="${esc(u.id)}" aria-label="Recruit ${esc(u.name)}${u.variant ? " (" + esc(u.variant) + ")" : ""}"${off ? " disabled" : ""}>+</button></span></div><div class="cp-udet" hidden>${opts.fac ? narrUIx.unitRules(opts.fac, u) : det(u)}</div></div>`; }).join("")}</details>`; }).join("")}</div>`;
   },
+  // "Your patrol / Force" list for recruiting in the narrative campaigns (5 Nov, user request: like the Patrol Builder's right-hand list).
+  // One row per unit: pencil (names), unit name + variant, the members' names as dog tags, − [n] + and total cost.
+  // The pencil opens the builder's name editor (one box per rhyfler with 🎲, Randomise all, Clear, Done). Each box carries the mode's own
+  // name field attributes (opts.input(member)), so typing saves through the mode's usual "change" code; tags update as you type.
+  // opts: {key, attr:"data-camp"|"data-tales", unit:"M"|"pts", groups:[{id,name,variant,members:[{id,name}],pts,canAdd,canRemove}], input:m=>attrs, empty,
+  //   detail:m=>html (optional: each name tag becomes a button that opens that rhyfler's options under the row), badge:m=>html}
+  force:opts => {
+    const pen = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    if (!opts.groups.length) return `<div class="plist npl"><p class="empty">${esc(opts.empty || "No units yet. Tap + on the Muster Roll to add units.")}</p></div>`;
+    return `<div class="plist npl">${opts.hint ? `<p class="npl-hint"><span class="nhi" aria-hidden="true">&#9758;</span><span>${opts.hint}</span></p>` : ""}${opts.groups.map(g => { const q = g.members.length, k = opts.key + "|" + g.id, open = narrNameOpen.has(k), names = g.members.map(m => m.name || ""), named = names.some(Boolean);
+      const what = q > 1 ? "these rhyflers" : "this rhyfler";
+      return `<div class="prow" data-nk="${esc(k)}"><div class="pname"><button type="button" class="nmbtn${open ? " on" : ""}${named ? " has" : ""}" data-nf="names" aria-expanded="${open}" title="${named ? "Edit names" : "Name " + what}" aria-label="${named ? "Edit names" : "Name " + what}">${pen}</button><div class="pnm"><b>${esc(g.name)}</b> <span>${esc(g.variant || "")}</span>${opts.detail ? `<div class="pnames">${g.members.map((m, i) => { const on = narrMemOpen.has(m.id); return `<button type="button" class="nmem${on ? " on" : ""}" data-nf="mem" data-mid="${esc(m.id)}" aria-expanded="${on}" title="Tap for ${esc(m.name || "this rhyfler")}'s role and options">${dtag(m.name || (q > 1 ? "No name #" + (i + 1) : "No name"))}${opts.badge ? opts.badge(m) : ""}<span class="nchev" aria-hidden="true">&#9662;</span></button>`; }).join("")}</div>` : named ? `<div class="pnames">${names.filter(Boolean).map(dtag).join("")}</div>` : ""}</div></div>
+        <div class="step"><button type="button" class="ndec" ${opts.attr}="dismiss" data-unit="${esc(g.id)}" aria-label="Remove the latest ${esc(g.name)} recruit for a full refund" title="${g.canRemove ? "Remove the latest recruit (full refund)" : "Only recruits added since the last battle can be removed. Use Retire for veterans."}"${g.canRemove ? "" : " disabled"}>−</button><output>${q}</output><button type="button" class="ninc" ${opts.attr}="recruit" data-unit="${esc(g.id)}" aria-label="Recruit another ${esc(g.name)}"${g.canAdd ? "" : " disabled"}>+</button></div>
+        <span class="pts">${g.pts}<small>${esc(opts.unit || "")}</small></span>
+        <div class="pnedit"${open ? "" : " hidden"}>${g.members.map((m, i) => `<div class="pnrow"><label for="nf-${esc(m.id)}">${q > 1 ? "#" + (i + 1) : "Name"}</label><input id="nf-${esc(m.id)}" ${opts.input(m)} data-nfi type="text" maxlength="30" value="${esc(m.name || "")}" placeholder="No name" autocomplete="off" spellcheck="false"><button type="button" class="nmdice" data-nf="roll" title="Random name" aria-label="Random name for ${q > 1 ? "#" + (i + 1) : what}">🎲</button></div>`).join("")}
+        <div class="pnacts">${q > 1 ? '<button type="button" class="btn ghost" data-nf="all">Randomise all</button>' : ""}<button type="button" class="btn ghost" data-nf="clear">Clear name${q > 1 ? "s" : ""}</button><button type="button" class="btn" data-nf="done">Done</button></div></div>${opts.detail ? g.members.map(m => `<div class="npl-mem" data-mid="${esc(m.id)}"${narrMemOpen.has(m.id) ? "" : " hidden"}>${opts.detail(m)}</div>`).join("") : ""}</div>`; }).join("")}</div>`;
+  },
   // A fold-out remembered like the others; closed unless opened before (for long rule references).
   fold:(key, title, html, def=false) => { let open = def; try{ const v = localStorage.getItem("quar-fold-"+key); if (v!==null) open = v==="1"; }catch(error){} return `<details class="cp-fold" data-fold="${key}"${open?" open":""}><summary><span class="chev" aria-hidden="true">&#9656;</span>${title}</summary><div class="cp-foldbody">${html}</div></details>`; }
 };
@@ -3833,7 +3850,10 @@ function narrFacPickers(root){
     const item = o => { const unoff = /\s*\(unofficial\)$/i.test(o.text), f = facById(o.value), name = o.text.replace(/\s*\(unofficial\)$/i, "");
       return {v:o.value, f, html:`${flagImg(f)}<span>${esc(name)}</span>${unoff ? '<em class="mb-unoff">Unofficial</em>' : ""}`}; };
     let act = 0;
-    const sync = () => { const o = sel.options[sel.selectedIndex] || sel.options[0]; if (!o) return; const it = item(o); btn.innerHTML = it.html; if (it.f && it.f.color) btn.style.setProperty("--fac", it.f.color); else btn.style.removeProperty("--fac"); };
+    // data-factint on a parent (e.g. Mhuddball New match Home/Away boxes) takes the chosen faction's colour as --team-accent
+    const tint = sel.closest("[data-factint]");
+    const sync = () => { const o = sel.options[sel.selectedIndex] || sel.options[0]; if (!o) return; const it = item(o); btn.innerHTML = it.html; if (it.f && it.f.color) btn.style.setProperty("--fac", it.f.color); else btn.style.removeProperty("--fac");
+      if (tint){ if (it.f && it.f.color) tint.style.setProperty("--team-accent", it.f.color); else tint.style.removeProperty("--team-accent"); } };
     const setAct = i => { const li = [...list.children]; if (!li.length) return; act = (i + li.length) % li.length; li.forEach((x,j)=>x.classList.toggle("act", j===act)); li[act].scrollIntoView({block:"nearest"}); };
     const open = () => { list.innerHTML = [...sel.options].map(o=>{ const it = item(o); return `<li role="option" data-v="${esc(it.v)}" aria-selected="${o.selected}"${it.f && it.f.color ? ` style="--fac:${it.f.color}"` : ""}>${it.html}</li>`; }).join("");
       list.hidden = false; btn.setAttribute("aria-expanded","true"); setAct(Math.max(0, sel.selectedIndex)); list.focus(); };
@@ -3942,6 +3962,99 @@ document.addEventListener("click", e=>{
 });
 // one listener for all narrative pickers: close when clicking elsewhere; re-sync after other code changes a select's value
 document.addEventListener("click", e=>{ document.querySelectorAll("#view-narr .nfpick").forEach(w=>{ if (!w.contains(e.target) && w._close) w._close(false); }); });
+// Name editor in the narrative "Your patrol / Force" lists (narrUIx.force). Open editors are remembered while you stay on the page.
+const narrNameOpen = new Set();
+function narrNameSave(inp){ inp.dispatchEvent(new Event("change", {bubbles:true})); }
+const narrMemOpen = new Set();
+function narrNameTags(row){ const mem = [...row.querySelectorAll(".nmem")];
+  if (mem.length){ const ins = [...row.querySelectorAll("input[data-nfi]")]; mem.forEach((b, i) => { const t = b.querySelector(".dtn"), v = ins[i] ? ins[i].value.trim() : ""; if (t) t.textContent = v || (mem.length > 1 ? "No name #" + (i + 1) : "No name"); }); row.querySelector(".nmbtn").classList.toggle("has", ins.some(x => x.value.trim())); return; }
+  const names = [...row.querySelectorAll("input[data-nfi]")].map(x=>x.value.trim()).filter(Boolean), box = row.querySelector(".pnm");
+  let tags = box.querySelector(".pnames"); if (!names.length){ if (tags) tags.remove(); } else { if (!tags){ tags = document.createElement("div"); tags.className = "pnames"; box.appendChild(tags); } tags.innerHTML = names.map(dtag).join(""); }
+  const b = row.querySelector(".nmbtn"); if (b) b.classList.toggle("has", names.length > 0); }
+function narrNameUsed(except){ return new Set([...document.querySelectorAll("#view-narr input[data-nfi], #view-narr input[data-rname]")].filter(x=>x!==except).map(x=>x.value.trim()).filter(Boolean)); }
+function narrNameShow(row, open){ const k = row.dataset.nk, ed = row.querySelector(".pnedit"), b = row.querySelector(".nmbtn"); if (open) narrNameOpen.add(k); else narrNameOpen.delete(k);
+  ed.hidden = !open; b.classList.toggle("on", open); b.setAttribute("aria-expanded", String(open));
+  if (open){ const f = ed.querySelector("input"); if (f) f.focus({preventScroll:true}); } else b.focus({preventScroll:true}); }
+document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("#view-narr [data-nf]"); if (!b) return; const row = b.closest(".prow"); if (!row) return; e.preventDefault();
+  const act = b.dataset.nf, inputs = [...row.querySelectorAll("input[data-nfi]")];
+  if (act==="names"){ narrNameShow(row, row.querySelector(".pnedit").hidden); return; }
+  if (act==="mem"){ const id = b.dataset.mid, d = row.querySelector(`.npl-mem[data-mid="${CSS.escape(id)}"]`); if (!d) return; const open = d.hidden; d.hidden = !open; if (open) narrMemOpen.add(id); else narrMemOpen.delete(id); b.classList.toggle("on", open); b.setAttribute("aria-expanded", String(open)); return; }
+  if (act==="done"){ narrNameShow(row, false); return; }
+  const set = (inp, v) => { if (inp.value === v) return; inp.value = v; narrNameSave(inp); };
+  if (act==="roll"){ const inp = b.parentElement.querySelector("input"); const n = randName(narrNameUsed(inp)); if (n) set(inp, n); }
+  if (act==="all") inputs.forEach(inp=>{ const n = randName(narrNameUsed(inp)); if (n) set(inp, n); });
+  if (act==="clear") inputs.forEach(inp=>set(inp, ""));
+  narrNameTags(row); });
+document.addEventListener("input", e=>{ const t = e.target; if (!t.matches || !t.matches("#view-narr input[data-nfi]")) return; narrNameSave(t); narrNameTags(t.closest(".prow")); });
+document.addEventListener("keydown", e=>{ const t = e.target; if (e.key==="Enter" && t.matches && t.matches("#view-narr input[data-nfi]")){ e.preventDefault(); narrNameShow(t.closest(".prow"), false); } });
+// Jump buttons inside a narrative page (e.g. Every Quar "Go to the Equipment shop"): scroll to the section, opening it if folded.
+document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("#view-narr [data-jump]"); if (!b) return; e.preventDefault();
+  const t = document.getElementById(b.dataset.jump); if (!t) return; if (t.classList.contains("is-shut")) narrPanelSet(t, true);
+  t.scrollIntoView({block:"start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); });
+/* Easter egg (5 Nov, site owner's request): tapping the TomDrawsThings credit on the Mhuddball card / page makes his Mhuddball
+   pictures burst out of the tag in round bubbles that float around the screen for about 6 seconds, bounce off the edges and
+   then pop. Tapping a bubble pops it early. Reduced-motion users get a still ring of bubbles that fades out.
+   Pictures: data/art/extras/mhuddball/*.jpg (square crops, 360px, shown as circles). Nothing is saved. */
+const MHUDD_ART = ["leap","scrum","referee","linesquar","daenyvn","catch","net"];
+let mhuddEgg = null;
+function mhuddBubbles(from){
+  if (mhuddEgg) mhuddEgg.stop(true);
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const layer = document.createElement("div"); layer.className = "mbub-layer"; layer.setAttribute("aria-hidden","true"); document.body.appendChild(layer);
+  const W = () => innerWidth, H = () => innerHeight, r0 = from.getBoundingClientRect(), ox = r0.left + Math.min(r0.width, 60) / 2, oy = r0.top + r0.height / 2;
+  const size = Math.round(Math.max(84, Math.min(150, Math.min(W(), H()) * .22)));
+  const bubs = MHUDD_ART.map((name, i) => {
+    const el = document.createElement("button"); el.type = "button"; el.className = "mbub"; el.tabIndex = -1;
+    el.style.width = el.style.height = size + "px"; el.innerHTML = `<img src="data/art/extras/mhuddball/${name}.jpg" alt="" draggable="false">`;
+    layer.appendChild(el);
+    const ang = (i / MHUDD_ART.length) * Math.PI * 2 - Math.PI / 2 + (Math.random() - .5) * .5, sp = 5 + Math.random() * 4;
+    const b = {el, x:ox - size / 2, y:oy - size / 2, vx:Math.cos(ang) * sp, vy:Math.sin(ang) * sp - 2, ph:Math.random() * 6.28, popped:false, born:i * 60};
+    if (calm){ const R = Math.min(W(), H()) * .32; b.x = W() / 2 + Math.cos(ang) * R - size / 2; b.y = H() / 2 + Math.sin(ang) * R - size / 2; }
+    el.addEventListener("pointerdown", e => { e.preventDefault(); pop(b); });
+    return b; });
+  const pop = b => { if (b.popped) return; b.popped = true; b.el.classList.add("pop"); setTimeout(() => b.el.remove(), 380); if (bubs.every(x => x.popped)) stop(); };
+  let raf = 0, t0 = performance.now(), done = false;
+  const LIFE = calm ? 3200 : 6200;
+  const place = (b, scale) => { b.el.style.transform = `translate3d(${b.x}px,${b.y}px,0) scale(${scale})`; };
+  const step = now => {
+    const t = now - t0;
+    bubs.forEach(b => { if (b.popped) return; const age = t - b.born; if (age < 0){ place(b, 0); return; }
+      if (!calm){
+        b.vy += Math.sin(now / 900 + b.ph) * .03 - .015; b.vx += Math.cos(now / 1100 + b.ph) * .02; // gentle floating drift
+        b.vx *= .995; b.vy *= .995; const sp = Math.hypot(b.vx, b.vy); if (sp < 1.2){ b.vx *= 1.2 / (sp || 1); b.vy *= 1.2 / (sp || 1); }
+        b.x += b.vx; b.y += b.vy;
+        if (b.x < 0){ b.x = 0; b.vx = Math.abs(b.vx); } if (b.x > W() - size){ b.x = W() - size; b.vx = -Math.abs(b.vx); }
+        if (b.y < 0){ b.y = 0; b.vy = Math.abs(b.vy); } if (b.y > H() - size){ b.y = H() - size; b.vy = -Math.abs(b.vy); }
+      }
+      const grow = Math.min(1, age / 320), wob = calm ? 1 : 1 + Math.sin(now / 260 + b.ph) * .035;
+      place(b, (1 - Math.pow(1 - grow, 3)) * wob); });
+    if (t > LIFE){ bubs.forEach((b, i) => setTimeout(() => pop(b), i * 90)); done = true; return; }
+    raf = requestAnimationFrame(step); };
+  const stop = now => { cancelAnimationFrame(raf); if (now){ layer.remove(); } else setTimeout(() => layer.remove(), 450); if (mhuddEgg && mhuddEgg.layer === layer) mhuddEgg = null; };
+  mhuddEgg = {layer, stop};
+  raf = requestAnimationFrame(step);
+}
+/* Mhuddball art around the Mhuddball pages (v.51, site owner's request "do 1-4"). All of it uses space that is already there,
+   so nothing moves on phones or computers:
+   1. narrUIx.mhuddStrip(): a slim strip above "New match" with the seven pictures drifting slowly sideways (still if reduced motion).
+   2. narrUIx.moment(pic, title, sub, colour): a picture bubble with a caption that floats over the page for ~2.6 s when something
+      happens in a match (goal, tackle / out of action, weather change, full time). Never blocks taps.
+   3./4. narrUIx.mhuddPic(pic, cls): a small round picture (empty "Your matches" list, Rules reference sections). */
+const mhuddSrc = n => `data/art/extras/mhuddball/${n}.jpg`;
+narrUIx.mhuddPic = (n, cls = "") => `<img class="mb-pic ${cls}" src="${mhuddSrc(n)}" alt="" loading="lazy" width="96" height="96">`;
+narrUIx.mhuddStrip = () => { const row = MHUDD_ART.map(n => `<img src="${mhuddSrc(n)}" alt="" loading="lazy" width="120" height="120">`).join("");
+  return `<div class="mb-strip" aria-hidden="true"><div class="mb-strip-row">${row}${row}</div></div>`; };
+let narrMomentT = null;
+narrUIx.moment = (n, title, sub = "", colour = "") => {
+  document.querySelectorAll(".mb-moment").forEach(x => x.remove()); clearTimeout(narrMomentT);
+  const el = document.createElement("div"); el.className = "mb-moment"; el.setAttribute("role","status");
+  if (colour) el.style.setProperty("--mc", colour);
+  el.innerHTML = `<div class="mbub mb-moment-pic"><img src="${mhuddSrc(n)}" alt=""></div><div class="mb-moment-cap"><b>${esc(title)}</b>${sub ? `<span>${esc(sub)}</span>` : ""}</div>`;
+  document.body.appendChild(el); requestAnimationFrame(() => el.classList.add("in"));
+  narrMomentT = setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 600); }, 2600);
+};
+document.addEventListener("click", e => { const c = e.target.closest && e.target.closest('[data-egg="mhudd"]'); if (!c) return; e.preventDefault(); e.stopPropagation(); mhuddBubbles(c); }, true);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && mhuddEgg) mhuddEgg.stop(true); });
 // Muster Roll rows in the narrative campaigns: tapping a unit name opens its profile (like the Patrol Builder)
 document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest('#view-narr [data-roll="toggle"]'); if (!b) return; const u = b.closest(".unit"), d = u && u.querySelector(".cp-udet"); if (!d) return; d.hidden = !d.hidden; u.classList.toggle("open", !d.hidden); b.setAttribute("aria-expanded", String(!d.hidden)); });
 document.addEventListener("change", e=>{ if (e.target.closest && e.target.closest("#view-narr")) setTimeout(()=>document.querySelectorAll("#view-narr .nfpick, #view-narr .nseg").forEach(w=>w._sync && w._sync()), 0); });
@@ -3955,7 +4068,7 @@ document.addEventListener("change", e=>{ if (e.target.closest && e.target.closes
   const host = document.getElementById("view-narr");
   if (host) new MutationObserver(() => { wrap(host); narrFacPickers(host); narrSteppers(host); narrSegs(host); narrRandNames(host); narrPanelFolds(host); }).observe(host, {childList:true, subtree:true});
 })();
-campaign = window.QuarCampaign.create({ui:narrUIx, dtag, getData:()=>DATA, getStories:()=>narr.stories, getPatrols:()=>state.saved, save:narrSave, id:narrId, esc, faction:facById, name:used=>randName(new Set(used||[])), toast, navigate:id=>showView("narr", id), backup:backupBar, flag:flagImg});
+campaign = window.QuarCampaign.create({ui:narrUIx, dtag:n => n ? dtag(n) : "", getData:()=>DATA, getStories:()=>narr.stories, getPatrols:()=>state.saved, save:narrSave, id:narrId, esc, faction:facById, name:used=>randName(new Set(used||[])), toast, navigate:id=>showView("narr", id), backup:backupBar, flag:flagImg});
 init();
 // Browser translation (Chrome, Edge, Safari "Translate this page"): game terms stay in English, as printed in the books.
 // Unit, weapon, ability, trait, faction and mission names from the data, plus the words below, are wrapped in <quar-t translate="no">
