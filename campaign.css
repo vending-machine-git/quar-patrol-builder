@@ -494,3 +494,133 @@ details.cp-mission>.cp-map{margin:10px auto}
 #view-narr .mb-pitch-side>.cp-fold{margin:0;border:0;background:none}
 #view-narr .mb-pitch-side>.cp-fold>summary{font-size:1.05em;padding:2px 0 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #view-narr .mb-pitch-side>.cp-fold>.cp-foldbody{padding:0}
+
+/* Recruiting in Every Quar / Quar Tales laid out like the Patrol Builder (5 Nov, user request):
+   Muster Roll on the left, your patrol / Force on the right (as in the builder); one column on phones and small tablets,
+   where your patrol / Force stays on top. */
+#view-narr .cp-build{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;min-width:0}
+@media (min-width:861px){ #view-narr .cp-build>.cp-yours{order:2;position:sticky;top:calc(var(--barh,110px) + 12px);max-height:calc(100vh - var(--barh,110px) - 24px);display:flex;flex-direction:column} #view-narr .cp-build>.cp-yours>.plist{overflow:auto;min-height:0;overscroll-behavior:contain} }
+@media (max-width:860px){ #view-narr .cp-build{grid-template-columns:minmax(0,1fr)} }
+#view-narr .npl{padding:6px 10px 10px}
+#view-narr .npl .empty{padding:18px 8px}
+#view-narr .npl .pts small{font-size:.7em;font-weight:500;color:var(--muted);margin-left:2px}
+#view-narr .npl .pts{font-family:var(--f-mono);font-weight:600;white-space:nowrap;text-align:right;min-width:3.2em}
+#view-narr .npl .step button{color:var(--ink)}
+#view-narr .npl .step button:disabled{opacity:.35;cursor:not-allowed}
+#view-narr .npl .step .ndec:not(:disabled):hover,#view-narr .npl .step .ndec:not(:disabled):focus-visible{background:var(--bad);color:var(--panel)}
+#view-narr .npl .step .ninc:not(:disabled):hover,#view-narr .npl .step .ninc:not(:disabled):focus-visible{background:var(--ok);color:var(--panel)}
+#view-narr .npl .pnedit[hidden]{display:none}
+/* Name tags in Your Force are buttons: tap one for that rhyfler's role (Fodder / Character / Leader) and options (5 Nov, user request). */
+#view-narr .npl .nmem{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:4px;border-radius:.5em;padding:1px 3px 1px 1px;max-width:100%}
+#view-narr .npl .nmem:hover,#view-narr .npl .nmem.on{background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent-line)}
+#view-narr .npl .nmem.on .dtag{color:var(--accent)}
+#view-narr .npl .nmem:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+#view-narr .npl .nrole{font-style:normal;font-size:.68em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:999px;border:1px solid var(--accent-line);color:var(--accent);background:var(--panel)}
+#view-narr .npl .nrole.r-leader{background:var(--accent);color:var(--panel);border-color:var(--accent)}
+#view-narr .npl .npl-mem{grid-column:1/-1;background:var(--sunk);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:3px;padding:10px 12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+#view-narr .npl .npl-mem[hidden]{display:none}
+#view-narr .npl .npl-mem p{margin:0}
+#view-narr .npl .npl-mem .cp-form{margin:0}
+/* v.45 (user request: make tapping a name obvious to new users): tags look like buttons with an arrow and always show the role. */
+#view-narr .npl .npl-hint{display:flex;gap:8px;align-items:flex-start;margin:4px 0 8px;padding:7px 10px;border:1px dashed var(--accent-line);border-radius:4px;background:var(--accent-soft);font-size:.86em;line-height:1.4;color:var(--ink)}
+#view-narr .npl .npl-hint .nhi{color:var(--accent);font-size:1.15em;line-height:1.1}
+#view-narr .npl .npl-hint b{color:var(--accent)}
+#view-narr .npl .nmem{border:1px solid var(--rule);background:var(--panel);padding:2px 5px 2px 2px;box-shadow:0 1px 0 var(--rule)}
+#view-narr .npl .nmem:hover{border-color:var(--accent);box-shadow:0 1px 0 var(--accent-line)}
+#view-narr .npl .nmem.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:none}
+#view-narr .npl .nchev{font-size:.72em;color:var(--muted);transition:transform .15s;display:inline-block}
+#view-narr .npl .nmem:hover .nchev,#view-narr .npl .nmem.on .nchev{color:var(--accent)}
+#view-narr .npl .nmem.on .nchev{transform:rotate(180deg)}
+#view-narr .npl .nrole.r-fodder{border-color:var(--rule);color:var(--muted)}
+@media (prefers-reduced-motion:reduce){ #view-narr .npl .nchev{transition:none} }
+/* Every Quar equipment (5 Nov, user request): shop list on the left, "Your equipment" on the right, like recruiting. */
+#view-narr .eq-build{margin-top:0}
+#view-narr .eq-list .eq-h{margin:10px 0 4px;font-size:.72em;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px}
+#view-narr .eq-list .eq-h::after{content:"";flex:1;border-top:1px solid var(--accent-line)}
+#view-narr .eq-list .eq-h:first-child{margin-top:4px}
+#view-narr .eq-row .eq-acts{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;padding:0 0 4px 0;min-width:0}
+#view-narr .eq-row .eq-acts:empty{display:none}
+#view-narr .eq-row .eq-acts p{margin:0}
+#view-narr .eq-row .cp-inline{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 8px}
+#view-narr .eq-row .cp-inline label{flex:1 1 150px;min-width:0}
+#view-narr .eq-carried{flex-direction:row!important;flex-wrap:wrap}
+#view-narr .eq-chip{display:inline-flex;align-items:center;gap:6px;padding:2px 3px 2px 9px;border:1px solid var(--rule);border-radius:999px;background:var(--panel);font-size:.88em;font-weight:600}
+#view-narr .eq-chip .hint{font-weight:500}
+#view-narr .eq-chip .add{width:1.7em;height:1.7em;border-radius:50%;font-size:.95em}
+#view-narr .eq-row{row-gap:6px}
+#view-narr .eq-row .cp-inline{align-items:center}
+#view-narr .eq-row select,#view-narr .eq-row input{font:inherit;padding:5px 8px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);color:var(--ink);min-width:0}
+#view-narr .eq-row select{flex:1 1 150px;max-width:16em}
+#view-narr .eq-row label{display:flex;flex-direction:column;gap:3px;font-size:.86em;color:var(--muted)}
+#view-narr .eq-row label input{font-size:1.16em;color:var(--ink)}
+/* v.47: Every Quar Supply & recruits = one layout. Left column: Muster Roll then Equipment shop. Right column: Your patrol with
+   Your equipment right under it; the whole right column stays in view on wide screens. Phones: Your patrol, Muster Roll,
+   Your equipment, Equipment shop (each list above its shop). */
+#view-narr .cp-build2>.cp-main,#view-narr .cp-build2>.cp-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (min-width:861px){
+  #view-narr .cp-build2>.cp-side{order:2;position:sticky;top:calc(var(--barh,110px) + 12px);max-height:calc(100vh - var(--barh,110px) - 24px);overflow:auto;overscroll-behavior:contain;border-radius:3px}
+  #view-narr .cp-build2>.cp-side>.cp-yours{position:static;max-height:none;display:block}
+  #view-narr .cp-build2>.cp-side>.cp-yours>.plist{overflow:visible}
+}
+@media (max-width:860px){
+  #view-narr .cp-build2>.cp-main,#view-narr .cp-build2>.cp-side{display:contents}
+  #view-narr .cp-build2 #eq-recruits{order:2} #view-narr .cp-build2 .cp-side>.cp-yours:not(.cp-eqmine){order:1}
+  #view-narr .cp-build2 #eq-mine{order:3} #view-narr .cp-build2 #eq-shop{order:4}
+}
+#view-narr .cp-build2 [id^="eq-"]{scroll-margin-top:calc(var(--barh,110px) + 12px)}
+#view-narr .cp-jumps{display:flex;justify-content:flex-end;margin:-4px 0 -2px}
+#view-narr .cp-jump{font-size:.88em;padding:4px 12px;border-color:var(--accent-line);color:var(--accent);font-weight:700}
+#view-narr .cp-jump:hover{border-color:var(--accent);background:var(--accent-soft)}
+/* v.49 (user request): Mhuddball New match Home/Away boxes take the chosen team's faction colour (--team-accent set by the picker).
+   Headings are lightened in dark mode so dark faction colours stay readable. */
+#view-narr .mb-setup-side{transition:background .2s,border-color .2s}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #view-narr .mb-setup-side h3{color:oklch(from var(--team-accent) max(l, 0.72) c h)}}
+:root[data-theme="dark"] #view-narr .mb-setup-side h3{color:oklch(from var(--team-accent) max(l, 0.72) c h)}
+@media (prefers-reduced-motion:reduce){ #view-narr .mb-setup-side{transition:none} }
+/* Easter egg: TomDrawsThings credit → Mhuddball art bubbles (v.50). The layer sits above everything but lets clicks through;
+   only the bubbles themselves can be tapped (to pop them). */
+.cp-credit[data-egg]{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cp-credit[data-egg]:active img{transform:scale(.9)}
+.mbub-layer{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden}
+.mbub{all:unset;position:absolute;left:0;top:0;box-sizing:border-box;border-radius:50%;pointer-events:auto;cursor:pointer;will-change:transform;transform:scale(0);
+  padding:4px;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.95),rgba(255,255,255,.55) 40%,rgba(160,190,255,.35) 75%,rgba(255,255,255,.7));
+  box-shadow:0 10px 26px -8px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.5)}
+.mbub img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;pointer-events:none;user-select:none}
+.mbub::after{content:"";position:absolute;inset:4px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse 34% 22% at 32% 22%,rgba(255,255,255,.75),rgba(255,255,255,0) 70%),radial-gradient(circle at 50% 50%,transparent 62%,rgba(120,170,255,.22) 80%,rgba(255,255,255,.35) 96%)}
+.mbub.pop img,.mbub.pop::after{animation:mbubpop .36s ease-out forwards}
+.mbub.pop{animation:mbubring .36s ease-out forwards}
+@keyframes mbubpop{to{opacity:0;transform:scale(1.35)}}
+@keyframes mbubring{to{opacity:0;box-shadow:0 0 0 14px rgba(255,255,255,0),0 0 0 2px rgba(255,255,255,0);background:transparent}}
+@media print{.mbub-layer{display:none!important}}
+/* v.51 Mhuddball art (site owner's request). */
+/* 1. strip above New match: pictures drift slowly sideways; edges fade; 112px tall (80px on phones) */
+#view-narr .mb-strip{height:112px;overflow:hidden;border:1px solid var(--rule);border-radius:6px;background:linear-gradient(180deg,color-mix(in oklab,var(--slate) 16%,var(--panel)),var(--panel));
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+#view-narr .mb-strip-row{display:flex;gap:14px;width:max-content;height:100%;align-items:center;padding:0 7px;animation:mbstrip 60s linear infinite}
+#view-narr .mb-strip img{width:92px;height:92px;border-radius:50%;object-fit:cover;flex:0 0 auto;box-shadow:0 0 0 3px var(--panel),0 0 0 4.5px color-mix(in oklab,var(--slate) 45%,var(--rule)),0 6px 14px -8px rgba(0,0,0,.5)}
+#view-narr .mb-strip:hover .mb-strip-row{animation-play-state:paused}
+@keyframes mbstrip{to{transform:translateX(-50%)}}
+@media (max-width:560px){ #view-narr .mb-strip{height:80px} #view-narr .mb-strip img{width:64px;height:64px} #view-narr .mb-strip-row{gap:10px} }
+@media (prefers-reduced-motion:reduce){ #view-narr .mb-strip-row{animation:none} }
+/* 3./4. small round pictures */
+#view-narr .mb-pic{width:96px;height:96px;border-radius:50%;object-fit:cover;flex:0 0 auto;box-shadow:0 0 0 3px var(--panel),0 0 0 4.5px color-mix(in oklab,var(--slate) 45%,var(--rule)),0 6px 14px -8px rgba(0,0,0,.5)}
+#view-narr .mb-empty{display:flex;align-items:center;gap:16px}
+#view-narr .mb-empty p{margin:0}
+#view-narr .mb-rsec{display:flex;align-items:flex-start;gap:14px}
+#view-narr .mb-rsec .mb-pic{width:72px;height:72px;margin-top:4px}
+#view-narr .mb-rsec p{margin:0;flex:1;min-width:0}
+#view-narr .mb-rsec-solo{align-items:center;margin-bottom:8px}
+@media (max-width:560px){ #view-narr .mb-rsec{flex-direction:column;gap:8px} #view-narr .mb-empty{flex-direction:column;text-align:center;gap:10px} #view-narr .mb-pic{width:80px;height:80px} }
+/* 2. match moments: floating bubble + caption over the page (fixed, never takes space, never blocks taps) */
+.mb-moment{--mc:var(--slate);position:fixed;left:50%;top:22%;z-index:9998;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:10px;
+  transform:translate(-50%,10px) scale(.6);opacity:0;transition:transform .45s cubic-bezier(.2,1.4,.4,1),opacity .3s}
+.mb-moment.in{transform:translate(-50%,0) scale(1);opacity:1}
+.mb-moment.out{transform:translate(-50%,-40px) scale(.95);opacity:0;transition:transform .6s ease-in,opacity .6s}
+.mb-moment .mb-moment-pic{position:relative;width:clamp(110px,24vmin,160px);height:clamp(110px,24vmin,160px);transform:none;pointer-events:none;animation:mbwob 1.6s ease-in-out infinite}
+.mb-moment-cap{display:flex;flex-direction:column;align-items:center;padding:6px 16px 7px;border-radius:999px;background:var(--mc);color:#fff;box-shadow:0 8px 22px -10px rgba(0,0,0,.6);text-align:center;max-width:min(86vw,26em)}
+.mb-moment-cap b{font-family:var(--f-display);font-weight:400;font-size:1.5em;letter-spacing:.05em;text-transform:uppercase;line-height:1.1}
+.mb-moment-cap span{font-size:.82em;font-weight:600;opacity:.92}
+@keyframes mbwob{50%{transform:translateY(-4px) rotate(-2deg)}}
+@media (prefers-reduced-motion:reduce){ .mb-moment,.mb-moment.in,.mb-moment.out{transition:opacity .3s;transform:translate(-50%,0)} .mb-moment .mb-moment-pic{animation:none} }
+@media print{ .mb-moment{display:none!important} }
