@@ -351,13 +351,11 @@ window.QuarMhuddball = (() => {
           <div class="mb-setup-side">
             <h3>Home</h3><p class="hint">Choose the home team's roster</p>
             ${select("Home roster",factions,"fidwog",'id="mb-home" data-facpick')}
-            <p class="mb-setup-note">Six Mhudders. Five on the pitch.</p>
           </div>
           <div class="mb-setup-vs" aria-hidden="true"><span>VS</span></div>
           <div class="mb-setup-side mb-setup-away">
             <h3>Away</h3><p class="hint">Choose the opposing team's roster</p>
             ${select("Away roster",factions,"toulmore",'id="mb-away" data-facpick')}
-            <p class="mb-setup-note">Two teams. One winner.</p>
           </div>
         </div>
         <div class="mb-setup-name">${input("Match name (optional)","",'id="mb-name" maxlength="80" placeholder="The Alwyd cup"')}</div>
