@@ -1260,6 +1260,18 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
 .mmhbtn:hover{border-color:var(--ink)}
 .mmhbtn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 .mmhbtn .mmico{min-width:1.4em;justify-content:center}
+/* Header "My models" icon cycles through every faction's colour (5 Nov, user request; replaced the rainbow).
+   --mmfac is animated by keyframes built from the JSON faction colours (mmFacCycle); the shown colour is adapted
+   to the theme like --accent (deepened on light, brightened on dark). Stops for reduced motion. */
+@property --mmfac{syntax:"<color>";inherits:true;initial-value:#9a6a12}
+#mmHdr .mmico{--mmfac:var(--brass);color:color-mix(in oklab, var(--mmfac) var(--acc-mix), var(--ink))}
+@supports (color: oklch(from red l c h)){
+  #mmHdr .mmico{color:oklch(from var(--mmfac) min(l, 0.5) calc(c * 1.2) h)}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #mmHdr .mmico{color:oklch(from var(--mmfac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}}
+  :root[data-theme="dark"] #mmHdr .mmico{color:oklch(from var(--mmfac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}
+}
+#mmHdr .mmico.cyc{animation:mmfac var(--mmdur,36s) linear infinite}
+@media (prefers-reduced-motion: reduce){#mmHdr .mmico.cyc{animation:none}}
 .mmhbtn .mmcount{margin-left:auto}
 .tswrap{position:relative;display:flex}
 .tswrap>.tsbtn{flex:1}
@@ -1372,7 +1384,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
           <div class="tsfoot"><span id="textSizeVal">100%</span><button type="button" class="tsreset" id="textSizeReset">Reset</button></div>
         </div>
       </div>
-      <button type="button" class="mmhbtn" id="mmHdr" data-mm="" title="My models: the models you own" aria-label="My models"><span class="mmico"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="mmRainbow" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="24" y2="12" spreadMethod="repeat"><stop offset="0.000" stop-color="#e0492f"/><stop offset="0.143" stop-color="#f08c00"/><stop offset="0.286" stop-color="#d8b000"/><stop offset="0.429" stop-color="#2fa84f"/><stop offset="0.571" stop-color="#2f7fe0"/><stop offset="0.714" stop-color="#7a4fd6"/><stop offset="0.857" stop-color="#d14fa8"/><stop offset="1.000" stop-color="#e0492f"/><animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="24 12" dur="4s" repeatCount="indefinite"/></linearGradient></defs><circle cx="9" cy="5" r="2.6" fill="url(#mmRainbow)"/><path d="M5.5 16.4 6.6 10c.2-1.1 1-1.8 2-1.8h.8c1 0 1.8.7 2 1.8l1.1 6.4z" fill="url(#mmRainbow)"/><ellipse cx="9" cy="19.2" rx="6.8" ry="2.2" fill="none" stroke="url(#mmRainbow)" stroke-width="1.8"/><path d="M21.5 2.5l-6 7.2" stroke="url(#mmRainbow)" stroke-width="1.8" stroke-linecap="round"/><path d="M15.4 9.3c-1.3-.2-2.4.7-2.5 2-.1 1-.6 1.6-1.4 1.9 2 .9 4.4.2 4.9-1.6.2-.9-.1-1.8-1-2.3z" fill="url(#mmRainbow)"/></svg></span><span class="tsl">My models</span><span class="mmcount" data-mmcount hidden></span></button>
+      <button type="button" class="mmhbtn" id="mmHdr" data-mm="" title="My models: the models you own" aria-label="My models"><span class="mmico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="5" r="2.6" fill="currentColor"/><path d="M5.5 16.4 6.6 10c.2-1.1 1-1.8 2-1.8h.8c1 0 1.8.7 2 1.8l1.1 6.4z" fill="currentColor"/><ellipse cx="9" cy="19.2" rx="6.8" ry="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M21.5 2.5l-6 7.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M15.4 9.3c-1.3-.2-2.4.7-2.5 2-.1 1-.6 1.6-1.4 1.9 2 .9 4.4.2 4.9-1.6.2-.9-.1-1.8-1-2.3z" fill="currentColor"/></svg></span><span class="tsl">My models</span><span class="mmcount" data-mmcount hidden></span></button>
     </div>
     <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a><a class="navtab" href="#/narrative" data-go="#/narrative" data-nav="narr">Narrative <span class="community">Community</span></a></nav>
   </div>
@@ -1480,6 +1492,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
+<link rel="stylesheet" href="campaign.css?v=2026-11-05.41">
+<script src="campaign-rules.js?v=2026-11-05.41"></script>
+<script src="tales-rules.js?v=2026-11-05.41"></script>
+<script src="tales.js?v=2026-11-05.41"></script>
+<script src="mhuddball-rules.js?v=2026-11-05.41"></script>
+<script src="mhuddball.js?v=2026-11-05.41"></script>
+<script src="campaign.js?v=2026-11-05.41"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -1691,7 +1710,7 @@ function abilityInfo(a){ const k = baseName(a); return DATA.abilities[k] || null
 const splitList = str => String(str||"").split(/,\s*(?![^()]*\))/).map(x=>x.trim()).filter(Boolean);
 function tip(lbl){
   const w = FAC && findW(lbl);
-  if (w) return `<button type="button" class="rl" data-weapon="${esc(w.name)}" aria-expanded="false">${esc(lbl)}</button>`;
+  if (w) return `<button type="button" class="rl" data-weapon="${esc(w.name)}" data-fac="${esc(FAC.id)}" aria-expanded="false">${esc(lbl)}</button>`;
   if (abilityInfo(lbl)) return `<button type="button" class="rl" data-rule="${esc(lbl)}" aria-expanded="false">${esc(lbl)}</button>`;
   return esc(lbl);
 }
@@ -2145,235 +2164,19 @@ function showView(v, arg, push=true){
 }
 function navTo(t){ if (state.view==="edit") tryLeave(t); else showView(t.v, t.arg); }
 const slug = c => c.toLowerCase().replace(/[^a-z0-9]+/g,"-");
-/* ---------- Narrative ----------
-   Story patrols: a copy of a saved patrol that lives on its own (editing either one never changes the other),
-   with a backstory for every rhyfler and relationships between them. Flavour only: nothing here changes any rule or stat.
-   Saved in this browser under "quar-narrative-v1"; back up with the backup file buttons. */
+/* ---------- Independent narrative campaign storage ---------- */
 const NARR_KEY = "quar-narrative-v1";
 let narr = {stories:[]};
-try{ const n = JSON.parse(localStorage.getItem(NARR_KEY) || "null"); if (n && Array.isArray(n.stories)) narr = n; }catch(e){}
-function narrSave(){ try{ localStorage.setItem(NARR_KEY, JSON.stringify(narr)); }catch(e){ toast("Couldn't save: this browser's storage is full or blocked"); } }
+try{ const saved = JSON.parse(localStorage.getItem(NARR_KEY) || "null"); if (saved && Array.isArray(saved.stories)) narr = saved; }catch(error){}
+function narrSave(){ try{ localStorage.setItem(NARR_KEY, JSON.stringify(narr)); }catch(error){ toast("Couldn't save: this browser's storage is full or blocked"); } }
 const narrId = () => "s" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-const storyById = id => narr.stories.find(s=>s.id===id);
-// Relationship kinds and their tiers (weakest first). Directional kinds read differently from each side.
-const REL = {
-  friend:{label:"Friendship", color:"#3f8f5a", icon:"🤝", tiers:[
-    ["Acquaintance","Know each other by name and not much more."],
-    ["Comrade","Share a trench and a ration tin; trust each other in a scrap."],
-    ["Friend","Look out for each other on and off the field."],
-    ["Close Friend","Share secrets, letters from home and the last of the mothcakes."],
-    ["Best Friend","Inseparable. Where one goes, the other follows."],
-    ["Sworn Kin","Bonded for life. Each would die for the other."]]},
-  rival:{label:"Rivalry", color:"#b5523b", icon:"⚔️", tiers:[
-    ["Friendly Competition","Keep score of everything, all in good fun."],
-    ["Rival","Each wants to outdo the other, and it shows."],
-    ["Bitter Rival","There's real resentment now. Barbs at every muster."],
-    ["Grudge","Something happened that won't be forgiven."],
-    ["Sworn Enemy","Only the war keeps them on the same side."]]},
-  family:{label:"Family", color:"#8a6a2e", icon:"🏠", tiers:[
-    ["Estranged","Kin by blood, strangers by choice."],
-    ["Distant","Family, but rarely close."],
-    ["Cordial","Get along well enough at the table."],
-    ["Close","Look after each other like family should."],
-    ["Inseparable","Family first, always."]],
-    kinds:[["sibling","Sibling","Sibling"],["twin","Twin","Twin"],["parent","Parent of","Child of"],["grand","Grandparent of","Grandkit of"],
-           ["auntuncle","Aunt/Uncle of","Niece/Nephew of"],["cousin","Cousin","Cousin"],["inlaw","In-law","In-law"],["foster","Foster parent of","Foster kit of"]]},
-  romance:{label:"Romance", color:"#b0346b", icon:"❤️", tiers:[
-    ["Old Flame","It's over, but neither has quite forgotten."],
-    ["Admirer","One is sweet on the other, who may not even know."],
-    ["Courting","Walks behind the lines and nervous glances."],
-    ["Sweethearts","Everyone in the patrol knows it."],
-    ["Betrothed","Promised to each other, once this is all over."],
-    ["Wed","Bound for life, in the eyes of every quar."]], dir:[1]},
-  mentor:{label:"Mentorship", color:"#3b6aa3", icon:"🎖️", tiers:[
-    ["Showing the Ropes","Keeps the new kit out of trouble."],
-    ["Mentor","Teaches everything they know."],
-    ["Trusted Mentor","Their word is law to their pupil."],
-    ["Like a Parent","More family than many families."]], dirAll:true, a:"Mentor to", b:"Pupil of"},
-  animal:{label:"Animal", color:"#4f7a6e", icon:"🐾", animal:true, tiers:[
-    ["Tool of War","Just another weapon to be pointed at the enemy."],
-    ["Working Beast","Fed, watered and worked hard. Nothing more."],
-    ["Trusted Companion","Knows the commands, and the hand that gives them."],
-    ["Loyal Partner","Shares the trench, the rations and the danger."],
-    ["Man's Best Friend","Would follow them anywhere, and they'd do the same."]]},
-  pack:{label:"Pack", color:"#7a6a3f", icon:"🐕", animal:true, tiers:[
-    ["Wary Sniffs","Circle each other and keep their distance."],
-    ["Tolerated","Share a trench without snapping at each other."],
-    ["Packmates","Hunt, sleep and scrap side by side."],
-    ["Den Mates","Curl up together when the shelling starts."],
-    ["Inseparable Pack","Where one runs, the other is never far behind."]]}
-};
-// Animals are the units whose only equipment is Teeth and Claws (Fydos, Sarf-cyn…), or that have the Creature ability.
-// Quar and animal: only the Animal kind. Two animals: only the Pack kind. Two quar: the usual kinds (never Animal or Pack).
-const isAnimalUnit = u => !!u && (u.profiles||[]).some(p=>{ const eq = p.equip||[]; return (eq.length && eq.every(x=>/teeth and claws/i.test(x))) || (p.abilities||[]).some(a=>/^creature$/i.test(a)); });
-function isAnimalChar(s, cid){ const c = s.chars.find(x=>x.id===cid), f = facById(s.faction); return !!(c && f && isAnimalUnit(f.units.find(u=>u.id===c.unitId))); }
-// Family members can't also have a Romance (and sweethearts can't be made family): whichever the pair already has rules out the other.
-// "skip" is the relationship being edited, so changing it from one to the other still works.
-const relPairHas = (s, a, b, type, skip) => s.rels.some(r=>r.id!==skip && r.type===type && ((r.a===a&&r.b===b)||(r.a===b&&r.b===a)));
-const relKindsFor = (s, a, b, skip) => { const x = isAnimalChar(s, a), y = isAnimalChar(s, b); if (x && y) return ["pack"]; if (x || y) return ["animal"];
-  const fam = relPairHas(s, a, b, "family", skip), rom = relPairHas(s, a, b, "romance", skip);
-  return Object.keys(REL).filter(k=>!REL[k].animal && !(k==="romance" && fam) && !(k==="family" && rom)); };
-const relTierName = r => (REL[r.type]||{tiers:[]}).tiers[r.tier] ? REL[r.type].tiers[r.tier][0] : "";
-// How a relationship reads from one character's side ("Close Friend", "Parent of", "Admirer of"...)
-function relLabelFor(r, cid){
-  const T = REL[r.type]; if (!T) return "";
-  const fromA = r.a===cid, tier = relTierName(r);
-  if (r.type==="family"){ const k = (T.kinds.find(x=>x[0]===r.kind) || T.kinds[0]); return `${fromA ? k[1] : k[2]} · ${tier}`; }
-  if (r.type==="mentor") return `${fromA ? T.a : T.b} · ${tier}`;
-  if (r.type==="romance" && r.tier===1) return fromA ? "Admirer of" : "Admired by";
-  return tier;
-}
-const charName = (s, cid) => { const c = s.chars.find(x=>x.id===cid); return c ? (c.name || "Unnamed rhyfler") : "?"; };
-function charUnit(s, c){ const f = facById(s.faction); const u = f && f.units.find(x=>x.id===c.unitId); return u ? `${u.name}${u.variant?` · ${u.variant}`:""}` : "Unknown unit"; }
-// Make a story from a saved patrol: a deep copy, one character per rhyfler, using their names (or a random Quar name)
-function storyFromPatrol(p){
-  const f = facById(p.faction); if (!f) return null;
-  const used = new Set(), chars = [];
-  f.units.forEach(u=>{ const q = (p.items||{})[u.id]||0; for (let i=0;i<q;i++){ let nm = cleanNm(((p.names||{})[u.id]||[])[i]);
-    if (!nm || used.has(nm)) nm = randName(used); used.add(nm); chars.push({id:"c"+chars.length+Math.random().toString(36).slice(2,6), unitId:u.id, name:nm, backstory:"", fallen:false}); } });
-  const now = Date.now();
-  return {id:narrId(), name:p.name || `${f.name} story`, faction:f.id, limit:p.limit, from:p.name||"", created:now, updated:now, notes:"", chars, rels:[]};
-}
 let narrUI = {editRel:null, confirmDel:null};
-// Epitaph suggestions (the builder's own words; tap 🎲 for another)
-const EPI_QUAR = ["Kept his rifle dry and his word drier.", "First into the wire, last to complain.", "Gone home ahead of the rest of us.", "The tea will never be as bad without them.", "Held the line. Holds it still.", "Steady hands, steadier heart.", "Never found the end of the war, but found the best of us.", "Always shared the last mothcake.", "Sleep well. We'll keep watch from here.", "Brave when it counted, which was always.", "Answered every call but the last one home.", "Remembered at every muster.", "Out of Pluck, never out of heart.", "They said it couldn't be done. Did it anyway.", "Dug the deepest trench in the patrol. Rests easy in it now.", "Owed half the squad a cigarette. Paid it back in courage.", "Mud on the boots, stars in the eyes.", "Their rhyfle is quiet now. Their story isn't.", "Laughed loudest when the shells fell closest.", "Took the long watch so we could sleep.", "Wrote home every week. We'll write for them now.", "The Yawdryl's favourite, though they'd never admit it.", "Lost the coin toss, won our hearts.", "Carried more than their share, every mile of it.", "Gave the enemy no ground and the cook no peace.", "Snored through bombardments. Woke for every friend.", "Never once ran from a fight, or from a pot of stew.", "Their seat by the fire stays empty.", "Steady as the wall, kind as the spring.", "Went over the top singing. We still hear it.",  "A terrible shot, a wonderful friend.", "Promised to come home. Kept every other promise.", "Swapped the rations, swapped the stories, swapped the watch.", "The quiet one. The one we counted on.", "Stood when others would have crawled.", "Gone to find a front where it never rains.", "Mended our boots, our gear and our spirits.", "The best Milwer never promoted.", "Tended the wounded until there was no one left to tend them.", "Here lies a rhyfler who never once polished a button.", "They argued with every order and followed every one.", "Forever young, forever muddy.", "Home is the hearth, and they are home at last.", "Last seen charging. Exactly as expected."];
-const EPI_ANIMAL = ["A good fydo. The best fydo.", "Chased everything. Feared nothing.", "Never once left a quar behind.", "Loyal to the last bark.", "Found their way home, the long way round.", "Ate the rations, earned them twice over.", "Followed us everywhere. Now we'll follow them.", "Teeth, claws and a great big heart.", "Never learned to sit. Always knew when to stay.", "Stole a sausage from a Caerten and lived to brag about it.", "Heard the shells before any of us did.", "Slept on every boot in the trench.", "Dug holes everywhere. Dug us out of one.", "Wagged through the worst of it.", "Bit the enemy. Licked the wounded.", "The bravest nose in the patrol.",  "Warm on cold nights, fierce on dark ones.", "Never understood the war. Understood us.", "Ran ahead so we'd know the way.", "Their bowl is still by the stove.", "Here lies the only one the Yawdryl ever saluted."];
-function renderNarrative(id){
-  const v = $("#view-narr"); const s = id && storyById(id); narrUI.story = s ? s.id : null;
-  if (id && !s){ showView("narr", null); return; }
-  if (!s){ document.body.style.removeProperty("--fac"); renderNarrList(v); return; }
-  const f = facById(s.faction); if (f && f.color) document.body.style.setProperty("--fac", f.color);
-  renderStory(v, s);
-}
-const NARR_WARN = () => `<div class="savebox"><details class="savewarn swfold" id="nWarn"${foldOpen("nWarn") ? " open" : ""}><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your stories are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, current game and saved battles.</p></details><div class="bkslot">${backupBar()}</div></div>`;
-// open/closed memory for fold-out notes other than the My Patrols one (open by default)
-const foldOpen = id => { try{ return localStorage.getItem("quar-fold-"+id)!=="0"; }catch(e){ return true; } };
-// Help / explanation text: a fold-out, open by default, open/closed remembered per box ("quar-fold-tip-<key>")
-const tipFold = (key, title, html) => `<details class="tipfold" data-fold="tip-${key}"${foldOpen("tip-"+key)?" open":""}><summary><span class="chev" aria-hidden="true">▸</span><svg class="tipi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="tiph">${title}</span></summary><div class="tipbody">${html}</div></details>`;
-document.addEventListener("toggle", e=>{ const d = e.target; if (d && d.dataset && d.dataset.fold){ try{ localStorage.setItem("quar-fold-"+d.dataset.fold, d.open ? "1" : "0"); }catch(_){} } }, true);
-document.addEventListener("toggle", e=>{ const d = e.target; if (d && (d.id==="nWarn" || d.id==="gWarn")){ try{ localStorage.setItem("quar-fold-"+d.id, d.open ? "1" : "0"); }catch(_){} } }, true);
-function renderNarrList(v){
-  const pats = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0) && facById(p.faction));
-  const list = [...narr.stories].sort((a,b)=>(b.updated||0)-(a.updated||0));
-  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="community">Community</span></h1><div class="hhead-r">${pgCtl("Narr")}${ownCtl("Narr")}</div></div>${NARR_WARN()}
-  <div class="card"><header><h2>Start a story</h2></header><div class="nstart">
-    ${tipFold("narr", "How stories work", `Pick one of your patrols. It's copied into a <b>story patrol</b> of its own, so changing one never changes the other. Give every rhyfler a backstory and set out who's friends, rivals, family or sweethearts. This is all for storytelling: it doesn't change any rules or stats.`)}
-    ${pats.length ? `<div class="nrow"><div class="field"><label for="nPatrol">Patrol</label><select id="nPatrol">${pats.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc(facById(p.faction).name)} · ${p.total||0} pts</option>`).join("")}</select></div><button class="btn" type="button" data-n="new">Start story</button></div>`
-      : `<p class="hint">You don't have any saved patrols yet. Build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a> first.</p>`}
-  </div></div>
-  <div class="card"><header><h2>Your stories</h2><span class="hint">${list.length} ${list.length===1?"story":"stories"}</span></header>
-    ${list.length ? `<div class="nlist">${list.map(s=>{ const f = facById(s.faction); const fallen = s.chars.filter(c=>c.fallen).length;
-      return `<article class="ncard" style="--fac:${esc((f&&f.color)||"#6b5d45")}"><button class="nopen" type="button" data-n="open" data-id="${esc(s.id)}">${flagImg(f)}<span><b>${esc(s.name||"Untitled story")}</b><span class="hint">${esc(f?f.name:"")} · ${s.chars.length} rhyfler${s.chars.length===1?"":"s"} · ${s.rels.length} relationship${s.rels.length===1?"":"s"}${fallen?` · ${fallen} fallen`:""}</span><span class="hint">Updated ${new Date(s.updated||s.created).toLocaleDateString()}</span></span></button>
-        <button class="btn ghost ndel${narrUI.confirmDel===s.id?" warn":""}" type="button" data-n="del" data-id="${esc(s.id)}">${narrUI.confirmDel===s.id?"Tap again to delete":"Delete"}</button></article>`; }).join("")}</div>`
-      : `<p class="hint nempty">No stories yet. Start one from a patrol above.</p>`}
-  </div>`;
-}
-function relChip(s, r, cid){ const T = REL[r.type], other = r.a===cid ? r.b : r.a, pips = T.tiers.length;
-  return `<li class="nrel" style="--rc:${T.color}"><span class="nri" aria-hidden="true">${T.icon}</span><span class="nrt"><b>${esc(relLabelFor(r, cid))}</b> <span class="nro">${esc(charName(s, other))}</span>${r.note?`<span class="nrn">${esc(r.note)}</span>`:""}</span>
-      <span class="npips" title="${esc(T.label)}: ${esc(relTierName(r))} (${r.tier+1} of ${pips})">${Array.from({length:pips},(_,i)=>`<i${i<=r.tier?' class="on"':""}></i>`).join("")}</span>
-      <button class="nrx" type="button" data-n="editrel" data-id="${esc(r.id)}" aria-label="Edit relationship">✎</button></li>`; }
-// A character's relationship list, and the overview of every relationship (redrawn on their own when names change)
-function relsBlock(s, c){ const rs = s.rels.filter(r=>r.a===c.id || r.b===c.id);
-  return `<h4>Relationships</h4>${rs.length?`<ul>${rs.map(r=>relChip(s,r,c.id)).join("")}</ul>`:`<p class="hint">None yet.</p>`}${s.chars.length>1?`<button class="btn ghost nadd" type="button" data-n="addrel">+ Add relationship</button>`:""}`; }
-function overviewBlock(s){ return s.rels.length ? `<header><h2>Relationship overview</h2><span class="hint">${s.rels.length}</span></header><div class="nover">${Object.entries(REL).map(([k,T])=>{ const rs = s.rels.filter(r=>r.type===k); return rs.length ? `<section style="--rc:${T.color}"><h4><span aria-hidden="true">${T.icon}</span> ${T.label}</h4><ul>${rs.map(r=>`<li><b>${esc(charName(s,r.a))}</b> <span>${esc(relLabelFor(r, r.a))}</span> <b>${esc(charName(s,r.b))}</b>${r.note?` <i>${esc(r.note)}</i>`:""}</li>`).join("")}</ul></section>` : ""; }).join("")}</div>` : ""; }
-function narrRefreshRels(s){ document.querySelectorAll("#view-narr .nchar").forEach(card=>{ const c = s.chars.find(x=>x.id===card.dataset.cid), box = card.querySelector(".nrels"); if (c && box) box.innerHTML = relsBlock(s, c); });
-  const o = $("#nOverview"); if (o){ o.innerHTML = overviewBlock(s); o.hidden = !s.rels.length; } }
-function renderStory(v, s){
-  const f = facById(s.faction);
-  const ed = narrUI.editRel && narrUI.editRel.story===s.id ? narrUI.editRel : null;
-  v.innerHTML = `<div class="viewbar"><a class="btn ghost" href="#/narrative" data-go="#/narrative" style="text-decoration:none">← All stories</a><span style="margin-right:auto"></span><span class="switches">${pgCtl("Story")}${ownCtl("Story", s.faction)}</span></div>
-  <div class="card nhead"><header><div class="ptitle">${flagImg(f)}<h2>${esc(s.name||"Untitled story")}</h2></div><span class="hint">${s.chars.length} rhyfler${s.chars.length===1?"":"s"}</span></header>
-    <div class="nhb"><div class="field"><label for="nName">Story name</label><input id="nName" type="text" maxlength="60" value="${esc(s.name)}" data-nf="name" autocomplete="off"></div>
-    <p class="hint">${esc(f?f.name:"")} · ${s.limit||"?"} points${s.from?` · started from your patrol “${esc(s.from)}”`:""}. Changes here never affect that patrol.</p>
-    <div class="field"><label for="nNotes">The patrol's story so far</label><textarea id="nNotes" rows="3" maxlength="6000" data-nf="notes" placeholder="Where they're from, what they've been through, what they're fighting for…">${esc(s.notes||"")}</textarea></div></div></div>
-  <div class="ngrid">${s.chars.map(c=>{
-    return `<article class="card nchar${c.fallen?" fallen":""}" data-cid="${esc(c.id)}">
-      <header><div class="nch">${dtag(c.name||"Unnamed")}<span class="hint">${esc(charUnit(s,c))}${isAnimalChar(s, c.id) ? ` <span class="nanimal">🐾 Animal</span>` : ""}</span></div>
-        <label class="nfall" title="Mark as fallen"><input type="checkbox" data-nc="fallen"${c.fallen?" checked":""}> Fallen</label></header>
-      <div class="ncb">
-        <div class="nnm"><div class="field"><label for="nm-${esc(c.id)}">Name</label><input id="nm-${esc(c.id)}" type="text" maxlength="30" value="${esc(c.name)}" data-nc="name" autocomplete="off"></div><button class="btn ghost ndice" type="button" data-n="roll" title="Random Quar name" aria-label="Random Quar name">🎲</button></div>
-        <div class="field"><label for="bs-${esc(c.id)}">Backstory</label><textarea id="bs-${esc(c.id)}" rows="3" maxlength="4000" data-nc="backstory" placeholder="${isAnimalChar(s, c.id) ? "Where they were found, who feeds them, what they chase when nobody's looking…" : "Where they grew up, why they joined, the habit that drives the Yawdryl mad…"}">${esc(c.backstory||"")}</textarea></div>
-        ${c.fallen ? `<div class="nepi"><div class="nepih"><span aria-hidden="true">✝</span> In memory of ${esc(c.name||"a fallen rhyfler")}</div><div class="nepir"><label class="vh" for="ep-${esc(c.id)}">Epitaph</label><textarea id="ep-${esc(c.id)}" rows="2" maxlength="280" data-nc="epitaph" placeholder="${isAnimalChar(s, c.id) ? "A good fydo. The best fydo." : "Here lies… a few words for the ones left behind."}">${esc(c.epitaph||"")}</textarea><button class="btn ghost ndice" type="button" data-n="epiroll" title="Suggest an epitaph" aria-label="Suggest an epitaph">🎲</button></div></div>` : ""}
-        <div class="nrels">${relsBlock(s, c)}</div>
-      </div></article>`; }).join("")}</div>
-  <div class="card" id="nOverview"${s.rels.length?"":" hidden"}>${overviewBlock(s)}</div>
-  ${ed ? relEditor(s, ed) : ""}`;
-  if (ed){ const d = $("#nRelDlg"); if (d) d.querySelector("select,button").focus({preventScroll:true}); }
-}
-function relEditor(s, ed){
-  const T = REL[ed.type], others = s.chars.filter(x=>x.id!==ed.a);
-  const dirTxt = ed.type==="mentor" ? [`${charName(s,ed.a)} mentors ${charName(s,ed.b)}`, `${charName(s,ed.b)} mentors ${charName(s,ed.a)}`]
-    : ed.type==="family" ? null : null;
-  const fam = ed.type==="family" ? T.kinds.find(k=>k[0]===ed.kind) || T.kinds[0] : null;
-  return `<div class="nmodal" id="nRelDlg" role="dialog" aria-modal="true" aria-label="Relationship"><div class="nmbox" style="--rc:${T.color}">
-    <h3>${ed.id?"Edit":"New"} relationship</h3>
-    <div class="nmrow"><div class="field"><label>Between</label><div class="nwho"><b>${esc(charName(s,ed.a))}</b><span>and</span>
-      <select id="nRelB" aria-label="Other rhyfler">${others.map(x=>`<option value="${esc(x.id)}"${x.id===ed.b?" selected":""}>${esc(x.name||"Unnamed rhyfler")}</option>`).join("")}</select></div></div></div>
-    <div class="field"><label>Kind</label><div class="ntypes">${relKindsFor(s, ed.a, ed.b, ed.id).map(k=>[k,REL[k]]).map(([k,R])=>`<button type="button" class="ntype${k===ed.type?" on":""}" style="--rc:${R.color}" data-n="rtype" data-k="${k}" aria-pressed="${k===ed.type}"><span aria-hidden="true">${R.icon}</span>${R.label}</button>`).join("")}</div>${relPairHas(s, ed.a, ed.b, "family", ed.id) ? `<p class="hint nkhint">They're family, so Romance isn't an option.</p>` : relPairHas(s, ed.a, ed.b, "romance", ed.id) ? `<p class="hint nkhint">They're in a romance, so Family isn't an option.</p>` : ""}</div>
-    ${fam ? `<div class="field"><label for="nRelKind">How they're related</label><select id="nRelKind">${T.kinds.map(k=>`<option value="${k[0]}"${k[0]===fam[0]?" selected":""}>${k[1]===k[2]?k[1]:`${esc(charName(s,ed.a))} is ${k[1].toLowerCase().replace(/ of$/,"")} of ${esc(charName(s,ed.b))}`}</option>`).join("")}</select>
-      <button class="btn ghost nswap" type="button" data-n="swap">⇄ Swap who's who</button></div>` : ""}
-    ${ed.type==="mentor" ? `<div class="field"><label>Who teaches whom</label><button class="btn ghost nswap" type="button" data-n="swap">${esc(dirTxt[0])} ⇄</button></div>` : ""}
-    ${ed.type==="romance" && ed.tier===1 ? `<div class="field"><label>Who admires whom</label><button class="btn ghost nswap" type="button" data-n="swap">${esc(charName(s,ed.a))} admires ${esc(charName(s,ed.b))} ⇄</button></div>` : ""}
-    <div class="field"><label>Tier</label><div class="ntiers">${T.tiers.map((t,i)=>`<button type="button" class="ntier${i===ed.tier?" on":""}" data-n="rtier" data-i="${i}" aria-pressed="${i===ed.tier}"><span class="npips">${T.tiers.map((_,j)=>`<i${j<=i?' class="on"':""}></i>`).join("")}</span><b>${esc(t[0])}</b><span>${esc(t[1])}</span></button>`).join("")}</div></div>
-    <div class="field"><label for="nRelNote">Note (optional)</label><input id="nRelNote" type="text" maxlength="140" value="${esc(ed.note||"")}" placeholder="e.g. Dragged him out of the river at Bostad" autocomplete="off"></div>
-    <div class="nmact">${ed.id?`<button class="btn ghost nrdel warn" type="button" data-n="relrm">Remove</button>`:""}<span></span><button class="btn ghost" type="button" data-n="relcancel">Cancel</button><button class="btn" type="button" data-n="relsave">Save</button></div>
-  </div></div>`;
-}
-function narrTouch(s){ s.updated = Date.now(); narrSave(); }
-// Typing in fields: save as you go, without redrawing (so the cursor stays put)
-document.addEventListener("input", e=>{
-  const el = e.target; if (!el.closest || !el.closest("#view-narr")) return;
-  if (el.id==="nRelNote"){ if (narrUI.editRel) narrUI.editRel.note = el.value; return; }
-  const s = storyById(narrUI.story); if (!s) return;
-  if (el.dataset.nf){ s[el.dataset.nf] = el.value; if (el.dataset.nf==="name"){ const h = document.querySelector("#view-narr .nhead h2"); if (h) h.textContent = el.value || "Untitled story"; } narrTouch(s); return; }
-  const card = el.closest(".nchar"); if (!card || !el.dataset.nc) return; const c = s.chars.find(x=>x.id===card.dataset.cid); if (!c) return;
-  if (el.dataset.nc==="name"){ c.name = cleanNm(el.value); const t = card.querySelector(".dtn"); if (t) t.textContent = c.name || "Unnamed"; const h = card.querySelector(".nepih"); if (h) h.innerHTML = `<span aria-hidden="true">✝</span> In memory of ${esc(c.name||"a fallen rhyfler")}`; }
-  else if (el.dataset.nc==="backstory") c.backstory = el.value;
-  else if (el.dataset.nc==="epitaph") c.epitaph = el.value.slice(0,280);
-  narrTouch(s);
-});
-document.addEventListener("change", e=>{
-  const el = e.target; if (!el.closest || !el.closest("#view-narr")) return;
-  const s = storyById(narrUI.story);
-  if (el.id==="nRelB" && narrUI.editRel){ const ed = narrUI.editRel; ed.b = el.value; const ok = relKindsFor(storyById(narrUI.story), ed.a, ed.b, ed.id);
-    if (!ok.includes(ed.type)){ ed.type = ok[0]; ed.tier = Math.min(2, REL[ed.type].tiers.length-1); } renderNarrative(narrUI.story); return; }
-  if (el.id==="nRelKind" && narrUI.editRel){ narrUI.editRel.kind = el.value; return; }
-  if (s && el.dataset.nc==="fallen"){ const c = s.chars.find(x=>x.id===el.closest(".nchar").dataset.cid); if (c){ c.fallen = el.checked; narrTouch(s); const y = window.scrollY; renderNarrative(s.id); window.scrollTo(0, y);
-    if (c.fallen){ const t = document.getElementById("ep-"+c.id); if (t && !c.epitaph) t.focus({preventScroll:true}); } } return; }
-  if (s && el.dataset.nc==="name") narrRefreshRels(s); // refresh names shown in relationships, leave the text boxes alone
-});
-document.addEventListener("click", e=>{
-  const b = e.target.closest("[data-n]"); if (!b || !b.closest("#view-narr")) { if (e.target.classList && e.target.classList.contains("nmodal")){ narrUI.editRel = null; renderNarrative(narrUI.story); } return; }
-  const a = b.dataset.n, s = storyById(narrUI.story);
-  if (a==="new"){ const p = state.saved.find(x=>x.id===$("#nPatrol").value); const st = p && storyFromPatrol(p); if (!st) return; narr.stories.push(st); narrSave(); gcEvent("story-started"); toast("Story started. Your patrol stays as it was."); showView("narr", st.id); return; }
-  if (a==="open"){ showView("narr", b.dataset.id); return; }
-  if (a==="del"){ const id = b.dataset.id; if (narrUI.confirmDel===id){ narr.stories = narr.stories.filter(x=>x.id!==id); narrUI.confirmDel = null; narrSave(); toast("Story deleted"); } else { narrUI.confirmDel = id; setTimeout(()=>{ if (narrUI.confirmDel===id){ narrUI.confirmDel = null; if (state.view==="narr" && !narrUI.story) renderNarrative(); } }, 4000); } renderNarrative(); return; }
-  if (!s) return;
-  const card = b.closest(".nchar"), c = card && s.chars.find(x=>x.id===card.dataset.cid);
-  if (a==="epiroll" && c){ const pool = isAnimalChar(s, c.id) ? EPI_ANIMAL : EPI_QUAR; let t; do { t = pool[Math.floor(Math.random()*pool.length)]; } while (pool.length>1 && t===c.epitaph);
-    c.epitaph = t; narrTouch(s); const ta = document.getElementById("ep-"+c.id); if (ta) ta.value = t; return; }
-  if (a==="roll" && c){ const used = new Set(s.chars.map(x=>x.name)); c.name = randName(used); narrTouch(s); renderNarrative(s.id); return; }
-  if (a==="addrel" && c){ const other = s.chars.find(x=>x.id!==c.id); const animal = relKindsFor(s, c.id, other.id)[0]==="animal";
-    const k0 = relKindsFor(s, c.id, other.id)[0]; narrUI.editRel = {story:s.id, id:null, a:c.id, b:other.id, type: k0, tier:2, kind:"sibling", note:""}; renderNarrative(s.id); return; }
-  if (a==="editrel"){ const r = s.rels.find(x=>x.id===b.dataset.id); if (!r) return; const cid = card ? card.dataset.cid : r.a;
-    // open it from the side of the card it was clicked on, keeping directional meaning
-    const ok = relKindsFor(s, r.a, r.b, r.id), typ = ok.includes(r.type) ? r.type : ok[0];
-    narrUI.editRel = {story:s.id, id:r.id, a:r.a, b:r.b, type:typ, tier:Math.min(r.tier, REL[typ].tiers.length-1), kind:r.kind||"sibling", note:r.note||"", from:cid}; renderNarrative(s.id); return; }
-  const ed = narrUI.editRel; if (!ed) return;
-  if (a==="rtype"){ ed.type = b.dataset.k; ed.tier = Math.min(ed.tier, REL[ed.type].tiers.length-1); if (ed.type==="romance" && ed.tier===1) ed.tier = 2; ed.confirm = false; renderNarrative(s.id); return; }
-  if (a==="rtier"){ ed.tier = +b.dataset.i; renderNarrative(s.id); return; }
-  if (a==="swap"){ [ed.a, ed.b] = [ed.b, ed.a]; renderNarrative(s.id); return; }
-  if (a==="relcancel"){ narrUI.editRel = null; renderNarrative(s.id); return; }
-  if (a==="relrm"){ s.rels = s.rels.filter(x=>x.id!==ed.id); narrUI.editRel = null; narrTouch(s); renderNarrative(s.id); toast("Relationship removed"); return; }
-  if (a==="relsave"){ if (!ed.b || ed.a===ed.b) return; if (!relKindsFor(s, ed.a, ed.b, ed.id).includes(ed.type)){ ed.type = relKindsFor(s, ed.a, ed.b, ed.id)[0]; ed.tier = Math.min(ed.tier, REL[ed.type].tiers.length-1); } const note = (($("#nRelNote")||{}).value||"").trim().slice(0,140);
-    const rec = {id: ed.id || "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), a:ed.a, b:ed.b, type:ed.type, tier:ed.tier, note};
-    if (ed.type==="family") rec.kind = ed.kind;
-    // one relationship of each kind per pair: replace an existing one instead of doubling up
-    s.rels = s.rels.filter(x=>x.id!==rec.id && !(x.type===rec.type && ((x.a===rec.a&&x.b===rec.b)||(x.a===rec.b&&x.b===rec.a))));
-    s.rels.push(rec); narrUI.editRel = null; narrTouch(s); renderNarrative(s.id); toast("Relationship saved"); return; }
-});
-document.addEventListener("keydown", e=>{ if (e.key==="Escape" && narrUI.editRel && state.view==="narr"){ narrUI.editRel = null; renderNarrative(narrUI.story); } });
-
+let campaign;
+function renderNarrative(id){ campaign.render(id); }
+const foldOpen = id => { try{ return localStorage.getItem("quar-fold-"+id)!=="0"; }catch(error){ return true; } };
+const tipFold = (key, title, html) => `<details class="tipfold" data-fold="tip-${key}"${foldOpen("tip-"+key)?" open":""}><summary><span class="chev" aria-hidden="true">&#9656;</span><span class="tiph">${title}</span></summary><div class="tipbody">${html}</div></details>`;
+document.addEventListener("toggle", event=>{ const details = event.target; if (details && details.dataset && details.dataset.fold){ try{ localStorage.setItem("quar-fold-"+details.dataset.fold, details.open ? "1" : "0"); }catch(error){} } }, true);
+document.addEventListener("toggle", event=>{ const details = event.target; if (details && (details.id==="nWarn" || details.id==="gWarn")){ try{ localStorage.setItem("quar-fold-"+details.id, details.open ? "1" : "0"); }catch(error){} } }, true);
 /* ---------- Saved battles ----------
    A finished game can be saved as a battle (a full copy of the game), listed under "Saved battles" on the Game Tracker.
    Each one can be viewed as its battle report (print, download, copy) and edited: name, date, sides, mission, VP, Pluck, result, notes.
@@ -2519,12 +2322,13 @@ function backupSave(){
 // Stories from a backup: add new ones, replace one only if the backup's copy is newer
 function narrMerge(list){
   let added = 0, updated = 0;
-  (list||[]).forEach(x=>{ if (!x || typeof x!=="object" || !Array.isArray(x.chars) || !facById(x.faction)) return;
-    const clean = {id:String(x.id||narrId()), name:String(x.name||"Story").slice(0,60), faction:x.faction, limit:+x.limit||0, from:String(x.from||"").slice(0,60), created:+x.created||Date.now(), updated:+x.updated||Date.now(), notes:String(x.notes||"").slice(0,6000),
-      chars:x.chars.filter(c=>c&&typeof c==="object").slice(0,200).map(c=>({id:String(c.id), unitId:String(c.unitId||""), name:cleanNm(c.name), backstory:String(c.backstory||"").slice(0,4000), fallen:!!c.fallen, epitaph:String(c.epitaph||"").slice(0,280)})),
-      rels:(Array.isArray(x.rels)?x.rels:[]).filter(r=>r&&REL[r.type]).slice(0,2000).map(r=>({id:String(r.id), a:String(r.a), b:String(r.b), type:r.type, tier:Math.max(0,Math.min(REL[r.type].tiers.length-1, +r.tier||0)), kind:r.kind?String(r.kind):undefined, note:String(r.note||"").slice(0,140)}))};
-    const i = narr.stories.findIndex(s=>s.id===clean.id);
-    if (i>=0){ if ((narr.stories[i].updated||0) < clean.updated){ narr.stories[i] = clean; updated++; } } else { narr.stories.push(clean); added++; } });
+  (Array.isArray(list) ? list : []).forEach(value=>{
+    let clean;
+    try{ clean = campaign.importStory(value); }catch(error){ return; }
+    const index = narr.stories.findIndex(story=>story.id===clean.id);
+    if (index>=0){ if ((narr.stories[index].updated||0) < (clean.updated||0)){ narr.stories[index] = clean; updated++; } }
+    else { narr.stories.push(clean); added++; }
+  });
   return {added, updated};
 }
 // Patrols from a backup: only known factions and units; add new ones, replace one only if the backup's copy is newer
@@ -2554,7 +2358,7 @@ function modelsMerge(m){
   return {added, updated};
 }
 function backupLoad(file){
-  if (!file) return; if (file.size > 5e6){ toast("That file is too big to be a builder backup"); return; }
+  if (!file) return; if (file.size > 25e6){ toast("That file is too big to be a builder backup"); return; }
   const fr = new FileReader(); fr.onload = ()=>{ let d; try{ d = JSON.parse(fr.result); }catch(e){ toast("That isn't a backup file from this builder"); return; }
     if (!d || d.app!=="quar-patrol-builder" || !["full","narrative"].includes(d.kind)){ toast("That isn't a backup file from this builder"); return; }
     const P = d.kind==="full" ? patrolMerge(d.patrols) : {added:0, updated:0}, S = narrMerge(d.stories), Bt = d.kind==="full" ? battlesMerge(d.battles) : {added:0, updated:0}, M = d.kind==="full" ? modelsMerge(d.models) : {added:0, updated:0};
@@ -3650,6 +3454,7 @@ async function init(){
   { const sw = $("#saveWarn"); if (sw){ sw.open = state.warnOpen !== false; sw.querySelector("summary").addEventListener("click", ()=>{ state.warnOpen = !sw.open; persist(); }); sw.addEventListener("toggle", ()=>{ if (state.warnOpen !== sw.open){ state.warnOpen = sw.open; persist(); } }); } }
   try{ const r = await fetch("data/quar-data.json", {cache:"no-cache"}); DATA = await r.json(); }
   catch(e){ $("#catalog").innerHTML = `<p class="empty">Couldn't load the unit data file (data/quar-data.json). Open this page from the published link or a web server.</p>`; return; }
+  mmFacCycle();
   const facOpts = DATA.factions.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join("");
   const limOpts = DATA.rules.presetLimits.map(p=>`<option value="${p}">${p}</option>`).join("") + `<option value="custom">Custom…</option>`;
   $("#faction").innerHTML = facOpts; $("#newFaction").innerHTML = facOpts;
@@ -3843,7 +3648,7 @@ document.addEventListener("toggle", e=>{ const d=e.target; if(!d.classList || !d
 const pop = document.createElement("div"); pop.className="pop"; pop.id="rulePop"; pop.setAttribute("role","tooltip"); pop.hidden=true; document.body.appendChild(pop);
 let popFor=null, pinned=false, pinnedEl=null, hideT=null;
 function popHTML(el){
-  if (el.dataset.weapon){ const w=FAC.weapons.find(x=>x.name===el.dataset.weapon);
+  if (el.dataset.weapon){ const wf=(el.dataset.fac && facById(el.dataset.fac)) || FAC, w=wf.weapons.find(x=>x.name===el.dataset.weapon);
     return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p8)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
   const full=el.dataset.rule, i=abilityInfo(full), body=i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/, m=>i.text.startsWith(baseName(full))?"":m);
   const sub = /^Cadier/.test(full) ? ["Thunderous Hooves","Skittish"].map(k=>`<p style="margin-top:4px"><b>${k}</b> ${pgWrap(DATA.abilities[k].text)}</p>`).join("") : "";
@@ -3943,7 +3748,19 @@ function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
 // My models icon: rainbow sweep; held still for people who ask for reduced motion.
 try{ const rm = matchMedia("(prefers-reduced-motion: reduce)"), mmSvg = document.querySelector("#mmHdr svg"); const setRM = ()=>{ if (mmSvg && mmSvg.pauseAnimations){ rm.matches ? mmSvg.pauseAnimations() : mmSvg.unpauseAnimations(); } }; setRM(); rm.addEventListener && rm.addEventListener("change", setRM); }catch(e){}
-const APP_VERSION = "2026-11-05.15";
+// "My models" header icon: fade through the faction colours in the JSON order, ~3s each (hold, then fade to the next).
+function mmFacCycle(){
+  try{
+    const cols = (DATA && DATA.factions || []).map(f=>f.color).filter(c=>/^#[0-9a-f]{3,8}$/i.test(c||""));
+    const ico = document.querySelector("#mmHdr .mmico"); if (!ico || cols.length < 2) return;
+    const n = cols.length, step = 100/n, pc = v => +v.toFixed(3);
+    const frames = cols.map((c,k)=>`${pc(k*step)}%,${pc(k*step + step*0.55)}%{--mmfac:${c}}`).join("") + `100%{--mmfac:${cols[0]}}`;
+    let st = document.getElementById("mmFacKf"); if (!st){ st = document.createElement("style"); st.id = "mmFacKf"; document.head.appendChild(st); }
+    st.textContent = `@keyframes mmfac{${frames}}`;
+    ico.style.setProperty("--mmdur", (n*3)+"s"); ico.classList.add("cyc");
+  }catch(error){}
+}
+const APP_VERSION = "2026-11-05.41";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3966,6 +3783,179 @@ $("#updLater").addEventListener("click", ()=>{ updDismissed = true; $("#updBar")
 document.addEventListener("visibilitychange", ()=>{ if (!document.hidden) checkForUpdate(); });
 setTimeout(checkForUpdate, 4000); setInterval(checkForUpdate, 20*60*1000);
 
+/* ---------- Narrative look: shared page pieces for the three community modes (5 Nov) ----------
+   Same header (title + page switches), save warning, help fold-outs and fold-outs as the rest of the site.
+   Page references in narrative text ("PDF pp. 1-2", "(p. 3)") are wrapped in .pg so "Show rulebook pages" hides them. */
+const N_WARN = () => `<div class="savebox"><details class="savewarn swfold" id="nWarn"${foldOpen("nWarn") ? " open" : ""}><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your campaigns, Tales and matches are kept only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, campaigns, current game and saved battles.</p></details><div class="bkslot">${backupBar()}</div></div>`;
+const narrUIx = {
+  head:(title, back) => `${back ? `<div class="viewbar cp-crumbs">${back}</div>` : ""}<div class="hhead"><h1>${title} <span class="community">Community</span></h1><div class="hhead-r"><span class="switches">${pgCtl("Narr")}${ownCtl("Narr")}</span></div></div>`,
+  warn:N_WARN,
+  tip:tipFold,
+  // Who made each community mode (their Discord names and pictures, shown with their OK, 5 Nov). Pictures: data/art/extras/credits/.
+  credit:key => { const C = {eq:["WAR_TROUT","war-trout"], tales:["Dr. Michael","dr-michael"], mhudd:["TomDrawsThings","tomdrawsthings"]}[key]; if (!C) return "";
+    return `<div class="cp-credit c-${key}"><img src="data/art/extras/credits/${C[1]}.png" alt="" width="48" height="48" loading="lazy"><span><small>Made by</small><b translate="no">${esc(C[0])}</b><i>on Discord</i></span></div>`; },
+  // A unit's full rules, drawn by the Patrol Builder's own functions (stats, equipment R/Sn/Traits, Rules fold, notes) with pop-ups.
+  withFac:(fid, fn) => { const keep = FAC, keepU = UNITS, f = facById(fid); if (!f) return fn(); FAC = f; UNITS = {}; f.units.forEach(u => UNITS[u.id] = u); try{ return fn(); } finally{ FAC = keep; UNITS = keepU; } },
+  unitRules:(fid, u) => narrUIx.withFac(fid, () => `<div class="cp-urules">${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</div>`),
+  // Rule chips with pop-ups for a list of abilities/weapons (unknown names stay plain text)
+  tips:(fid, list) => narrUIx.withFac(fid, () => tips(list || [])),
+  weapons:(fid, u) => narrUIx.withFac(fid, () => weaponLine(u)),
+  rules:(fid, u) => narrUIx.withFac(fid, () => abilityList(u) + rulesText(u)),
+  // Muster Roll for recruiting in the narrative campaigns (5 Nov, user request: like the Patrol Builder's). Units grouped by the
+  // faction's categories in fold-outs, striped rows (name, variant, an optional note column, cost, + button), and tapping a name
+  // opens its stat tiles, abilities and equipment. opts: {attr:"data-camp"|"data-tales", unit:"M"|"pts", note:u=>text, disabled:u=>bool}
+  roll:(fac, units, opts={}) => {
+    const cats = (fac.categories || []).filter(c => units.some(u => u.cat === c)).concat([...new Set(units.map(u => u.cat))].filter(c => !(fac.categories || []).includes(c)));
+    const tile = (l, v) => `<div class="gt"><small>${l}</small><b>${esc(v ?? "-")}</b></div>`;
+    const det = u => { const ps = u.profiles || [], ab = new Set([...(u.abilities || []), ...ps.flatMap(p => p.abilities || [])]), eq = new Set([...ps.flatMap(p => p.equip || []), ...(u.weapons || []).map(w => w.name)]);
+      const tiles = ps.length ? ps.map(p => `<div class="gtiles">${ps.length > 1 && p.label ? `<span class="gtlab">${esc(p.label)}</span>` : ""}${tile("Sk", p.sk)}${tile("Mt", p.mt)}${tile("MA", p.ma)}${tile("T", p.t)}</div>`).join("")
+        : u.crew ? `<div class="gtiles">${tile("Crew", u.crew.crew)}${tile("Sk", u.crew.sk)}${tile("T", u.crew.t)}${tile("MA", u.crew.ma)}</div>` : u.vehicle ? `<div class="gtiles">${tile("Crew", u.vehicle.crew)}${tile("Sk", u.vehicle.sk)}${tile("MA", u.vehicle.ma)}</div>` : "";
+      return `${tiles}${ab.size ? `<p><b>Abilities:</b> ${[...ab].map(esc).join(", ")}</p>` : ""}${eq.size ? `<p><b>Equipment:</b> ${[...eq].map(esc).join(", ")}</p>` : ""}`; };
+    return `<div class="cat cp-roll">${cats.map(c => { const us = units.filter(u => u.cat === c); return `<details class="catdd" data-dd="narr|${esc(fac.id)}|${esc(c)}"${catOpen["narr|"+fac.id+"|"+c]!==false?" open":""}><summary><span class="chev">&#9656;</span><h3>${esc(c)}</h3><span class="ccount">${us.length}</span></summary>${us.map((u, i) => {
+      const off = opts.disabled ? opts.disabled(u) : false;
+      return `<div class="unit${i % 2 ? " alt" : ""}"><div class="urow"><button type="button" class="uname" data-roll="toggle" aria-expanded="false"><span class="chev">&#9656;</span><b>${esc(u.name)}</b> <span>${esc(u.variant || "")}</span></button><span class="fa">${esc(opts.note ? opts.note(u) : "")}</span><span class="pts">${Number.isFinite(u.pts) ? u.pts : "–"}<small>${esc(opts.unit || "")}</small></span><span class="btns">${opts.removable ? `<button type="button" class="add sub" ${opts.attr}="dismiss" data-unit="${esc(u.id)}" aria-label="Remove the latest ${esc(u.name)} recruit for a full refund"${opts.removable(u) ? "" : " disabled"}>&minus;</button>` : ""}<button type="button" class="add" ${opts.attr}="recruit" data-unit="${esc(u.id)}" aria-label="Recruit ${esc(u.name)}${u.variant ? " (" + esc(u.variant) + ")" : ""}"${off ? " disabled" : ""}>+</button></span></div><div class="cp-udet" hidden>${opts.fac ? narrUIx.unitRules(opts.fac, u) : det(u)}</div></div>`; }).join("")}</details>`; }).join("")}</div>`;
+  },
+  // A fold-out remembered like the others; closed unless opened before (for long rule references).
+  fold:(key, title, html, def=false) => { let open = def; try{ const v = localStorage.getItem("quar-fold-"+key); if (v!==null) open = v==="1"; }catch(error){} return `<details class="cp-fold" data-fold="${key}"${open?" open":""}><summary><span class="chev" aria-hidden="true">&#9656;</span>${title}</summary><div class="cp-foldbody">${html}</div></details>`; }
+};
+/* Faction dropdowns on the narrative pages look like the Patrol Builder's: flag + faction-coloured name (5 Nov, user request).
+   Any <select data-facpick> drawn in #view-narr becomes a flag picker; the hidden select keeps the value and still fires "change",
+   so the narrative code works as before. Options come from the select itself (so Mhuddball only lists its rosters);
+   a label ending "(Unofficial)" gets the amber Unofficial tag. */
+function narrFacPickers(root){
+  root.querySelectorAll("select[data-facpick]:not([data-fp])").forEach(sel=>{
+    sel.dataset.fp = "1";
+    const wrap = document.createElement("div"); wrap.className = "fpick nfpick";
+    const btn = document.createElement("button"); btn.type = "button"; btn.className = "fpick-btn"; btn.setAttribute("aria-haspopup","listbox"); btn.setAttribute("aria-expanded","false");
+    if (sel.getAttribute("aria-label")) btn.setAttribute("aria-label", sel.getAttribute("aria-label"));
+    const list = document.createElement("ul"); list.className = "fpick-list"; list.setAttribute("role","listbox"); list.tabIndex = -1; list.hidden = true;
+    sel.parentNode.insertBefore(wrap, sel); wrap.append(sel, btn, list); sel.tabIndex = -1; sel.setAttribute("aria-hidden","true");
+    const item = o => { const unoff = /\s*\(unofficial\)$/i.test(o.text), f = facById(o.value), name = o.text.replace(/\s*\(unofficial\)$/i, "");
+      return {v:o.value, f, html:`${flagImg(f)}<span>${esc(name)}</span>${unoff ? '<em class="mb-unoff">Unofficial</em>' : ""}`}; };
+    let act = 0;
+    const sync = () => { const o = sel.options[sel.selectedIndex] || sel.options[0]; if (!o) return; const it = item(o); btn.innerHTML = it.html; if (it.f && it.f.color) btn.style.setProperty("--fac", it.f.color); else btn.style.removeProperty("--fac"); };
+    const setAct = i => { const li = [...list.children]; if (!li.length) return; act = (i + li.length) % li.length; li.forEach((x,j)=>x.classList.toggle("act", j===act)); li[act].scrollIntoView({block:"nearest"}); };
+    const open = () => { list.innerHTML = [...sel.options].map(o=>{ const it = item(o); return `<li role="option" data-v="${esc(it.v)}" aria-selected="${o.selected}"${it.f && it.f.color ? ` style="--fac:${it.f.color}"` : ""}>${it.html}</li>`; }).join("");
+      list.hidden = false; btn.setAttribute("aria-expanded","true"); setAct(Math.max(0, sel.selectedIndex)); list.focus(); };
+    const close = focus => { if (list.hidden) return; list.hidden = true; btn.setAttribute("aria-expanded","false"); if (focus) btn.focus(); };
+    const choose = v => { close(true); if (v !== sel.value){ sel.value = v; sel.dispatchEvent(new Event("change", {bubbles:true})); } sync(); };
+    btn.addEventListener("click", e=>{ e.preventDefault(); list.hidden ? open() : close(); });
+    btn.addEventListener("keydown", e=>{ if (e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); open(); } });
+    list.addEventListener("click", e=>{ const li = e.target.closest("li"); if (li) choose(li.dataset.v); });
+    list.addEventListener("keydown", e=>{ const li = [...list.children];
+      if (e.key==="ArrowDown"){ e.preventDefault(); setAct(act+1); } else if (e.key==="ArrowUp"){ e.preventDefault(); setAct(act-1); }
+      else if (e.key==="Home"){ e.preventDefault(); setAct(0); } else if (e.key==="End"){ e.preventDefault(); setAct(-1); }
+      else if (e.key==="Enter"||e.key===" "){ e.preventDefault(); choose(li[act].dataset.v); }
+      else if (e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); close(true); } else if (e.key==="Tab") close(false); });
+    wrap._sync = sync; wrap._close = close; sync();
+  });
+}
+/* Table-side controls for the narrative battle desks (5 Nov, user request after a playtest):
+   - <input data-stepper> becomes a Game Tracker style − [n] + counter (still typeable). The buttons change the input and fire
+     "change", so each mode's own save code runs exactly as if the number had been typed.
+   - <select data-seg> becomes a row of tap buttons (one per option), e.g. Ready / Gobsmacked / Out of action. The hidden select
+     keeps the value and fires "change". data-seg="tone" colours the choices (ready = green, hurt = amber, out = red). */
+function narrSteppers(root){
+  root.querySelectorAll("input[data-stepper]:not([data-st])").forEach(inp=>{
+    inp.dataset.st = "1";
+    const box = document.createElement("span"); box.className = "gbox sm nstep";
+    const mk = (d, t, l) => { const b = document.createElement("button"); b.type = "button"; b.className = "gbtn"; b.textContent = t; b.setAttribute("aria-label", (inp.getAttribute("aria-label") || "Value") + l);
+      b.addEventListener("click", ()=>{ if (inp.disabled) return; const min = inp.min !== "" ? Number(inp.min) : -Infinity, max = inp.max !== "" ? Number(inp.max) : Infinity;
+        const v = Math.max(min, Math.min(max, (Number(inp.value) || 0) + d)); if (String(v) === inp.value) return; inp.value = v; inp.dispatchEvent(new Event("input", {bubbles:true})); inp.dispatchEvent(new Event("change", {bubbles:true})); });
+      return b; };
+    inp.parentNode.insertBefore(box, inp); box.append(mk(-1, "−", " minus one"), inp, mk(1, "+", " plus one"));
+    if (inp.disabled) box.classList.add("off");
+  });
+}
+function narrSegs(root){
+  root.querySelectorAll("select[data-seg]:not([data-sg])").forEach(sel=>{
+    sel.dataset.sg = "1";
+    const row = document.createElement("div"); row.className = "nseg"; row.setAttribute("role","group"); if (sel.getAttribute("aria-label")) row.setAttribute("aria-label", sel.getAttribute("aria-label"));
+    const tone = v => /^(ready|win)/.test(v) ? "ok" : /gob|winded|draw|disabled/.test(v) ? "warn" : /ooa|removed|loss|dead/.test(v) ? "bad" : "";
+    [...sel.options].filter(o => o.value !== "").forEach(o=>{ const b = document.createElement("button"); b.type = "button"; b.dataset.v = o.value; b.textContent = o.dataset.short || o.text.replace(/\s*\(.*\)$/, "").split(" / ")[0];
+      b.title = o.text; if (sel.dataset.seg === "tone") b.dataset.tone = tone(o.value); b.disabled = sel.disabled || o.disabled;
+      b.addEventListener("click", ()=>{ if (sel.value === o.value) return; sel.value = o.value; sel.dispatchEvent(new Event("change", {bubbles:true})); sync(); });
+      row.append(b); });
+    const sync = () => row.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === sel.value)));
+    sel.parentNode.insertBefore(row, sel); sel.hidden = true; sel.tabIndex = -1; row._sync = sync; sync();
+  });
+}
+/* Random names in the narrative modes (5 Nov, user request): any <input data-rname> gets the Patrol Builder's 🎲 button.
+   It draws from the same Quar name list (DATA.quarNames via randName), skipping names already shown on the page,
+   then fires "change" so each mode saves it exactly as if it had been typed. */
+function narrRandNames(root){
+  root.querySelectorAll("input[data-rname]:not([data-rn])").forEach(inp=>{
+    inp.dataset.rn = "1";
+    const box = document.createElement("span"); box.className = "nrname";
+    const b = document.createElement("button"); b.type = "button"; b.className = "nmdice"; b.textContent = "🎲"; b.title = "Random name";
+    b.setAttribute("aria-label", "Random name" + (inp.value ? " instead of " + inp.value : ""));
+    b.addEventListener("click", e=>{ e.preventDefault(); if (inp.disabled) return;
+      const used = new Set([...document.querySelectorAll("#view-narr input[data-rname]")].map(x=>x.value.trim()).filter(Boolean));
+      const name = randName(used); if (!name) return; inp.value = name;
+      inp.dispatchEvent(new Event("input", {bubbles:true})); const all = [...document.querySelectorAll("#view-narr input[data-rname]")], idx = all.indexOf(inp);
+      const ev = new Event("change", {bubbles:true}); ev.fromDice = true; inp.dispatchEvent(ev);
+      // the mode may redraw to show the new name: keep the same box's fold-outs open and the 🎲 focused for another roll
+      setTimeout(()=>{ const n = document.querySelectorAll("#view-narr input[data-rname]")[idx]; if (!n || n === inp) return; for (let d = n.closest("details"); d; d = d.parentElement && d.parentElement.closest("details")) d.open = true; const nb = n.parentElement.querySelector(".nmdice"); if (nb) nb.focus({preventScroll:true}); }, 0); });
+    inp.parentNode.insertBefore(box, inp); box.append(inp, b);
+    if (inp.disabled) b.disabled = true;
+  });
+}
+/* Collapsible panels in the narrative modes (5 Nov, user request: less scrolling). Every narrative panel (section.cp-panel) and
+   every roster card (article.cp-character) can be folded by tapping its header or the chevron; what you fold is remembered
+   on this device (localStorage "quar-fold-np|<mode>|<panel>"). Roster cards start folded (their header still shows name, unit,
+   status and cost); a few rarely-used Match desk panels start folded too. A "Collapse all / Expand all" bar sits under the tabs. */
+const NP_SHUT = new Set(["mb|Player markers & table results", "mb|Apply a Tend Wounded result"]);
+function narrPanelKey(p){
+  const mode = p.closest(".cp.qt") ? "qt" : p.closest(".cp.mb") ? "mb" : "eq";
+  if (p.classList.contains("cp-character")){ const id = p.dataset.character || (p.querySelector("[data-member]") || {dataset:{}}).dataset.member; return {mode, key:`${mode}|card|${id || p.querySelector("header").textContent.trim().slice(0,40)}`, card:true}; }
+  const h = p.querySelector(":scope>header h2"); const t = (h ? h.textContent : p.querySelector(":scope>header").textContent).replace(/\s+/g," ").trim().slice(0,60);
+  return {mode, key:`${mode}|${t}`, card:false};
+}
+function narrPanelSet(p, open){
+  p.classList.toggle("is-shut", !open);
+  const b = p.querySelector(":scope>header>.cp-pf"); if (b){ b.setAttribute("aria-expanded", String(open)); b.setAttribute("aria-label", (open ? "Collapse " : "Expand ") + (b.dataset.t || "section")); }
+  try{ localStorage.setItem("quar-fold-np|" + p.dataset.pf, open ? "1" : "0"); }catch(error){}
+}
+function narrPanelFolds(root){
+  root.querySelectorAll("section.cp-panel:not([data-pf]), article.cp-character:not([data-pf])").forEach(p=>{
+    const header = p.querySelector(":scope>header"); if (!header || p.children.length < 2) return;
+    const {key, card} = narrPanelKey(p); p.dataset.pf = key;
+    let open = !card && !NP_SHUT.has(key); try{ const v = localStorage.getItem("quar-fold-np|" + key); if (v !== null) open = v === "1"; }catch(error){}
+    const b = document.createElement("button"); b.type = "button"; b.className = "cp-pf"; b.dataset.t = (header.querySelector("h2") || header.querySelector(".cp-who") || header).textContent.replace(/\s+/g," ").trim().slice(0,60);
+    b.innerHTML = '<span aria-hidden="true">&#9656;</span>'; header.append(b); header.classList.add("cp-pfh");
+    p.classList.toggle("is-shut", !open); b.setAttribute("aria-expanded", String(open)); b.setAttribute("aria-label", (open ? "Collapse " : "Expand ") + b.dataset.t);
+  });
+  const tabs = root.querySelector(".cp-tabs");
+  if (tabs && !(tabs.nextElementSibling && tabs.nextElementSibling.classList.contains("cp-foldbar"))){
+    const bar = document.createElement("div"); bar.className = "cp-foldbar";
+    bar.innerHTML = '<button type="button" data-npf="0">Collapse all</button><button type="button" data-npf="1">Expand all</button>';
+    tabs.after(bar);
+  }
+}
+document.addEventListener("click", e=>{
+  const all = e.target.closest && e.target.closest("#view-narr [data-npf]");
+  if (all){ const open = all.dataset.npf === "1"; document.querySelectorAll("#view-narr [data-pf]").forEach(p=>narrPanelSet(p, open)); document.querySelectorAll("#view-narr details.catdd").forEach(d=>{ d.open = open; catOpen[d.dataset.dd] = open; }); return; }
+  const h = e.target.closest && e.target.closest("#view-narr .cp-pfh"); if (!h) return;
+  const control = e.target.closest("a, input, select, textarea, label, button:not(.cp-pf), details, .rl, [data-rule], [data-weapon]");
+  if (control && h.contains(control)) return;
+  const p = h.parentElement; narrPanelSet(p, p.classList.contains("is-shut"));
+});
+// one listener for all narrative pickers: close when clicking elsewhere; re-sync after other code changes a select's value
+document.addEventListener("click", e=>{ document.querySelectorAll("#view-narr .nfpick").forEach(w=>{ if (!w.contains(e.target) && w._close) w._close(false); }); });
+// Muster Roll rows in the narrative campaigns: tapping a unit name opens its profile (like the Patrol Builder)
+document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest('#view-narr [data-roll="toggle"]'); if (!b) return; const u = b.closest(".unit"), d = u && u.querySelector(".cp-udet"); if (!d) return; d.hidden = !d.hidden; u.classList.toggle("open", !d.hidden); b.setAttribute("aria-expanded", String(!d.hidden)); });
+document.addEventListener("change", e=>{ if (e.target.closest && e.target.closest("#view-narr")) setTimeout(()=>document.querySelectorAll("#view-narr .nfpick, #view-narr .nseg").forEach(w=>w._sync && w._sync()), 0); });
+(()=>{ // wrap page references in narrative text so the page switch hides them
+  const RX = /\((?:PDF )?pp?\. ?[\d][\d,\s\-–]*\)|PDF pp?\. ?[\d][\d,\s\-–]*(?:[\d])?/g;
+  const wrap = root => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode:n => (RX.lastIndex = 0, RX.test(n.nodeValue) && !n.parentElement.closest(".pg,textarea,option,script,style") ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT)});
+    const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(n => { const html = esc(n.nodeValue).replace(RX, m => `<span class="pg">${m}</span>`); const t = document.createElement("template"); t.innerHTML = html; n.replaceWith(t.content); });
+  };
+  const host = document.getElementById("view-narr");
+  if (host) new MutationObserver(() => { wrap(host); narrFacPickers(host); narrSteppers(host); narrSegs(host); narrRandNames(host); narrPanelFolds(host); }).observe(host, {childList:true, subtree:true});
+})();
+campaign = window.QuarCampaign.create({ui:narrUIx, dtag, getData:()=>DATA, getStories:()=>narr.stories, getPatrols:()=>state.saved, save:narrSave, id:narrId, esc, faction:facById, name:used=>randName(new Set(used||[])), toast, navigate:id=>showView("narr", id), backup:backupBar, flag:flagImg});
 init();
 // Browser translation (Chrome, Edge, Safari "Translate this page"): game terms stay in English, as printed in the books.
 // Unit, weapon, ability, trait, faction and mission names from the data, plus the words below, are wrapped in <quar-t translate="no">
