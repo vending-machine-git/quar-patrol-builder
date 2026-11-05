@@ -72,12 +72,12 @@
 html{background:var(--paper)}
 /* Faction colour: --fac is set to the open patrol's faction colour (book table colour); --accent adapts it to the theme */
 :root{--fac:var(--brass)}
-body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce,.stcard{--accent:color-mix(in oklab, var(--fac) var(--acc-mix), var(--ink)); --accent-soft:color-mix(in oklab, var(--fac) 15%, var(--panel)); --accent-line:color-mix(in oklab, var(--fac) 45%, var(--rule))}
+body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce,.gsb-side,.gsu-side,.gtab,.newpc,.stcard{--accent:color-mix(in oklab, var(--fac) var(--acc-mix), var(--ink)); --accent-soft:color-mix(in oklab, var(--fac) 15%, var(--panel)); --accent-line:color-mix(in oklab, var(--fac) 45%, var(--rule))}
 /* Where supported, keep the book's colours saturated: deepen them on light, brighten them on dark */
 @supports (color: oklch(from red l c h)){
-  body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce{--accent:oklch(from var(--fac) min(l, 0.5) calc(c * 1.2) h)}
-  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}}
-  :root[data-theme="dark"] :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}
+  body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce,.gsb-side,.gsu-side,.gtab,.newpc{--accent:oklch(from var(--fac) min(l, 0.5) calc(c * 1.2) h)}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce,.gsb-side,.gsu-side,.gtab,.newpc){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}}
+  :root[data-theme="dark"] :is(body,.pcard,.rcard,.fpick-list li,.fpick-btn,.fcard,.cllist li,.gforce,.gsb-side,.gsu-side,.gtab,.newpc){--accent:oklch(from var(--fac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}
 }
 .fpick-list li span{color:var(--accent);font-weight:600}
 .fpick-btn span{color:var(--accent);font-weight:600}
@@ -502,7 +502,6 @@ button.gactive:hover{background:color-mix(in oklab, var(--accent) 12%, transpare
 .gchip{font:inherit;font-size:.8em;font-weight:600;cursor:pointer;padding:3px 9px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:var(--ink)}
 .gchip:hover{border-color:var(--ink)}
 .gchip[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:var(--on)}
-.gchip.outk[aria-pressed="true"],.gchip.mountd[aria-pressed="true"],.gchip.immob[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
 .gchip:focus-visible,.gdot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .gtasks{display:flex;gap:5px;flex:0 0 auto}
 .gdot{all:unset;cursor:pointer;width:1.05em;height:1.05em;border-radius:50%;border:2px solid var(--accent)}
@@ -590,6 +589,176 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 .credits b{color:var(--ink);font-weight:600}
 .credits a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 .credits a:hover{color:var(--accent)}
+
+/* ---------- Game Tracker v2 look (4 Nov): scoreboard, side tabs, status badges, phone bottom bar ---------- */
+:root{--st-out:var(--bad);--st-nerve:var(--warn);--st-pin:#8a5a2b;--st-act:var(--slate);--st-wpn:#7a4f9a;--st-wound:#b4532a;--st-info:#5b6450;--st-ok:var(--ok)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--st-pin:#d9a070;--st-wpn:#c8a2e6;--st-wound:#f0936a;--st-info:#a3ab95}}
+:root[data-theme="dark"]{--st-pin:#d9a070;--st-wpn:#c8a2e6;--st-wound:#f0936a;--st-info:#a3ab95}
+/* scoreboard: stays under the header while scrolling */
+.gsb{position:sticky;top:var(--barh,0px);z-index:4;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);background:var(--panel);border:1px solid var(--rule);border-radius:6px;overflow:hidden;box-shadow:0 6px 16px -10px rgba(0,0,0,.45)}
+.gsb.ended{position:static}
+.gsb-side{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 8px 8px;min-width:0;border-top:5px solid var(--accent);background:linear-gradient(180deg, color-mix(in oklab, var(--fac) 24%, var(--panel)), color-mix(in oklab, var(--fac) 6%, var(--panel)))}
+.gsb-side.act{box-shadow:inset 0 0 0 2px var(--accent)}
+.gsb-who{display:flex;align-items:center;gap:6px;max-width:100%;min-width:0}
+.gsb-who .gsbflag{width:1.9em;height:1.3em;object-fit:cover;border:1px solid var(--rule);border-radius:2px;flex:0 0 auto}
+.gsb-who span.gsbflag{display:none}
+.gsb-nm{font-weight:700;font-size:.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;color:var(--accent)}
+.gsb-act{width:.6em;height:.6em;border-radius:50%;background:var(--accent);flex:0 0 auto;box-shadow:0 0 0 3px color-mix(in oklab, var(--accent) 30%, transparent);animation:gsbpulse 1.6s ease-in-out infinite}
+@keyframes gsbpulse{50%{box-shadow:0 0 0 6px color-mix(in oklab, var(--accent) 0%, transparent)}}
+@media (prefers-reduced-motion:reduce){ .gsb-act{animation:none} }
+.gsb-vp{display:flex;align-items:center;gap:4px}
+.gsb-vp output{display:flex;flex-direction:column;align-items:center;min-width:2.1em;line-height:1}
+.gsb-vp output b{font-family:var(--f-mono);font-size:2.3em;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+.gsb-vp output small{font-size:.62em;font-weight:800;letter-spacing:.14em;color:var(--muted);margin-top:2px}
+.gsb .gbtn{width:2.3em;height:2.3em;border-radius:50%;border:1.5px solid var(--accent-line);background:var(--panel);color:var(--accent);font-size:1.1em}
+.gsb .gbtn:hover{background:var(--accent-soft)}
+.gsb-pl{display:flex;align-items:center;gap:5px;font-size:.9em}
+.gsb-pl .gl{font-size:.68em}
+.gsb-pl output{font-family:var(--f-mono);font-weight:700;min-width:1.4em;text-align:center}
+.gsb-pl .gbtn{width:1.75em;height:1.75em;font-size:.95em;border-width:1px}
+.gsb-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 10px;background:var(--sunk);border-inline:1px solid var(--rule)}
+.gsb-pill{display:flex;flex-direction:column;align-items:center;line-height:1.05}
+.gsb-pill small{font-size:.6em;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.gsb-pill b{font-family:var(--f-mono);font-size:1.15em;font-variant-numeric:tabular-nums}
+.gsb-pill i{font-style:normal;font-size:.7em;color:var(--muted);font-weight:500}
+.gsb-swap{all:unset;cursor:pointer;font-size:.95em;line-height:1;padding:4px 9px;border-radius:999px;border:1px solid var(--rule);background:var(--panel);color:var(--ink)}
+.gsb-swap:hover{border-color:var(--ink)} .gsb-swap:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.gsb-final{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.06em;font-size:.95em;color:var(--muted)}
+.glossrow{display:flex;flex-wrap:wrap;gap:8px 24px;padding:0 4px}
+.glossrow .goppl{flex:1 1 16em}
+@media (max-width:480px){
+  .gsb-side{padding:7px 4px 7px}
+  .gsb-vp output b{font-size:1.95em}
+  .gsb .gbtn{width:2.05em;height:2.05em}
+  .gsb-mid{padding:8px 6px}
+  .gsb-nm{font-size:.82em}
+}
+/* My side / Opponent switch: phones only */
+.gtabs{display:none}
+@media (max-width:700px){
+  .gtabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .gforces[data-tab="me"]>[data-side="opp"],.gforces[data-tab="opp"]>[data-side="me"]{display:none}
+}
+.gtab{font:inherit;cursor:pointer;display:flex;align-items:center;gap:7px;min-width:0;padding:10px 10px;border-radius:6px;border:1.5px solid var(--accent-line);background:var(--panel);color:var(--ink);text-align:left}
+.gtab .gtflag{width:1.7em;height:1.15em;object-fit:cover;border-radius:2px;flex:0 0 auto}
+.gtab span.gtflag{display:none}
+.gtab .gtn{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gtab .gtc{font-family:var(--f-mono);font-size:.8em;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.gtab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper);box-shadow:0 2px 8px -3px rgba(0,0,0,.4)}
+.gtab[aria-selected="true"] .gtc{background:color-mix(in oklab, var(--paper) 22%, transparent);color:var(--paper)}
+.gtab:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.gforces{display:flex;flex-direction:column;gap:18px}
+/* status badges (what's true now) and the status buttons share one colour per kind of status */
+.gnow .gst{display:inline-flex;align-items:center;gap:4px;font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px 2px 6px;border-radius:999px;background:var(--sc,var(--warn));color:var(--on)}
+.gst svg{width:1.15em;height:1.15em;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.gunit.out .gnow .gst{background:var(--sc,var(--bad))}
+.s-out{--sc:var(--st-out)} .s-nerve{--sc:var(--st-nerve)} .s-pin{--sc:var(--st-pin)} .s-act{--sc:var(--st-act)} .s-wpn{--sc:var(--st-wpn)} .s-wound{--sc:var(--st-wound)} .s-info{--sc:var(--st-info)} .s-ok{--sc:var(--st-ok)} .s-spent{--sc:var(--muted)}
+.gchip{display:inline-flex;align-items:center;gap:.4em}
+.gchip::before{content:"";width:.55em;height:.55em;border-radius:50%;background:var(--sc,var(--warn));flex:0 0 auto}
+.gchip[aria-pressed="true"]{background:var(--sc,var(--warn));border-color:var(--sc,var(--warn));color:var(--on)}
+.gchip[aria-pressed="true"]::before{background:var(--on)}
+@media (pointer:coarse){ .gchip{padding:6px 11px} .gdot{width:1.35em;height:1.35em} .gtasks{gap:9px} }
+.gunit.w-nerve{border-left-color:var(--st-nerve)} .gunit.w-pin{border-left-color:var(--st-pin)} .gunit.w-wound{border-left-color:var(--st-wound)}
+.gunit.out{opacity:.55;filter:saturate(.6);border-left-color:var(--st-out)}
+.gunit.out header b,.gunit.out .dtn{text-decoration:line-through;text-decoration-thickness:2px}
+/* phone bottom bar: Turn / Round and the Next Round button in thumb reach */
+.gdock{display:none}
+@media (max-width:860px){
+  .gdock{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;gap:12px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper);
+    padding:9px max(14px,env(safe-area-inset-right,0px)) calc(9px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));box-shadow:0 -4px 14px rgba(0,0,0,.2)}
+  .gdl{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+  .gdt{font-size:.9em;white-space:nowrap} .gdt b{font-family:var(--f-mono);font-size:1.1em}
+  .gdrow{display:flex;align-items:center;gap:8px;min-width:0}
+  .gdwho{font-size:.78em;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .gddots{display:flex;gap:4px;flex:0 0 auto}
+  .gddots i{width:9px;height:9px;border-radius:50%;border:1.5px solid color-mix(in oklab, var(--paper) 55%, transparent)}
+  .gddots i.done{background:color-mix(in oklab, var(--paper) 55%, transparent);border-color:transparent}
+  .gddots i.now{background:var(--brass);border-color:var(--brass);transform:scale(1.25)}
+  .gdnext{font:inherit;font-weight:800;cursor:pointer;border:0;border-radius:6px;padding:12px 16px;background:var(--brass);color:var(--on);white-space:nowrap;font-size:1.02em}
+  .gdnext.danger{background:var(--bad)}
+  .gdnext:active{transform:translateY(1px)}
+  #view-game.hasdock{padding-bottom:84px}
+  #view-game .gctr-end{display:none}
+  body[data-view="game"] .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+  body[data-view="game"] .updbar{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+}
+@media print{ .gdock,.gtabs{display:none!important} .gsb{position:static;box-shadow:none} .gforces>[data-side]{display:block!important} }
+
+/* ---------- Game Tracker start screen (4 Nov): You vs Opponent face-off, mission tiles, big Start button ---------- */
+.gsetupc{overflow:hidden}
+.gsu{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);border-bottom:1px solid var(--rule)}
+.gsu-side{display:flex;flex-direction:column;gap:10px;padding:14px 14px 6px;min-width:0;border-top:5px solid var(--accent);background:linear-gradient(180deg, color-mix(in oklab, var(--fac) 22%, var(--panel)), color-mix(in oklab, var(--fac) 5%, var(--panel)));transition:background .25s,border-color .25s}
+.gsu-who{display:flex;align-items:center;gap:10px;min-width:0}
+.gsu-flag .gsbflag{width:2.6em;height:1.75em;object-fit:cover;border:1px solid var(--rule);border-radius:3px;display:block}
+.gsu-flag:empty{display:none}
+.gsu-who>div{display:flex;flex-direction:column;min-width:0}
+.gsu-lab{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-size:1.3em;line-height:1.05;color:var(--accent)}
+.gsu-sub{font-size:.82em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gsu .field input,.gsu .field select,.gsu-mission select{width:100%;box-sizing:border-box;background:var(--paper);color:var(--ink);border:1px solid var(--accent-line, var(--rule));border-radius:4px;padding:8px 10px;font:inherit}
+.gsu .imp{border-top:1px dashed var(--accent-line, var(--rule));padding:0;margin-top:2px}
+.gsu .imp>summary{padding:9px 0;font-size:.92em}
+.gsu-vs{display:grid;place-items:center;padding:0 10px;background:var(--sunk);border-inline:1px solid var(--rule)}
+.gsu-vs span{font-family:var(--f-display);font-size:1.5em;letter-spacing:.06em;color:var(--muted);width:2.4em;height:2.4em;display:grid;place-items:center;border-radius:50%;border:2px solid var(--rule);background:var(--panel)}
+.gsu-mission{padding:14px;display:flex;flex-direction:column;gap:12px;background:var(--sunk)}
+.gsu-mrow{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:10px 12px}
+.gsu-mission .gminfo{padding:0}
+.gmtiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5em,1fr));gap:8px}
+.gmtile{display:flex;flex-direction:column;gap:2px;padding:9px 11px;border:1px solid var(--rule);border-left:4px solid var(--brass);border-radius:4px;background:var(--panel);min-width:0}
+.gmtile small{font-size:.66em;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gmtile b{font-size:1.1em;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.gmtile b.n{font-family:var(--f-mono);font-size:1.25em;font-weight:700}
+.gmtile span{font-size:.76em;color:var(--muted);line-height:1.3}
+.gmtile.wide{grid-column:1/-1}
+.gmtile.wide b{font-family:inherit;font-size:1em}
+.gmobj{margin:0;padding:10px 12px 10px 30px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:.92em;display:flex;flex-direction:column;gap:3px}
+.gmobjh{font-size:.66em;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 -6px}
+.gsu-mission .gminfo .hint{margin:8px 0 0}
+.gsu-go{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:14px}
+.gsu-start{font:inherit;font-weight:800;font-size:1.1em;cursor:pointer;border:0;border-radius:6px;padding:13px 28px;background:var(--brass);color:var(--on);box-shadow:0 3px 10px -4px rgba(0,0,0,.45)}
+.gsu-start:hover{filter:brightness(1.08)} .gsu-start:active{transform:translateY(1px)}
+.gsu-start:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.gsu-go .hint{margin:0;flex:1 1 16em}
+.gsetupc .gnote{padding:0 14px 12px}
+.gsetupc>.tipfold{margin:0 14px 12px}
+@media (max-width:700px){
+  .gsu{grid-template-columns:1fr}
+  .gsu-vs{display:block;padding:0;height:0;border:0;position:relative;z-index:1}
+  .gsu-vs span{position:absolute;right:14px;top:0;transform:translateY(-50%);width:2.3em;height:2.3em;font-size:1.1em;background:var(--panel)}
+  .gsu-mrow{grid-template-columns:1fr}
+  .gsu-start{flex:1 1 100%;padding:15px}
+}
+
+/* ---------- New Patrol box (4 Nov): tinted in the chosen faction, flag preview, points as big buttons ---------- */
+.newpc{overflow:visible}
+.newpc .newp{border-bottom-left-radius:0}
+.newp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px 18px;align-items:center;padding:16px;background:linear-gradient(135deg, color-mix(in oklab, var(--fac) 20%, var(--panel)), color-mix(in oklab, var(--fac) 4%, var(--panel)) 70%);border-left:5px solid var(--accent);transition:background .25s,border-color .25s}
+.newp-hero{display:flex;align-items:center;gap:12px;min-width:0;max-width:16em}
+.newp-flag .flag{width:4.2em;height:2.8em;object-fit:cover;border:1px solid var(--rule);border-radius:4px;display:block;box-shadow:0 2px 8px -3px rgba(0,0,0,.4)}
+.newp-flag span.flag{display:none}
+.newp-hero>div{display:flex;flex-direction:column;min-width:0}
+.newp-fac{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.04em;font-size:1.35em;line-height:1.05;color:var(--accent);overflow-wrap:anywhere}
+.newp-sub{font-size:.85em;color:var(--muted);font-family:var(--f-mono)}
+.newp-fields{display:grid;grid-template-columns:minmax(10em,1.3fr) minmax(11em,1fr) auto;gap:10px 14px;align-items:end;min-width:0}
+.newp .flab{font-size:.7em;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.newp .field input{background:var(--paper);color:var(--ink);border:1px solid var(--accent-line);border-radius:4px;padding:8px 10px;font:inherit;width:100%;box-sizing:border-box}
+.newp #newName{width:100%}
+.newp .fpick-btn{min-height:2.55em;border-color:var(--accent-line);border-radius:4px}
+.newp-pts{display:flex;flex-wrap:wrap;width:fit-content;max-width:100%;box-sizing:border-box;border:1px solid var(--accent-line);border-radius:4px;overflow:hidden;background:var(--paper)}
+.newp-pts button{all:unset;cursor:pointer;padding:0 12px;min-height:2.55em;display:grid;place-items:center;font-family:var(--f-mono);font-weight:600;font-size:.95em;border-left:1px solid var(--accent-line);color:var(--ink)}
+.newp-pts button:first-child{border-left:0}
+.newp-pts button:hover{background:var(--accent-soft)}
+.newp-pts button[aria-pressed="true"]{background:var(--accent);color:var(--paper)}
+.newp-pts button:focus-visible{outline:2px solid var(--brass);outline-offset:-2px}
+.newp-pts button.cust{font-family:inherit;font-size:.85em}
+.newp-cust{display:flex;align-items:center;gap:8px;margin-top:6px}
+.newp-cust label{font-size:.75em;color:var(--muted)}
+.newp-cust input{width:6em!important}
+.newp-go{font:inherit;font-weight:800;font-size:1.05em;cursor:pointer;border:0;border-radius:6px;padding:12px 22px;background:var(--brass);color:var(--on);white-space:nowrap;box-shadow:0 3px 10px -4px rgba(0,0,0,.45);align-self:end}
+.newp-go:hover{filter:brightness(1.08)} .newp-go:active{transform:translateY(1px)}
+.newp-go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.newpc>.imp{padding:0 16px}
+@media (max-width:1100px){ .newp{grid-template-columns:minmax(0,1fr) auto} .newp-hero{grid-column:1/-1;max-width:none} .newp-fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .newp-name{grid-column:1/-1} .newp-ptsf{grid-column:1/-1} }
+@media (max-width:640px){ .newp{grid-template-columns:1fr;padding:14px} .newp-fields{grid-template-columns:1fr} .newp-pts{display:grid;width:100%;grid-template-columns:repeat(5,minmax(0,1fr))} .newp-pts button{padding:0 4px} .newp-pts button{border-left:0;box-shadow:-1px 0 0 var(--accent-line)} .newp-go{width:100%;padding:14px} }
 
 .mbar{display:none}
 @media (min-width:861px){
@@ -862,10 +1031,6 @@ body[data-view="factions"] .pnote, body[data-view="ref"] .pnote, body[data-view=
 .home{padding:18px 0 40px;display:flex;flex-direction:column;gap:18px}
 .hhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:6px 16px;border-bottom:2px solid var(--accent);padding-bottom:6px}
 .hhead h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:2em;letter-spacing:.02em;text-transform:uppercase;line-height:1}
-.newp{padding:12px;display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end}
-.newp .field input,.newp .field select{background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:6px 8px}
-.newp #newName{width:16em;max-width:100%}
-.newp #newCustom{width:5.5em}
 .imp{border-top:1px solid var(--rule);padding:0 12px}
 .imp>summary{cursor:pointer;padding:10px 0;font-weight:600;color:var(--accent)}
 .imp[open]>summary{padding-bottom:4px}
@@ -976,6 +1141,8 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
   .mmhbtn .mmcount{position:absolute;top:-6px;right:-6px;margin:0;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;font-size:10.5px;line-height:15px;background:var(--brass);border-color:var(--brass);color:var(--on, #fff)}
   .gauge{grid-column:1/-1;order:2;min-width:0}
 }
+/* Desktop: Theme, Text size and My models sit side by side (stacked on tablets, icons only on phones) */
+@media (min-width:861px){ .hdrtools{flex-direction:row;align-items:center;gap:6px} }
 .saved-tag.dirty{color:var(--warn);font-weight:600}
 .btn:disabled{opacity:.45;cursor:default}
 .leave{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;padding:10px 12px;margin:0 0 12px;background:var(--brass-soft);border:1px solid var(--brass);border-radius:3px}
@@ -1069,14 +1236,17 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
     <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label><span class="owngrp"><label class="switch" for="ownOnlyHome"><input type="checkbox" id="ownOnlyHome" class="owntoggle"> Only my models</label></span></div></div>
     <div class="savebox"><details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, current game and saved battles. To share one patrol, use <b>Share link</b> or <b>Copy as text</b>.</p></details>
     <div class="bkslot" id="bkHome"></div></div>
-    <div class="card">
+    <div class="card newpc" id="newCard">
       <header><h2>New Patrol</h2></header>
       <form class="newp" id="newForm">
-        <div class="field"><label for="newName">Patrol name</label><input id="newName" type="text" placeholder="e.g. 2nd Harlech Rhyflers" autocomplete="off"></div>
-        <div class="field"><label for="newFaction">Faction</label><select id="newFaction"></select></div>
-        <div class="field"><label for="newLimit">Points</label><select id="newLimit"></select></div>
-        <div class="field" id="newCustomWrap" hidden><label for="newCustom">Custom</label><input id="newCustom" type="number" min="50" max="2000" step="5" value="450"></div>
-        <button class="btn" type="submit">Create patrol</button>
+        <div class="newp-hero" aria-hidden="true"><span class="newp-flag" id="newFlag"></span><div><span class="newp-fac" id="newFacName"></span><span class="newp-sub" id="newSub"></span></div></div>
+        <div class="newp-fields">
+          <div class="field newp-name"><label for="newName">Patrol name</label><input id="newName" type="text" placeholder="e.g. 2nd Harlech Rhyflers" autocomplete="off"></div>
+          <div class="field newp-facf"><label for="newFaction">Faction</label><select id="newFaction"></select></div>
+          <div class="field newp-ptsf"><span class="flab" id="newPtsLab">Points</span><div class="newp-pts" id="newPts" role="group" aria-labelledby="newPtsLab"></div><select id="newLimit" hidden></select>
+            <div class="newp-cust" id="newCustomWrap" hidden><label for="newCustom">Custom points</label><input id="newCustom" type="number" min="50" max="2000" step="5" value="450" inputmode="numeric"></div></div>
+        </div>
+        <button class="newp-go" type="submit">Create patrol →</button>
       </form>
       <details class="imp" id="importBox">
         <summary>Import a patrol from text</summary>
@@ -2381,31 +2551,69 @@ function missionInfo(){
   rw.innerHTML = m.roles ? `<label for="gRole">You are</label><select id="gRole">${m.roles.map(r=>`<option${r===prevRole?" selected":""}>${esc(r)}</option>`).join("")}</select>`
     : `<label for="gFirst">Who goes first?</label><select id="gFirst"><option value="me"${prevFirst!=="opp"?" selected":""}>You</option><option value="opp"${prevFirst==="opp"?" selected":""}>Opponent</option></select>`;
   const role = ($("#gRole")||{}).value, other = m.roles ? m.roles.find(r=>r!==role) : null;
-  const turns = m.turns==="time" ? `Time limit by patrol size: ${(DATA.missionRules.timeLimits||[]).map(([mx,t])=>mx==null?`${t} for larger`:`${t} up to ${mx} pts`).join(", ")}` : typeof m.turns==="number" ? `${m.turns} Turns` : "No Turn limit in the book: play until you agree to stop";
-  const pluck = typeof m.pluck==="object" ? `${role}: ${m.pluck[role]} · ${other}: ${m.pluck[other]}` : `${m.pluck} each`;
-  $("#gMissionInfo").innerHTML = m.id==="custom" ? `<p class="hint">No mission rules: 5 Pluck each, no Turn limit.</p>` : `<dl>
-    <dt>Turns</dt><dd>${esc(turns)}</dd><dt>Rounds</dt><dd>${RPT()} per Turn (one per Activation card)</dd>
-    <dt>First active</dt><dd>${esc(m.first||"")}</dd><dt>Starting Pluck</dt><dd>${esc(pluck)}</dd>
-    ${m.sizes?`<dt>Patrols</dt><dd>${esc(m.sizes)}</dd>`:""}
-    ${m.objectives.length?`<dt>Objectives</dt><dd>${m.objectives.map(esc).join("<br>")}</dd>`:""}
-  </dl><p class="hint">Full details in the book<span class="pg"> (${esc(m.page)})</span>.</p>`;
+  const tl = (DATA.missionRules.timeLimits||[]);
+  const tile = (label, val, sub, wide) => `<div class="gmtile${wide?" wide":""}"><small>${label}</small><b${/^[\d\s–\/]+$/.test(val)?' class="n"':""}>${esc(val)}</b>${sub?`<span>${esc(sub)}</span>`:""}</div>`;
+  const turns = m.turns==="time" ? tile("Turns", `${tl[0]?tl[0][1]:2}–${tl.length?tl[tl.length-1][1]:5}`, "By patrol size: "+tl.map(([mx,t])=>mx==null?`${t} for larger`:`${t} up to ${mx} pts`).join(", "))
+    : typeof m.turns==="number" ? tile("Turns", String(m.turns)) : tile("Turns", "No limit", m.id==="custom" ? "" : "None in the book: stop when you agree");
+  const pluck = typeof m.pluck==="object" ? tile("Starting Pluck", `${m.pluck[role]} / ${m.pluck[other]}`, `${role} / ${other}`) : tile("Starting Pluck", String(m.pluck ?? 5), "each");
+  $("#gMissionInfo").innerHTML = `<div class="gmtiles">${turns}${tile("Rounds", String(RPT()), "per Turn, one per Activation card")}${tile("First active", m.id==="custom" ? "Your pick" : (m.first||""))}${pluck}${m.sizes?tile("Patrols", m.sizes, "", true):""}</div>
+    ${m.objectives.length?`<p class="gmobjh">Objectives</p><ul class="gmobj">${m.objectives.map(o=>`<li>${esc(o)}</li>`).join("")}</ul>`:""}
+    ${m.id==="custom" ? `<p class="hint">No mission rules: just play and track it.</p>` : `<p class="hint">Full details in the book<span class="pg"> (${esc(m.page)})</span>.</p>`}`;
+  gsuPaint();
 }
+// Start screen: colour each side by its patrol's faction (picked or pasted) and show what will be used.
+function gsuPaint(){
+  const me = $("#gsuMe"), op = $("#gsuOpp"); if (!me || !op) return;
+  const paint = (el, f, sub, fallback) => { el.style.setProperty("--fac", f && f.color ? f.color : fallback); el.querySelector(".gsu-flag").innerHTML = f ? flagImg(f, "gsbflag") : ""; el.querySelector(".gsu-sub").textContent = sub; };
+  const tryParse = id => { const t = (($("#"+id)||{}).value||"").trim(); if (!t) return null; const r = parseForce(t); return r.error ? null : r; };
+  const mi = tryParse("gMeSetupText");
+  if (mi){ const f = facById(mi.faction); paint(me, f, `Pasted: ${mi.name || f.name} · ${mi.limit} pts`, "var(--brass)"); }
+  else { const p = state.saved.find(x=>x.id===(($("#gPatrol")||{}).value)); const f = p && facById(p.faction);
+    paint(me, f, p ? `${f ? f.name : ""} · ${p.total||0}/${p.limit} pts` : "No patrol: just tracking the game", "var(--brass)"); }
+  const oi = tryParse("gOppSetupText"), of = oi && facById(oi.faction), nm = (($("#gOpp")||{}).value||"").trim();
+  op.querySelector(".gsu-lab").textContent = nm || (oi && oi.name) || "Opponent";
+  paint(op, of, oi ? `${of.name} · ${oi.limit} pts` : "Their patrol is optional", "var(--slate)");
+}
+document.addEventListener("input", e=>{ if (["gOpp","gMeSetupText","gOppSetupText"].includes(e.target.id)) gsuPaint(); });
 document.addEventListener("change", e=>{ if (e.target.id==="gMission" || e.target.id==="gRole") missionInfo(); });
+// Status colours and icons in the tracker (look only): each status belongs to a kind, shared by its badge and its button.
+const SGRP = {ooa:"out",killed:"out",disabled:"out",carried:"out",mountd:"out",incap:"wound",flesh:"wound",mountw:"wound",immob:"wound",rattled:"nerve",gob:"nerve",prone:"pin",engaged:"act",overwatch:"act",prepared:"wpn",primed:"wpn",jammed:"wpn",reload:"wpn",unbuttoned:"info",dismounted:"info"};
+const SICO = {ready:"M5 12.5l4.5 4.5L19 7.5", spent:"M7 3h10M7 21h10M7 3l10 18M17 3L7 21", buttoned:"M4 16h16M6 16a6 6 0 0 1 12 0",
+  overwatch:"M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12zM12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z", engaged:"M5 5l14 14M19 5L5 19M3 17l4 4M17 21l4-4",
+  prone:"M6 7l6 5 6-5M6 13l6 5 6-5", gob:"M12 3l2 5 5-2-2 5 5 2-5 2 2 5-5-2-2 5-2-5-5 2 2-5-5-2 5-2-2-5 5 2z", rattled:"M13 2L5 14h6l-1 8 8-12h-6z",
+  prepared:"M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM12 2v5M12 17v5M2 12h5M17 12h5", primed:"M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 1.5 1 2 2 2 3 1-2 1-5 1-7z",
+  flesh:"M12 5v14M5 12h14", incap:"M12 5v14M5 12h14", mountw:"M12 5v14M5 12h14", ooa:"M6 6l12 12M18 6L6 18", disabled:"M6 6l12 12M18 6L6 18", mountd:"M6 6l12 12M18 6L6 18",
+  killed:"M7 21V10a5 5 0 0 1 10 0v11zM12 11v6M9.5 13.5h5", carried:"M5 12h12M13 7l5 5-5 5", immob:"M8 5v14M16 5v14", jammed:"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM6 6l12 12",
+  reload:"M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4", unbuttoned:"M4 16h16M6 16a6 6 0 0 1 9-5.2M15 6l4-2", dismounted:"M12 4v14M6 12l6 6 6-6"};
+const sIcon = k => SICO[k] ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${SICO[k]}"/></svg>` : "";
+const sBadge = (k, label, grp, title) => `<span class="gst s-${grp}"${title?` title="${esc(title)}"`:""}>${sIcon(k)}${esc(label)}</span>`;
 function renderGame(){
   const v = $("#view-game");
   const head = `<div class="hhead"><h1>Game Tracker</h1><div class="hhead-r stack"><span class="switches">${pgCtl("Game")}${ownCtl("Game", game && game.faction && facById(game.faction) ? game.faction : "")}</span>${game?`<div class="gendbtns">${game.ended?"":`<button class="btn gendg" type="button" data-g="endgame">End Game</button>`}<button class="btn gnewg" type="button" data-g="end">New game</button></div>`:""}</div></div>`;
   if (!game || (game.faction && !facById(game.faction))){
-    document.body.style.removeProperty("--fac");
+    document.body.style.removeProperty("--fac"); v.classList.remove("hasdock");
     const list = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0));
     // same spot as the warning on My Patrols: straight under the page title
-    v.innerHTML = head + G_WARN() + `<div class="card"><header><h2>Start a game</h2></header>${`<div class="gsetup">
-      <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}<option value="">No patrol: just track the game</option></select></div>
-      <div class="field" id="gPtsWrap"${list.length?" hidden":""}><label for="gPts">Patrol size (points)</label><input id="gPts" type="number" min="50" max="5000" step="50" value="200" inputmode="numeric"></div>
-      <div class="field"><label for="gOpp">Opponent's name (optional)</label><input id="gOpp" type="text" maxlength="40" placeholder="Uses their patrol's name if blank" autocomplete="off"></div>
-      <div class="field"><label for="gMission">Mission</label><select id="gMission">${(DATA.missions||[]).map(m=>`<option value="${esc(m.id)}"${m.id===(renderGame.mission||"custom")?" selected":""}>${esc(m.name)}</option>`).join("")}</select></div>
-      <div class="field" id="gRoleWrap"></div>
-      </div><div class="gminfo" id="gMissionInfo"></div>${importBox("gMeSetup", false)}${importBox("gOppSetup", false)}<div class="gsetup"><button class="btn" type="button" data-g="start">Start game</button></div>`}
-      ${list.length ? "" : `<p class="hint gnote">No saved patrols on this device. Use <b>Import Your Patrol</b> to bring one over, build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, or just track Turns, Pluck, Victory Points and losses.</p>`}
+    v.innerHTML = head + G_WARN() + `<div class="card gsetupc"><header><h2>Start a game</h2></header>
+      <div class="gsu">
+        <div class="gsu-side me" id="gsuMe">
+          <div class="gsu-who"><span class="gsu-flag"></span><div><span class="gsu-lab">You</span><span class="gsu-sub"></span></div></div>
+          <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}<option value="">No patrol: just track the game</option></select></div>
+          <div class="field" id="gPtsWrap"${list.length?" hidden":""}><label for="gPts">Patrol size (points)</label><input id="gPts" type="number" min="50" max="5000" step="50" value="200" inputmode="numeric"></div>
+          ${importBox("gMeSetup", false)}
+        </div>
+        <div class="gsu-vs" aria-hidden="true"><span>VS</span></div>
+        <div class="gsu-side opp" id="gsuOpp">
+          <div class="gsu-who"><span class="gsu-flag"></span><div><span class="gsu-lab">Opponent</span><span class="gsu-sub"></span></div></div>
+          <div class="field"><label for="gOpp">Opponent's name (optional)</label><input id="gOpp" type="text" maxlength="40" placeholder="Uses their patrol's name if blank" autocomplete="off"></div>
+          ${importBox("gOppSetup", false)}
+        </div>
+      </div>
+      <div class="gsu-mission">
+        <div class="gsu-mrow"><div class="field"><label for="gMission">Mission</label><select id="gMission">${(DATA.missions||[]).map(m=>`<option value="${esc(m.id)}"${m.id===(renderGame.mission||"custom")?" selected":""}>${esc(m.name)}</option>`).join("")}</select></div><div class="field" id="gRoleWrap"></div></div>
+        <div class="gminfo" id="gMissionInfo"></div>
+      </div>
+      <div class="gsu-go"><button class="gsu-start" type="button" data-g="start">Start game →</button>${list.length ? "" : `<p class="hint">No saved patrols on this device. Use <b>Import Your Patrol</b> to bring one over, build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, or just track Turns, Pluck, Victory Points and losses.</p>`}</div>
       ${tipFold("game", "What the Game Tracker does", `Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too. The mission sets the number of Turns, who goes first and the starting Pluck.`)}
 </div>` + battlesCard();
     missionInfo();
@@ -2427,19 +2635,22 @@ function renderGame(){
     const ma = prof && t==="mounted" && g.st.mountw && /\//.test(prof.ma) ? String(prof.ma).split("/")[1] : prof && prof.ma;
     const stats = prof ? `${prof.label?esc(prof.label)+": ":""}Sk ${esc(prof.sk)} · Mt ${esc(prof.mt)} · MA ${esc(ma)} · T ${esc(prof.t)}` : u.vehicle ? `Sk ${esc(u.vehicle.sk)} · MA ${esc(u.vehicle.ma)}${u.vehicle.t?` · T ${esc(u.vehicle.t)}`:""}` : u.crew ? `Crew ${esc(u.crew.crew)} · Sk ${esc(u.crew.sk)} · T ${esc(u.crew.t)}` : "";
     const keys = statusKeys(u, g);
-    const chips = keys.map(k=>`<button type="button" class="gchip ${k}${OUT.includes(k)?" outk":""}" data-g="st" data-u="${esc(g.uid)}" data-s="${k}" aria-pressed="${!!g.st[k]}" title="${esc(ST[k].tip)}">${ST[k].t}</button>`).join("");
+    const chips = keys.map(k=>`<button type="button" class="gchip ${k} s-${SGRP[k]||"nerve"}${OUT.includes(k)?" outk":""}" data-g="st" data-u="${esc(g.uid)}" data-s="${k}" aria-pressed="${!!g.st[k]}" title="${esc(ST[k].tip)}">${ST[k].t}</button>`).join("");
     const step = (key, label, val, max, sub) => `<span class="gstep"><span class="gsl">${label}</span><span class="gbox sm"><button type="button" class="gbtn" data-g="cdec" data-u="${esc(g.uid)}" data-c="${esc(key)}" aria-label="${esc(label)} minus one">−</button><output>${val}${max!=null?`<small>/${max}</small>`:""}</output><button type="button" class="gbtn" data-g="cinc" data-u="${esc(g.uid)}" data-c="${esc(key)}" data-max="${max??""}" aria-label="${esc(label)} plus one">+</button></span>${sub?`<span class="gsub">${sub}</span>`:""}</span>`;
     let cx = "";
     if (t==="veh" && u.armor) cx = locsOf(u).map(L=>step("loc:"+L.name, `${L.name} damage`, (g.c.loc||{})[L.name]||0, L.max)).join("");
     else if (t==="veh") cx = step("dmg","Damage taken", g.c.dmg||0, null);
     if (t==="crew") cx = step("dmg","Crew damage", g.c.dmg||0, u.crew.d) + (/\bHMG\b/.test(allW(u)) ? step("heat","Heat markers", g.c.heat||0, 4, (g.c.heat||0)>=4?"Roll on the Heat chart":"") : "");
     const tasks = `<span class="gtasks" title="Tasks this Round: max 2 per rhyfler, only one a Combat Task (Core Rules p11). Resets at End Round.">${[1,2].map(n=>`<button type="button" class="gdot" data-g="task" data-u="${esc(g.uid)}" data-n="${n}" aria-pressed="${g.tasks>=n}" aria-label="Task ${n} used"></button>`).join("")}</span>`;
-    const now = Object.keys(ST).filter(k=>g.st[k]).map(k=>ST[k].t);
-    const spent = !out && (g.tasks||0) >= 2; if (spent) now.unshift("Spent");
-    if (t==="veh" && u.armor && !g.st.unbuttoned && !out) now.unshift("Buttoned Up");
-    return `<article class="gunit${out?" out":""}${spent?" spent":""}${g.st.killed?" killed":""}">
+    const nowK = Object.keys(ST).filter(k=>g.st[k]);
+    const spent = !out && (g.tasks||0) >= 2;
+    const now = nowK.map(k=>sBadge(k, ST[k].t, SGRP[k]||"nerve", ST[k].tip));
+    if (spent) now.unshift(sBadge("spent", "Spent", "spent", "Used both Tasks this Round. Ready again after End Round."));
+    if (t==="veh" && u.armor && !g.st.unbuttoned && !out) now.unshift(sBadge("buttoned", "Buttoned Up", "info"));
+    const worst = out ? "" : ["nerve","wound","pin"].find(w=>nowK.some(k=>SGRP[k]===w)) || "";
+    return `<article class="gunit${out?" out":""}${spent?" spent":""}${g.st.killed?" killed":""}${worst?" w-"+worst:""}">
       <header><div>${g.nm ? `${dtag(g.nm)} <b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>` : `<b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>`}<div class="gstats">${stats}</div></div>${out?"":tasks}</header>
-      <div class="gnow">${now.length ? now.map(x=>`<span${x==="Buttoned Up"?' class="info"':x==="Spent"?' class="spentb" title="Used both Tasks this Round. Ready again after End Round."':""}>${esc(x)}</span>`).join("") : `<span class="ready">Ready</span>`}</div>
+      <div class="gnow">${now.length ? now.join("") : sBadge("ready", "Ready", "ok")}</div>
       ${cx?`<div class="gctrs">${cx}</div>`:""}
       <div class="gchips">${chips}</div>
       <details class="gmore"><summary>Profile</summary>${statBlock(u)}${weaponLine(u)}${rulesText(u)}${abilityList(u)}</details>
@@ -2457,10 +2668,29 @@ function renderGame(){
       <div class="gbar"><span><b>${alive}</b> fighting · <b>${ooa}</b> Out of Action · <b>${dead}</b> Killed${gone?` · <b>${gone}</b> Disabled or carried off`:""}</span></div>
       <div class="ggrid">${shown.map(card).join("") || `<p class="hempty">Every rhyfler is out of the fight.</p>`}</div></details>`;
   };
-  const myHtml = me ? force(game.name, me, game.units, `${game.limit} pts`, false, game.limit) : `<div class="card">${importBox("gMeNew", false)}</div>`;
-  const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card">${importBox("gOppNew", false)}</div>`;
+  const myHtml = me ? force(game.name, me, game.units, `${game.limit} pts`, false, game.limit) : `<div class="card" data-side="me">${importBox("gMeNew", false)}</div>`;
+  const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card" data-side="opp">${importBox("gOppNew", false)}</div>`;
   if (game.faction) useFaction(game.faction); else document.body.style.removeProperty("--fac");
   const opp = esc(oppLabel());
+  // Face-off scoreboard (sticks under the header), My side / Opponent tabs (phones), bottom bar (phones).
+  const oppF = of || null, live = !game.ended;
+  const sbSide = (i, f, name) => { const isAct = live && act===(i?"opp":"me"), lab = i ? oppLabel() : game.name;
+    return `<div class="gsb-side ${i?"opp":"me"}${isAct?" act":""}" style="--fac:${f && f.color ? esc(f.color) : i ? "var(--slate)" : "var(--brass)"}">
+      <div class="gsb-who"${isAct?` title="Active player"`:""}>${isAct?`<span class="gsb-act" role="img" aria-label="Active player"></span>`:""}${f?flagImg(f,"gsbflag"):""}<span class="gsb-nm">${esc(name)}</span></div>
+      <div class="gsb-vp"><button type="button" class="gbtn" data-g="dec" data-k="vp" data-i="${i}" aria-label="${esc(lab)} Victory Points minus one">−</button><output aria-label="${esc(lab)} Victory Points"><b>${game.vp[i]}</b><small>VP</small></output><button type="button" class="gbtn" data-g="inc" data-k="vp" data-i="${i}" aria-label="${esc(lab)} Victory Points plus one">+</button></div>
+      <div class="gsb-pl"><span class="gl">Pluck</span><button type="button" class="gbtn" data-g="dec" data-k="pluck" data-i="${i}" aria-label="${esc(lab)} Pluck minus one">−</button><output aria-label="${esc(lab)} Pluck">${game.pluck[i]}</output><button type="button" class="gbtn" data-g="inc" data-k="pluck" data-i="${i}" aria-label="${esc(lab)} Pluck plus one">+</button></div>
+    </div>`; };
+  const sbMid = live ? `<div class="gsb-mid"><span class="gsb-pill"><small>Turn</small><b>${game.turn}${lim?`<i>/${lim}</i>`:""}</b></span><span class="gsb-pill"><small>Round</small><b>${game.round}<i>/${RPT()}</i></b></span><button type="button" class="gsb-swap" data-g="swapact" title="Switch the active player" aria-label="Switch the active player">⇄</button></div>`
+    : `<div class="gsb-mid"><span class="gsb-final">Final</span></div>`;
+  const scoreboard = `<div class="gsb${live?"":" ended"}" role="group" aria-label="Score">${sbSide(0, me, game.name)}${sbMid}${sbSide(1, oppF, oppLabel())}</div>`;
+  const losses = (me ? "" : lossBox("my","My losses")) + (game.oppForce ? "" : lossBox("opp","Their losses"));
+  const tab = game.tab==="opp" ? "opp" : "me";
+  const tabBtn = (key, f, name, units) => { const alive = units ? units.filter(g=>!isOut(g)).length : 0;
+    return `<button type="button" role="tab" class="gtab" data-g="tab" data-t="${key}" aria-selected="${tab===key}" style="--fac:${f && f.color ? esc(f.color) : key==="opp" ? "var(--slate)" : "var(--brass)"}">${f?flagImg(f,"gtflag"):""}<span class="gtn">${esc(name)}</span><span class="gtc" title="${units?"Still fighting":""}">${units ? `${alive}/${units.length}` : "Add"}</span></button>`; };
+  const tabs = `<div class="gtabs" id="gTabs" role="tablist" aria-label="Which patrol to show">${tabBtn("me", me, me ? game.name : "My patrol", me ? game.units : null)}${tabBtn("opp", oppF, oppLabel(), of ? game.oppForce.units : null)}</div>`;
+  const lastR = lim && game.turn>=lim && game.round>=RPT();
+  const dock = live ? `<div class="gdock" role="region" aria-label="Turn and Round"><div class="gdl"><span class="gdt">Turn <b>${game.turn}</b>${lim?`/${lim}`:""} · Round <b>${game.round}</b>/${RPT()}</span><span class="gdrow"><span class="gddots" aria-hidden="true">${Array.from({length:RPT()},(_,i)=>`<i class="${i+1<game.round?"done":i+1===game.round?"now":""}"></i>`).join("")}</span><span class="gdwho">${act==="me" ? "Your move" : esc(oppLabel())+"'s move"}</span></span></div>${lastR ? `<button type="button" class="gdnext" data-g="endgame">End Game</button>` : `<button type="button" class="gdnext" data-g="endround">${game.round>=RPT() ? "Next Turn" : "Next Round"} →</button>`}</div>` : "";
+  v.classList.toggle("hasdock", live);
   v.innerHTML = head + `
   <div class="gtop card"${me && me.color?` style="--fac:${me.color}"`:""}>
     <div class="gtitle">${me ? flagImg(me) : ""}<div><b>${esc(game.name)}</b><span class="hint">${me ? esc(me.name) : "No patrol loaded"} · ${game.limit} pts · vs ${opp}</span><span class="gmission">${esc(ms.name)}${game.role?` · You are the ${esc(game.role)}`:""}<span class="pg">${ms.page?` (${esc(ms.page)})`:""}</span></span></div></div>
@@ -2468,17 +2698,15 @@ function renderGame(){
       ${ctr("turn",null,"Turn", lim ? "" : "No Turn limit", lim)}
       ${ctr("round",null,"Round", "", RPT())}
       <div class="gctr"><span class="gl">Active</span><button type="button" class="gactive ${act}" data-g="swapact" title="Tap to switch the active player">${act==="me"?"You":opp} <span aria-hidden="true">⇄</span></button><span class="gsub">Tap to switch · alternates each Round</span></div>
-      <div class="gctr"><span class="gl">&nbsp;</span><button class="btn" type="button" data-g="endround">End Round</button><span class="gsub">${lim && game.turn>=lim && game.round>=RPT() ? "Last Round of the battle" : "End Round clears Task dots"}</span></div>
+      <div class="gctr gctr-end"><span class="gl">&nbsp;</span><button class="btn" type="button" data-g="endround">End Round</button><span class="gsub">${lim && game.turn>=lim && game.round>=RPT() ? "Last Round of the battle" : "End Round clears Task dots"}</span></div>
     </div>`}
-    <div class="gcounters two">
-      <div class="gside"><span class="gwho">You</span>${ctr("pluck",0,"Pluck")}${ctr("vp",0,"Victory Points")}${me ? "" : lossBox("my","My losses")}</div>
-      <div class="gside"><span class="gwho">${opp}</span>${ctr("pluck",1,"Pluck")}${ctr("vp",1,"Victory Points")}${game.oppForce ? "" : lossBox("opp","Their losses")}</div>
-    </div>
   </div>
+  ${scoreboard}
+  ${losses ? `<div class="glossrow">${losses}</div>` : ""}
   ${allGameUnits().length ? `<div class="gbar"><span></span><label class="switch" for="gHide"><input type="checkbox" id="gHide"${game.hideOut?" checked":""}> Hide units out of the fight</label></div>` : ""}
-  ${myHtml}
-  ${oppHtml}
-  ${battlesCard()}
+  ${tabs}
+  <div class="gforces" data-tab="${tab}">${myHtml}${oppHtml}</div>
+  ${dock}
   `;
 }
 // Rule check for a force in the tracker: borrow the builder's checks() with that force's units.
@@ -2964,6 +3192,9 @@ document.addEventListener("click", e=>{
     { const fallback = ()=>{ const t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); toast("Battle report copied"); }catch(e){ toast("Couldn't copy: try Download instead"); } t.remove(); };
       try{ navigator.clipboard.writeText(txt).then(()=>toast("Battle report copied. Paste it anywhere"), fallback); }catch(e){ fallback(); } }
     return; }
+  if (a==="tab"){ game.tab = b.dataset.t==="opp" ? "opp" : "me"; saveGame(); const y0 = window.scrollY; renderGame(); window.scrollTo(0, y0);
+    const t = $("#gTabs"), sb = $(".gsb"); if (t){ const off = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--barh"))||0) + (sb ? sb.offsetHeight : 0) + 8, top = t.getBoundingClientRect().top; if (top < off) window.scrollBy(0, top - off); }
+    return; }
   if (a==="swapact"){ game.swap = !game.swap; toast(`Active player: ${activeSide(game)==="me" ? "You" : oppLabel()}`); }
   saveGame();
   const y = window.scrollY; renderGame(); window.scrollTo(0, y);
@@ -2971,7 +3202,7 @@ document.addEventListener("click", e=>{
 document.addEventListener("toggle", e=>{ const d = e.target; if (d.classList && d.classList.contains("sqdd")){ renderStarterBar.open = d.open; return; } if (d.classList && d.classList.contains("gimp") && d.dataset.imp){ impState.open[d.dataset.imp] = d.open; return; } if (game && d.classList && d.classList.contains("goppl")){ game[(d.dataset.loss||"opp")+"LossOpen"] = d.open; saveGame(); return; } if (game && d.classList && d.classList.contains("gforce")){ game.closed = game.closed || {}; game.closed[d.dataset.side] = !d.open; saveGame(); } }, true);
 document.addEventListener("change", e=>{
   if (e.target.id==="pSort"){ state.sortBy = e.target.value; persist(); renderHome(); return; }
-  if (e.target.id==="gPatrol"){ const w = $("#gPtsWrap"); if (w) w.hidden = !!e.target.value; return; }
+  if (e.target.id==="gPatrol"){ const w = $("#gPtsWrap"); if (w) w.hidden = !!e.target.value; gsuPaint(); return; }
   if (e.target.id==="gWinner" && game && game.ended){ game.ended.winner = e.target.value; saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
   if (e.target.id==="gNotes" && game && game.ended){ game.ended.notes = e.target.value.slice(0,2000); saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
   if (e.target.id==="gHide" && game){ game.hideOut = e.target.checked; saveGame(); renderGame(); return; }
@@ -3232,7 +3463,7 @@ async function init(){
   for (const p of state.saved){ const f=DATA.factions.find(x=>x.id===p.faction); if(!f) continue; const keepE=state.editingId, keepN=state.name, keepL=state.limit, keepI=state.items, keepNm=state.names, keepF=state.faction;
     state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; state.names=copyNames(p.names); setFaction(p.faction); { const o = checks().out; state.status = !Object.keys(state.items).length?"empty":o.some(c=>c.lvl==="err")?"err":o.some(c=>c.lvl==="approved")?"approved":"ok"; } const up=p.updated; saveCurrent(); p.updated=up||Date.now();
     state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; state.names=keepNm; setFaction(keepF||p.faction); }
-  $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers();
+  $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers(); newPtsInit();
     { const k = $("#kofiSlot"); if (k) k.innerHTML = ZS_LINK + KOFI_LINK; }
   // Footer:  the data sources as small badges and the changelog link
   $("#foot").innerHTML = `<span class="fsrc"><span class="fsl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.2 5 7.6 4.5 4 4.8v12.6c3.6-.3 6.2.2 8 1.7m0-12.6c1.8-1.5 4.4-2 8-1.7v12.6c-3.6-.3-6.2.2-8 1.7m0-12.6v12.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Data from</span><span class="fbadge"><span class="cor">CoR</span> Faction Profiles <b>${esc(DATA.meta.profilesVersion)}</b></span><span class="fbadge"><span class="cor">CoR</span> Full Rulebook</span><span class="fdot" aria-hidden="true">·</span><a class="fchg" href="#/changes" data-go="#/changes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.3h4.3M12 8v4.2l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Rules changelog<span class="farr" aria-hidden="true">→</span></a></span>`;
@@ -3321,6 +3552,25 @@ $("#leaveDiscard").addEventListener("click", ()=>{ leave(); toast("Changes disca
 $("#leaveStay").addEventListener("click", ()=>{ pendingNav=null; $("#leaveBar").hidden=true; });
 window.addEventListener("beforeunload", e=>{ if(state.view==="edit" && isDirty() && Object.keys(state.items).length){ e.preventDefault(); e.returnValue=""; } });
 $("#newLimit").addEventListener("change", e=>{ $("#newCustomWrap").hidden = e.target.value!=="custom"; });
+// New Patrol box: points as big buttons (mirroring the hidden #newLimit), colour/flag follow the chosen faction.
+function newPtsInit(){
+  const sel = $("#newLimit"), box = $("#newPts"); if (!sel || !box) return;
+  box.innerHTML = [...sel.options].map(o=>`<button type="button" data-np="${esc(o.value)}"${o.value==="custom"?' class="cust"':""}>${o.value==="custom" ? "Other" : esc(o.textContent)}</button>`).join("");
+  newPaint();
+}
+function newPaint(){
+  const card = $("#newCard"); if (!card || !DATA) return;
+  const f = facById($("#newFaction").value), lim = $("#newLimit").value;
+  card.style.setProperty("--fac", f && f.color ? f.color : "var(--brass)");
+  $("#newFlag").innerHTML = f ? flagImg(f) : "";
+  $("#newFacName").textContent = f ? f.name : "";
+  $("#newSub").textContent = `${lim==="custom" ? (Math.max(50, +$("#newCustom").value||300)) : lim} pts patrol`;
+  document.querySelectorAll("#newPts [data-np]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.np===lim)));
+}
+$("#newPts").addEventListener("click", e=>{ const b = e.target.closest("[data-np]"); if (!b) return; const sel = $("#newLimit"); sel.value = b.dataset.np; sel.dispatchEvent(new Event("change",{bubbles:true})); if (b.dataset.np==="custom") setTimeout(()=>{ const c = $("#newCustom"); if (c){ c.focus(); c.select(); } }, 0); });
+$("#newLimit").addEventListener("change", newPaint);
+$("#newFaction").addEventListener("change", newPaint);
+$("#newCustom").addEventListener("input", newPaint);
 $("#newForm").addEventListener("submit", e=>{
   e.preventDefault(); if(!DATA) return;
   const lim = $("#newLimit").value==="custom" ? Math.max(50, +$("#newCustom").value||300) : +$("#newLimit").value;
@@ -3485,7 +3735,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-04.91";
+const APP_VERSION = "2026-11-04.97";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
