@@ -892,6 +892,24 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
   .gunit.out{opacity:.6}
 }
 
+/* phones: bigger tap targets on the scoreboard (user, 5 Nov: buttons were hard to press) */
+@media (max-width:560px){
+  .gsb .gbtn{width:40px;height:40px;font-size:18px;border-width:1.5px}
+  .gsb-vp{gap:4px}
+  .gsb-vp output b{font-size:1.65em}
+  .gsb-pl{display:grid;grid-template-columns:auto auto auto;grid-template-areas:". l ." "m v p";align-items:center;justify-items:center;column-gap:5px;row-gap:0;font-size:.85em}
+  .gsb-pl .gl{grid-area:l;font-size:.6em;line-height:1}
+  .gsb-pl .gbtn[data-g=dec]{grid-area:m} .gsb-pl output{grid-area:v;min-width:1.4em;font-size:1.15em} .gsb-pl .gbtn[data-g=inc]{grid-area:p}
+  .gsb-pl .gbtn{width:34px;height:34px;font-size:16px}
+  .gsb-ctl{padding:6px 8px;gap:6px;flex-wrap:nowrap}
+  .gsb-ctl .gbtn{width:34px;height:34px;font-size:17px}
+  .gsb-step>div{gap:2px}
+  .gsb-step b{font-size:1.05em;min-width:1.5em}
+  .gsb-next{padding:6px 10px;font-size:1em;min-height:44px;flex:1 1 auto;min-width:0;white-space:normal;line-height:1.1}
+  .gsb-swap{padding:6px 9px;font-size:1em}
+  .gsb-loss .gbtn{width:34px;height:34px;font-size:16px}
+}
+
 .mbar{display:none}
 @media (min-width:861px){
   #patrolCard{position:sticky;top:calc(var(--barh,110px) + 12px);max-height:calc(100vh - var(--barh,110px) - 24px);display:flex;flex-direction:column}
@@ -1057,10 +1075,15 @@ body.warn-hidden .bkb{justify-content:flex-start;align-items:center;margin-left:
 @media (max-width:560px){ .bgrid.four{grid-template-columns:1fr 1fr} .bgrid{grid-template-columns:1fr} .bgrid.four{grid-template-columns:1fr 1fr} }
 #btDlg textarea,#btDlg input[type=text]{width:100%;box-sizing:border-box}
 /* Narrative */
-.beta{display:inline-block;font-family:var(--f-body,inherit);font-size:.62em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:.22em .45em;border:1.5px solid currentColor;border-radius:3px;vertical-align:.25em;color:var(--brass);margin-left:.15em}
-.navtab .beta{font-size:.68em;vertical-align:.15em;padding:.18em .35em;border-width:1px}
-h1 .beta{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
-@media (max-width:520px){ .navtab .beta{font-size:.5em;padding:.15em .25em;margin-left:1px;vertical-align:.55em;letter-spacing:.04em} .mainnav .navtab{padding:9px 4px 9px;font-size:min(14px, 3.35vw);letter-spacing:.02em} .mainnav{justify-content:space-between} }
+.community{display:inline-block;font-family:var(--f-body,inherit);font-size:.62em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:.22em .45em;border:1.5px solid currentColor;border-radius:3px;vertical-align:.25em;color:var(--brass);margin-left:.15em}
+.community{position:relative;overflow:hidden}
+.community::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 25%,color-mix(in oklab,currentColor 18%,transparent) 50%,transparent 75%);transform:translateX(-130%);animation:communityShimmer 7s ease-in-out infinite}
+@keyframes communityShimmer{0%,70%{transform:translateX(-130%)}95%,100%{transform:translateX(130%)}}
+@media (prefers-reduced-motion:reduce){ .community::after{animation:none;display:none} }
+.navtab[data-nav="narr"]{display:inline-flex;align-items:center;gap:.4em}
+.navtab .community{font-size:.55em;vertical-align:middle;padding:.18em .35em;border-width:1px;margin-left:0}
+h1 .community{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
+@media (max-width:520px){ .navtab .community{font-size:.5em;padding:.15em .25em;letter-spacing:.04em} .mainnav .navtab{padding:9px 4px 9px;font-size:min(14px, 3.35vw);letter-spacing:.02em} .mainnav{justify-content:space-between} }
 @media (max-width:370px){ .mainnav .navtab{padding-left:3px;padding-right:3px;letter-spacing:0} }
 @media (max-width:520px){ .mainnav{overflow-x:auto;scrollbar-width:none} .mainnav::-webkit-scrollbar{display:none} .navtab{flex:0 0 auto} }
 .nstart{padding:12px;display:flex;flex-direction:column;gap:10px}
@@ -1351,7 +1374,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
       </div>
       <button type="button" class="mmhbtn" id="mmHdr" data-mm="" title="My models: the models you own" aria-label="My models"><span class="mmico"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="mmRainbow" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="24" y2="12" spreadMethod="repeat"><stop offset="0.000" stop-color="#e0492f"/><stop offset="0.143" stop-color="#f08c00"/><stop offset="0.286" stop-color="#d8b000"/><stop offset="0.429" stop-color="#2fa84f"/><stop offset="0.571" stop-color="#2f7fe0"/><stop offset="0.714" stop-color="#7a4fd6"/><stop offset="0.857" stop-color="#d14fa8"/><stop offset="1.000" stop-color="#e0492f"/><animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="24 12" dur="4s" repeatCount="indefinite"/></linearGradient></defs><circle cx="9" cy="5" r="2.6" fill="url(#mmRainbow)"/><path d="M5.5 16.4 6.6 10c.2-1.1 1-1.8 2-1.8h.8c1 0 1.8.7 2 1.8l1.1 6.4z" fill="url(#mmRainbow)"/><ellipse cx="9" cy="19.2" rx="6.8" ry="2.2" fill="none" stroke="url(#mmRainbow)" stroke-width="1.8"/><path d="M21.5 2.5l-6 7.2" stroke="url(#mmRainbow)" stroke-width="1.8" stroke-linecap="round"/><path d="M15.4 9.3c-1.3-.2-2.4.7-2.5 2-.1 1-.6 1.6-1.4 1.9 2 .9 4.4.2 4.9-1.6.2-.9-.1-1.8-1-2.3z" fill="url(#mmRainbow)"/></svg></span><span class="tsl">My models</span><span class="mmcount" data-mmcount hidden></span></button>
     </div>
-    <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a><a class="navtab" href="#/narrative" data-go="#/narrative" data-nav="narr">Narrative <span class="beta">Beta</span></a></nav>
+    <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a><a class="navtab" href="#/narrative" data-go="#/narrative" data-nav="narr">Narrative <span class="community">Community</span></a></nav>
   </div>
 </div>
 
@@ -2232,7 +2255,7 @@ document.addEventListener("toggle", e=>{ const d = e.target; if (d && (d.id==="n
 function renderNarrList(v){
   const pats = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0) && facById(p.faction));
   const list = [...narr.stories].sort((a,b)=>(b.updated||0)-(a.updated||0));
-  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="beta">Beta</span></h1><div class="hhead-r">${pgCtl("Narr")}${ownCtl("Narr")}</div></div>${NARR_WARN()}
+  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="community">Community</span></h1><div class="hhead-r">${pgCtl("Narr")}${ownCtl("Narr")}</div></div>${NARR_WARN()}
   <div class="card"><header><h2>Start a story</h2></header><div class="nstart">
     ${tipFold("narr", "How stories work", `Pick one of your patrols. It's copied into a <b>story patrol</b> of its own, so changing one never changes the other. Give every rhyfler a backstory and set out who's friends, rivals, family or sweethearts. This is all for storytelling: it doesn't change any rules or stats.`)}
     ${pats.length ? `<div class="nrow"><div class="field"><label for="nPatrol">Patrol</label><select id="nPatrol">${pats.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc(facById(p.faction).name)} · ${p.total||0} pts</option>`).join("")}</select></div><button class="btn" type="button" data-n="new">Start story</button></div>`
@@ -2873,7 +2896,7 @@ function renderGame(){
   const sbMid = live ? `<div class="gsb-mid"><span class="gsb-vs">VS</span><button type="button" class="gsb-swap" data-g="swapact" title="Switch the active player" aria-label="Switch the active player">⇄</button></div>`
     : `<div class="gsb-mid"><span class="gsb-final">Final</span></div>`;
   const step = (k, label, val, max) => `<div class="gsb-step"><small>${label}</small><div><button type="button" class="gbtn" data-g="dec" data-k="${k}" data-i="" aria-label="${label} minus one">−</button><b>${val}${max?`<i>/${max}</i>`:""}</b><button type="button" class="gbtn" data-g="inc" data-k="${k}" data-i="" aria-label="${label} plus one">+</button></div></div>`;
-  const ctl = live ? `<div class="gsb-ctl">${step("turn", "Turn", game.turn, lim)}${step("round", "Round", game.round, RPT())}<span class="gsb-dots" aria-hidden="true">${Array.from({length:RPT()},(_,i)=>`<i class="${i+1<game.round?"done":i+1===game.round?"now":""}"></i>`).join("")}</span><span class="gsb-hint">${lastR ? "Last Round of the battle" : `${lim ? "" : "No Turn limit · "}Next Round clears Task dots`}</span>${lastR ? `<button type="button" class="gsb-next" data-g="endgame">End Game</button>` : `<button type="button" class="gsb-next${game.round>=RPT()?" wide":""}" data-g="endround">Next<span class="gsb-lg"> ${game.round>=RPT() ? "Turn" : "Round"}</span> →</button>`}</div>` : "";
+  const ctl = live ? `<div class="gsb-ctl">${step("turn", "Turn", game.turn, lim)}${step("round", "Round", game.round, RPT())}<span class="gsb-dots" aria-hidden="true">${Array.from({length:RPT()},(_,i)=>`<i class="${i+1<game.round?"done":i+1===game.round?"now":""}"></i>`).join("")}</span><span class="gsb-hint">${lastR ? "Last Round of the battle" : `${lim ? "" : "No Turn limit · "}Next Round clears Task dots`}</span>${lastR ? `<button type="button" class="gsb-next" data-g="endgame">End Game</button>` : `<button type="button" class="gsb-next${game.round>=RPT()?" wide":""}" data-g="endround">Next<span class="gsb-lg"> ${game.round>=RPT() ? "Turn" : "Round"}</span>&nbsp;→</button>`}</div>` : "";
   const top = `<div class="gsb-top"><span class="gmn">${esc(ms.name)}</span>${game.role?`<span class="grole">You are the ${esc(game.role)}</span>`:""}<span class="pg grole">${ms.page?`(${esc(ms.page)})`:""}</span></div>`;
   const scoreboard = `<div class="gsb${live?"":" ended"}" role="group" aria-label="Score">${top}${sbSide(0, me, game.name, me ? `${me.name} · ${game.limit} pts` : `${game.limit} pts`)}${sbMid}${sbSide(1, oppF, oppLabel(), of ? `${of.name} · ${game.oppForce.limit} pts` : "")}${ctl}</div>`;
   // Losses (only for a side with no patrol loaded): a fold-out under that side's Pluck, like the import boxes on the start screen.
@@ -3920,7 +3943,7 @@ function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
 // My models icon: rainbow sweep; held still for people who ask for reduced motion.
 try{ const rm = matchMedia("(prefers-reduced-motion: reduce)"), mmSvg = document.querySelector("#mmHdr svg"); const setRM = ()=>{ if (mmSvg && mmSvg.pauseAnimations){ rm.matches ? mmSvg.pauseAnimations() : mmSvg.unpauseAnimations(); } }; setRM(); rm.addEventListener && rm.addEventListener("change", setRM); }catch(e){}
-const APP_VERSION = "2026-11-05.13";
+const APP_VERSION = "2026-11-05.15";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
