@@ -120,6 +120,151 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 .viewbar{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:8px 16px;margin:14px 0 10px}
 .tabs{display:flex;gap:4px;margin-right:auto}
+.switches{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+.own{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 2px;padding:5px 6px 5px 10px;border:1px dashed var(--rule);border-radius:3px;font-size:.9em;color:var(--muted)}
+.detail>.own:first-child{margin-top:4px}
+.own.has{border-style:solid;border-color:var(--accent-line);background:var(--accent-soft);color:var(--ink)}
+.ownl{font-weight:600}
+.ownstep{display:inline-flex;align-items:center;gap:4px}
+.ownstep button{width:2em;height:2em;border-radius:3px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);font-weight:700;font-size:1em;cursor:pointer;line-height:1;padding:0}
+.ownstep button:hover{border-color:var(--accent);color:var(--accent)}
+.ownstep button:disabled{opacity:.4;cursor:default}
+.ownstep output{min-width:1.8em;text-align:center;font-family:var(--f-mono);font-weight:600;font-variant-numeric:tabular-nums}
+@media (pointer:coarse){ .ownstep button{width:2.4em;height:2.4em} }
+.uname .ownmk{font-style:normal;display:inline-flex;align-items:center;gap:2px;margin-left:6px;padding:1px 6px 1px 4px;border-radius:9px;background:var(--accent-soft);color:var(--accent);font-family:var(--f-mono);font-size:.74em;vertical-align:.12em;white-space:nowrap}
+.uname .ownmk[hidden]{display:none}
+.ownmk svg{width:1em;height:1em}
+.ownmk b{font-weight:700}
+.ownnote{margin:10px 20px 0;font-size:.82em;color:var(--muted)}
+/* "My models" button: same look as the site's other outline buttons (.btn.ghost), with a small miniature icon and a count */
+.mmbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:3px;padding:4px 10px;cursor:pointer;font:inherit;font-size:.9em;font-weight:600;line-height:1.2}
+.mmbtn:hover{border-color:var(--ink)}
+.mmbtn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.mmico{display:inline-flex;color:var(--brass)}
+.mmico svg{width:1.15em;height:1.15em}
+.mmcount{min-width:1.4em;padding:0 .4em;border-radius:3px;background:var(--sunk);border:1px solid var(--rule);color:var(--muted);font-family:var(--f-mono);font-size:.82em;font-weight:600;text-align:center}
+.mmcount[hidden]{display:none}
+.ownacts{display:inline-flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.mmodal{position:fixed;inset:0;z-index:50;background:var(--paper);overflow:auto;overscroll-behavior:contain;--accent:color-mix(in oklab, var(--fac, var(--brass)) var(--acc-mix, 70%), var(--ink));--accent-soft:color-mix(in oklab, var(--fac, var(--brass)) 15%, var(--panel));--accent-line:color-mix(in oklab, var(--fac, var(--brass)) 45%, var(--rule))}
+.mmodal[hidden]{display:none}
+body.mm-open{overflow:hidden}
+.mmhead{position:sticky;top:0;z-index:2;background:var(--panel);border-bottom:3px solid var(--accent);padding-top:env(safe-area-inset-top,0px)}
+.mmhin{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;padding-bottom:10px}
+.mmhead h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.6em;letter-spacing:.03em;text-transform:uppercase}
+.mmbody{padding-bottom:40px}
+.mmintro{margin:12px 0 10px;max-width:46em}
+.mmctl{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 16px;margin-bottom:10px}
+.mmctl .field{min-width:min(100%,20em)}
+/* Faction dropdown on the My Models page: same height as the stat tiles beside it */
+#mmPage .mmctl .fpick-btn{height:3.6em;box-sizing:border-box;font-size:1.12em;padding:0 12px 0 10px;gap:10px;border-radius:4px;background:var(--panel)}
+#mmPage .mmctl .fpick-btn{font-size:1em}
+#mmPage .mmctl .fpick-btn span{font-size:1.15em}
+#mmPage .mmctl .fpick-btn .flag{width:2.2em;height:1.5em}
+.mmsum{display:flex;flex-wrap:wrap;gap:6px}
+.mmnone{font-size:.88em;color:var(--muted);padding-bottom:6px}
+.mmtile{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:4.4em;height:3.6em;box-sizing:border-box;padding:4px 10px 5px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);line-height:1.1}
+.mmtile b{font-family:var(--f-mono);font-size:1.25em;font-weight:700;color:var(--ink)}
+.mmtile b small{font-size:.65em;color:var(--muted);font-weight:600}
+.mmtile>span{font-size:.7em;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:1px}
+.mmtile.pts{border-color:var(--accent);background:var(--accent);min-width:6em}
+.mmtile.pts b{color:var(--paper);font-size:1.6em}
+.mmtile.pts>span{color:var(--paper);opacity:.9}
+.mmtile.bt b{color:var(--slate)} .mmtile.pn b{color:var(--brass)}
+@media (max-width:480px){ .mmsum{width:100%} .mmtile{flex:1;min-width:0;padding:4px 4px 5px} .mmtile.pts{flex:1.4} }
+#mmPage details.catdd>summary{border-bottom:2px solid var(--accent-line);margin:14px 0 6px;padding-bottom:3px}
+#mmPage details.catdd>summary h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.2em;letter-spacing:.03em;text-transform:uppercase;color:var(--accent)}
+#mmPage details.catdd>summary .ccount{font-size:.85em}
+#mmPage details.catdd>summary .ccount b{color:var(--accent);font-weight:700}
+#mmPage details.catdd>summary .ccount b.mmcpts{display:inline-block;margin-left:4px;padding:1px 8px;border-radius:999px;background:var(--accent);color:var(--paper);font-family:var(--f-mono);letter-spacing:0}
+#mmPage .refjump{margin:6px 0 0}
+.mmsum b{color:var(--ink)} .mmsum b.mmpt{color:var(--accent);font-family:var(--f-mono)} .mmsb,.mmsp{white-space:nowrap}
+.mmrow{display:block;border-radius:3px;margin:0;padding:0;border:0;background:transparent;color:var(--ink);font-size:1em}
+.mmrow.alt{background:var(--stripe)}
+.mmrow.has{box-shadow:inset 3px 0 0 var(--accent)}
+.mmline{display:grid;grid-template-columns:minmax(0,1fr) 13.5em 4.5em auto;align-items:center;gap:6px 14px;padding:4px 6px 4px 8px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mmname{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;display:flex;gap:4px;align-items:baseline;min-width:0}
+.mmname .chev{display:inline-block;width:1em;flex:none;color:var(--muted);font-size:.85em;transition:transform .15s}
+.mmrow.open .mmname .chev{transform:rotate(90deg)}
+.mmnm span{color:var(--muted);font-size:.9em}
+.mmpts{font-family:var(--f-mono);font-size:.85em;color:var(--muted);white-space:nowrap;text-align:right}
+.mmdetail{padding:2px 10px 10px calc(8px + 1.4em)}
+.mmticks{display:inline-flex;gap:6px}
+.mmtick{position:relative;display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 5px;border:1px solid var(--rule);border-radius:999px;background:var(--panel);font-size:.8em;font-weight:600;color:var(--muted);cursor:pointer;user-select:none;transition:background .15s,border-color .15s,color .15s}
+.mmtick input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.mmbox{display:inline-grid;place-items:center;width:1.25em;height:1.25em;border-radius:4px;border:1.5px solid var(--rule);background:var(--paper);color:transparent;transition:background .15s,border-color .15s,color .15s,transform .15s}
+.mmbox svg{width:.95em;height:.95em}
+.mmtick:hover{border-color:var(--ink);color:var(--ink)}
+.mmtick input:focus-visible + .mmbox{outline:2px solid var(--accent);outline-offset:2px}
+.mmtick.built{--tk:var(--slate)} .mmtick.painted{--tk:var(--brass)}
+.mmtick.on{border-color:var(--tk);color:var(--tk);background:color-mix(in oklab, var(--tk) 12%, var(--panel))}
+.mmtick.on .mmbox{background:var(--tk);border-color:var(--tk);color:var(--panel);transform:scale(1.05)}
+button.mmtick{font:inherit;font-size:.8em;font-weight:600}
+.mmtl b{font-family:var(--f-mono);font-weight:700}
+.mmtick.part{border-color:color-mix(in oklab, var(--tk) 60%, var(--rule));color:var(--tk);background:linear-gradient(90deg, color-mix(in oklab, var(--tk) 22%, var(--panel)) var(--pct), var(--panel) var(--pct))}
+.mmtick.part .mmbox{border-color:var(--tk)}
+.mmdash{display:block;width:.6em;height:2.5px;border-radius:2px;background:var(--tk)}
+/* The icons always keep their place (so nothing jumps when "Only my models" is switched); they're faded and inactive while it's off */
+.ownsub{display:inline-flex;align-items:center;gap:4px;opacity:.3;pointer-events:none;transition:opacity .15s}
+body.own-on .ownsub{opacity:1;pointer-events:auto}
+.owngrp{display:inline-flex;align-items:center;gap:8px}
+/* Built (hammer) / Painted (brush) filter icons next to "Only my models" */
+.ownf{position:relative;display:inline-grid;place-items:center;width:28px;height:28px;border:1px solid var(--rule);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.ownf input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.ownf svg{width:17px;height:17px}
+.ownf:hover{border-color:var(--ink);color:var(--ink)}
+.ownf:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.ownf.built{--tk:var(--slate)} .ownf.painted{--tk:var(--brass)}
+.ownf.on{background:var(--tk);border-color:var(--tk);color:var(--panel)}
+/* Help / explanation fold-outs (arrow on the left, body lined up under the title text) */
+.tipfold{margin:8px 0 10px;font-size:.88em;color:var(--muted);max-width:52em}
+.tipfold>summary{list-style:none;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;padding:3px 0;width:fit-content;-webkit-tap-highlight-color:transparent}
+.tipfold>summary::-webkit-details-marker{display:none}
+.tipfold>summary .chev{display:inline-block;width:.8em;font-size:.85em;transition:transform .15s}
+.tipfold[open]>summary .chev{transform:rotate(90deg)}
+.tipfold .tipi{width:1.1em;height:1.1em;color:var(--accent);flex:none}
+.tiph{font-weight:600;color:var(--ink)}
+.tipfold>summary:hover .tiph{text-decoration:underline;text-underline-offset:2px}
+.tipfold>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tipbody{padding:2px 0 0 calc(.8em + 1.1em + 12px);line-height:1.45}
+.tipbody b{color:var(--ink)}
+@media print{ .tipfold{display:none!important} }
+.mmfil{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin:2px 0 8px;padding:8px 12px;border:1px solid var(--rule);border-radius:4px;background:var(--panel)}
+.mmfilh{font-size:.85em;color:var(--muted);flex-basis:100%}
+.mmfilh b{color:var(--ink)}
+.mmtabs{display:inline-flex;gap:4px;margin:6px 0 10px;padding:4px;border:1px solid var(--rule);border-radius:5px;background:var(--sunk);max-width:100%}
+.mmtabs .tab{display:flex;align-items:center;gap:9px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--muted);padding:6px 14px 6px 10px;text-align:left;letter-spacing:0;font:inherit;cursor:pointer;min-width:0;transition:background .15s,color .15s}
+.mmtabs .tab svg{width:1.35em;height:1.35em;flex:none}
+.mmtabs .tab span{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.mmtabs .tab b{font-size:1em;font-weight:700;letter-spacing:.02em}
+.mmtabs .tab small{font-size:.76em;font-weight:500;opacity:.85}
+.mmtabs .tab:hover{color:var(--ink);background:var(--panel)}
+.mmtabs .tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.mmtabs .tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:480px){ .mmtabs{display:flex} .mmtabs .tab{flex:1;padding:6px 8px;gap:6px} .mmtabs .tab small{font-size:.7em} }
+.mmrfil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 0}
+.mmrfil[hidden]{display:none}
+#mmPage .mmrfil .ownsub{opacity:1;pointer-events:auto}
+#mmRoster .rgrid{margin-bottom:8px}
+.mmrc .qty{font-family:var(--f-mono);font-weight:600;color:var(--accent);margin-right:6px}
+.mmstats{display:flex;gap:6px;margin:2px 0 6px}
+.mmtick.mmst{cursor:default;font-size:.78em}
+.mmtick.mmst:hover{border-color:var(--rule);color:var(--muted)}
+.mmtick.mmst.on:hover,.mmtick.mmst.part:hover{border-color:var(--tk);color:var(--tk)}
+.mmmods{margin:2px 0 10px;padding:8px 10px;border:1px solid var(--accent-line);border-radius:3px;background:var(--panel)}
+.mmmh{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 12px;margin-bottom:6px;font-size:.9em}
+.mmmacts{display:inline-flex;gap:10px}
+.mmmacts button{background:none;border:0;padding:2px 0;font:inherit;font-size:.9em;color:var(--muted);text-decoration:underline;cursor:pointer}
+.mmmacts button:hover{color:var(--ink)}
+.mmmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(15.5em,1fr));gap:4px 14px}
+.mmm{display:flex;align-items:center;gap:8px;padding:3px 0}
+.mmmn{font-family:var(--f-mono);font-size:.82em;color:var(--muted);min-width:2.2em}
+@media (max-width:560px){ .mmline{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"name pts step" "ticks ticks step";gap:4px 10px} .mmname{grid-area:name} .mmpts{grid-area:pts} .ownstep{grid-area:step} .mmticks{grid-area:ticks;flex-wrap:wrap;padding-left:1.3em} .mmline .mmticks:empty{display:none} .mmdetail{padding-left:10px} }
+@media print{ .mmodal,.mmbtn{display:none!important} }
+.ownempty{grid-column:1/-1;margin:12px;padding:22px 16px;text-align:center;color:var(--muted);border:1px dashed var(--rule);border-radius:3px;background:var(--panel)}
+#view-ref>.ownempty,#fgrid>.ownempty{margin:12px 0}
+.ownempty p{margin:0 auto 10px;max-width:34em} .ownempty b{color:var(--ink)}
+.fmeta2 .ownc{color:var(--accent);font-weight:600}
+@media print{ .own,.ownmk,.ownnote,.ownempty{display:none!important} }
 .switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:.9em;color:var(--muted);user-select:none}
 .switch input{appearance:none;-webkit-appearance:none;width:34px;height:20px;border-radius:10px;background:var(--rule);position:relative;cursor:pointer;margin:0;transition:background .15s;flex:none}
 .switch input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--panel);transition:transform .15s}
@@ -236,7 +381,7 @@ table.stats td.t{font-family:var(--f-body)}
 .rl{all:unset;cursor:help;border-bottom:1px dotted var(--brass);color:inherit;font:inherit}
 .rl:hover,.rl:focus-visible,.rl[aria-expanded="true"]{color:var(--brass);border-bottom-style:solid}
 .rl:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
-.pop{position:fixed;z-index:20;max-width:min(24em,calc(100vw - 24px));background:var(--panel);color:var(--ink);border:1px solid var(--ink);border-top:4px solid var(--accent);border-radius:3px;
+.pop{position:fixed;z-index:70;max-width:min(24em,calc(100vw - 24px));background:var(--panel);color:var(--ink);border:1px solid var(--ink);border-top:4px solid var(--accent);border-radius:3px;
   padding:9px 11px;box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:.93em;line-height:1.35;pointer-events:auto}
 .pop h4{margin:0 0 4px;font-family:var(--f-display);font-weight:400;font-size:1.05em;letter-spacing:.03em;text-transform:uppercase}
 .pop p{margin:0}
@@ -579,6 +724,13 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 .bkb{display:flex;flex-wrap:wrap;gap:6px}
 .bkfile{display:inline-flex;align-items:center;cursor:pointer}
 .bkslot:empty{display:none}
+.bkhide{background:none;border:0;padding:3px 4px;font:inherit;font-size:.92em;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.bkhide:hover{color:var(--ink)}
+body.warn-hidden .savebox{border:0;background:none;border-radius:0}
+body.warn-hidden .savebox>.savewarn,body.warn-hidden .bkt{display:none}
+body.warn-hidden .bkbar{border-top:0;padding:0;justify-content:flex-end}
+body.warn-hidden .bkbar .btn:not(:hover){border-color:var(--rule)}
+body.warn-hidden .bkb{justify-content:flex-end;align-items:center;margin-left:auto}
 @media (max-width:560px){ .bkw{display:none} .savebox .swfold>summary{padding:9px 12px} .savebox .swfold>p{padding:0 12px 9px 12px;font-size:.92em} .bkbar{padding:6px 12px 8px} .bkt svg{display:none} }
 @media print{ .bkslot{display:none!important} }
 /* Saved battles */
@@ -779,6 +931,11 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
 .themebtn,.tsbtn{display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:3px;padding:5px 10px;min-height:2.2em;cursor:pointer;font-weight:600;white-space:nowrap;font-size:.85em;line-height:1.2}
 .themebtn .ti,.tsbtn .tsaa{display:inline-flex;justify-content:center;min-width:1.4em}
 .themebtn:hover{border-color:var(--ink)}
+.mmhbtn{position:relative;display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:3px;padding:5px 10px;min-height:2.2em;cursor:pointer;font:inherit;font-weight:600;white-space:nowrap;font-size:.85em;line-height:1.2}
+.mmhbtn:hover{border-color:var(--ink)}
+.mmhbtn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.mmhbtn .mmico{min-width:1.4em;justify-content:center}
+.mmhbtn .mmcount{margin-left:auto}
 .tswrap{position:relative;display:flex}
 .tswrap>.tsbtn{flex:1}
 .tsbtn:hover,.tsbtn[aria-expanded="true"]{border-color:var(--ink)}
@@ -813,6 +970,10 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
   .tsbtn .tsaa{font-size:18px;min-width:0}
   .tswrap>.tsbtn{flex:none}
   .tsbtn .tsl{display:none}
+  .mmhbtn{justify-content:center;width:38px;height:38px;min-height:0;padding:0;font-size:16px;line-height:1}
+  .mmhbtn .tsl{display:none}
+  .mmhbtn .mmico{min-width:0} .mmhbtn .mmico svg{width:22px;height:22px}
+  .mmhbtn .mmcount{position:absolute;top:-6px;right:-6px;margin:0;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;font-size:10.5px;line-height:15px;background:var(--brass);border-color:var(--brass);color:var(--on, #fff)}
   .gauge{grid-column:1/-1;order:2;min-width:0}
 }
 .saved-tag.dirty{color:var(--warn);font-weight:600}
@@ -884,6 +1045,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
           <div class="tsfoot"><span id="textSizeVal">100%</span><button type="button" class="tsreset" id="textSizeReset">Reset</button></div>
         </div>
       </div>
+      <button type="button" class="mmhbtn" id="mmHdr" data-mm="" title="My models: the models you own" aria-label="My models"><span class="mmico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.2" r="2.7" fill="currentColor"/><path d="M8.3 16.6 9.4 10c.2-1.1 1-1.8 2.1-1.8h1c1.1 0 1.9.7 2.1 1.8l1.1 6.6z" fill="currentColor"/><path d="M15.2 9.4 18.6 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><ellipse cx="12" cy="19.3" rx="7.2" ry="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span class="tsl">My models</span><span class="mmcount" data-mmcount hidden></span></button>
     </div>
     <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a><a class="navtab" href="#/narrative" data-go="#/narrative" data-nav="narr">Narrative <span class="beta">Beta</span></a></nav>
   </div>
@@ -891,7 +1053,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 
 <div class="wrap main">
   <section id="view-factions" class="home" aria-label="Factions">
-    <div class="hhead"><h1>Factions</h1><div class="hhead-r"><label class="switch" for="showPagesFac"><input type="checkbox" id="showPagesFac" class="pgtoggle"> Show rulebook pages</label></div></div>
+    <div class="hhead"><h1>Factions</h1><div class="hhead-r"><label class="switch" for="showPagesFac"><input type="checkbox" id="showPagesFac" class="pgtoggle"> Show rulebook pages</label><span class="owngrp"><label class="switch" for="ownOnlyFac"><input type="checkbox" id="ownOnlyFac" class="owntoggle"> Only my models</label></span></div></div>
     <div class="fgrid" id="fgrid">
       <div class="vh">
         <p>Unofficial fan-made patrol (army list) builder, unit and weapon quick-reference, printable roster sheet, game tracker, battle report generator, and narrative campaign tool for <strong>Quar: Clash of Rhyfles</strong> by Zombiesmith.</p>
@@ -904,7 +1066,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   <section id="view-game" class="home" aria-label="Game tracker"></section>
   <section id="view-narr" class="home" aria-label="Narrative"></section>
   <section id="view-home" class="home" aria-label="My patrols">
-    <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label></div></div>
+    <div class="hhead"><h1>My Patrols</h1><div class="hhead-r"><label class="switch" for="showPagesHome"><input type="checkbox" id="showPagesHome" class="pgtoggle"> Show rulebook pages</label><span class="owngrp"><label class="switch" for="ownOnlyHome"><input type="checkbox" id="ownOnlyHome" class="owntoggle"> Only my models</label></span></div></div>
     <div class="savebox"><details class="savewarn swfold" id="saveWarn" open><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your patrols are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, current game and saved battles. To share one patrol, use <b>Share link</b> or <b>Copy as text</b>.</p></details>
     <div class="bkslot" id="bkHome"></div></div>
     <div class="card">
@@ -935,7 +1097,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
       <button class="tab" role="tab" id="tab-build" aria-selected="true" aria-controls="view-build">Build</button>
       <button class="tab" role="tab" id="tab-roster" aria-selected="false" aria-controls="view-roster">Roster</button>
     </div>
-    <label class="switch" for="showPages"><input type="checkbox" id="showPages" class="pgtoggle"> Show rulebook pages</label>
+    <span class="switches"><label class="switch" for="showPages"><input type="checkbox" id="showPages" class="pgtoggle"> Show rulebook pages</label><span class="owngrp"><label class="switch" for="ownOnly"><input type="checkbox" id="ownOnly" class="owntoggle"> Only my models</label></span></span>
   </div>
   <div class="leave" id="leaveBar" hidden><b>This patrol has unsaved changes.</b><button class="btn" id="leaveSave">Save and go back</button><button class="btn danger" id="leaveDiscard">Discard changes</button><button class="btn ghost" id="leaveStay">Keep editing</button></div>
 
@@ -971,6 +1133,19 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
   </footer>
 </div>
 <div class="mbar" id="mbar"><span class="mleft"><span class="mrow"><span class="mtrack" id="mtrack" role="meter" aria-label="Points used" aria-valuemin="0" aria-valuemax="300" aria-valuenow="0"><i id="mfill"></i></span><span class="mused" id="mused">0/300</span><span class="mstate" id="mstate" hidden></span></span><span class="mprob" id="mprob" hidden></span></span><a href="#patrolCard" id="mjump">View patrol</a></div>
+<div class="mmodal" id="mmPage" role="dialog" aria-modal="true" aria-labelledby="mmTitle" hidden>
+  <div class="mmhead"><div class="wrap mmhin"><h1 id="mmTitle">My Models</h1><button type="button" class="btn" id="mmDone">Done</button></div></div>
+  <div class="wrap mmbody">
+    <details class="tipfold mmintro" data-fold="tip-mymodels" open><summary><span class="chev" aria-hidden="true">▸</span><svg class="tipi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="tiph">How to use My Models</span></summary><div class="tipbody">Choose a faction, then press <b>+</b> for each model you own and tick <b>Built</b> and <b>Painted</b> as you go. Tap a unit to see its profile. Turn on <b>Only my models</b> to see just your models on the faction pages and in the Muster Roll. Saved in this browser and included in the backup file.</div></details>
+    <div class="mmctl"><div class="field"><label for="mmFac">Faction</label><select id="mmFac"></select></div><span class="mmsum" id="mmSum"></span></div>
+    <div class="mmfil" role="group" aria-label="Built and painted filters"><span class="mmfilh">When <b>Only my models</b> is on, the other pages show only:</span><label class="switch" for="mmOnlyBuilt"><input type="checkbox" id="mmOnlyBuilt" class="ownbuilt"> Built models</label><label class="switch" for="mmOnlyPainted"><input type="checkbox" id="mmOnlyPainted" class="ownpainted"> Painted models</label></div>
+    <div class="mmtabs" role="tablist" aria-label="My models view"><button type="button" class="tab" role="tab" id="mmTabEdit" data-mmtab="edit" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M4 12h10M4 18h10M18 9v6M15 12h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span><b>Database</b><small>Add models, tick built &amp; painted</small></span></button><button type="button" class="tab" role="tab" id="mmTabRoster" data-mmtab="roster" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="7.5" height="16" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="4" width="7.5" height="16" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 8h3.5M15 8h3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span><b>Collection</b><small>See the models you own</small></span></button></div>
+    <div class="refjump" id="mmChips" role="group" aria-label="Show unit types"></div>
+    <div class="ddall"><button type="button" data-mmall="1">Open all</button><button type="button" data-mmall="0">Close all</button></div>
+    <div id="mmList" role="tabpanel" aria-labelledby="mmTabEdit"></div>
+    <div id="mmRoster" role="tabpanel" aria-labelledby="mmTabRoster" hidden></div>
+  </div>
+</div>
 <textarea id="copyArea" aria-hidden="true" tabindex="-1"></textarea>
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
@@ -981,11 +1156,197 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const STORE = "quar-patrol-builder-v1";
 let DATA = null, FAC = null, UNITS = {};
-let state = {sortBy:"custom", sortRev:{}, view:"home", status:"empty", name:"", faction:null, limit:300, items:{}, names:{}, nameOpen:{}, open:{}, saved:[], editingId:null, showPages:false};
+let state = {sortBy:"custom", sortRev:{}, view:"home", status:"empty", name:"", faction:null, limit:300, items:{}, names:{}, nameOpen:{}, open:{}, saved:[], editingId:null, showPages:false, ownedOnly:false, ownBuilt:false, ownPainted:false, hideWarn:false};
 
-function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE) || "null"); if(s){ if(Array.isArray(s.saved)) state.saved = s.saved; state.showPages = !!s.showPages; if (["auto","light","dark"].includes(s.theme)) state.theme = s.theme; if (["edited","name","faction","points","custom"].includes(s.sortBy)) state.sortBy = s.sortBy; if (s.sortRev && typeof s.sortRev==="object") state.sortRev = s.sortRev; if (+s.textSize) state.textSize = +s.textSize; if (s.warnOpen === false) state.warnOpen = false; } }catch(e){} }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE) || "null"); if(s){ if(Array.isArray(s.saved)) state.saved = s.saved; state.showPages = !!s.showPages; state.ownedOnly = !!s.ownedOnly; state.ownBuilt = !!s.ownBuilt; state.ownPainted = !!s.ownPainted; document.body.classList.toggle("own-on", state.ownedOnly); state.hideWarn = !!s.hideWarn; document.body.classList.toggle("warn-hidden", state.hideWarn); if (["auto","light","dark"].includes(s.theme)) state.theme = s.theme; if (["edited","name","faction","points","custom"].includes(s.sortBy)) state.sortBy = s.sortBy; if (s.sortRev && typeof s.sortRev==="object") state.sortRev = s.sortRev; if (+s.textSize) state.textSize = +s.textSize; if (s.warnOpen === false) state.warnOpen = false; } }catch(e){} }
 // Only saved patrols and settings are stored. The patrol being edited is kept only when the user presses Save.
-function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({saved: state.saved, showPages: state.showPages, theme: state.theme, sortBy: state.sortBy, sortRev: state.sortRev, textSize: state.textSize, warnOpen: state.warnOpen !== false})); }catch(e){} }
+function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({saved: state.saved, showPages: state.showPages, ownedOnly: !!state.ownedOnly, ownBuilt: !!state.ownBuilt, ownPainted: !!state.ownPainted, hideWarn: !!state.hideWarn, theme: state.theme, sortBy: state.sortBy, sortRev: state.sortRev, textSize: state.textSize, warnOpen: state.warnOpen !== false})); }catch(e){} }
+
+/* ---------- My models ----------
+   The models a person owns, counted per unit profile (e.g. 3 × Rhyfler (Harlech)). Saved in this browser under
+   "quar-my-models-v1" and included in the backup file. "Only my models" (remembered) hides every unit you don't own. */
+const OWN_KEY = "quar-my-models-v1";
+let myModels = {owned:{}, built:{}, painted:{}, updated:0};
+try{ const m = JSON.parse(localStorage.getItem(OWN_KEY) || "null"); if (m && m.owned && typeof m.owned==="object") myModels = {owned:m.owned, built:(m.built&&typeof m.built==="object")?m.built:{}, painted:(m.painted&&typeof m.painted==="object")?m.painted:{}, updated:+m.updated||0}; }catch(e){}
+const owned = id => Math.max(0, Math.floor(+myModels.owned[id]||0));
+const ownedUnits = f => f.units.filter(u=>owned(u.id)>0);
+// "Built" / "Painted" (next to the switch): only units with at least one model marked built / painted
+const passFlags = u => (!state.ownBuilt || countFlag("built", u.id) > 0) && (!state.ownPainted || countFlag("painted", u.id) > 0);
+const myShown = f => ownedUnits(f).filter(passFlags);
+const showUnits = f => state.ownedOnly ? myShown(f) : f.units;
+const ownAdj = () => state.ownPainted ? "painted " : state.ownBuilt ? "built " : "";
+const ownSub = () => `<span class="ownsub" role="group" aria-label="Only models that are"><label class="ownf built${state.ownBuilt?" on":""}" title="Only built models"><input type="checkbox" class="ownbuilt"${state.ownBuilt?" checked":""}${state.ownedOnly?"":" disabled"} aria-label="Only built models"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.6 3.6 20.4 11.4l-2.6 2.6-7.8-7.8z" fill="currentColor"/><path d="M11.4 9.6 3.9 17.1a2 2 0 0 0 2.9 2.9l7.5-7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></label><label class="ownf painted${state.ownPainted?" on":""}" title="Only painted models"><input type="checkbox" class="ownpainted"${state.ownPainted?" checked":""}${state.ownedOnly?"":" disabled"} aria-label="Only painted models"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 3.4c-3.4 1.7-7.6 5.7-9.5 8.4l2.1 2.1c2.7-1.9 6.7-6.1 8.4-9.5z" fill="currentColor"/><path d="M9.8 13.4c-2.2 0-3.7 1.6-3.7 3.5 0 1.4-.9 2.4-2.4 2.8 3.9 1.6 8.3.3 8.3-4.2z" fill="currentColor"/></svg></label></span>`;
+function ownRerender(){ if (state.view==="factions") renderFactions(); else if (state.view==="ref"){ refFilter.clear(); renderRef(renderRef.last); } else if (state.view==="edit") renderCatalog(); if (!$("#mmPage").hidden) mmRender(); }
+function syncOwnSub(){ document.querySelectorAll(".ownbuilt,.ownpainted").forEach(i=>{ i.disabled = !state.ownedOnly && !i.closest("#mmPage"); }); document.querySelectorAll(".ownbuilt").forEach(i=>{ i.checked = state.ownBuilt; i.closest(".ownf")?.classList.toggle("on", state.ownBuilt); });
+  document.querySelectorAll(".ownpainted").forEach(i=>{ i.checked = state.ownPainted; i.closest(".ownf")?.classList.toggle("on", state.ownPainted); }); }
+document.addEventListener("change", e=>{ const t = e.target; if (!t.classList) return; const b = t.classList.contains("ownbuilt"), pn = t.classList.contains("ownpainted"); if (!b && !pn) return;
+  if (b) state.ownBuilt = t.checked; else state.ownPainted = t.checked; syncOwnSub(); persist(); ownRerender();
+  const k = b ? "ownbuilt" : "ownpainted", again = [...document.querySelectorAll("."+k)].find(x=>x.offsetParent); if (again) again.focus({preventScroll:true}); });
+document.addEventListener("click", e=>{ if (e.target.closest("[data-ownsuboff]")){ state.ownBuilt = state.ownPainted = false; syncOwnSub(); persist(); ownRerender(); } });
+// What to say when nothing is shown: no models at all, or none marked built/painted yet
+function ownEmptyFor(f, btn){ const name = f ? `${esc(f.name)} ` : "";
+  const any = f ? ownedUnits(f).length : DATA.factions.some(x=>ownedUnits(x).length);
+  if (any && (state.ownBuilt || state.ownPainted)) return `<div class="ownempty"><p><b>None of your ${name}models are marked ${state.ownPainted?"painted":"built"} yet.</b></p><p>Tick <b>Built</b> and <b>Painted</b> for each model on the <b>My models</b> page, or turn off the Built / Painted filters there.</p><span class="ownacts"><button type="button" class="btn" data-mm="${f?f.id:""}">My models</button><button type="button" class="btn ghost" data-ownsuboff>Show all my models</button></span></div>`;
+  return ownEmpty(`You haven't added any ${name}models yet.`, btn, f ? f.id : ""); }
+const ownedTotal = f => f.units.reduce((n,u)=>n+owned(u.id),0);
+// Points value of the models you own (units' points × how many you own)
+const ownedPts = units => units.reduce((n,u)=>n+owned(u.id)*(+u.pts||0),0);
+function ownSave(){ try{ localStorage.setItem(OWN_KEY, JSON.stringify(myModels)); }catch(e){ toast("Couldn't save: this browser's storage is full or blocked"); } }
+function setOwned(id, n){ n = Math.max(0, Math.min(99, n));
+  { const b = flagsOf("built", id), p = flagsOf("painted", id);
+    while (b.length > n){ let k = b.length-1; for (let j=b.length-1; j>=0; j--) if (!b[j] && !p[j]){ k = j; break; } b.splice(k,1); p.splice(k,1); }
+    while (b.length < n){ b.push(false); p.push(false); } storeFlags(id, b, p); } if (n) myModels.owned[id] = n; else delete myModels.owned[id]; myModels.updated = Date.now(); ownSave(); }
+const ownMark = id => { const n = owned(id); return `<i class="ownmk" data-ownmk="${id}" title="In my models: ${n}"${n?"":" hidden"}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 10 17 19 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>${n}</b></i>`; };
+// The count on every "My models" button: all models owned, across all factions
+function mmBadges(){ const n = Object.keys(myModels.owned).reduce((a,id)=>a+owned(id),0);
+  document.querySelectorAll("[data-mmcount]").forEach(b=>{ b.hidden = !n; b.textContent = n; b.title = `${n} model${n===1?"":"s"} in My models`; }); }
+// Update the counters in place (no re-render), so a unit doesn't vanish under your finger while "Only my models" is on.
+function ownRefresh(id){ const n = owned(id); mmBadges();
+  document.querySelectorAll(`[data-ownv="${id}"]`).forEach(o=>{ o.textContent = n; });
+  document.querySelectorAll(`[data-ownrow="${id}"]`).forEach(r=>{ r.classList.toggle("has", n>0); const m = r.querySelector('[data-d="-1"]'); if (m) m.disabled = !n; });
+  document.querySelectorAll(`[data-ownmk="${id}"]`).forEach(m=>{ m.hidden = !n; m.title = `In my models: ${n}`; const b = m.querySelector("b"); if (b) b.textContent = n; });
+}
+document.addEventListener("click", e=>{ const b = e.target.closest("[data-own]"); if (!b || !DATA) return;
+  const id = b.dataset.own, before = owned(id); setOwned(id, before + (+b.dataset.d||0)); const n = owned(id); ownRefresh(id);
+  if (b.closest("#mmPage")){ mmRedrawRow(id); const nb = document.querySelector(`#mmList [data-own="${id}"][data-d="${b.dataset.d}"]`); if (nb && !nb.disabled) nb.focus({preventScroll:true}); else { const p = document.querySelector(`#mmList [data-own="${id}"][data-d="1"]`); if (p) p.focus({preventScroll:true}); } return; }
+  if (b.disabled){ const p = b.parentElement.querySelector('[data-d="1"]'); if (p) p.focus({preventScroll:true}); }
+});
+function setOwnedOnly(v, save=true){
+  state.ownedOnly = v; document.querySelectorAll(".owntoggle").forEach(i=>{ i.checked = v; }); document.body.classList.toggle("own-on", v); syncOwnSub();
+  if (!save) return;
+  persist(); if (v && typeof gcEvent==="function") gcEvent("my-models-on");
+  ownRerender();
+}
+document.addEventListener("change", e=>{ if (e.target.classList && e.target.classList.contains("owntoggle")) setOwnedOnly(e.target.checked); });
+document.addEventListener("click", e=>{ if (e.target.closest("[data-ownoff]")) setOwnedOnly(false); });
+// "Only my models" switch + "My models" button, for pages drawn by script (ids must be unique per page)
+const pgCtl = sfx => `<label class="switch" for="showPages${sfx}"><input type="checkbox" id="showPages${sfx}" class="pgtoggle"${state.showPages?" checked":""}> Show rulebook pages</label>`;
+const ownCtl = (sfx, fid="") => `<span class="owngrp"><label class="switch" for="ownOnly${sfx}"><input type="checkbox" id="ownOnly${sfx}" class="owntoggle"${state.ownedOnly?" checked":""}> Only my models</label></span>`;
+const mmTotal = () => Object.keys(myModels.owned).reduce((a,id)=>a+owned(id),0);
+const ownEmpty = (what, btn, fid) => `<div class="ownempty"><p><b>${what}</b></p><p>Press <b>My models</b> to add the models you own.</p><span class="ownacts"><button type="button" class="btn" data-mm="${fid||""}">My models</button><button type="button" class="btn ghost" data-ownoff>${btn}</button></span></div>`;
+/* My Models page: a full-screen page over the current one (so a patrol being built isn't lost).
+   Pick a faction from the dropdown, then set how many of each unit you own. */
+let mmFid = null;
+// Built / Painted, per model: myModels.built[id] and myModels.painted[id] are lists with one true/false per model you own.
+// (Older saves stored one tick for the whole unit; that's read as "all of them".) Painted means built too.
+function flagsOf(kind, id){ const n = owned(id); let v = (myModels[kind]||{})[id];
+  if (v === true) v = Array(n).fill(true); else if (typeof v === "number") v = Array.from({length:n}, (_,k)=>k<v); else if (!Array.isArray(v)) v = [];
+  v = v.slice(0, n).map(Boolean); while (v.length < n) v.push(false); return v; }
+const countFlag = (kind, id) => flagsOf(kind, id).filter(Boolean).length;
+function storeFlags(id, b, p){ myModels.built = myModels.built || {}; myModels.painted = myModels.painted || {};
+  if (b.some(Boolean)) myModels.built[id] = b; else delete myModels.built[id];
+  if (p.some(Boolean)) myModels.painted[id] = p; else delete myModels.painted[id]; }
+// i = one model (0-based), or null for all of them
+function setFlag(kind, id, i, on){
+  const b = flagsOf("built", id), p = flagsOf("painted", id);
+  (i == null ? b.map((_,k)=>k) : [i]).forEach(k=>{ if (kind==="built"){ b[k] = on; if (!on) p[k] = false; } else { p[k] = on; if (on) b[k] = true; } });
+  storeFlags(id, b, p); myModels.updated = Date.now(); ownSave();
+}
+function mmSummary(){ const f = facById(mmFid); if (!f) return; const own = ownedUnits(f), k = own.length, n = ownedTotal(f);
+  const b = own.reduce((a,u)=>a+countFlag("built",u.id),0), pt = own.reduce((a,u)=>a+countFlag("painted",u.id),0);
+  const tile = (v, l, cls="") => `<span class="mmtile${cls}"><b>${v}</b><span>${l}</span></span>`;
+  $("#mmSum").innerHTML = n ? tile(ownedPts(f.units), "points", " pts") + tile(n, `model${n===1?"":"s"}`) + tile(`${k}<small>/${f.units.length}</small>`, "units") + tile(b, "built", " bt") + tile(pt, "painted", " pn")
+    : `<span class="mmnone">No ${esc(f.name)} models yet</span>`; }
+const mmOpenU = new Set(), mmFilter = new Set();
+const CHECK_SVG = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 8.4 6.6 11.6 12.8 4.6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const mmTick = (kind, u, i, on, label, title) => `<label class="mmtick ${kind}${on?" on":""}" title="${esc(title)}"><input type="checkbox" data-mmflag="${kind}" data-id="${u.id}" data-i="${i}"${on?" checked":""}><span class="mmbox">${CHECK_SVG}</span><span class="mmtl">${label}</span></label>`;
+// In the unit's line: one model = a tick; several = a progress pill ("Built 2/3") that opens the per-model list
+function mmPill(kind, u){ const n = owned(u.id), c = countFlag(kind, u.id), L = kind==="built" ? "Built" : "Painted";
+  if (n === 1) return mmTick(kind, u, 0, c===1, L, `${L}: tick when your ${u.name} (${u.variant}) is ${kind}`);
+  const st = c===n ? " on" : c ? " part" : "";
+  return `<button type="button" class="mmtick ${kind}${st}" data-mmpill="${u.id}" style="--pct:${Math.round(100*c/n)}%" title="${c} of ${n} ${kind}: tap to tick each model" aria-label="${L}: ${c} of ${n}. Show each model"><span class="mmbox">${c===n?CHECK_SVG:c?'<i class="mmdash"></i>':""}</span><span class="mmtl">${L} <b>${c}/${n}</b></span></button>`; }
+// The per-model list, shown when a unit with 2+ models is opened
+function mmModels(u){ const n = owned(u.id); if (n < 2) return "";
+  const b = flagsOf("built", u.id), p = flagsOf("painted", u.id), nm = `${u.name} (${u.variant})`;
+  return `<div class="mmmods"><div class="mmmh"><b>Your models</b><span class="mmmacts"><button type="button" data-mmallflag="built" data-id="${u.id}" data-on="${b.every(Boolean)?0:1}">${b.every(Boolean)?"Unmark all built":"All built"}</button><button type="button" data-mmallflag="painted" data-id="${u.id}" data-on="${p.every(Boolean)?0:1}">${p.every(Boolean)?"Unmark all painted":"All painted"}</button></span></div>
+    <div class="mmmgrid">${b.map((x,i)=>`<div class="mmm"><span class="mmmn">#${i+1}</span>${mmTick("built", u, i, x, "Built", `${nm} #${i+1}: built`)}${mmTick("painted", u, i, p[i], "Painted", `${nm} #${i+1}: painted`)}</div>`).join("")}</div></div>`; }
+// The unit's profile, drawn with its own faction loaded (so the builder's faction isn't disturbed)
+function withFac(f, fn){ const pf = FAC, pu = UNITS; FAC = f; UNITS = {}; f.units.forEach(u=>UNITS[u.id]=u); try{ return fn(); } finally{ FAC = pf; UNITS = pu; } }
+function mmRow(u, f){
+  const n = owned(u.id), open = mmOpenU.has(u.id);
+  return `<div class="mmrow${n?" has":""}${open?" open":""}" data-ownrow="${u.id}" data-mmu="${u.id}">
+    <div class="mmline">
+      <button type="button" class="mmname" data-mmtoggle aria-expanded="${open}"><span class="chev" aria-hidden="true">▸</span><span class="mmnm"><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span></span></button>
+      <span class="mmticks">${n ? mmPill("built", u) + mmPill("painted", u) : ""}</span>
+      <span class="mmpts">${u.pts} pts</span>
+      <span class="ownstep"><button type="button" data-own="${u.id}" data-d="-1" aria-label="One fewer ${esc(u.name)} (${esc(u.variant)})"${n?"":" disabled"}>−</button><output data-ownv="${u.id}">${n}</output><button type="button" data-own="${u.id}" data-d="1" aria-label="One more ${esc(u.name)} (${esc(u.variant)})">+</button></span>
+    </div>
+    ${open ? `<div class="detail mmdetail">${mmModels(u)}${withFac(f, ()=>`${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}<p class="hint pg">${esc(u.page)}</p>`)}</div>` : ""}
+  </div>`;
+}
+// Zebra rows across categories, counting only rows you can see
+function mmStripe(){ let i = 0; document.querySelectorAll("#mmList details.catdd").forEach(d=>{ if (d.hidden) return; d.querySelectorAll(".mmrow").forEach(r=>{ r.classList.toggle("alt", d.open && (i++ % 2 === 1)); }); }); }
+function mmApplyFilter(){
+  document.querySelectorAll("#mmList details.catdd, #mmRoster details.catdd").forEach(d=>{ const show = !mmFilter.size || mmFilter.has(d.dataset.cat); d.hidden = !show; if (show && mmFilter.size && !d.open){ d.open = true; catOpen[d.dataset.dd] = true; } });
+  document.querySelectorAll("#mmPage [data-mmf]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.mmf ? mmFilter.has(b.dataset.mmf) : !mmFilter.size)));
+  mmStripe();
+}
+function mmRender(){
+  const f = facById(mmFid) || DATA.factions[0]; if (mmRender.last !== f.id) mmFilter.clear(); mmRender.last = mmFid = f.id; $("#mmFac").value = f.id; syncPickers();
+  const pg = $("#mmPage"); if (f.color) pg.style.setProperty("--fac", f.color); else pg.style.removeProperty("--fac");
+  const cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
+  $("#mmChips").innerHTML = `<button type="button" class="chip all" data-mmf="" aria-pressed="true">Show all</button>${cats.map(c=>`<button type="button" class="chip" data-mmf="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join("")}`;
+  $("#mmList").innerHTML = cats.map(c=>{ const us = f.units.filter(u=>u.cat===c), k = ddKey("mm:"+f.id, c), mine = us.reduce((a,u)=>a+owned(u.id),0);
+    return `<details class="catdd mmcat" data-dd="${esc(k)}" data-cat="${esc(c)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2>${esc(c)}</h2><span class="ccount">${mine?`<b>${mine} owned</b> <b class="mmcpts">${ownedPts(us)} pts</b> · `:""}${us.length} unit${us.length===1?"":"s"}</span></summary>${us.map(u=>mmRow(u, f)).join("")}</details>`; }).join("");
+  mmRenderRoster(); mmShowTab();
+  mmApplyFilter(); mmSummary();
+}
+// Roster: your models as reference cards (how many, built / painted, full profile), like the builder's Roster tab
+let mmTab = "edit";
+const mmStat = (kind, u) => { const n = owned(u.id), c = countFlag(kind, u.id), L = kind==="built" ? "Built" : "Painted";
+  return `<span class="mmtick ${kind}${c===n?" on":c?" part":""} mmst" style="--pct:${Math.round(100*c/n)}%"><span class="mmbox">${c===n?CHECK_SVG:c?'<i class="mmdash"></i>':""}</span><span class="mmtl">${L}${n>1?` <b>${c}/${n}</b>`:""}</span></span>`; };
+function mmCard(u, f){ const n = owned(u.id);
+  return withFac(f, ()=>`<article class="rcard mmrc${u.vehicle||u.crew?" veh":""}"><header><h3><span class="qty">${n}×</span>${esc(u.name)}</h3><span class="pts">${n*u.pts}${n>1?`<span class="facnt">(${u.pts} each)</span>`:""}</span></header><p class="sub">${esc(u.variant)}<span class="pg"> · ${esc(u.page)}</span></p><p class="mmstats">${mmStat("built", u)}${mmStat("painted", u)}</p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</article>`); }
+function mmRenderRoster(){
+  const f = facById(mmFid); if (!f) return;
+  // The Built/Painted switches only filter the other pages, never this list
+  const all = ownedUnits(f), mine = all, cats = f.categories.filter(c=>mine.some(u=>u.cat===c));
+  if (!all.length){ $("#mmRoster").innerHTML = `<p class="empty">No ${esc(f.name)} models yet. Add them on the <b>Database</b> tab.</p>`; return; }
+  if (!mine.length){ $("#mmRoster").innerHTML = `<div class="ownempty"><p><b>None of your ${esc(f.name)} models are marked ${state.ownPainted?"painted":"built"} yet.</b></p><span class="ownacts"><button type="button" class="btn ghost" data-ownsuboff>Show all my models</button></span></div>`; return; }
+  $("#mmRoster").innerHTML = cats.map(c=>{ const us = mine.filter(u=>u.cat===c), k = ddKey("mmr:"+f.id, c), n = us.reduce((a,u)=>a+owned(u.id),0);
+    return `<details class="catdd mmcat ref" data-dd="${esc(k)}" data-cat="${esc(c)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2>${esc(c)}</h2><span class="ccount"><b>${n} model${n===1?"":"s"}</b> <b class="mmcpts">${ownedPts(us)} pts</b></span></summary><div class="rgrid">${us.map(u=>mmCard(u, f)).join("")}</div></details>`; }).join("");
+}
+function mmShowTab(){ const r = mmTab==="roster";
+  $("#mmList").hidden = r; $("#mmRoster").hidden = !r;
+  $("#mmTabEdit").setAttribute("aria-selected", String(!r)); $("#mmTabRoster").setAttribute("aria-selected", String(r)); }
+function mmRedrawRow(id){ const f = facById(mmFid), u = f && f.units.find(x=>x.id===id), r = document.querySelector(`#mmList [data-mmu="${id}"]`); if (!u || !r) return;
+  const t = document.createElement("div"); t.innerHTML = mmRow(u, f); r.replaceWith(t.firstElementChild); mmStripe(); mmSummary();
+  const d = r.closest && document.querySelector(`#mmList [data-mmu="${id}"]`); if (d){ const c = d.closest("details"); if (c){ const cs = c.querySelector(".ccount"); const us = f.units.filter(x=>x.cat===u.cat), mine = us.reduce((a,x)=>a+owned(x.id),0); cs.innerHTML = `${mine?`<b>${mine} owned</b> <b class="mmcpts">${ownedPts(us)} pts</b> · `:""}${us.length} unit${us.length===1?"":"s"}`; } } }
+document.addEventListener("click", e=>{
+  const pg = e.target.closest("#mmPage"); if (!pg || !DATA) return;
+  const tb = e.target.closest("[data-mmtab]"); if (tb){ mmTab = tb.dataset.mmtab; if (mmTab==="roster") mmRenderRoster(); mmShowTab(); mmApplyFilter(); return; }
+  const chip = e.target.closest("[data-mmf]"); if (chip){ const c = chip.dataset.mmf; if (!c) mmFilter.clear(); else if (mmFilter.has(c)) mmFilter.delete(c); else mmFilter.add(c); mmApplyFilter(); return; }
+  const pill = e.target.closest("[data-mmpill]"); if (pill){ const id = pill.dataset.mmpill; mmOpenU.add(id); mmRedrawRow(id);
+    const list = document.querySelector(`#mmList [data-mmu="${id}"] .mmmods`); if (list){ list.scrollIntoView({block:"nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); const first = list.querySelector("input"); if (first) first.focus({preventScroll:true}); } return; }
+  const af = e.target.closest("[data-mmallflag]"); if (af){ const id = af.dataset.id; setFlag(af.dataset.mmallflag, id, null, af.dataset.on==="1"); mmRedrawRow(id);
+    const nb = document.querySelector(`#mmList [data-mmu="${id}"] [data-mmallflag="${af.dataset.mmallflag}"]`); if (nb) nb.focus({preventScroll:true}); return; }
+  const all = e.target.closest("[data-mmall]"); if (all){ const on = all.dataset.mmall==="1"; document.querySelectorAll(mmTab==="roster" ? "#mmRoster details.catdd" : "#mmList details.catdd").forEach(d=>{ d.open = on; catOpen[d.dataset.dd] = on; }); mmStripe(); return; }
+  // tap anywhere on a unit's line (except its buttons and ticks) to open/close its profile
+  const line = e.target.closest(".mmline"); if (!line || e.target.closest(".ownstep,.mmtick,input,button:not([data-mmtoggle])")) return;
+  try{ if (String(getSelection()).length) return; }catch(_){}
+  const row = line.closest("[data-mmu]"), id = row.dataset.mmu; if (mmOpenU.has(id)) mmOpenU.delete(id); else mmOpenU.add(id); mmRedrawRow(id);
+  const nb = document.querySelector(`#mmList [data-mmu="${id}"] [data-mmtoggle]`); if (nb && e.target.closest("[data-mmtoggle]")) nb.focus({preventScroll:true});
+});
+document.addEventListener("change", e=>{ const c = e.target.closest && e.target.closest("[data-mmflag]"); if (!c) return; setFlag(c.dataset.mmflag, c.dataset.id, +c.dataset.i||0, c.checked); mmRedrawRow(c.dataset.id);
+  const nc = document.querySelector(`#mmList [data-mmflag="${c.dataset.mmflag}"][data-id="${c.dataset.id}"][data-i="${c.dataset.i}"]`); if (nc) nc.focus({preventScroll:true}); });
+document.addEventListener("toggle", e=>{ if (e.target.closest && e.target.closest("#mmList") && e.target.matches("details.catdd")) mmStripe(); }, true);
+function mmOpen(fid){
+  if (!DATA) return;
+  mmFid = facById(fid) ? fid : (state.view==="ref" ? renderRef.last : state.view==="edit" ? FAC.id : (mmFid || (DATA.factions.find(f=>ownedUnits(f).length)||DATA.factions[0]).id));
+  mmRender(); const pg = $("#mmPage"); pg.hidden = false; pg.scrollTop = 0; document.body.classList.add("mm-open");
+  try{ history.pushState({mm:1}, "", location.hash); }catch(e){}
+  $("#mmDone").focus({preventScroll:true});
+}
+function mmClose(fromHistory){
+  const pg = $("#mmPage"); if (pg.hidden) return; pg.hidden = true; document.body.classList.remove("mm-open");
+  if (!fromHistory && history.state && history.state.mm){ mmClose.skip = true; history.back(); }
+  // show the changes on the page underneath
+  if (state.view==="factions") renderFactions(); else if (state.view==="ref") renderRef(renderRef.last); else if (state.view==="edit") renderCatalog();
+}
+// The phone's Back button closes the page instead of leaving the builder
+window.addEventListener("popstate", e=>{ if (mmClose.skip){ mmClose.skip = false; e.stopImmediatePropagation(); return; } if (!$("#mmPage").hidden){ mmClose(true); e.stopImmediatePropagation(); } });
+document.addEventListener("click", e=>{ const b = e.target.closest("[data-mm]"); if (b) mmOpen(b.dataset.mm); });
+document.addEventListener("keydown", e=>{ if (e.key==="Escape" && !$("#mmPage").hidden && !e.defaultPrevented){ mmClose(); } });
 
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),Math.max(1800, msg.length*55)); }
 
@@ -1148,12 +1509,13 @@ function ddKey(fid,c){ return fid+"|"+c; }
 document.addEventListener("toggle", e=>{ const d=e.target; if(d.matches && d.matches("details.catdd")){ catOpen[d.dataset.dd]=d.open; if (d.closest("#catalog")) stripeCatalog(); } }, true);
 document.addEventListener("click", e=>{ const b=e.target.closest("[data-ddall]"); if(!b) return; const on=b.dataset.ddall==="1"; document.querySelectorAll("#view-ref details.catdd").forEach(d=>{ d.open=on; catOpen[d.dataset.dd]=on; }); });
 function renderCatalog(){
-  const cats = FAC.categories.filter(c=>FAC.units.some(u=>u.cat===c));
-  $("#catalog").innerHTML = cats.map(c=>{ const us=FAC.units.filter(u=>u.cat===c), k=ddKey(FAC.id,c); return `<div class="cat"><details class="catdd" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h3>${esc(c)}</h3><span class="ccount">${us.length}</span></summary>${us.map(u=>{
+  const list = showUnits(FAC), cats = FAC.categories.filter(c=>list.some(u=>u.cat===c));
+  if (state.ownedOnly && !list.length){ $("#catalog").innerHTML = ownEmptyFor(FAC, "Show all models"); return; }
+  $("#catalog").innerHTML = (state.ownedOnly ? `<p class="ownnote">Showing only your ${ownAdj()}models: ${list.length} of ${FAC.units.length} units.</p>` : "") + cats.map(c=>{ const us=list.filter(u=>u.cat===c), k=ddKey(FAC.id,c); return `<div class="cat"><details class="catdd" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h3>${esc(c)}</h3><span class="ccount">${us.length}</span></summary>${us.map(u=>{
     const f = faText(u), open = state.open[u.id];
     return `<div class="unit${open?" open":""}" data-id="${u.id}">
       <div class="urow">
-        <button class="uname" data-act="toggle" aria-expanded="${!!open}"><span class="chev">▸</span><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span></button>
+        <button class="uname" data-act="toggle" aria-expanded="${!!open}"><span class="chev">▸</span><b>${esc(u.name)}</b> <span>${esc(u.variant)}</span>${ownMark(u.id)}</button>
         <span class="fa ${f.c}" title="Force Allowance">${esc(f.t)}</span>
         <span class="pts">${u.pts}</span>
         <span class="btns"><button class="add sub" data-act="remove" aria-label="Remove one ${esc(label(u))}"${state.items[u.id]?"":" disabled"}>−</button><button class="add" data-act="add" aria-label="Add ${esc(label(u))}">+</button></span>
@@ -1556,13 +1918,16 @@ function renderNarrative(id){
 const NARR_WARN = () => `<div class="savebox"><details class="savewarn swfold" id="nWarn"${foldOpen("nWarn") ? " open" : ""}><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your stories are saved only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, current game and saved battles.</p></details><div class="bkslot">${backupBar()}</div></div>`;
 // open/closed memory for fold-out notes other than the My Patrols one (open by default)
 const foldOpen = id => { try{ return localStorage.getItem("quar-fold-"+id)!=="0"; }catch(e){ return true; } };
+// Help / explanation text: a fold-out, open by default, open/closed remembered per box ("quar-fold-tip-<key>")
+const tipFold = (key, title, html) => `<details class="tipfold" data-fold="tip-${key}"${foldOpen("tip-"+key)?" open":""}><summary><span class="chev" aria-hidden="true">▸</span><svg class="tipi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="tiph">${title}</span></summary><div class="tipbody">${html}</div></details>`;
+document.addEventListener("toggle", e=>{ const d = e.target; if (d && d.dataset && d.dataset.fold){ try{ localStorage.setItem("quar-fold-"+d.dataset.fold, d.open ? "1" : "0"); }catch(_){} } }, true);
 document.addEventListener("toggle", e=>{ const d = e.target; if (d && (d.id==="nWarn" || d.id==="gWarn")){ try{ localStorage.setItem("quar-fold-"+d.id, d.open ? "1" : "0"); }catch(_){} } }, true);
 function renderNarrList(v){
   const pats = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0) && facById(p.faction));
   const list = [...narr.stories].sort((a,b)=>(b.updated||0)-(a.updated||0));
-  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="beta">Beta</span></h1></div>${NARR_WARN()}
+  v.innerHTML = `<div class="hhead"><h1>Narrative <span class="beta">Beta</span></h1><div class="hhead-r">${pgCtl("Narr")}${ownCtl("Narr")}</div></div>${NARR_WARN()}
   <div class="card"><header><h2>Start a story</h2></header><div class="nstart">
-    <p class="hint">Pick one of your patrols. It's copied into a <b>story patrol</b> of its own, so changing one never changes the other. Give every rhyfler a backstory and set out who's friends, rivals, family or sweethearts. This is all for storytelling: it doesn't change any rules or stats.</p>
+    ${tipFold("narr", "How stories work", `Pick one of your patrols. It's copied into a <b>story patrol</b> of its own, so changing one never changes the other. Give every rhyfler a backstory and set out who's friends, rivals, family or sweethearts. This is all for storytelling: it doesn't change any rules or stats.`)}
     ${pats.length ? `<div class="nrow"><div class="field"><label for="nPatrol">Patrol</label><select id="nPatrol">${pats.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc(facById(p.faction).name)} · ${p.total||0} pts</option>`).join("")}</select></div><button class="btn" type="button" data-n="new">Start story</button></div>`
       : `<p class="hint">You don't have any saved patrols yet. Build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a> first.</p>`}
   </div></div>
@@ -1586,7 +1951,7 @@ function narrRefreshRels(s){ document.querySelectorAll("#view-narr .nchar").forE
 function renderStory(v, s){
   const f = facById(s.faction);
   const ed = narrUI.editRel && narrUI.editRel.story===s.id ? narrUI.editRel : null;
-  v.innerHTML = `<div class="viewbar"><a class="btn ghost" href="#/narrative" data-go="#/narrative" style="text-decoration:none">← All stories</a></div>
+  v.innerHTML = `<div class="viewbar"><a class="btn ghost" href="#/narrative" data-go="#/narrative" style="text-decoration:none">← All stories</a><span style="margin-right:auto"></span><span class="switches">${pgCtl("Story")}${ownCtl("Story", s.faction)}</span></div>
   <div class="card nhead"><header><div class="ptitle">${flagImg(f)}<h2>${esc(s.name||"Untitled story")}</h2></div><span class="hint">${s.chars.length} rhyfler${s.chars.length===1?"":"s"}</span></header>
     <div class="nhb"><div class="field"><label for="nName">Story name</label><input id="nName" type="text" maxlength="60" value="${esc(s.name)}" data-nf="name" autocomplete="off"></div>
     <p class="hint">${esc(f?f.name:"")} · ${s.limit||"?"} points${s.from?` · started from your patrol “${esc(s.from)}”`:""}. Changes here never affect that patrol.</p>
@@ -1702,7 +2067,7 @@ function battlesCard(){
         <span class="bhead">${esc(R ? R.headline : "Battle")}</span>
         <span class="hint">${esc(when)} · ${esc(ms.name)} · ${esc(g.name)} ${g.vp[0]}–${g.vp[1]} ${esc(battleOpp(g))}</span></div>
         <div class="bacts"><button class="btn ghost" type="button" data-bt="view" data-id="${esc(b.id)}">View report</button><button class="btn ghost" type="button" data-bt="edit" data-id="${esc(b.id)}">Edit</button><button class="btn ghost${btUI.confirmDel===b.id?" warn":""}" type="button" data-bt="del" data-id="${esc(b.id)}">${btUI.confirmDel===b.id?"Tap again to delete":"Delete"}</button></div></article>`; }).join("")}</div>`
-      : `<p class="hint bnone">When a game is over, press <b>Save battle</b> on the results to keep it here. You can come back to its battle report and edit it any time.</p>`}
+      : tipFold("battles", "Saving battles", `When a game is over, press <b>Save battle</b> on the results to keep it here. You can come back to its battle report and edit it any time.`)}
   </div>${btUI.view ? battleViewModal() : ""}${btUI.edit ? battleEditModal() : ""}`;
 }
 function battleViewModal(){
@@ -1795,24 +2160,29 @@ const gcEvent = name => gcSend({path: name, title: name, event: true});
    "Last backup" is remembered so we can nudge gently when there are changes that aren't in a backup yet. */
 const BK_KEY = "quar-backup-last", BK_DUE_DAYS = 14;
 const bkLast = () => { try{ return +localStorage.getItem(BK_KEY) || 0; }catch(e){ return 0; } };
-function bkLatestChange(){ let t = 0; (state.saved||[]).forEach(p=>{ t = Math.max(t, +p.updated||0); }); narr.stories.forEach(x=>{ t = Math.max(t, +x.updated||0); }); battles.forEach(x=>{ t = Math.max(t, +x.updated||0); }); return t; }
+function bkLatestChange(){ let t = 0; (state.saved||[]).forEach(p=>{ t = Math.max(t, +p.updated||0); }); narr.stories.forEach(x=>{ t = Math.max(t, +x.updated||0); }); battles.forEach(x=>{ t = Math.max(t, +x.updated||0); }); t = Math.max(t, +myModels.updated||0); return t; }
 function bkAgo(ms){ const d = Math.floor((Date.now()-ms)/864e5); if (d<1) return "today"; if (d===1) return "yesterday"; if (d<14) return `${d} days ago`; if (d<60) return `${Math.floor(d/7)} weeks ago`; return `${Math.floor(d/30)} months ago`; }
 function backupBar(){
-  const last = bkLast(), changed = bkLatestChange(), has = (state.saved||[]).length || narr.stories.length || battles.length;
+  const last = bkLast(), changed = bkLatestChange(), has = (state.saved||[]).length || narr.stories.length || battles.length || Object.keys(myModels.owned).length;
   const unsaved = has && changed > last;
   const due = unsaved && (!last || Date.now()-last > BK_DUE_DAYS*864e5);
   const txt = !last ? "No backup yet" : `Last backup: ${bkAgo(last)}${unsaved ? (due ? " · changes since, time for a new one" : " · changes since") : " ✓"}`;
   return `<div class="bkbar${due?" due":""}"><span class="bkt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${esc(txt)}</span>
-    <span class="bkb"><button class="btn${due?"":" ghost"}" type="button" data-bk="save"${has||game?"":" disabled"}>Save backup<span class="bkw">&nbsp;file</span></button><label class="btn ghost bkfile">Load backup<span class="bkw">&nbsp;file</span><input type="file" data-bk="load" accept=".json,application/json" hidden></label></span></div>`;
+    <span class="bkb"><button class="btn${due?"":" ghost"}" type="button" data-bk="save"${has||game?"":" disabled"}>Save backup<span class="bkw">&nbsp;file</span></button><label class="btn ghost bkfile">Load backup<span class="bkw">&nbsp;file</span><input type="file" data-bk="load" accept=".json,application/json" hidden></label><button type="button" class="bkhide" data-warnhide="${state.hideWarn?0:1}" title="${state.hideWarn?"Show the saving and backup warning again":"Hide the saving and backup warning on every page"}">${state.hideWarn?"Show warning":`<span aria-hidden="true">✕</span> Hide warning`}</button></span></div>`;
 }
+// "Hide warning": hides the "saved only in this browser" warnings and backup reminders on every page (remembered).
+// The Save / Load backup buttons stay, as a small row.
+function setHideWarn(v, save=true){ state.hideWarn = v; document.body.classList.toggle("warn-hidden", v); if (save){ persist(); bkRefresh(); } }
+document.addEventListener("click", e=>{ const b = e.target.closest("[data-warnhide]"); if (!b) return; setHideWarn(b.dataset.warnhide==="1");
+  const nb = document.querySelector("[data-warnhide]"); if (nb) nb.focus({preventScroll:true}); toast(state.hideWarn ? "Warning hidden. Press Show warning to bring it back" : "Warning shown"); });
 function bkRefresh(){ document.querySelectorAll(".bkslot").forEach(x=>{ x.innerHTML = backupBar(); }); }
 function backupSave(){
-  const data = {app:"quar-patrol-builder", kind:"full", v:1, saved:new Date().toISOString(), patrols:state.saved||[], stories:narr.stories, game:game||null, battles};
+  const data = {app:"quar-patrol-builder", kind:"full", v:1, saved:new Date().toISOString(), patrols:state.saved||[], stories:narr.stories, game:game||null, battles, models:myModels};
   const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], {type:"application/json"})), l = document.createElement("a");
   l.href = url; const dt = new Date(), ymd = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
   l.download = `Quar Patrol Builder backup ${ymd}.json`; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url), 2000);
   try{ localStorage.setItem(BK_KEY, String(Date.now())); }catch(e){}
-  bkRefresh(); toast("Backup file saved: your patrols, stories, game and battles"); gcEvent("backup-saved");
+  bkRefresh(); toast("Backup file saved: your patrols, stories, game, battles and models"); gcEvent("backup-saved");
 }
 // Stories from a backup: add new ones, replace one only if the backup's copy is newer
 function narrMerge(list){
@@ -1836,16 +2206,31 @@ function patrolMerge(list){
     if (i>=0){ if ((+state.saved[i].updated||0) < clean.updated){ state.saved[i] = Object.assign({}, state.saved[i], clean); updated++; } } else { state.saved.push(clean); added++; } });
   return {added, updated};
 }
+// My models from a backup: add units you don't have yet; change a count only if the backup's copy is newer. Never removes.
+function modelsMerge(m){
+  let added = 0, updated = 0; if (!m || typeof m!=="object" || !m.owned || typeof m.owned!=="object") return {added, updated};
+  const known = new Set(DATA.factions.flatMap(f=>f.units.map(u=>u.id))), newer = (+m.updated||0) > (+myModels.updated||0);
+  Object.entries(m.owned).forEach(([id,n])=>{ n = Math.max(0, Math.min(99, Math.floor(+n||0))); if (!n || !known.has(id)) return;
+    const cur = owned(id); if (!cur){ myModels.owned[id] = n; added++; } else if (newer && cur!==n){ myModels.owned[id] = n; updated++; } });
+  // Built / Painted ticks: add ticks from the backup; if the backup is newer, take its ticks for the units it has
+  // Built / Painted per model: take the backup's if it's newer, or if this browser has none for that unit
+  ["built","painted"].forEach(k=>{ const src = (m[k] && typeof m[k]==="object") ? m[k] : {}; myModels[k] = myModels[k] || {};
+    Object.keys(m.owned).forEach(id=>{ if (!known.has(id) || src[id]==null) return; const cur = myModels[k][id];
+      const v = Array.isArray(src[id]) ? src[id].slice(0,99).map(Boolean) : src[id]===true ? true : typeof src[id]==="number" ? Math.max(0, Math.min(99, Math.floor(src[id]))) : null; if (v==null) return;
+      if (cur==null || (newer && JSON.stringify(cur)!==JSON.stringify(v))){ myModels[k][id] = v; updated++; } }); });
+  if (added || updated){ myModels.updated = Math.max(+myModels.updated||0, Math.min(+m.updated||0, Date.now())); ownSave(); }
+  return {added, updated};
+}
 function backupLoad(file){
   if (!file) return; if (file.size > 5e6){ toast("That file is too big to be a builder backup"); return; }
   const fr = new FileReader(); fr.onload = ()=>{ let d; try{ d = JSON.parse(fr.result); }catch(e){ toast("That isn't a backup file from this builder"); return; }
     if (!d || d.app!=="quar-patrol-builder" || !["full","narrative"].includes(d.kind)){ toast("That isn't a backup file from this builder"); return; }
-    const P = d.kind==="full" ? patrolMerge(d.patrols) : {added:0, updated:0}, S = narrMerge(d.stories), Bt = d.kind==="full" ? battlesMerge(d.battles) : {added:0, updated:0};
+    const P = d.kind==="full" ? patrolMerge(d.patrols) : {added:0, updated:0}, S = narrMerge(d.stories), Bt = d.kind==="full" ? battlesMerge(d.battles) : {added:0, updated:0}, M = d.kind==="full" ? modelsMerge(d.models) : {added:0, updated:0};
     let g = "";
     if (d.kind==="full" && d.game && typeof d.game==="object" && Array.isArray(d.game.units)){ if (!game){ game = d.game; saveGame(); g = " and the game in progress"; } else if (JSON.stringify(game)!==JSON.stringify(d.game)) g = ". Your current game was kept (finish or end it to load the one in the backup)"; }
     persist(); narrSave(); battlesSave();
     { const t = Date.parse(d.saved||""); if (t && t > bkLast()) try{ localStorage.setItem(BK_KEY, String(Math.min(t, Date.now()))); }catch(e){} }
-    const n = (k, w, ws) => k ? `${k} ${k===1?w:ws}` : "", parts = [n(P.added,"patrol added","patrols added"), n(P.updated,"patrol updated","patrols updated"), n(S.added,"story added","stories added"), n(S.updated,"story updated","stories updated"), n(Bt.added,"battle added","battles added"), n(Bt.updated,"battle updated","battles updated")].filter(Boolean);
+    const n = (k, w, ws) => k ? `${k} ${k===1?w:ws}` : "", parts = [n(P.added,"patrol added","patrols added"), n(P.updated,"patrol updated","patrols updated"), n(S.added,"story added","stories added"), n(S.updated,"story updated","stories updated"), n(Bt.added,"battle added","battles added"), n(Bt.updated,"battle updated","battles updated"), n(M.added,"unit added to My models","units added to My models"), n(M.updated,"My models count updated","My models counts updated")].filter(Boolean);
     if (!parts.length && !g.startsWith(" and")){ toast(`Nothing new in that backup: everything in it is already here${g}`); return; }
     const msg = `Backup loaded: ${parts.join(", ") || "nothing new"}${g}.`;
     // reload so every page (patrol checks, totals, the tracker) is rebuilt from the loaded data
@@ -2008,7 +2393,7 @@ function missionInfo(){
 document.addEventListener("change", e=>{ if (e.target.id==="gMission" || e.target.id==="gRole") missionInfo(); });
 function renderGame(){
   const v = $("#view-game");
-  const head = `<div class="hhead"><h1>Game Tracker</h1><div class="hhead-r">${game?`<div class="gendbtns">${game.ended?"":`<button class="btn gendg" type="button" data-g="endgame">End Game</button>`}<button class="btn gnewg" type="button" data-g="end">New game</button></div>`:""}</div></div>`;
+  const head = `<div class="hhead"><h1>Game Tracker</h1><div class="hhead-r stack"><span class="switches">${pgCtl("Game")}${ownCtl("Game", game && game.faction && facById(game.faction) ? game.faction : "")}</span>${game?`<div class="gendbtns">${game.ended?"":`<button class="btn gendg" type="button" data-g="endgame">End Game</button>`}<button class="btn gnewg" type="button" data-g="end">New game</button></div>`:""}</div></div>`;
   if (!game || (game.faction && !facById(game.faction))){
     document.body.style.removeProperty("--fac");
     const list = sortedPatrols().filter(p=>Object.values(p.items||{}).some(q=>q>0));
@@ -2021,7 +2406,7 @@ function renderGame(){
       <div class="field" id="gRoleWrap"></div>
       </div><div class="gminfo" id="gMissionInfo"></div>${importBox("gMeSetup", false)}${importBox("gOppSetup", false)}<div class="gsetup"><button class="btn" type="button" data-g="start">Start game</button></div>`}
       ${list.length ? "" : `<p class="hint gnote">No saved patrols on this device. Use <b>Import Your Patrol</b> to bring one over, build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, or just track Turns, Pluck, Victory Points and losses.</p>`}
-      <p class="hint gnote">Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too. The mission sets the number of Turns, who goes first and the starting Pluck.</p>
+      ${tipFold("game", "What the Game Tracker does", `Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too. The mission sets the number of Turns, who goes first and the starting Pluck.`)}
 </div>` + battlesCard();
     missionInfo();
     return;
@@ -2602,20 +2987,22 @@ function renderChanges(){
   const log = DATA.changelog||[];
   const fname = id => { const f = facById(id); return f ? `<b class="clfac">${esc(f.name)}</b>` : ""; };
   $("#view-changes").innerHTML = `
-  <div class="hhead"><h1>Rules Changelog</h1><div class="hhead-r"><label class="switch" for="showPagesCl"><input type="checkbox" id="showPagesCl" class="pgtoggle"${state.showPages?" checked":""}> Show rulebook pages</label></div></div>
-  <p class="refintro hint">Changes to unit profiles and rules in this builder: new rulebook versions, and corrections where the printed book has a mistake. Newest first.</p>
+  <div class="hhead"><h1>Rules Changelog</h1><div class="hhead-r"><label class="switch" for="showPagesCl"><input type="checkbox" id="showPagesCl" class="pgtoggle"${state.showPages?" checked":""}> Show rulebook pages</label>${ownCtl("Cl")}</div></div>
+  ${tipFold("changes", "About this page", `Changes to unit profiles and rules in this builder: new rulebook versions, and corrections where the printed book has a mistake. Newest first.`)}
   ${log.map(r=>`<article class="clrel"><header><h2>${esc(r.title)}</h2><span class="hint">${esc(new Date(r.date+"T12:00").toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"}))} · ${esc(r.source)}</span></header>
     ${r.intro?`<p>${pgWrap(r.intro)}</p>`:""}
     ${r.changes&&r.changes.length?`<ul class="cllist">${r.changes.map(c=>`<li${facById(c.faction)&&facById(c.faction).color?` style="--fac:${esc(facById(c.faction).color)}"`:""}>${fname(c.faction)}${c.faction?" ":""}${pgWrap(c.text)}</li>`).join("")}</ul>`:""}
   </article>`).join("") || `<p class="empty">No changes yet.</p>`}`;
 }
 function renderFactions(){
-  $("#fgrid").innerHTML = DATA.factions.map(f=>{
-    const n = f.units.length, cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
+  const facs = state.ownedOnly ? DATA.factions.filter(f=>myShown(f).length) : DATA.factions;
+  if (!facs.length){ $("#fgrid").innerHTML = ownEmptyFor(null, "Show all factions"); return; }
+  $("#fgrid").innerHTML = facs.map(f=>{
+    const n = f.units.length, mine = ownedTotal(f), cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
     const desc = f.intro ? esc(f.intro) : `${n} unit profiles: ${esc(cats.join(", "))}.`;
     return `<a class="fcard" href="#/faction/${f.id}" data-go="#/faction/${f.id}"${f.color?` style="--fac:${f.color}"`:""}>
       <span class="fart${f.artCrop&&f.artCrop.z?" zoom":""}">${f.art?`<img src="${esc(f.art)}" alt="" loading="lazy"${artCropStyle(f.artCrop)}>`:""}</span>
-      <span class="fbody"><span class="fname">${esc(f.name)}</span>${f.tagline?`<span class="ftag">${esc(f.tagline)}</span>`:""}<span class="fdesc">${desc}</span><span class="fmeta2">${n} units<span class="pg"> · ${esc(f.pages)}</span></span></span></a>`;
+      <span class="fbody"><span class="fname">${esc(f.name)}</span>${f.tagline?`<span class="ftag">${esc(f.tagline)}</span>`:""}<span class="fdesc">${desc}</span><span class="fmeta2">${n} units${mine?`<span class="ownc"> · ${mine} model${mine===1?"":"s"} owned</span>`:""}<span class="pg"> · ${esc(f.pages)}</span></span></span></a>`;
   }).join("");
 }
 // Card picture framing (always fills the panel, no empty space).
@@ -2645,26 +3032,30 @@ function toggleRefFilter(id){
 function renderRef(id){
   if (renderRef.last !== id) refFilter.clear(); renderRef.last = id;
   useFaction(id); const f = FAC;
-  const cats = f.categories.filter(c=>f.units.some(u=>u.cat===c));
-  const rules = new Map(); f.units.forEach(u=>allAbilities(u).forEach(a=>{ if(!rules.has(a.name)) rules.set(a.name,a); }));
-  f.weapons.forEach(w=>w.traits.forEach(t=>{ const i=abilityInfo(t); if(i && !rules.has(baseName(t))) rules.set(baseName(t),{name:baseName(t),full:t,...i}); }));
+  const list = showUnits(f), cats = f.categories.filter(c=>list.some(u=>u.cat===c));
+  // With "Only my models" on, the weapon table and special rules list only what your models use
+  const wUsed = state.ownedOnly ? new Set(list.flatMap(u=>(u.profiles||[]).flatMap(p=>p.equip.map(findW).filter(Boolean)))) : null;
+  const weapons = wUsed ? f.weapons.filter(w=>wUsed.has(w)) : f.weapons;
+  const rules = new Map(); list.forEach(u=>allAbilities(u).forEach(a=>{ if(!rules.has(a.name)) rules.set(a.name,a); }));
+  weapons.forEach(w=>w.traits.forEach(t=>{ const i=abilityInfo(t); if(i && !rules.has(baseName(t))) rules.set(baseName(t),{name:baseName(t),full:t,...i}); }));
   const rl = [...rules.values()].sort((a,b)=>a.name.localeCompare(b.name));
   $("#view-ref").innerHTML = `
-  <div class="viewbar"><a class="btn ghost" href="#/factions" data-go="#/factions" style="text-decoration:none">← All factions</a><span style="margin-right:auto"></span><label class="switch" for="showPagesRef"><input type="checkbox" id="showPagesRef" class="pgtoggle"${state.showPages?" checked":""}> Show rulebook pages</label></div>
+  <div class="viewbar"><a class="btn ghost" href="#/factions" data-go="#/factions" style="text-decoration:none">← All factions</a><span style="margin-right:auto"></span><span class="switches"><label class="switch" for="showPagesRef"><input type="checkbox" id="showPagesRef" class="pgtoggle"${state.showPages?" checked":""}> Show rulebook pages</label><span class="owngrp"><label class="switch" for="ownOnlyRef"><input type="checkbox" id="ownOnlyRef" class="owntoggle"${state.ownedOnly?" checked":""}> Only my models</label></span></span></div>
   <div class="refhero"><span class="fart">${f.art?`<img src="${esc(f.art)}" alt="">`:""}</span><div>
     <div class="ptitle">${flagImg(f,"flag lg")}<h1>${esc(f.name)}</h1></div>${f.tagline?`<span class="ftag">${esc(f.tagline)}</span>`:""}
     ${f.intro?`<p class="refintro">${esc(f.intro)}<span class="pg"> (${esc(f.introSrc)})</span></p>`:`<p class="refintro hint">The rulebooks have no introduction for this faction.</p>`}
-    <div class="refacts"><button class="btn buildcta" data-build="${f.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Build a patrol</button><span class="hint">${f.units.length} units<span class="pg"> · ${esc(f.pages)}</span></span></div>
+    <div class="refacts"><button class="btn buildcta" data-build="${f.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Build a patrol</button><span class="hint">${state.ownedOnly ? `${list.length} of ${f.units.length} units in my ${ownAdj()}models` : `${f.units.length} units`}<span class="pg"> · ${esc(f.pages)}</span></span></div>
   </div></div>
-  <div class="refjump" role="group" aria-label="Show sections"><button type="button" class="chip all" data-filter="" aria-pressed="true">Show all</button>${cats.map(c=>`<button type="button" class="chip" data-filter="ref-${slug(c)}" aria-pressed="false">${esc(c)}</button>`).join("")}<button type="button" class="chip" data-filter="ref-weapons" aria-pressed="false">Weapons</button><button type="button" class="chip" data-filter="ref-rules" aria-pressed="false">Special rules</button></div>
+  <div class="refjump" role="group" aria-label="Show sections"><button type="button" class="chip all" data-filter="" aria-pressed="true">Show all</button>${cats.map(c=>`<button type="button" class="chip" data-filter="ref-${slug(c)}" aria-pressed="false">${esc(c)}</button>`).join("")}${weapons.length?`<button type="button" class="chip" data-filter="ref-weapons" aria-pressed="false">Weapons</button>`:""}${rl.length?`<button type="button" class="chip" data-filter="ref-rules" aria-pressed="false">Special rules</button>`:""}</div>
   <div class="ddall"><button type="button" data-ddall="1">Open all</button><button type="button" data-ddall="0">Close all</button></div>
-  ${cats.map(c=>{ const us=f.units.filter(u=>u.cat===c), k=ddKey("ref:"+f.id,c); return `<details class="catdd ref" id="ref-${slug(c)}" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">${esc(c)}</h2><span class="ccount">${us.length} unit${us.length===1?"":"s"}</span></summary><div class="rgrid">${us.map(refCard).join("")}</div></details>`;}).join("")}
-  ${(k=>`<details class="catdd ref" id="ref-weapons" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Weapons</h2><span class="ccount">${f.weapons.length} weapon${f.weapons.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__weapons"))}
-  <div class="rrules scroll"><table class="stats" style="margin:8px 0"><thead><tr><th>Weapon</th><th>R</th><th>Sn</th><th>Traits</th></tr></thead><tbody>${f.weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${tips(w.traits)}</td></tr>`).join("")}</tbody></table></div>
-  </details>
-  ${(k=>`<details class="catdd ref" id="ref-rules" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Special rules</h2><span class="ccount">${rl.length} rule${rl.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__rules"))}
-  <div class="rrules">${rl.map(a=>`<div class="rrule"><b>${esc(a.name)}</b> ${pgWrap(a.text)}<span class="src pg">${esc(a.src)}</span></div>`).join("")}</div></details>`;
-  applyRefFilter();
+  ${state.ownedOnly && !list.length ? ownEmptyFor(f, "Show all units") : ""}
+  ${cats.map(c=>{ const us=list.filter(u=>u.cat===c), k=ddKey("ref:"+f.id,c); return `<details class="catdd ref" id="ref-${slug(c)}" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">${esc(c)}</h2><span class="ccount">${us.length} unit${us.length===1?"":"s"}</span></summary><div class="rgrid">${us.map(refCard).join("")}</div></details>`;}).join("")}
+  ${weapons.length ? `${(k=>`<details class="catdd ref" id="ref-weapons" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Weapons</h2><span class="ccount">${weapons.length} weapon${weapons.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__weapons"))}
+  <div class="rrules scroll"><table class="stats" style="margin:8px 0"><thead><tr><th>Weapon</th><th>R</th><th>Sn</th><th>Traits</th></tr></thead><tbody>${weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${tips(w.traits)}</td></tr>`).join("")}</tbody></table></div>
+  </details>` : ""}
+  ${rl.length ? `${(k=>`<details class="catdd ref" id="ref-rules" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Special rules</h2><span class="ccount">${rl.length} rule${rl.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__rules"))}
+  <div class="rrules">${rl.map(a=>`<div class="rrule"><b>${esc(a.name)}</b> ${pgWrap(a.text)}<span class="src pg">${esc(a.src)}</span></div>`).join("")}</div></details>` : ""}`;
+  applyRefFilter(); mmBadges();
 }
 function openPatrol(id){
   const p = state.saved.find(x=>x.id===id); if(!p) return;
@@ -2826,9 +3217,13 @@ async function init(){
   const limOpts = DATA.rules.presetLimits.map(p=>`<option value="${p}">${p}</option>`).join("") + `<option value="custom">Custom…</option>`;
   $("#faction").innerHTML = facOpts; $("#newFaction").innerHTML = facOpts;
   makePicker($("#faction")); makePicker($("#newFaction"));
+  $("#mmFac").innerHTML = facOpts; makePicker($("#mmFac"));
+  $("#mmFac").addEventListener("change", e=>{ mmFid = e.target.value; mmRender(); });
+  $("#mmDone").addEventListener("click", ()=>mmClose());
   $("#limit").innerHTML = limOpts; $("#newLimit").innerHTML = limOpts;
   setFaction(state.faction);
-  setShowPages(!!state.showPages, false);
+  document.querySelectorAll("details.tipfold[data-fold]").forEach(d=>{ d.open = foldOpen(d.dataset.fold); });
+  setShowPages(!!state.showPages, false); setOwnedOnly(!!state.ownedOnly, false); setHideWarn(!!state.hideWarn, false); mmBadges();
   $("#faction").value = FAC.id;
   if (DATA.rules.presetLimits.includes(state.limit)) $("#limit").value = String(state.limit);
   else { $("#limit").value = "custom"; $("#customWrap").hidden=false; $("#customPts").value = state.limit; }
@@ -3090,7 +3485,7 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-02.67";
+const APP_VERSION = "2026-11-04.91";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
