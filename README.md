@@ -27,6 +27,12 @@ Build a patrol, see your points and Force Allowance as you go, and get warned th
 - **Rules changelog**: lists every place where the builder differs from the printed book, and what changes in each new rulebook version.
 - Light and dark themes, plus a **Text size** button under the theme button that opens a slider (85%–140%); works on desktop and phone.
 
+## Run locally
+
+On Windows, double-click **Open Local Site.bat** to start a local server and open the site in your default browser. Python 3 must be installed. Keep the server window open while using the site; close it or press Ctrl+C to stop. The site is served only on this computer at `http://127.0.0.1:8000`.
+
+Local browser saves are separate from the hosted site's saves. Use **Save backup file** and **Load backup file** to transfer your patrols and games between them.
+
 ## Where the data comes from
 
 All unit profiles, points and rules come only from the official rulebooks:

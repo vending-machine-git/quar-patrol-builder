@@ -624,8 +624,18 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 .gsb-swap{all:unset;cursor:pointer;font-size:.95em;line-height:1;padding:4px 9px;border-radius:999px;border:1px solid var(--rule);background:var(--panel);color:var(--ink)}
 .gsb-swap:hover{border-color:var(--ink)} .gsb-swap:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 .gsb-final{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.06em;font-size:.95em;color:var(--muted)}
-.glossrow{display:flex;flex-wrap:wrap;gap:8px 24px;padding:0 4px}
-.glossrow .goppl{flex:1 1 16em}
+.gsb-loss{flex:0 0 auto;align-self:stretch;margin-top:4px;border-top:1px dashed var(--accent-line);padding-top:5px;text-align:center}
+.gsb-loss>summary{display:inline-flex;align-items:center;gap:6px;font-size:.72em;letter-spacing:.1em;color:var(--accent)}
+.gsb-loss>summary::-webkit-details-marker{display:none}
+.gsb-loss>summary::before{content:"▸";display:inline-block;transition:transform .15s}
+.gsb-loss[open]>summary::before{transform:rotate(90deg)}
+.gsb-loss>summary b{font-family:var(--f-mono);color:var(--ink);letter-spacing:0}
+.gsb-loss .gopplin{justify-content:center;align-items:center;gap:6px 16px;margin-top:6px}
+.gsb-loss .gctr{align-items:center}
+.gsb-loss .gbox{border:0;background:transparent;gap:4px}
+.gsb-loss .gbox output{font-size:1.1em;min-width:2em}
+.gsb-loss .gbtn{width:1.75em;height:1.75em;font-size:.95em;border-width:1px}
+.gsb-loss .gsub{flex-basis:100%;text-align:center;max-width:none}
 @media (max-width:480px){
   .gsb-side{padding:7px 4px 7px}
   .gsb-vp output b{font-size:1.95em}
@@ -661,27 +671,6 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 .gunit.w-nerve{border-left-color:var(--st-nerve)} .gunit.w-pin{border-left-color:var(--st-pin)} .gunit.w-wound{border-left-color:var(--st-wound)}
 .gunit.out{opacity:.55;filter:saturate(.6);border-left-color:var(--st-out)}
 .gunit.out header b,.gunit.out .dtn{text-decoration:line-through;text-decoration-thickness:2px}
-/* phone bottom bar: Turn / Round and the Next Round button in thumb reach */
-.gdock{display:none}
-@media (max-width:860px){
-  .gdock{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;gap:12px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper);
-    padding:9px max(14px,env(safe-area-inset-right,0px)) calc(9px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));box-shadow:0 -4px 14px rgba(0,0,0,.2)}
-  .gdl{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
-  .gdt{font-size:.9em;white-space:nowrap} .gdt b{font-family:var(--f-mono);font-size:1.1em}
-  .gdrow{display:flex;align-items:center;gap:8px;min-width:0}
-  .gdwho{font-size:.78em;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-  .gddots{display:flex;gap:4px;flex:0 0 auto}
-  .gddots i{width:9px;height:9px;border-radius:50%;border:1.5px solid color-mix(in oklab, var(--paper) 55%, transparent)}
-  .gddots i.done{background:color-mix(in oklab, var(--paper) 55%, transparent);border-color:transparent}
-  .gddots i.now{background:var(--brass);border-color:var(--brass);transform:scale(1.25)}
-  .gdnext{font:inherit;font-weight:800;cursor:pointer;border:0;border-radius:6px;padding:12px 16px;background:var(--brass);color:var(--on);white-space:nowrap;font-size:1.02em}
-  .gdnext.danger{background:var(--bad)}
-  .gdnext:active{transform:translateY(1px)}
-  #view-game.hasdock{padding-bottom:84px}
-  #view-game .gctr-end{display:none}
-  body[data-view="game"] .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
-  body[data-view="game"] .updbar{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
-}
 @media print{ .gdock,.gtabs{display:none!important} .gsb{position:static;box-shadow:none} .gforces>[data-side]{display:block!important} }
 
 /* ---------- Game Tracker start screen (4 Nov): You vs Opponent face-off, mission tiles, big Start button ---------- */
@@ -759,6 +748,149 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 .newpc>.imp{padding:0 16px}
 @media (max-width:1100px){ .newp{grid-template-columns:minmax(0,1fr) auto} .newp-hero{grid-column:1/-1;max-width:none} .newp-fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .newp-name{grid-column:1/-1} .newp-ptsf{grid-column:1/-1} }
 @media (max-width:640px){ .newp{grid-template-columns:1fr;padding:14px} .newp-fields{grid-template-columns:1fr} .newp-pts{display:grid;width:100%;grid-template-columns:repeat(5,minmax(0,1fr))} .newp-pts button{padding:0 4px} .newp-pts button{border-left:0;box-shadow:-1px 0 0 var(--accent-line)} .newp-go{width:100%;padding:14px} }
+
+/* ---------- One combined scoreboard (5 Nov): mission strip + score sides + Turn/Round controls ---------- */
+.gsb-top{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:2px 8px;padding:6px 12px;background:var(--sunk);border-bottom:1px solid var(--rule);font-size:.85em;font-weight:700;text-align:center}
+.gsb-top .gmn{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-weight:400;font-size:1.1em}
+.gsb-top .grole{color:var(--muted);font-weight:600}
+.gsb-sub{font-size:.72em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-top:-3px}
+.gsb-vs{font-family:var(--f-display);font-size:.95em;letter-spacing:.06em;color:var(--muted)}
+.gsb-ctl{grid-column:1/-1;display:flex;align-items:center;gap:8px 18px;padding:8px 12px;border-top:1px solid var(--rule);background:var(--sunk)}
+.gsb-step{display:flex;flex-direction:column;align-items:center;gap:1px}
+.gsb-step small{font-size:.6em;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.gsb-step>div{display:flex;align-items:center;gap:6px}
+.gsb-step b{font-family:var(--f-mono);font-size:1.25em;font-variant-numeric:tabular-nums;min-width:2.2em;text-align:center}
+.gsb-step b i{font-style:normal;font-size:.62em;color:var(--muted);font-weight:500}
+.gsb-ctl .gbtn{width:1.9em;height:1.9em;font-size:1em;border-color:var(--rule);color:var(--ink)}
+.gsb-dots{display:flex;gap:5px;align-items:center}
+.gsb-dots i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--rule)}
+.gsb-dots i.done{background:var(--muted);border-color:var(--muted)}
+.gsb-dots i.now{background:var(--brass);border-color:var(--brass);transform:scale(1.3)}
+.gsb-hint{font-size:.75em;color:var(--muted);flex:1;min-width:0}
+.gsb-next{margin-left:auto;font:inherit;font-weight:800;cursor:pointer;border:0;border-radius:999px;padding:11px 20px;background:var(--brass);color:var(--on);white-space:nowrap;box-shadow:0 3px 10px -4px rgba(0,0,0,.45)}
+.gsb-next.danger{background:var(--bad)}
+.gsb-next:hover{filter:brightness(1.08)} .gsb-next:active{transform:translateY(1px)}
+.gsb-next:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@media (max-width:860px){ .gsb-hint{display:none} }
+@media (max-width:560px){
+  .gsb-dots{display:none}
+  .gsb-ctl{gap:6px 8px;padding:7px 8px;flex-wrap:wrap}
+  .gsb-next{flex:1 0 auto}
+  .gsb-step>div{gap:2px}
+  .gsb-step b{font-size:1.05em;min-width:1.7em}
+  .gsb-ctl .gbtn{width:1.7em;height:1.7em}
+  .gsb-next{padding:11px 14px;font-size:1em}
+  .gsb-next.wide .gsb-lg{display:inline}
+  .gsb-lg{display:none}
+  .gsb-top{font-size:.78em;padding:5px 8px}
+  .gsb-sub{display:none}
+}
+
+/* ---------- Game Tracker unit cards, profile first (5 Nov) ---------- */
+.gprof{display:flex;flex-direction:column;gap:8px}
+.gtiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(3.1em,1fr));gap:5px;max-width:24em}
+.gt{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;padding:3px 7px 4px;border:1px solid var(--rule);border-top:3px solid var(--accent);border-radius:4px;background:var(--sunk);line-height:1.05}
+.gt small{font-size:.62em;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gt b{font-family:var(--f-mono);font-size:1.15em;font-weight:700;font-variant-numeric:tabular-nums}
+.gt.hl{border-top-color:var(--st-wound)} .gt.hl b{color:var(--st-wound)}
+.gtlab{align-self:center;font-size:.66em;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-right:2px}
+.gtiles .gtlab{grid-column:1/-1;justify-self:start;margin:0}
+.gact{margin:-2px 0 0;font-size:.82em;color:var(--muted)} .gact b{color:var(--ink)}
+.gweap{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.gweap li{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 10px;padding:5px 8px;border-radius:4px;background:color-mix(in oklab, var(--accent) 7%, var(--panel));border:1px solid color-mix(in oklab, var(--accent) 22%, var(--rule))}
+.gwn{font-weight:700}
+.gwr{font-family:var(--f-mono);font-size:.82em;color:var(--muted)} .gwr b{color:var(--ink)}
+.gwr.gmelee{font-family:inherit;font-style:italic}
+.gtrs{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px}
+.gtr{display:inline-flex;font-size:.8em;padding:1px 8px;border-radius:999px;border:1px solid var(--accent-line);background:var(--panel)}
+.gabl{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.garm{display:flex;flex-direction:column;gap:2px;font-size:.82em}
+.garm>span:not(.gtlab){display:flex;gap:6px} .garm small{min-width:3.4em;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-size:.85em}
+.garm .gtlab{align-self:flex-start}
+.gprof .rule{margin:0;font-size:.8em}
+.gunit .rdd{font-size:.9em}
+.gstat{border-top:1px dashed var(--rule);padding-top:6px}
+.gstat>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gstat>summary::-webkit-details-marker{display:none}
+.gstat>summary::before{content:"▸";color:var(--muted);transition:transform .15s;font-size:.85em}
+.gstat[open]>summary::before{transform:rotate(90deg)}
+.gstl{font-size:.68em;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gstat .gnow{flex:1;min-width:0}
+.gstat .gnow .gst{font-size:.68em;padding:1px 7px 1px 5px}
+.gstat .gchips{margin-top:8px}
+.gstat .gchip{font-size:.74em}
+.gunit.out .gprof{display:none}
+.gunit.out .rdd{display:none}
+
+/* status buttons as icon tiles (5 Nov) */
+.gstat .gchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(5.2em,1fr));gap:6px}
+.gstat .gchip{flex-direction:column;justify-content:flex-start;gap:4px;padding:8px 4px 7px;border-radius:8px;border:1.5px solid var(--rule);font-size:.72em;line-height:1.15;text-align:center;background:var(--panel)}
+.gstat .gchip::before{display:none}
+.gstat .gchip svg{width:2.3em;height:2.3em;fill:none;stroke:var(--sc);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.gstat .gchip:hover{border-color:var(--sc)}
+.gstat .gchip[aria-pressed="true"]{background:var(--sc);border-color:var(--sc);color:var(--on);box-shadow:0 2px 8px -3px rgba(0,0,0,.4)}
+.gstat .gchip[aria-pressed="true"] svg{stroke:var(--on)}
+@media (pointer:coarse){ .gstat .gchip{padding:9px 4px 8px} }
+
+/* status tiles always shown, compact (5 Nov) */
+.gstat{border-top:1px dashed var(--rule);padding-top:7px;display:flex;flex-direction:column;gap:5px}
+.gstat .gnow .gst{font-size:.66em}
+.gstat .gchips{margin-top:0;grid-template-columns:repeat(auto-fill,minmax(3.25em,1fr));gap:3px}
+.gstat .gchip{gap:1px;padding:3px 1px 3px;border-radius:5px;border-width:1px;font-size:.54em;letter-spacing:-.01em;font-weight:600;line-height:1.05;overflow-wrap:normal;hyphens:manual}
+.gstat .gchip svg{width:2.3em;height:2.3em;stroke-width:2.1}
+@media (pointer:coarse){ .gstat .gchip{padding:5px 2px 4px} }
+
+/* phones: tighter scoreboard so it doesn't eat the screen while pinned (5 Nov) */
+@media (max-width:560px){
+  .gsb-top{font-size:.7em;padding:3px 8px}
+  .gsb-side{padding:5px 4px 6px;gap:2px;border-top-width:4px}
+  .gsb-nm{font-size:.8em}
+  .gsb-who{gap:4px}
+  .gsb-who .gsbflag{width:1.45em;height:1em}
+  .gsb-vp{gap:3px}
+  .gsb-vp output{flex-direction:row;align-items:baseline;gap:2px;min-width:1.6em}
+  .gsb-vp output b{font-size:1.55em}
+  .gsb-vp output small{font-size:.55em;margin:0}
+  .gsb .gbtn{width:1.8em;height:1.8em;font-size:1em}
+  .gsb-pl{font-size:.8em;gap:3px}
+  .gsb-pl .gbtn{width:1.55em;height:1.55em;font-size:.9em}
+  .gsb-mid{padding:4px 3px;gap:4px}
+  .gsb-vs{font-size:.75em}
+  .gsb-swap{padding:3px 6px;font-size:.85em}
+  .gsb-ctl{padding:4px 8px;gap:4px 8px}
+  .gsb-step{gap:0}
+  .gsb-step small{font-size:.52em;letter-spacing:.1em;line-height:1}
+  .gsb-step>div{gap:2px}
+  .gsb-ctl .gbtn{width:1.6em;height:1.6em}
+  .gsb-step b{font-size:1em;min-width:1.6em}
+  .gsb-next{padding:7px 12px;font-size:.92em}
+  .gsb-loss{margin-top:1px;padding-top:3px}
+  .gsb-loss>summary{font-size:.64em}
+}
+
+/* Game Tracker unit cards on phones: list rows like the Patrol Builder; tap to open the full card (5 Nov) */
+.gchev,.gmini{display:none}
+.ghn{min-width:0;flex:1}
+@media (min-width:701px){ .ghn{cursor:auto} }
+@media (max-width:700px){
+  .ggrid{gap:0;border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+  .gunit{border:0;border-left:4px solid var(--accent);border-bottom:1px solid var(--rule);border-radius:0;padding:7px 10px;gap:8px}
+  .gunit:last-child{border-bottom:0}
+  .gunit:nth-child(even){background:var(--stripe)}
+  .gunit:not(.open)>:not(header){display:none}
+  .gunit>header{align-items:center;gap:8px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+  .gchev{display:inline-block;flex:0 0 auto;color:var(--accent);font-size:.85em;transition:transform .15s}
+  .gunit.open .gchev{transform:rotate(90deg)}
+  .ghn{outline-offset:2px}
+  .ghn:focus-visible{outline:2px solid var(--accent)}
+  .gmini{display:flex;flex-wrap:wrap;align-items:center;gap:3px 6px;margin-top:2px}
+  .gms{font-family:var(--f-mono);font-size:.74em;color:var(--muted);white-space:nowrap}
+  .gmi{display:inline-grid;place-items:center;width:1.45em;height:1.45em;border-radius:50%;background:var(--sc);color:var(--on)}
+  .gmi svg{width:.95em;height:.95em;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .gunit.open>header{padding-bottom:6px;border-bottom:1px dashed var(--rule)}
+  .gunit.open .gmini{display:none}
+  .gunit.out{opacity:.6}
+}
 
 .mbar{display:none}
 @media (min-width:861px){
@@ -893,13 +1025,18 @@ details.catdd.ref>summary{border-bottom:2px solid var(--accent-line);margin:16px
 .bkb{display:flex;flex-wrap:wrap;gap:6px}
 .bkfile{display:inline-flex;align-items:center;cursor:pointer}
 .bkslot:empty{display:none}
-.bkhide{background:none;border:0;padding:3px 4px;font:inherit;font-size:.92em;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
-.bkhide:hover{color:var(--ink)}
+.bkhide{display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:600;font-size:.95em;padding:3px 11px 3px 9px;border-radius:999px;border:1.5px solid color-mix(in oklab, var(--warn) 55%, var(--rule));background:var(--panel);color:var(--ink);cursor:pointer;white-space:nowrap}
+.bkhide svg{width:1.15em;height:1.15em;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--muted)}
+.bkhide:hover{border-color:var(--warn)} .bkhide:hover svg{color:var(--ink)}
+.bkhide:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.bkhide.show{border-color:color-mix(in oklab, var(--warn) 60%, var(--rule));background:color-mix(in oklab, var(--warn) 6%, var(--panel))}
+.bkhide.show svg{color:var(--warn)}
+.bkhide.show:hover{border-color:var(--warn);background:color-mix(in oklab, var(--warn) 14%, var(--panel))}
 body.warn-hidden .savebox{border:0;background:none;border-radius:0}
 body.warn-hidden .savebox>.savewarn,body.warn-hidden .bkt{display:none}
-body.warn-hidden .bkbar{border-top:0;padding:0;justify-content:flex-end}
+body.warn-hidden .bkbar{border-top:0;padding:0;justify-content:flex-start}
 body.warn-hidden .bkbar .btn:not(:hover){border-color:var(--rule)}
-body.warn-hidden .bkb{justify-content:flex-end;align-items:center;margin-left:auto}
+body.warn-hidden .bkb{justify-content:flex-start;align-items:center;margin-left:0}
 @media (max-width:560px){ .bkw{display:none} .savebox .swfold>summary{padding:9px 12px} .savebox .swfold>p{padding:0 12px 9px 12px;font-size:.92em} .bkbar{padding:6px 12px 8px} .bkt svg{display:none} }
 @media print{ .bkslot{display:none!important} }
 /* Saved battles */
@@ -1137,7 +1274,7 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
   .tsbtn .tsl{display:none}
   .mmhbtn{justify-content:center;width:38px;height:38px;min-height:0;padding:0;font-size:16px;line-height:1}
   .mmhbtn .tsl{display:none}
-  .mmhbtn .mmico{min-width:0} .mmhbtn .mmico svg{width:22px;height:22px}
+  .mmhbtn .mmico{min-width:0} .mmhbtn .mmico svg{width:25px;height:25px}
   .mmhbtn .mmcount{position:absolute;top:-6px;right:-6px;margin:0;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;font-size:10.5px;line-height:15px;background:var(--brass);border-color:var(--brass);color:var(--on, #fff)}
   .gauge{grid-column:1/-1;order:2;min-width:0}
 }
@@ -1212,7 +1349,7 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
           <div class="tsfoot"><span id="textSizeVal">100%</span><button type="button" class="tsreset" id="textSizeReset">Reset</button></div>
         </div>
       </div>
-      <button type="button" class="mmhbtn" id="mmHdr" data-mm="" title="My models: the models you own" aria-label="My models"><span class="mmico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.2" r="2.7" fill="currentColor"/><path d="M8.3 16.6 9.4 10c.2-1.1 1-1.8 2.1-1.8h1c1.1 0 1.9.7 2.1 1.8l1.1 6.6z" fill="currentColor"/><path d="M15.2 9.4 18.6 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><ellipse cx="12" cy="19.3" rx="7.2" ry="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span class="tsl">My models</span><span class="mmcount" data-mmcount hidden></span></button>
+      <button type="button" class="mmhbtn" id="mmHdr" data-mm="" title="My models: the models you own" aria-label="My models"><span class="mmico"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="mmRainbow" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="24" y2="12" spreadMethod="repeat"><stop offset="0.000" stop-color="#e0492f"/><stop offset="0.143" stop-color="#f08c00"/><stop offset="0.286" stop-color="#d8b000"/><stop offset="0.429" stop-color="#2fa84f"/><stop offset="0.571" stop-color="#2f7fe0"/><stop offset="0.714" stop-color="#7a4fd6"/><stop offset="0.857" stop-color="#d14fa8"/><stop offset="1.000" stop-color="#e0492f"/><animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="24 12" dur="4s" repeatCount="indefinite"/></linearGradient></defs><circle cx="9" cy="5" r="2.6" fill="url(#mmRainbow)"/><path d="M5.5 16.4 6.6 10c.2-1.1 1-1.8 2-1.8h.8c1 0 1.8.7 2 1.8l1.1 6.4z" fill="url(#mmRainbow)"/><ellipse cx="9" cy="19.2" rx="6.8" ry="2.2" fill="none" stroke="url(#mmRainbow)" stroke-width="1.8"/><path d="M21.5 2.5l-6 7.2" stroke="url(#mmRainbow)" stroke-width="1.8" stroke-linecap="round"/><path d="M15.4 9.3c-1.3-.2-2.4.7-2.5 2-.1 1-.6 1.6-1.4 1.9 2 .9 4.4.2 4.9-1.6.2-.9-.1-1.8-1-2.3z" fill="url(#mmRainbow)"/></svg></span><span class="tsl">My models</span><span class="mmcount" data-mmcount hidden></span></button>
     </div>
     <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a><a class="navtab" href="#/narrative" data-go="#/narrative" data-nav="narr">Narrative <span class="beta">Beta</span></a></nav>
   </div>
@@ -2338,7 +2475,9 @@ function backupBar(){
   const due = unsaved && (!last || Date.now()-last > BK_DUE_DAYS*864e5);
   const txt = !last ? "No backup yet" : `Last backup: ${bkAgo(last)}${unsaved ? (due ? " · changes since, time for a new one" : " · changes since") : " ✓"}`;
   return `<div class="bkbar${due?" due":""}"><span class="bkt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0-4-4m4 4 4-4M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${esc(txt)}</span>
-    <span class="bkb"><button class="btn${due?"":" ghost"}" type="button" data-bk="save"${has||game?"":" disabled"}>Save backup<span class="bkw">&nbsp;file</span></button><label class="btn ghost bkfile">Load backup<span class="bkw">&nbsp;file</span><input type="file" data-bk="load" accept=".json,application/json" hidden></label><button type="button" class="bkhide" data-warnhide="${state.hideWarn?0:1}" title="${state.hideWarn?"Show the saving and backup warning again":"Hide the saving and backup warning on every page"}">${state.hideWarn?"Show warning":`<span aria-hidden="true">✕</span> Hide warning`}</button></span></div>`;
+    <span class="bkb"><button class="btn${due?"":" ghost"}" type="button" data-bk="save"${has||game?"":" disabled"}>Save backup<span class="bkw">&nbsp;file</span></button><label class="btn ghost bkfile">Load backup<span class="bkw">&nbsp;file</span><input type="file" data-bk="load" accept=".json,application/json" hidden></label><button type="button" class="bkhide${state.hideWarn?" show":""}" data-warnhide="${state.hideWarn?0:1}" title="${state.hideWarn?"Show the saving and backup warning again":"Hide the saving and backup warning on every page"}">${state.hideWarn
+      ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20zM12 9v5M12 17h.01"/></svg>Show warning`
+      : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.2A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6C3.7 8.5 2 12 2 12s3.6 7 10 7c1.9 0 3.6-.6 5-1.5M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>Hide warning`}</button></span></div>`;
 }
 // "Hide warning": hides the "saved only in this browser" warnings and backup reminders on every page (remembered).
 // The Save / Load backup buttons stay, as a small row.
@@ -2444,6 +2583,14 @@ const ST = {
   killed:{t:"Killed", tip:"Killed or removed from the battle."}
 };
 const OUT = ["ooa","killed","disabled","carried"];
+// Where long status names may break on the small tiles (soft hyphens).
+const STILE = {gob:"Gob\u00adsmacked", incap:"Incapaci\u00adtated", dismounted:"Dis\u00admounted", immob:"Immobi\u00adlized", unbuttoned:"Un\u00adbuttoned", overwatch:"Over\u00adwatch"};
+const gStOpen = new Set();
+const gCardOpen = new Set(); // phones: which tracker unit rows are opened into full cards (kept while the page redraws)
+function gCardToggle(el){ const uid = el.dataset.gcard, card = el.closest(".gunit"); if (!card) return; const on = !gCardOpen.has(uid); if (on) gCardOpen.add(uid); else gCardOpen.delete(uid); card.classList.toggle("open", on); el.setAttribute("aria-expanded", String(on)); }
+document.addEventListener("click", e=>{ if (!matchMedia("(max-width:700px)").matches) return; const h = e.target.closest(".gunit>header"); if (!h || e.target.closest("button,a,.rl,input,label")) return; if (window.getSelection && String(window.getSelection()).length) return; const el = h.querySelector("[data-gcard]"); if (el) gCardToggle(el); });
+document.addEventListener("keydown", e=>{ if ((e.key==="Enter"||e.key===" ") && e.target.matches && e.target.matches("[data-gcard]") && matchMedia("(max-width:700px)").matches){ e.preventDefault(); gCardToggle(e.target); } }); // Game Tracker cards whose Status fold-out is open (kept while the page redraws)
+document.addEventListener("toggle", e=>{ const d = e.target; if (d.classList && d.classList.contains("gstat")){ if (d.open) gStOpen.add(d.dataset.u); else gStOpen.delete(d.dataset.u); } }, true);
 // Missions (Full Book p132-141), time limits (p129) and Rounds per Turn (p15) come from the data file.
 const missionOf = id => (DATA.missions||[]).find(m=>m.id===id) || (DATA.missions||[]).find(m=>m.id==="custom") || {id:"custom", name:"Custom", turns:null, pluck:5, objectives:[]};
 const RPT = () => (DATA.missionRules && DATA.missionRules.roundsPerTurn) || 9;
@@ -2578,13 +2725,29 @@ document.addEventListener("input", e=>{ if (["gOpp","gMeSetupText","gOppSetupTex
 document.addEventListener("change", e=>{ if (e.target.id==="gMission" || e.target.id==="gRole") missionInfo(); });
 // Status colours and icons in the tracker (look only): each status belongs to a kind, shared by its badge and its button.
 const SGRP = {ooa:"out",killed:"out",disabled:"out",carried:"out",mountd:"out",incap:"wound",flesh:"wound",mountw:"wound",immob:"wound",rattled:"nerve",gob:"nerve",prone:"pin",engaged:"act",overwatch:"act",prepared:"wpn",primed:"wpn",jammed:"wpn",reload:"wpn",unbuttoned:"info",dismounted:"info"};
-const SICO = {ready:"M5 12.5l4.5 4.5L19 7.5", spent:"M7 3h10M7 21h10M7 3l10 18M17 3L7 21", buttoned:"M4 16h16M6 16a6 6 0 0 1 12 0",
-  overwatch:"M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12zM12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z", engaged:"M5 5l14 14M19 5L5 19M3 17l4 4M17 21l4-4",
-  prone:"M6 7l6 5 6-5M6 13l6 5 6-5", gob:"M12 3l2 5 5-2-2 5 5 2-5 2 2 5-5-2-2 5-2-5-5 2 2-5-5-2 5-2-2-5 5 2z", rattled:"M13 2L5 14h6l-1 8 8-12h-6z",
-  prepared:"M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM12 2v5M12 17v5M2 12h5M17 12h5", primed:"M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 1.5 1 2 2 2 3 1-2 1-5 1-7z",
-  flesh:"M12 5v14M5 12h14", incap:"M12 5v14M5 12h14", mountw:"M12 5v14M5 12h14", ooa:"M6 6l12 12M18 6L6 18", disabled:"M6 6l12 12M18 6L6 18", mountd:"M6 6l12 12M18 6L6 18",
-  killed:"M7 21V10a5 5 0 0 1 10 0v11zM12 11v6M9.5 13.5h5", carried:"M5 12h12M13 7l5 5-5 5", immob:"M8 5v14M16 5v14", jammed:"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM6 6l12 12",
-  reload:"M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4", unbuttoned:"M4 16h16M6 16a6 6 0 0 1 9-5.2M15 6l4-2", dismounted:"M12 4v14M6 12l6 6 6-6"};
+const SICO = {ready:"M5 12.5l4.5 4.5L19 7.5",
+  spent:"M7 3h10M7 21h10M8 3c0 4.5 8 5 8 9s-8 4.5-8 9M16 3c0 4.5-8 5-8 9s8 4.5 8 9",
+  buttoned:"M2 19h20M4.5 19a7.5 7.5 0 0 1 15 0M12 11.5V9.5",
+  engaged:"M4 4l9.5 9.5M20 4l-9.5 9.5M14 14l2.5 2.5M10 14l-2.5 2.5M15.5 19.5l4-4M8.5 19.5l-4-4M17.5 21.5l4-4M6.5 21.5l-4-4",
+  overwatch:"M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12zM12 9.3a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4z",
+  prone:"M2 18.5h20M5 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM8.5 12.5l12 1.3M12.5 13l-1.5 5.5M17 13.5l2 5",
+  gob:"M12 13a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM5 6l1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2L2 8.3 4 8zM18 4l1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2L15 6.3 17 6zM10 3.5l.6 1.3 1.4.2-1 1 .2 1.4-1.2-.7-1.2.7.2-1.4-1-1 1.4-.2z",
+  prepared:"M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 1v6M12 17v6M1 12h6M17 12h6M12 11v2",
+  primed:"M12 9a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM10 9V6h4v3M14 6.5l3-3M18 2l1 1M20.5 4.5l1 1M19 6.5h2",
+  flesh:"M4.5 15.5l11-11a3 3 0 0 1 4 4l-11 11a3 3 0 0 1-4-4zM9 10l5 5M10.5 12.5h.01M12.5 10.5h.01M11.5 14.5h.01M14.5 11.5h.01",
+  incap:"M2 20h20M3 14h18v3H3zM6.5 14v-2a2 2 0 1 1 4 0v2M13 11h6v3",
+  carried:"M3 21V3M3 4h9l-2 3 2 3H3M14 14h7M18 11l3 3-3 3",
+  dismounted:"M12 3v12M7 10l5 5 5-5M5 20h14",
+  mountw:"M7 21V11a5 5 0 0 1 10 0v10M4.5 21h3M16.5 21h3M9.3 12.5h.01M14.7 12.5h.01M9.3 16.5h.01M14.7 16.5h.01M12 1.5v4M10 3.5h4",
+  mountd:"M7 21V11a5 5 0 0 1 10 0v10M4.5 21h3M16.5 21h3M9.3 12.5h.01M14.7 12.5h.01M9.3 16.5h.01M14.7 16.5h.01M10 1.5l4 4M14 1.5l-4 4",
+  rattled:"M13 2L5 14h6l-1 8 8-12h-6zM2 6l2 1M2 18l2-1M22 6l-2 1M22 18l-2-1",
+  immob:"M3 15a3 3 0 0 1 3-3h12a3 3 0 0 1 0 6H6a3 3 0 0 1-3-3zM7 15h.01M12 15h.01M17 15h.01M4 4l16 16",
+  jammed:"M2 10h14v4H2zM16 11h5M6 14v4h3v-4M17 3l4 4M21 3l-4 4",
+  reload:"M20 12a8 8 0 1 1-2.3-5.6M20 4v4.5h-4.5",
+  unbuttoned:"M2 19h20M4.5 19a7.5 7.5 0 0 1 7.5-7.5M12 11.5l6.5-6M10 16.5a2 2 0 1 0 4 0 2 2 0 0 0-4 0",
+  disabled:"M12 3v8M6.3 6.3a8 8 0 1 0 11.4 0",
+  ooa:"M9 3h6v6h6v6h-6v6H9v-6H3V9h6z",
+  killed:"M7 21V10a5 5 0 0 1 10 0v11zM12 11v6M9.5 13.5h5M4 21h16"};
 const sIcon = k => SICO[k] ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${SICO[k]}"/></svg>` : "";
 const sBadge = (k, label, grp, title) => `<span class="gst s-${grp}"${title?` title="${esc(title)}"`:""}>${sIcon(k)}${esc(label)}</span>`;
 function renderGame(){
@@ -2633,9 +2796,29 @@ function renderGame(){
     const t = uType(u), out = OUT.some(k=>g.st[k]);
     const prof = (u.profiles||[]).find(p=> t==="mounted" ? (g.st.dismounted ? !/^mounted$/i.test(p.label||"") : /^mounted$/i.test(p.label||"")) : true) || (u.profiles||[])[0];
     const ma = prof && t==="mounted" && g.st.mountw && /\//.test(prof.ma) ? String(prof.ma).split("/")[1] : prof && prof.ma;
-    const stats = prof ? `${prof.label?esc(prof.label)+": ":""}Sk ${esc(prof.sk)} · Mt ${esc(prof.mt)} · MA ${esc(ma)} · T ${esc(prof.t)}` : u.vehicle ? `Sk ${esc(u.vehicle.sk)} · MA ${esc(u.vehicle.ma)}${u.vehicle.t?` · T ${esc(u.vehicle.t)}`:""}` : u.crew ? `Crew ${esc(u.crew.crew)} · Sk ${esc(u.crew.sk)} · T ${esc(u.crew.t)}` : "";
+    // Profile first (v.2026-11-05.6): stat tiles, weapons with their traits, abilities. Statuses sit in a fold-out below.
+    const tile = (l, v, hl) => `<span class="gt${hl?" hl":""}"><small>${l}</small><b>${esc(v ?? "–")}</b></span>`;
+    const shownProfs = t==="mounted" ? (prof ? [prof] : []) : (u.profiles||[]);
+    let tilesH = "";
+    if (shownProfs.length) tilesH = shownProfs.map(p=>{ const pma = p===prof ? ma : p.ma;
+      return `<div class="gtiles">${p.label && (shownProfs.length>1 || t==="mounted") ? `<span class="gtlab">${esc(p.label)}</span>` : ""}${tile("Sk",p.sk)}${tile("Mt",p.mt)}${tile("MA",pma, p===prof && t==="mounted" && g.st.mountw)}${tile("T",p.t)}${p.d?tile("D",p.d):""}</div>`; }).join("");
+    else if (u.crew) tilesH = `<div class="gtiles">${tile("Crew",u.crew.crew)}${tile("Sk",u.crew.sk)}${tile("T",u.crew.t)}${tile("D",u.crew.d)}${tile("Break",u.crew.brk)}${tile("MA",u.crew.ma)}</div>`;
+    else if (u.vehicle) tilesH = `<div class="gtiles">${tile("Crew",u.vehicle.crew)}${tile("Sk",u.vehicle.sk)}${tile("MA",u.vehicle.ma)}${u.vehicle.t?tile("T",u.vehicle.t):""}</div>${u.vehicle.activation?`<p class="gact">Activation: <b>${esc(u.vehicle.activation)}</b></p>`:""}`;
+    const traitTips = list => list.map(x=>`<span class="gtr">${tip(x)}</span>`).join("");
+    let weapH = "";
+    if (shownProfs.length){
+      const seen = new Set(), rows = [];
+      shownProfs.forEach(p=>(p.equip||[]).forEach(e=>{ const w = findW(e), key = w ? "w:"+w.name : "e:"+String(e).toLowerCase(); if (seen.has(key)) return; seen.add(key);
+        rows.push(w ? `<li><b class="gwn">${esc(!/^\d/.test(e) ? w.name : e)}</b><span class="gwr">R <b>${esc(w.r)}</b> · Sn <b>${esc(w.sn)}</b></span>${w.traits && w.traits.length ? `<span class="gtrs">${traitTips(w.traits)}</span>` : ""}</li>`
+                    : `<li><b class="gwn">${tip(e)}</b><span class="gwr gmelee">Melee / gear</span></li>`); }));
+      weapH = rows.join("");
+    }
+    if (u.weapons && u.weapons.length) weapH += u.weapons.map(w=>`<li><b class="gwn">${esc(w.name)}</b><span class="gwr">Rn <b>${esc(w.rn)}</b> · Arc <b>${esc(w.arc)}</b></span>${splitList(w.abilities||w.type||"").length ? `<span class="gtrs">${traitTips(splitList(w.abilities||w.type||""))}</span>` : ""}</li>`).join("");
+    const abl = [...new Set([...shownProfs.flatMap(p=>p.abilities||[]), ...(u.abilities||[])])];
+    const armH = u.armor ? `<div class="garm"><span class="gtlab">Armour</span>${["front","side","rear"].map(k=>`<span><small>${k}</small>${esc(u.armor[k])}</span>`).join("")}</div>` : "";
+    const profH = `<div class="gprof">${tilesH}${weapH?`<ul class="gweap">${weapH}</ul>`:""}${abl.length?`<div class="gabl"><span class="gtlab">Abilities</span>${traitTips(abl)}</div>`:""}${armH}${rulesText(u)}</div>`;
     const keys = statusKeys(u, g);
-    const chips = keys.map(k=>`<button type="button" class="gchip ${k} s-${SGRP[k]||"nerve"}${OUT.includes(k)?" outk":""}" data-g="st" data-u="${esc(g.uid)}" data-s="${k}" aria-pressed="${!!g.st[k]}" title="${esc(ST[k].tip)}">${ST[k].t}</button>`).join("");
+    const chips = keys.map(k=>`<button type="button" class="gchip ${k} s-${SGRP[k]||"nerve"}${OUT.includes(k)?" outk":""}" data-g="st" data-u="${esc(g.uid)}" data-s="${k}" aria-pressed="${!!g.st[k]}" title="${esc(ST[k].t+": "+ST[k].tip)}">${sIcon(k)}<span translate="no">${STILE[k] || ST[k].t}</span></button>`).join("");
     const step = (key, label, val, max, sub) => `<span class="gstep"><span class="gsl">${label}</span><span class="gbox sm"><button type="button" class="gbtn" data-g="cdec" data-u="${esc(g.uid)}" data-c="${esc(key)}" aria-label="${esc(label)} minus one">−</button><output>${val}${max!=null?`<small>/${max}</small>`:""}</output><button type="button" class="gbtn" data-g="cinc" data-u="${esc(g.uid)}" data-c="${esc(key)}" data-max="${max??""}" aria-label="${esc(label)} plus one">+</button></span>${sub?`<span class="gsub">${sub}</span>`:""}</span>`;
     let cx = "";
     if (t==="veh" && u.armor) cx = locsOf(u).map(L=>step("loc:"+L.name, `${L.name} damage`, (g.c.loc||{})[L.name]||0, L.max)).join("");
@@ -2648,12 +2831,16 @@ function renderGame(){
     if (spent) now.unshift(sBadge("spent", "Spent", "spent", "Used both Tasks this Round. Ready again after End Round."));
     if (t==="veh" && u.armor && !g.st.unbuttoned && !out) now.unshift(sBadge("buttoned", "Buttoned Up", "info"));
     const worst = out ? "" : ["nerve","wound","pin"].find(w=>nowK.some(k=>SGRP[k]===w)) || "";
-    return `<article class="gunit${out?" out":""}${spent?" spent":""}${g.st.killed?" killed":""}${worst?" w-"+worst:""}">
-      <header><div>${g.nm ? `${dtag(g.nm)} <b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>` : `<b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>`}<div class="gstats">${stats}</div></div>${out?"":tasks}</header>
-      <div class="gnow">${now.length ? now.join("") : sBadge("ready", "Ready", "ok")}</div>
+    // Phones: a slim list row (name, short stat line, small status icons); tap it to open the full card.
+    const p0 = shownProfs[0];
+    const mini = p0 ? `Sk ${p0.sk} · Mt ${p0.mt} · MA ${p0===prof ? ma : p0.ma} · T ${p0.t}` : u.crew ? `Crew ${u.crew.crew} · Sk ${u.crew.sk} · T ${u.crew.t}` : u.vehicle ? `Sk ${u.vehicle.sk} · MA ${u.vehicle.ma}` : "";
+    const micons = (spent ? `<span class="gmi s-spent" title="Spent">${sIcon("spent")}</span>` : "") + nowK.map(k=>`<span class="gmi s-${SGRP[k]||"nerve"}" title="${esc(ST[k].t)}">${sIcon(k)}</span>`).join("");
+    return `<article class="gunit${gCardOpen.has(g.uid)?" open":""}${out?" out":""}${spent?" spent":""}${g.st.killed?" killed":""}${worst?" w-"+worst:""}">
+      <header><span class="gchev" aria-hidden="true">▸</span><div class="ghn" role="button" tabindex="0" data-gcard="${esc(g.uid)}" aria-expanded="${gCardOpen.has(g.uid)}"><div>${g.nm ? `${dtag(g.nm)} <b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>` : `<b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>`}</div><div class="gmini">${mini?`<span class="gms">${esc(mini)}</span>`:""}${micons}</div></div>${out?"":tasks}</header>
+      ${profH}
+      ${abilityList(u)}
       ${cx?`<div class="gctrs">${cx}</div>`:""}
-      <div class="gchips">${chips}</div>
-      <details class="gmore"><summary>Profile</summary>${statBlock(u)}${weaponLine(u)}${rulesText(u)}${abilityList(u)}</details>
+      <div class="gstat">${spent || (t==="veh" && u.armor && !g.st.unbuttoned && !out) ? `<div class="gnow">${spent ? sBadge("spent", "Spent", "spent", "Used both Tasks this Round. Ready again after End Round.") : ""}${t==="veh" && u.armor && !g.st.unbuttoned && !out ? sBadge("buttoned", "Buttoned Up", "info") : ""}</div>` : ""}<div class="gchips" role="group" aria-label="Status">${chips}</div></div>
     </article>`; };
   // Each force's cards are drawn with its own faction loaded (weapon tables differ per faction).
   const force = (title, f, units, extra, isOpp, limit) => {
@@ -2674,39 +2861,35 @@ function renderGame(){
   const opp = esc(oppLabel());
   // Face-off scoreboard (sticks under the header), My side / Opponent tabs (phones), bottom bar (phones).
   const oppF = of || null, live = !game.ended;
-  const sbSide = (i, f, name) => { const isAct = live && act===(i?"opp":"me"), lab = i ? oppLabel() : game.name;
+  const sbSide = (i, f, name, sub) => { const isAct = live && act===(i?"opp":"me"), lab = i ? oppLabel() : game.name;
     return `<div class="gsb-side ${i?"opp":"me"}${isAct?" act":""}" style="--fac:${f && f.color ? esc(f.color) : i ? "var(--slate)" : "var(--brass)"}">
       <div class="gsb-who"${isAct?` title="Active player"`:""}>${isAct?`<span class="gsb-act" role="img" aria-label="Active player"></span>`:""}${f?flagImg(f,"gsbflag"):""}<span class="gsb-nm">${esc(name)}</span></div>
+      ${sub?`<span class="gsb-sub">${esc(sub)}</span>`:""}
       <div class="gsb-vp"><button type="button" class="gbtn" data-g="dec" data-k="vp" data-i="${i}" aria-label="${esc(lab)} Victory Points minus one">−</button><output aria-label="${esc(lab)} Victory Points"><b>${game.vp[i]}</b><small>VP</small></output><button type="button" class="gbtn" data-g="inc" data-k="vp" data-i="${i}" aria-label="${esc(lab)} Victory Points plus one">+</button></div>
       <div class="gsb-pl"><span class="gl">Pluck</span><button type="button" class="gbtn" data-g="dec" data-k="pluck" data-i="${i}" aria-label="${esc(lab)} Pluck minus one">−</button><output aria-label="${esc(lab)} Pluck">${game.pluck[i]}</output><button type="button" class="gbtn" data-g="inc" data-k="pluck" data-i="${i}" aria-label="${esc(lab)} Pluck plus one">+</button></div>
+      ${(i ? !game.oppForce : !me) ? sideLoss(i ? "opp" : "my") : ""}
     </div>`; };
-  const sbMid = live ? `<div class="gsb-mid"><span class="gsb-pill"><small>Turn</small><b>${game.turn}${lim?`<i>/${lim}</i>`:""}</b></span><span class="gsb-pill"><small>Round</small><b>${game.round}<i>/${RPT()}</i></b></span><button type="button" class="gsb-swap" data-g="swapact" title="Switch the active player" aria-label="Switch the active player">⇄</button></div>`
+  const lastR = lim && game.turn>=lim && game.round>=RPT();
+  const sbMid = live ? `<div class="gsb-mid"><span class="gsb-vs">VS</span><button type="button" class="gsb-swap" data-g="swapact" title="Switch the active player" aria-label="Switch the active player">⇄</button></div>`
     : `<div class="gsb-mid"><span class="gsb-final">Final</span></div>`;
-  const scoreboard = `<div class="gsb${live?"":" ended"}" role="group" aria-label="Score">${sbSide(0, me, game.name)}${sbMid}${sbSide(1, oppF, oppLabel())}</div>`;
-  const losses = (me ? "" : lossBox("my","My losses")) + (game.oppForce ? "" : lossBox("opp","Their losses"));
+  const step = (k, label, val, max) => `<div class="gsb-step"><small>${label}</small><div><button type="button" class="gbtn" data-g="dec" data-k="${k}" data-i="" aria-label="${label} minus one">−</button><b>${val}${max?`<i>/${max}</i>`:""}</b><button type="button" class="gbtn" data-g="inc" data-k="${k}" data-i="" aria-label="${label} plus one">+</button></div></div>`;
+  const ctl = live ? `<div class="gsb-ctl">${step("turn", "Turn", game.turn, lim)}${step("round", "Round", game.round, RPT())}<span class="gsb-dots" aria-hidden="true">${Array.from({length:RPT()},(_,i)=>`<i class="${i+1<game.round?"done":i+1===game.round?"now":""}"></i>`).join("")}</span><span class="gsb-hint">${lastR ? "Last Round of the battle" : `${lim ? "" : "No Turn limit · "}Next Round clears Task dots`}</span>${lastR ? `<button type="button" class="gsb-next" data-g="endgame">End Game</button>` : `<button type="button" class="gsb-next${game.round>=RPT()?" wide":""}" data-g="endround">Next<span class="gsb-lg"> ${game.round>=RPT() ? "Turn" : "Round"}</span> →</button>`}</div>` : "";
+  const top = `<div class="gsb-top"><span class="gmn">${esc(ms.name)}</span>${game.role?`<span class="grole">You are the ${esc(game.role)}</span>`:""}<span class="pg grole">${ms.page?`(${esc(ms.page)})`:""}</span></div>`;
+  const scoreboard = `<div class="gsb${live?"":" ended"}" role="group" aria-label="Score">${top}${sbSide(0, me, game.name, me ? `${me.name} · ${game.limit} pts` : `${game.limit} pts`)}${sbMid}${sbSide(1, oppF, oppLabel(), of ? `${of.name} · ${game.oppForce.limit} pts` : "")}${ctl}</div>`;
+  // Losses (only for a side with no patrol loaded): a fold-out under that side's Pluck, like the import boxes on the start screen.
+  function sideLoss(pre){ const L = game[pre+"Lost"]||0, S = game[pre+"Size"]||0;
+    return `<details class="goppl gsb-loss" data-loss="${pre}"${game[pre+"LossOpen"]?" open":""}><summary title="Optional, for the battle report">${pre==="my"?"My":"Their"} losses${L||S?` <b>${L}${S?`/${S}`:""}</b>`:""}</summary><div class="gopplin">${ctr(pre+"Lost",null,"Units lost", "", S)}${ctr(pre+"Size",null,"Patrol size")}<span class="gsub">Optional, for the battle report</span></div></details>`; }
   const tab = game.tab==="opp" ? "opp" : "me";
   const tabBtn = (key, f, name, units) => { const alive = units ? units.filter(g=>!isOut(g)).length : 0;
     return `<button type="button" role="tab" class="gtab" data-g="tab" data-t="${key}" aria-selected="${tab===key}" style="--fac:${f && f.color ? esc(f.color) : key==="opp" ? "var(--slate)" : "var(--brass)"}">${f?flagImg(f,"gtflag"):""}<span class="gtn">${esc(name)}</span><span class="gtc" title="${units?"Still fighting":""}">${units ? `${alive}/${units.length}` : "Add"}</span></button>`; };
   const tabs = `<div class="gtabs" id="gTabs" role="tablist" aria-label="Which patrol to show">${tabBtn("me", me, me ? game.name : "My patrol", me ? game.units : null)}${tabBtn("opp", oppF, oppLabel(), of ? game.oppForce.units : null)}</div>`;
-  const lastR = lim && game.turn>=lim && game.round>=RPT();
-  const dock = live ? `<div class="gdock" role="region" aria-label="Turn and Round"><div class="gdl"><span class="gdt">Turn <b>${game.turn}</b>${lim?`/${lim}`:""} · Round <b>${game.round}</b>/${RPT()}</span><span class="gdrow"><span class="gddots" aria-hidden="true">${Array.from({length:RPT()},(_,i)=>`<i class="${i+1<game.round?"done":i+1===game.round?"now":""}"></i>`).join("")}</span><span class="gdwho">${act==="me" ? "Your move" : esc(oppLabel())+"'s move"}</span></span></div>${lastR ? `<button type="button" class="gdnext" data-g="endgame">End Game</button>` : `<button type="button" class="gdnext" data-g="endround">${game.round>=RPT() ? "Next Turn" : "Next Round"} →</button>`}</div>` : "";
-  v.classList.toggle("hasdock", live);
+  v.classList.remove("hasdock");
   v.innerHTML = head + `
-  <div class="gtop card"${me && me.color?` style="--fac:${me.color}"`:""}>
-    <div class="gtitle">${me ? flagImg(me) : ""}<div><b>${esc(game.name)}</b><span class="hint">${me ? esc(me.name) : "No patrol loaded"} · ${game.limit} pts · vs ${opp}</span><span class="gmission">${esc(ms.name)}${game.role?` · You are the ${esc(game.role)}`:""}<span class="pg">${ms.page?` (${esc(ms.page)})`:""}</span></span></div></div>
-    ${game.ended ? resultsCard(ms) : `<div class="gcounters">
-      ${ctr("turn",null,"Turn", lim ? "" : "No Turn limit", lim)}
-      ${ctr("round",null,"Round", "", RPT())}
-      <div class="gctr"><span class="gl">Active</span><button type="button" class="gactive ${act}" data-g="swapact" title="Tap to switch the active player">${act==="me"?"You":opp} <span aria-hidden="true">⇄</span></button><span class="gsub">Tap to switch · alternates each Round</span></div>
-      <div class="gctr gctr-end"><span class="gl">&nbsp;</span><button class="btn" type="button" data-g="endround">End Round</button><span class="gsub">${lim && game.turn>=lim && game.round>=RPT() ? "Last Round of the battle" : "End Round clears Task dots"}</span></div>
-    </div>`}
-  </div>
+  ${game.ended ? `<div class="gtop card"${me && me.color?` style="--fac:${me.color}"`:""}>${resultsCard(ms)}</div>` : ""}
   ${scoreboard}
-  ${losses ? `<div class="glossrow">${losses}</div>` : ""}
   ${allGameUnits().length ? `<div class="gbar"><span></span><label class="switch" for="gHide"><input type="checkbox" id="gHide"${game.hideOut?" checked":""}> Hide units out of the fight</label></div>` : ""}
   ${tabs}
   <div class="gforces" data-tab="${tab}">${myHtml}${oppHtml}</div>
-  ${dock}
   `;
 }
 // Rule check for a force in the tracker: borrow the builder's checks() with that force's units.
@@ -3735,7 +3918,9 @@ addEventListener("scroll", ()=>{ if (!kofiShone) kofiShine(); }, {passive:true})
 // after a page change, check whether the buttons are now on screen (only matters if it hasn't played yet this visit)
 function kofiReset(){ if (!kofiShone) setTimeout(kofiShine, 450); }
 setTimeout(()=>{ try{ const m = sessionStorage.getItem("quar-bk-msg"); if (m){ sessionStorage.removeItem("quar-bk-msg"); toast(m); } }catch(e){} }, 900);
-const APP_VERSION = "2026-11-04.97";
+// My models icon: rainbow sweep; held still for people who ask for reduced motion.
+try{ const rm = matchMedia("(prefers-reduced-motion: reduce)"), mmSvg = document.querySelector("#mmHdr svg"); const setRM = ()=>{ if (mmSvg && mmSvg.pauseAnimations){ rm.matches ? mmSvg.pauseAnimations() : mmSvg.unpauseAnimations(); } }; setRM(); rm.addEventListener && rm.addEventListener("change", setRM); }catch(e){}
+const APP_VERSION = "2026-11-05.13";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
