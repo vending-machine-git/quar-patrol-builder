@@ -1504,13 +1504,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-05.56">
-<script src="campaign-rules.js?v=2026-11-05.56"></script>
-<script src="tales-rules.js?v=2026-11-05.56"></script>
-<script src="tales.js?v=2026-11-05.56"></script>
-<script src="mhuddball-rules.js?v=2026-11-05.56"></script>
-<script src="mhuddball.js?v=2026-11-05.56"></script>
-<script src="campaign.js?v=2026-11-05.56"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-06.57">
+<script src="campaign-rules.js?v=2026-11-06.57"></script>
+<script src="tales-rules.js?v=2026-11-06.57"></script>
+<script src="tales.js?v=2026-11-06.57"></script>
+<script src="mhuddball-rules.js?v=2026-11-06.57"></script>
+<script src="mhuddball.js?v=2026-11-06.57"></script>
+<script src="campaign.js?v=2026-11-06.57"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3772,7 +3772,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-05.56";
+const APP_VERSION = "2026-11-06.57";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3848,6 +3848,9 @@ function nicoSvg(name, kind){
 const narrUIx = {
   // Shop / supply item icon (nicoSvg above): item(name, "eq" | "use")
   item:nicoSvg,
+  // Phone bottom bar for the recruiting tabs (like the Patrol Builder's): summary text, optional points meter, jump buttons [[elementId,label]]. Hidden above 860px.
+  mbar:(html, jumps=[], meter=null) => { const pct = meter && meter.max ? Math.min(100, Math.round(meter.value / meter.max * 100)) : 0;
+    return `<div class="cp-mbar"><span class="cp-mb-l">${meter ? `<span class="cp-mb-track${meter.value > meter.max ? " over" : meter.value === meter.max ? " full" : ""}" role="meter" aria-valuemin="0" aria-valuemax="${meter.max}" aria-valuenow="${meter.value}"><i style="width:${pct}%"></i></span>` : ""}<span class="cp-mb-txt">${html}</span></span><span class="cp-mb-go">${jumps.map(([id, label]) => `<button type="button" class="cp-mb-btn" data-jump="${id}">${label}</button>`).join("")}</span></div>`; },
   head:(title, back) => `${back ? `<div class="viewbar cp-crumbs">${back}</div>` : ""}<div class="hhead"><h1>${title} <span class="community">Community</span></h1><div class="hhead-r"><span class="switches">${pgCtl("Narr")}${ownCtl("Narr")}</span></div></div>`,
   warn:N_WARN,
   tip:tipFold,
@@ -4048,6 +4051,17 @@ document.addEventListener("click", e=>{ const b = e.target.closest && e.target.c
 document.addEventListener("input", e=>{ const t = e.target; if (!t.matches || !t.matches("#view-narr input[data-nfi]")) return; narrNameSave(t); narrNameTags(t.closest(".prow")); });
 document.addEventListener("keydown", e=>{ const t = e.target; if (e.key==="Enter" && t.matches && t.matches("#view-narr input[data-nfi]")){ e.preventDefault(); narrNameShow(t.closest(".prow"), false); } });
 // Jump buttons inside a narrative page (e.g. Every Quar "Go to the Equipment shop"): scroll to the section, opening it if folded.
+// Narrative tab bar (v.57): on phones it's a sticky strip under the header. After switching tab, if you had scrolled past the tab bar, jump to the top of the new tab's content.
+document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("#view-narr .cp-tabs .btn"); if (!b) return;
+  const nav = b.closest(".cp-tabs"), prev = nav.previousElementSibling, barh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--barh")) || 0;
+  const natural = prev ? prev.getBoundingClientRect().bottom + window.scrollY : 0, stuck = window.scrollY + barh > natural + 4;
+  setTimeout(()=>{ const n = document.querySelector("#view-narr .cp-tabs"); if (!n) return; narrTabStrip(n);
+    if (stuck){ const p = n.previousElementSibling, gap = parseFloat(getComputedStyle(n.parentElement).rowGap) || 0; if (p) window.scrollTo(0, p.getBoundingClientRect().bottom + window.scrollY + gap - barh); } }, 0); }, true);
+function narrTabStrip(n){ const on = n.querySelector('[aria-pressed="true"]'); if (on && n.scrollWidth > n.clientWidth) n.scrollLeft = Math.max(0, on.offsetLeft - (n.clientWidth - on.offsetWidth) / 2); narrTabFade(n); }
+// Fade the strip's edge on the side that has more tabs
+function narrTabFade(n){ const max = n.scrollWidth - n.clientWidth; n.classList.toggle("more-l", max > 2 && n.scrollLeft > 2); n.classList.toggle("more-r", max > 2 && n.scrollLeft < max - 2); }
+document.addEventListener("scroll", e=>{ const n = e.target; if (n && n.classList && n.classList.contains("cp-tabs")) narrTabFade(n); }, true);
+window.addEventListener("resize", ()=>{ document.querySelectorAll("#view-narr .cp-tabs").forEach(narrTabFade); });
 document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("#view-narr [data-jump]"); if (!b) return; e.preventDefault();
   const t = document.getElementById(b.dataset.jump); if (!t) return; if (t.classList.contains("is-shut")) narrPanelSet(t, true);
   t.scrollIntoView({block:"start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); });
@@ -4126,7 +4140,7 @@ document.addEventListener("change", e=>{ if (e.target.closest && e.target.closes
     nodes.forEach(n => { const html = esc(n.nodeValue).replace(RX, m => `<span class="pg">${m}</span>`); const t = document.createElement("template"); t.innerHTML = html; n.replaceWith(t.content); });
   };
   const host = document.getElementById("view-narr");
-  if (host) new MutationObserver(() => { wrap(host); narrFacPickers(host); narrSteppers(host); narrSegs(host); narrRandNames(host); narrPanelFolds(host); }).observe(host, {childList:true, subtree:true});
+  if (host) new MutationObserver(() => { wrap(host); narrFacPickers(host); narrSteppers(host); narrSegs(host); narrRandNames(host); narrPanelFolds(host); host.querySelectorAll(".cp-tabs:not([data-strip])").forEach(n => { n.dataset.strip = "1"; narrTabStrip(n); }); }).observe(host, {childList:true, subtree:true});
 })();
 campaign = window.QuarCampaign.create({ui:narrUIx, dtag:n => n ? dtag(n) : "", getData:()=>DATA, getStories:()=>narr.stories, getPatrols:()=>state.saved, save:narrSave, id:narrId, esc, faction:facById, name:used=>randName(new Set(used||[])), toast, navigate:id=>showView("narr", id), backup:backupBar, flag:flagImg});
 init();

@@ -306,6 +306,8 @@ window.QuarMhuddball = (() => {
     const save = entry => { entry.updated = Date.now(); context.save(); };
     const panel = (title,text) => `<section class="card cp-panel"><header><h2>${title}</h2></header><div class="cp-body">${text}</div></section>`;
     const PRIMARY = new Set(["create","start","reset","end-turn"]), DANGER = new Set(["delete","remove"]);
+    const savedTab = id => { try{ return localStorage.getItem("quar-narr-tab|" + id); }catch(e){ return null; } };
+    const keepTab = (id, value) => { try{ localStorage.setItem("quar-narr-tab|" + id, value); }catch(e){} };
     const button = (action,text,attrs = "",disabled = false) => `<button type="button" class="btn ${PRIMARY.has(action) ? "cta" : DANGER.has(action) ? "danger" : "ghost"}" data-mb="${action}" ${attrs}${disabled ? " disabled" : ""}>${text}</button>`;
     const ui = context.ui, tile = (label,value) => `<div class="gt"><small>${label}</small><b>${esc(value)}</b></div>`;
     const sideFac = team => context.faction(team.faction);
@@ -347,11 +349,11 @@ window.QuarMhuddball = (() => {
     }
     function render(id) {
       const entry = matches().find(item => item.id === id);
-      if (id !== current) { current = id; tab = entry?.mhuddball?.phase === "setup" ? "teams" : "desk"; confirming = ""; }
+      if (id !== current) { current = id; const t = current && savedTab(current); tab = ["teams","desk","dice","journal","rules"].includes(t) ? t : entry?.mhuddball?.phase === "setup" ? "teams" : "desk"; confirming = ""; }
       if (!entry) { current = null; renderList(); return; }
       try { E.normalize(entry); } catch(error) { view().innerHTML = panel("Mhuddball unavailable",`<p>${esc(error.message)}</p><a href="#/narrative/mhuddball" data-go="#/narrative/mhuddball">All matches</a>`); return; }
       const data = entry.mhuddball; document.body.style.removeProperty("--fac");
-      view().innerHTML = `<div class="cp mb">${ui.head(esc(entry.name),`<a class="btn ghost" href="#/narrative/mhuddball" data-go="#/narrative/mhuddball">&larr; Mhuddball</a>${button("undo","Undo last action","",!data.undo)}`)}${board(entry)}${data.suddenDeath ? '<p class="cp-notice"><b>Sudden death:</b> the next goal wins.</p>' : ""}${data.phase === "finished" ? `<p class="cp-notice"><b>${esc(data.teams[data.winner]?.name || "Match")} wins ${data.teams[0].score}-${data.teams[1].score}${data.suddenDeath ? " in sudden death" : ""}.</b></p>` : ""}<nav class="cp-tabs" aria-label="Mhuddball pages">${[["teams","Teams"],["desk","Match desk"],["dice","Dice helpers"],["journal","Journal"],["rules","Rules"]].map(([key,text]) => button("tab",text,`data-tab="${key}" aria-pressed="${tab === key}"`)).join("")}</nav>${tab === "teams" ? teams(entry) : tab === "desk" ? desk(entry) : tab === "dice" ? helpers(entry) : tab === "journal" ? journal(entry) : panel("Mhuddball rules",manual())}</div>`;
+      view().innerHTML = `<div class="cp mb">${ui.head(esc(entry.name),`<a class="btn ghost" href="#/narrative/mhuddball" data-go="#/narrative/mhuddball">&larr; Mhuddball</a>${button("undo",'<span class="cp-ul">Undo last action</span><span class="cp-us" aria-hidden="true">&#8630; Undo</span>',"",!data.undo)}`)}${board(entry)}${data.suddenDeath ? '<p class="cp-notice"><b>Sudden death:</b> the next goal wins.</p>' : ""}${data.phase === "finished" ? `<p class="cp-notice"><b>${esc(data.teams[data.winner]?.name || "Match")} wins ${data.teams[0].score}-${data.teams[1].score}${data.suddenDeath ? " in sudden death" : ""}.</b></p>` : ""}<nav class="cp-tabs" aria-label="Mhuddball pages">${[["teams","Teams"],["desk","Match desk"],["dice","Dice helpers"],["journal","Journal"],["rules","Rules"]].map(([key,text]) => button("tab",text,`data-tab="${key}" aria-pressed="${tab === key}"`)).join("")}</nav>${tab === "teams" ? teams(entry) : tab === "desk" ? desk(entry) : tab === "dice" ? helpers(entry) : tab === "journal" ? journal(entry) : panel("Mhuddball rules",manual())}</div>`;
       if (tab === "dice") helperFields();
     }
     function renderList() {
@@ -473,7 +475,7 @@ window.QuarMhuddball = (() => {
         if (confirming !== target.dataset.id) { confirming = target.dataset.id; renderList(); return; }
         const list = context.getStories(), index = list.findIndex(item => item.id === target.dataset.id && item.system === "mhuddball"); if (index >= 0) list.splice(index,1); context.save(); confirming = ""; renderList(); return;
       }
-      if (action === "tab") { tab = target.dataset.tab; confirming = ""; render(current); return; }
+      if (action === "tab") { tab = target.dataset.tab; keepTab(current, tab); confirming = ""; render(current); return; }
       const entry = match(); if (!entry) return;
       if (action === "undo") { const snapshot = entry.mhuddball.undo; if (!snapshot) return; Object.keys(entry).forEach(key => delete entry[key]); Object.assign(entry,clone(snapshot)); save(entry); render(entry.id); return; }
       if (["goal","ground","remove"].includes(action)) { const key = action+"-"+(target.dataset.index ?? target.dataset.player); if (confirming !== key && confirming !== target.dataset.player) { confirming = action === "remove" ? target.dataset.player : key; render(entry.id); return; } confirming = ""; }

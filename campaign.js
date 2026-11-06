@@ -272,6 +272,8 @@ window.QuarCampaign = (() => {
     const options = (values, selected) => values.map(value => { const [key, label] = Array.isArray(value) ? value : [value, value]; return `<option value="${esc(key)}"${String(key) === String(selected) ? " selected" : ""}>${esc(label)}</option>`; }).join("");
     const PRIMARY = new Set(["create","start","finish-battle","commit-casualties","to-exploration","resolve-exploration","next-game","recruit"]), DANGER = new Set(["delete","retire"]);
     const button = (action, text, attributes = "", disabled = false) => `<button type="button" class="btn ${PRIMARY.has(action) ? "cta" : DANGER.has(action) ? "danger" : "ghost"}" data-camp="${action}" ${attributes}${disabled ? " disabled" : ""}>${text}</button>`;
+    const savedTab = id => { try{ return localStorage.getItem("quar-narr-tab|" + id); }catch(e){ return null; } };
+    const keepTab = (id, value) => { try{ localStorage.setItem("quar-narr-tab|" + id, value); }catch(e){} };
     const ui = context.ui, tile = (label, value) => `<div class="gt"><small>${label}</small><b>${esc(value)}</b></div>`;
     const select = (name, values, selected, attributes = "") => `<select aria-label="${esc(name)}" ${attributes}>${options(values, selected)}</select>`;
     const input = (name, value, attributes = "") => `<input aria-label="${esc(name)}" value="${esc(value)}" ${attributes}>`;
@@ -308,13 +310,13 @@ window.QuarCampaign = (() => {
         return;
       }
       const entry = id && context.getStories().find(item => item.id === id);
-      if (id !== current) { tab = "cycle"; current = id || null; }
+      if (id !== current) { current = id || null; const t = current && savedTab(current); tab = ["cycle","roster","supply","journal","rules"].includes(t) ? t : "cycle"; }
       if (!entry) { current = null; renderList(); return; }
       try { const legacy = !entry.campaign; E.normalize(entry); if (legacy) save(entry); }
       catch (error) { view().innerHTML = panel("Campaign unavailable", `<p>${esc(error.message)}</p><a href="#/narrative">All campaigns</a>`); return; }
       const campaign = entry.campaign, faction = E.faction(entry);
       document.body.style.setProperty("--fac", faction.color || "#6b5d45");
-      view().innerHTML = `<div class="cp">${ui.head(esc(entry.name), `<a class="btn ghost" href="#/narrative/every-quar-is-his-own-king" data-go="#/narrative/every-quar-is-his-own-king">&larr; ${esc(R.title)}</a>${button("undo", "Undo last action", "", !campaign.undo)}`)}
+      view().innerHTML = `<div class="cp">${ui.head(esc(entry.name), `<a class="btn ghost" href="#/narrative/every-quar-is-his-own-king" data-go="#/narrative/every-quar-is-his-own-king">&larr; ${esc(R.title)}</a>${button("undo", '<span class="cp-ul">Undo last action</span><span class="cp-us" aria-hidden="true">&#8630; Undo</span>', "", !campaign.undo)}`)}
         <div class="cp-hero"><div class="cp-hero-flag">${context.flag(faction)}</div><div class="cp-hero-txt"><span class="cp-kicker">${esc(R.title)} &middot; Battle ${campaign.gameNumber}</span><h2>${esc(faction.name)}</h2><p>Campaign patrol${entry.from ? " &middot; copied from " + esc(entry.from) : ""}</p></div>
         <div class="cp-metrics"><div><strong>${E.value(entry)}</strong><span>Patrol Marks</span></div><div><strong>${campaign.bank}</strong><span>Banked Marks</span></div><div><strong>${E.living(entry).length}</strong><span>On the roster</span></div><div><strong>${campaign.gameNumber}</strong><span>Battle</span></div></div></div>
         <nav class="cp-tabs" aria-label="Campaign pages">${[["cycle","Campaign cycle"],["roster","Roster"],["supply","Supply & recruits"],["journal","Journal"],["rules","Rules & scenarios"]].map(([key, label]) => `<button type="button" class="btn ghost" data-camp="tab" data-tab="${key}" aria-pressed="${tab === key}">${label}</button>`).join("")}</nav>
@@ -500,13 +502,14 @@ window.QuarCampaign = (() => {
       // Patrol-Builder layout (5 Nov, user request): your patrol on the left, the Muster Roll on the right; names edited with the pencil.
       const groups = [...new Set(E.living(entry).map(character => character.unitId))].map(unitId => { const members = E.living(entry).filter(character => character.unitId === unitId), data = E.unit(entry, members[0]) || {};
         return {id:unitId, name:data.name || "Unknown unit", variant:data.variant, members, pts:members.reduce((total, character) => total + E.cost(entry, character), 0), canAdd:mutable && Number.isFinite(data.pts) && entry.campaign.bank >= data.pts, canRemove:E.dismissable(entry, unitId).length > 0}; });
-      const yours = `<section class="card cp-panel cp-yours"><header><h2>Your patrol</h2><span class="hint">${E.living(entry).length} rhyfler${E.living(entry).length === 1 ? "" : "s"} &middot; ${groups.reduce((total, group) => total + group.pts, 0)} M</span></header>${ui.force({key:"eq|" + entry.id, attr:"data-camp", unit:"M", groups, input:character => `data-character="${esc(character.id)}" data-character-field="name"`, empty:"No one on the roster yet. Tap + on the Muster Roll to recruit."})}</section>`;
+      const yours = `<section id="cp-yours" class="card cp-panel cp-yours"><header><h2>Your patrol</h2><span class="hint">${E.living(entry).length} rhyfler${E.living(entry).length === 1 ? "" : "s"} &middot; ${groups.reduce((total, group) => total + group.pts, 0)} M</span></header>${ui.force({key:"eq|" + entry.id, attr:"data-camp", unit:"M", groups, input:character => `data-character="${esc(character.id)}" data-character-field="name"`, empty:"No one on the roster yet. Tap + on the Muster Roll to recruit."})}</section>`;
       const jump = (to, text) => `<div class="cp-jumps"><button type="button" class="btn ghost cp-jump" data-jump="${to}">${text}</button></div>`;
       const recruit = panel("Recruit reinforcements", `${jump("eq-shop", "Go to the Equipment shop &darr;")}<p>Bank: <b>${entry.campaign.bank} Marks</b>. ${mutable ? "Purchase now. New entries use their printed profile cost." : "Purchases and transfers unlock during Muster and Purchase."}</p><p class="hint">Tap a name to see its profile; press + to recruit it with Marks. New recruits get a random name; change it with the pencil in Your patrol.</p>${ui.roll(E.faction(entry), units, {attr:"data-camp", unit:"M", fac:entry.faction, disabled:unit => !mutable || entry.campaign.bank < unit.pts, removable:unit => E.dismissable(entry, unit.id).length > 0, note:unit => { const n = E.living(entry).filter(character => character.unitId === unit.id).length; return n ? `${n} on roster` : ""; }})}`).replace('<section class="card cp-panel"', '<section id="eq-recruits" class="card cp-panel"');
       // v.47 (user request): one two-column layout. Left: Muster Roll, then the Equipment shop. Right: Your patrol with Your equipment
       // right under it. "Go to the Equipment shop" / "Back to recruiting" buttons jump between the two (handled in index.html, data-jump).
       const equipment = equipmentSection(entry, mutable, jump);
-      return `<div class="cp-build cp-build2"><div class="cp-main">${recruit}${equipment.left}</div><div class="cp-side">${yours}${equipment.right}</div></div>`;
+      const patrolPts = groups.reduce((total, group) => total + group.pts, 0);
+      return `<div class="cp-build cp-build2"><div class="cp-main">${recruit}${equipment.left}</div><div class="cp-side">${yours}${equipment.right}</div></div>${ui.mbar(`<span class="cp-mb-k">Bank</span> <b>${entry.campaign.bank} M</b> <span class="cp-mb-sep">&middot;</span> <span class="cp-mb-k">Patrol</span> <b>${patrolPts} M</b>`, [["eq-shop","Shop"],["cp-yours","View patrol"]])}`;
     }
     // Equipment laid out like recruiting (5 Nov, user request: "the equipment shop should be in a better spot and there should be another
     // right hand menu for the added equipment"): the shop as a Muster-Roll-style list on the left (tap a name for its rule, − returns, + buys),
@@ -593,7 +596,7 @@ window.QuarCampaign = (() => {
       const target = event.target.closest("[data-camp]");
       if (!target || !target.closest("#view-narr") || target.disabled) return;
       const action = target.dataset.camp;
-      if (action === "tab") { tab = target.dataset.tab; render(current); return; }
+      if (action === "tab") { tab = target.dataset.tab; keepTab(current, tab); render(current); return; }
       if (action === "open") { context.navigate(target.dataset.id); return; }
       if (action === "create") {
         try {
@@ -626,7 +629,7 @@ window.QuarCampaign = (() => {
         const snapshot = entry.campaign.undo; if (!snapshot) return;
         Object.keys(entry).forEach(key => delete entry[key]); Object.assign(entry, clone(snapshot)); delete entry.campaign.setupDraft; save(entry); render(entry.id); return;
       }
-      if (action === "tab-supply" || action === "tab-roster") { tab = action === "tab-supply" ? "supply" : "roster"; render(entry.id); return; }
+      if (action === "tab-supply" || action === "tab-roster") { tab = action === "tab-supply" ? "supply" : "roster"; keepTab(entry.id, tab); render(entry.id); return; }
       const character = entry.chars.find(value => value.id === target.dataset.id);
       if (action === "deep") {
         const draft = getDraft(entry), roll = dice(6); draft.checks[character.id] = roll;
