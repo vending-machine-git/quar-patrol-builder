@@ -497,10 +497,10 @@ details.cp-mission>.cp-map{margin:10px auto}
 
 /* Recruiting in Every Quar / Quar Tales laid out like the Patrol Builder (5 Nov, user request):
    Muster Roll on the left, your patrol / Force on the right (as in the builder); one column on phones and small tablets,
-   where your patrol / Force stays on top. */
+   where your patrol / Force sits at the bottom (6 Nov, user request: adding a unit no longer pushes the Muster Roll down). */
 #view-narr .cp-build{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;min-width:0}
 @media (min-width:861px){ #view-narr .cp-build>.cp-yours{order:2;position:sticky;top:calc(var(--barh,110px) + 12px);max-height:calc(100vh - var(--barh,110px) - 24px);display:flex;flex-direction:column} #view-narr .cp-build>.cp-yours>.plist{overflow:auto;min-height:0;overscroll-behavior:contain} }
-@media (max-width:860px){ #view-narr .cp-build{grid-template-columns:minmax(0,1fr)} }
+@media (max-width:860px){ #view-narr .cp-build{grid-template-columns:minmax(0,1fr)} #view-narr .cp-build>.cp-yours{order:2} }
 #view-narr .npl{padding:6px 10px 10px}
 #view-narr .npl .empty{padding:18px 8px}
 #view-narr .npl .pts small{font-size:.7em;font-weight:500;color:var(--muted);margin-left:2px}
@@ -564,8 +564,10 @@ details.cp-mission>.cp-map{margin:10px auto}
 }
 @media (max-width:860px){
   #view-narr .cp-build2>.cp-main,#view-narr .cp-build2>.cp-side{display:contents}
-  #view-narr .cp-build2 #eq-recruits{order:2} #view-narr .cp-build2 .cp-side>.cp-yours:not(.cp-eqmine){order:1}
-  #view-narr .cp-build2 #eq-mine{order:3} #view-narr .cp-build2 #eq-shop{order:4}
+  /* 6 Nov (user request): lists you add to go at the bottom, so adding never pushes the shops down:
+     Muster Roll, Equipment shop, Your patrol, Your equipment. */
+  #view-narr .cp-build2 #eq-recruits{order:1} #view-narr .cp-build2 #eq-shop{order:2}
+  #view-narr .cp-build2 .cp-side>.cp-yours:not(.cp-eqmine){order:3} #view-narr .cp-build2 #eq-mine{order:4}
 }
 #view-narr .cp-build2 [id^="eq-"]{scroll-margin-top:calc(var(--barh,110px) + 12px)}
 #view-narr .cp-jumps{display:flex;justify-content:flex-end;margin:-4px 0 -2px}
