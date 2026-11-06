@@ -3,7 +3,7 @@
      and a copy is kept for offline use.
    - Offline: the last copy is used, so the app still opens at the table with no signal.
    Saved patrols, games and campaigns are in the browser's own storage and are never touched here. */
-const CACHE = "quar-pb-v1";
+const CACHE = "quar-pb-v2";
 const CORE = [
   "./", "index.html", "data/quar-data.json",
   "campaign.css", "campaign-rules.js", "tales-rules.js", "tales.js", "mhuddball-rules.js", "mhuddball.js", "campaign.js",
