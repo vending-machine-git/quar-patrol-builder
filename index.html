@@ -1270,9 +1270,10 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
   @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #mmHdr .mmico{color:oklch(from var(--mmfac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}}
   :root[data-theme="dark"] #mmHdr .mmico{color:oklch(from var(--mmfac) max(l, 0.7) calc(c * 1.1 + 0.015) h)}
 }
-#mmHdr .mmico.cyc{animation:mmfac var(--mmdur,36s) linear infinite}
+#mmHdr .mmico.cyc{animation:mmfac var(--mmdur,14.4s) linear infinite}
 @media (prefers-reduced-motion: reduce){#mmHdr .mmico.cyc{animation:none}}
 .mmhbtn .mmcount{margin-left:auto}
+.mmhbtn .mmsh,.tsbtn .mmsh{display:none}
 .tswrap{position:relative;display:flex}
 .tswrap>.tsbtn{flex:1}
 .tsbtn:hover,.tsbtn[aria-expanded="true"]{border-color:var(--ink)}
@@ -1310,6 +1311,17 @@ body.pdragging,body.pdragging *{cursor:grabbing!important;user-select:none}
   .mmhbtn{justify-content:center;width:38px;height:38px;min-height:0;padding:0;font-size:16px;line-height:1}
   .mmhbtn .tsl{display:none}
   .mmhbtn .mmico{min-width:0} .mmhbtn .mmico svg{width:25px;height:25px}
+  /* Tiny "MODELS" label under the icon, inside the same 38x38 square (v.54, user request: text on the phone button without moving anything) */
+  #mmHdr{flex-direction:column;gap:1px;overflow:visible}
+  #mmHdr .mmico svg{width:21px;height:21px}
+  /* Same tiny label on Theme (shows the current mode: Auto / Light / Dark) and Text size (v.55) */
+  #themeBtn,#tsBtn{flex-direction:column;gap:2px}
+  #themeBtn .ti{font-size:17px}
+  #themeBtn .ti,#tsBtn .tsaa,#mmHdr .mmico{height:21px;display:flex;align-items:center;justify-content:center}
+  #themeBtn,#tsBtn,#mmHdr{gap:2px}
+  #tsBtn .tsaa{font-size:15px}
+  #themeBtn .tl,#tsBtn .mmsh{display:block;max-width:36px;overflow:hidden;font-size:7.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;line-height:1;color:var(--muted)}
+  #mmHdr .mmsh{display:block;max-width:36px;overflow:hidden;font-size:7.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;line-height:1;color:var(--muted)}
   .mmhbtn .mmcount{position:absolute;top:-6px;right:-6px;margin:0;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;font-size:10.5px;line-height:15px;background:var(--brass);border-color:var(--brass);color:var(--on, #fff)}
   .gauge{grid-column:1/-1;order:2;min-width:0}
 }
@@ -1378,13 +1390,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
     <div class="hdrtools">
       <button class="themebtn" id="themeBtn" type="button"></button>
       <div class="tswrap">
-        <button type="button" class="tsbtn" id="tsBtn" aria-expanded="false" aria-controls="tsPop" title="Text size"><span class="tsaa" aria-hidden="true">A<small>A</small></span><span class="tsl">Text size</span></button>
+        <button type="button" class="tsbtn" id="tsBtn" aria-expanded="false" aria-controls="tsPop" title="Text size"><span class="tsaa" aria-hidden="true">A<small>A</small></span><span class="tsl">Text size</span><span class="mmsh" aria-hidden="true">Text</span></button>
         <div class="tspop" id="tsPop" role="dialog" aria-label="Text size" hidden>
           <div class="tsize"><span class="tsa" aria-hidden="true">A</span><input type="range" id="textSize" min="85" max="140" step="5" value="100" aria-label="Text size" aria-valuetext="100%"><span class="tsa big" aria-hidden="true">A</span></div>
           <div class="tsfoot"><span id="textSizeVal">100%</span><button type="button" class="tsreset" id="textSizeReset">Reset</button></div>
         </div>
       </div>
-      <button type="button" class="mmhbtn" id="mmHdr" data-mm="" title="My models: the models you own" aria-label="My models"><span class="mmico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="5" r="2.6" fill="currentColor"/><path d="M5.5 16.4 6.6 10c.2-1.1 1-1.8 2-1.8h.8c1 0 1.8.7 2 1.8l1.1 6.4z" fill="currentColor"/><ellipse cx="9" cy="19.2" rx="6.8" ry="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M21.5 2.5l-6 7.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M15.4 9.3c-1.3-.2-2.4.7-2.5 2-.1 1-.6 1.6-1.4 1.9 2 .9 4.4.2 4.9-1.6.2-.9-.1-1.8-1-2.3z" fill="currentColor"/></svg></span><span class="tsl">My models</span><span class="mmcount" data-mmcount hidden></span></button>
+      <button type="button" class="mmhbtn" id="mmHdr" data-mm="" title="My models: the models you own" aria-label="My models"><span class="mmico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="5" r="2.6" fill="currentColor"/><path d="M5.5 16.4 6.6 10c.2-1.1 1-1.8 2-1.8h.8c1 0 1.8.7 2 1.8l1.1 6.4z" fill="currentColor"/><ellipse cx="9" cy="19.2" rx="6.8" ry="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M21.5 2.5l-6 7.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M15.4 9.3c-1.3-.2-2.4.7-2.5 2-.1 1-.6 1.6-1.4 1.9 2 .9 4.4.2 4.9-1.6.2-.9-.1-1.8-1-2.3z" fill="currentColor"/></svg></span><span class="tsl">My models</span><span class="mmsh" aria-hidden="true">Models</span><span class="mmcount" data-mmcount hidden></span></button>
     </div>
     <nav class="mainnav" aria-label="Sections"><a class="navtab" href="#/factions" data-go="#/factions" data-nav="factions">Factions</a><a class="navtab" href="#/builder" data-go="#/builder" data-nav="builder">Patrol Builder</a><a class="navtab" href="#/game" data-go="#/game" data-nav="game">Game Tracker</a><a class="navtab" href="#/narrative" data-go="#/narrative" data-nav="narr">Narrative <span class="community">Community</span></a></nav>
   </div>
@@ -1492,13 +1504,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-05.52">
-<script src="campaign-rules.js?v=2026-11-05.52"></script>
-<script src="tales-rules.js?v=2026-11-05.52"></script>
-<script src="tales.js?v=2026-11-05.52"></script>
-<script src="mhuddball-rules.js?v=2026-11-05.52"></script>
-<script src="mhuddball.js?v=2026-11-05.52"></script>
-<script src="campaign.js?v=2026-11-05.52"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-05.56">
+<script src="campaign-rules.js?v=2026-11-05.56"></script>
+<script src="tales-rules.js?v=2026-11-05.56"></script>
+<script src="tales.js?v=2026-11-05.56"></script>
+<script src="mhuddball-rules.js?v=2026-11-05.56"></script>
+<script src="mhuddball.js?v=2026-11-05.56"></script>
+<script src="campaign.js?v=2026-11-05.56"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3757,10 +3769,10 @@ function mmFacCycle(){
     const frames = cols.map((c,k)=>`${pc(k*step)}%,${pc(k*step + step*0.55)}%{--mmfac:${c}}`).join("") + `100%{--mmfac:${cols[0]}}`;
     let st = document.getElementById("mmFacKf"); if (!st){ st = document.createElement("style"); st.id = "mmFacKf"; document.head.appendChild(st); }
     st.textContent = `@keyframes mmfac{${frames}}`;
-    ico.style.setProperty("--mmdur", (n*3)+"s"); ico.classList.add("cyc");
+    ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-05.52";
+const APP_VERSION = "2026-11-05.56";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3787,7 +3799,55 @@ setTimeout(checkForUpdate, 4000); setInterval(checkForUpdate, 20*60*1000);
    Same header (title + page switches), save warning, help fold-outs and fold-outs as the rest of the site.
    Page references in narrative text ("PDF pp. 1-2", "(p. 3)") are wrapped in .pg so "Show rulebook pages" hides them. */
 const N_WARN = () => `<div class="savebox"><details class="savewarn swfold" id="nWarn"${foldOpen("nWarn") ? " open" : ""}><summary><span class="chev" aria-hidden="true">▸</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 3v.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Your campaigns, Tales and matches are kept only in this browser, on this device.</b></summary><p>Clearing your browsing data or using a private window erases them, and they don't follow you to other devices. Save a backup file now and then: it holds your patrols, stories, campaigns, current game and saved battles.</p></details><div class="bkslot">${backupBar()}</div></div>`;
+// Item icons for the narrative shops and supply (Every Quar + Quar Tales). Line icons, 24x24, drawn with currentColor.
+const NICO = {
+  "first aid kit":'<rect x="3" y="7.5" width="18" height="13" rx="2"/><path d="M9 7.5V5.2c0-.7.5-1.2 1.2-1.2h3.6c.7 0 1.2.5 1.2 1.2v2.3M12 10.8v6.4M8.8 14h6.4"/>',
+  "pykpyk treats":'<circle cx="12" cy="12" r="4.2"/><path d="M8.2 10.2L3 7v10l5.2-3.2M15.8 10.2L21 7v10l-5.2-3.2"/><path d="M10 10.5c1.2-.7 2.8-.7 4 0" stroke-width="1.4"/>',
+  "map":'<path d="M3 6.5l6-2.3 6 2.3 6-2.3v13.3l-6 2.3-6-2.3-6 2.3z"/><path d="M9 4.2v13.3M15 6.5v13.3"/><path d="M11 11.5l2 2M13 11.5l-2 2" stroke-width="1.4"/>',
+  "sword":'<path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6M16 16l4 4M19 21l2-2"/>',
+  "pistol":'<path d="M3 7.5h16.5l1.5 1.5v2.5h-8l-1.3 2.3H9.8L8.4 20H4.6l1.6-8.5H3z"/><path d="M9.8 13.8c.2 1 .9 1.6 1.9 1.6M19 7.5v-1.5"/>',
+  "scope":'<path d="M2.5 10h4l1.2-1.6h8.6l1.2 1.6h4v4h-4l-1.2 1.6H7.7L6.5 14h-4z"/><path d="M9.5 15.6V19M14.5 15.6V19M8 19h8M11 12h2"/>',
+  "short range radio":'<rect x="7" y="8" width="10" height="13" rx="1.6"/><path d="M10 8V3M10 11.5h4M10 14.5h4M10 17.5h4"/>',
+  "trench armor":'<path d="M12 3l7.5 2.4v6c0 4.8-3.2 8-7.5 9.6-4.3-1.6-7.5-4.8-7.5-9.6v-6z"/><path d="M12 3v18M4.6 10.5h14.8"/>',
+  "at grenades":'<rect x="8" y="3" width="8" height="8.5" rx="1.8"/><path d="M8 6.5h8M12 11.5V21M10 21h4M10.5 15h3"/>',
+  "ammo":'<path d="M4 20.5v-9a2 2 0 0 1 4 0v9zM10 20.5v-9a2 2 0 0 1 4 0v9zM16 20.5v-9a2 2 0 0 1 4 0v9z"/><path d="M4 14.5h4M10 14.5h4M16 14.5h4"/>',
+  "superior ammunition":'<path d="M5 21v-9.5a2.2 2.2 0 0 1 4.4 0V21zM11.8 21v-9.5a2.2 2.2 0 0 1 4.4 0V21z"/><path d="M5 15h4.4M11.8 15h4.4"/><path d="M19.5 3v4.4M17.3 5.2h4.4" stroke-width="1.5"/>',
+  "flask":'<path d="M9.5 3h5v3h-5z"/><path d="M8 6h8l1.8 2.4V18a3 3 0 0 1-3 3H9.2a3 3 0 0 1-3-3V8.4z"/><path d="M8.5 12h7v4.5h-7z"/>',
+  "trenches":'<path d="M2 10h4.5l2 8h7l2-8H22"/><path d="M2 7.5h3.5M18.5 7.5H22M9.5 14h5"/><path d="M4 12.5l.5.5M19.5 12.5l.5-.5M11 18v-2M13 18v-2" stroke-width="1.4"/>',
+  "razor wire":'<path d="M4 20L14.5 4M9.5 4L20 20"/><path d="M2.5 13.5c1-1.6 2.6-1.6 3.6 0s2.6 1.6 3.6 0 2.6-1.6 3.6 0 2.6 1.6 3.6 0 2.6-1.6 3.6 0"/>',
+  "minefield":'<path d="M5 18.5a7 6 0 0 1 14 0z"/><path d="M2.5 18.5h19M10.5 12.6V10.5h3v2.1M12 10.5V8.5M6.6 14.2L4.6 12.8M17.4 14.2l2-1.4M8.5 18.5v-2M15.5 18.5v-2"/>',
+  "pillbox":'<path d="M3 20v-5.2a9 7.5 0 0 1 18 0V20z"/><path d="M2 20h20M7.5 13.2h9"/><path d="M8 13.2v1.4M16 13.2v1.4"/>',
+  "artillery support":'<path d="M9 20.5V10c0-3.4 1.4-5.6 3-7 1.6 1.4 3 3.6 3 7v10.5z"/><path d="M9 16.5h6M9 13h6M7.5 20.5h9"/>',
+  "lucky charm":'<circle cx="9" cy="9" r="3"/><circle cx="15" cy="9" r="3"/><circle cx="9" cy="15" r="3"/><circle cx="15" cy="15" r="3"/><path d="M17.1 17.1L21 21.5"/>',
+  "sturdy helmet":'<path d="M2.5 16h19"/><path d="M5 16a7 7 0 0 1 14 0"/><path d="M6 12.6h12"/><path d="M8.5 16l1.2 3h4.6l1.2-3"/>',
+  "lantern":'<path d="M9 3.5h6M12 3.5V5.5"/><path d="M8.5 5.5h7l1 2.5v10.5l-1 2h-7l-1-2V8z"/><path d="M7.5 8h9M7.5 18.5h9"/><path d="M12 11c1.3 1.3 1.6 2.4 1.1 3.4-.4.8-1.8.8-2.2 0-.5-1 0-2.1 1.1-3.4z"/>',
+  "medicine":'<path d="M9.5 3h5v3h-5z"/><rect x="7" y="6" width="10" height="15" rx="1.8"/><path d="M12 10.3v6.4M8.8 13.5h6.4"/>',
+  "weapon":'<path d="M2 12.5h12.5l2.2-1.8H22v3h-5.2l-3.8 3.8H9.4l.8-3H5.5L4 16.5H2z"/><path d="M5 12.5v-1.6"/>',
+  "item":'<path d="M12 2.8l8.5 4.6v9.2L12 21.2l-8.5-4.6V7.4z"/><path d="M3.5 7.4L12 12l8.5-4.6M12 12v9.2"/>'
+};
+// Item name -> icon key (lower case; spelling variants from the two rule files and recovered weapons).
+function nicoKey(name){
+  const n = String(name || "").toLowerCase();
+  if (NICO[n]) return n;
+  if (/map/.test(n)) return "map";
+  if (/extra ammo/.test(n)) return "ammo";
+  if (/wire|barricade/.test(n)) return "razor wire";
+  if (/artillery/.test(n)) return "artillery support";
+  if (/helmet/.test(n)) return "sturdy helmet";
+  if (/radio/.test(n)) return "short range radio";
+  if (/grenade/.test(n)) return "at grenades";
+  if (/charm/.test(n)) return "lucky charm";
+  if (/harlech|bogen|rhyfle|rifle|carbine|shotgun|grifkis|smg|lmg|gun|torpedo|doru|splagen/.test(n)) return "weapon";
+  return "item";
+}
+// kind: "eq" (kept equipment, brass), "use" (consumable / next battle only, olive)
+function nicoSvg(name, kind){
+  return `<span class="nico${kind === "use" ? " use" : ""}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${NICO[nicoKey(name)]}</svg></span>`;
+}
+
 const narrUIx = {
+  // Shop / supply item icon (nicoSvg above): item(name, "eq" | "use")
+  item:nicoSvg,
   head:(title, back) => `${back ? `<div class="viewbar cp-crumbs">${back}</div>` : ""}<div class="hhead"><h1>${title} <span class="community">Community</span></h1><div class="hhead-r"><span class="switches">${pgCtl("Narr")}${ownCtl("Narr")}</span></div></div>`,
   warn:N_WARN,
   tip:tipFold,
