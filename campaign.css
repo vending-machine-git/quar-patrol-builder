@@ -634,3 +634,66 @@ details.cp-mission>.cp-map{margin:10px auto}
 #view-narr .eq-chip .nico{width:1.5em;height:1.5em;margin:0 -1px 0 -5px;border-radius:50%}
 #view-narr .unit .uname .nico{margin-left:.1em}
 @media print{#view-narr .nico{background:none}}
+
+/* ---------- Phone-friendly record pages + QoL (v.2026-11-06.57) ---------- */
+/* Undo: short label on phones */
+.cp-crumbs .cp-us{display:none}
+/* Compact shop rows (Quar Tales advantages + Spend Supply): name and buttons on one line, rule text under */
+#view-narr .cp-shop>article:has(>.cp-shoprow){flex-direction:column;align-items:stretch;gap:4px}
+#view-narr .cp-shop>article>.cp-shoprow{display:flex;flex:0 0 auto;align-items:center;gap:10px;min-width:0}
+#view-narr .cp-shoprow>div{flex:1 1 auto;min-width:0}
+#view-narr .cp-shoprow h3{flex-wrap:nowrap}
+#view-narr .cp-shop>article>p.hint{margin:0;display:block}
+/* Bottom bar on recruiting tabs (phones/tablets only, like the Patrol Builder's) */
+.cp-mbar{display:none}
+@media (max-width:860px){
+  #view-narr .cp-mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;align-items:center;gap:10px;background:var(--ink);color:var(--paper);
+    padding:9px max(14px,env(safe-area-inset-right,0px)) calc(9px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));box-shadow:0 -4px 14px -6px rgba(0,0,0,.45)}
+  .cp-mb-l{display:flex;flex-direction:column;gap:5px;flex:1 1 auto;min-width:0}
+  .cp-mb-txt{font-size:.9em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cp-mb-txt b{font-family:var(--f-mono);font-weight:600;font-variant-numeric:tabular-nums}
+  .cp-mb-k{opacity:.75;font-size:.85em;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+  .cp-mb-sep{opacity:.5}
+  .cp-mb-track{display:block;height:10px;border-radius:999px;background:color-mix(in oklab,var(--paper) 22%,transparent);overflow:hidden;box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--paper) 30%,transparent)}
+  .cp-mb-track i{display:block;height:100%;background:var(--paper);border-radius:999px;transition:width .2s}
+  .cp-mb-track.full i{background:var(--brass)} .cp-mb-track.over i{background:var(--bad-inv,#ff8a7a)}
+  .cp-mb-go{display:flex;gap:6px;flex:0 0 auto}
+  .cp-mb-btn{font:inherit;font-size:.88em;font-weight:700;cursor:pointer;color:var(--paper);background:transparent;border:1px solid color-mix(in oklab,var(--paper) 45%,transparent);border-radius:999px;padding:0 13px;min-height:38px;white-space:nowrap}
+  .cp-mb-btn:active{background:color-mix(in oklab,var(--paper) 18%,transparent)}
+  body[data-view="narr"]:has(.cp-mbar) .toast{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+  #view-narr .cp-panel,#view-narr .cp-yours{scroll-margin-top:calc(var(--barh,110px) + 62px)}
+}
+@media (max-width:700px){
+  /* Back + Undo on one line */
+  #view-narr .cp-crumbs{flex-wrap:nowrap;gap:8px}
+  #view-narr .cp-crumbs>a.btn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:0 1 auto}
+  #view-narr .cp-crumbs>.btn[data-camp="undo"],#view-narr .cp-crumbs>.btn[data-tales="undo"],#view-narr .cp-crumbs>.btn[data-mb="undo"]{flex:0 0 auto}
+  .cp-crumbs .cp-ul{display:none} .cp-crumbs .cp-us{display:inline}
+  /* Hero: one row of four small tiles */
+  #view-narr .cp-hero{padding:10px 12px;gap:8px 10px}
+  #view-narr .cp-hero .cp-kicker{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.66em}
+  #view-narr .cp-hero-txt h2{font-size:1.25em}
+  #view-narr .cp-hero-txt p{font-size:.85em;margin-top:1px}
+  #view-narr .cp-hero .cp-metrics{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  #view-narr .cp-hero .cp-metrics>div{padding:5px 6px 6px;border-left-width:3px;gap:1px}
+  #view-narr .cp-hero .cp-metrics strong{font-size:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #view-narr .cp-hero .cp-metrics span{font-size:.54em;letter-spacing:.06em;line-height:1.15}
+  /* Tabs: one sticky scrolling strip under the header */
+  #view-narr .cp-tabs{position:sticky;top:var(--barh,0px);z-index:5;background:linear-gradient(var(--sunk),var(--sunk)),var(--paper);flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    box-shadow:0 6px 10px -8px rgba(0,0,0,.4)}
+  #view-narr .cp-tabs::-webkit-scrollbar{display:none}
+  /* Edge shadows show there are more tabs to scroll to (the strip stays solid) */
+  #view-narr .cp-tabs{background:
+    linear-gradient(90deg,var(--sunk) 40%,color-mix(in oklab,var(--sunk) 0%,transparent)) left/36px 100% no-repeat local,
+    linear-gradient(270deg,var(--sunk) 40%,color-mix(in oklab,var(--sunk) 0%,transparent)) right/36px 100% no-repeat local,
+    linear-gradient(90deg,rgba(0,0,0,.2),transparent) left/14px 100% no-repeat scroll,
+    linear-gradient(270deg,rgba(0,0,0,.2),transparent) right/14px 100% no-repeat scroll,
+    linear-gradient(var(--sunk),var(--sunk)),var(--paper)}
+  #view-narr .cp-tabs .btn,#view-narr .cp-tabs .btn.ghost{flex:0 0 auto;white-space:nowrap;padding:9px 13px;font-size:.92em}
+  /* Collapse / Expand all: bigger tap targets */
+  #view-narr .cp-foldbar{margin:-2px 0 8px}
+  #view-narr .cp-foldbar button{padding:9px 12px;font-size:.84em}
+  /* Mhuddball stat tables never run off the screen */
+  #view-narr .mb table.stats{display:block;max-width:100%;overflow-x:auto}
+  #view-narr .mb table.stats th,#view-narr .mb table.stats td{padding-right:7px}
+}
