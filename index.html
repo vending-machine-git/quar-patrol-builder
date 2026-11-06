@@ -7,8 +7,14 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-32.png" type="image/png" sizes="32x32">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="apple-touch-icon" href="icons/app-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#22291b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Quar Builder">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Quar Builder">
 <meta name="description" content="Build legal patrols, track battles, and look up every unit profile, weapon, and special rule for all 12 Quar: Clash of Rhyfles factions. Unofficial and fan-made.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Quar Patrol Builder">
@@ -1504,13 +1510,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-06.57">
-<script src="campaign-rules.js?v=2026-11-06.57"></script>
-<script src="tales-rules.js?v=2026-11-06.57"></script>
-<script src="tales.js?v=2026-11-06.57"></script>
-<script src="mhuddball-rules.js?v=2026-11-06.57"></script>
-<script src="mhuddball.js?v=2026-11-06.57"></script>
-<script src="campaign.js?v=2026-11-06.57"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-06.58">
+<script src="campaign-rules.js?v=2026-11-06.58"></script>
+<script src="tales-rules.js?v=2026-11-06.58"></script>
+<script src="tales.js?v=2026-11-06.58"></script>
+<script src="mhuddball-rules.js?v=2026-11-06.58"></script>
+<script src="mhuddball.js?v=2026-11-06.58"></script>
+<script src="campaign.js?v=2026-11-06.58"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3772,7 +3778,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-06.57";
+const APP_VERSION = "2026-11-06.58";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -4198,4 +4204,12 @@ init();
     else if (ctl.parentNode===inner){ tools.before(ctl, gauge); box.hidden=true; } };
   place(); (mq.addEventListener ? mq.addEventListener("change", place) : mq.addListener(place)); })();
 
+</script>
+<script>
+/* Home-screen app (v.58): offline helper. Only on the real site (and local tests), never in the claude.ai preview. */
+(function(){ try{
+  if (!("serviceWorker" in navigator)) return;
+  const h = location.hostname; if (!(location.protocol === "https:" && /\.github\.io$/.test(h)) && h !== "localhost") return;
+  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+}catch(e){} })();
 </script>

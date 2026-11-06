@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Quar Patrol Builder",
+  "short_name": "Quar Builder",
+  "description": "Unofficial fan-made patrol builder, unit reference, game tracker and narrative campaigns for Quar: Clash of Rhyfles.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#eeede4",
+  "theme_color": "#22291b",
+  "categories": ["games", "utilities"],
+  "icons": [
+    { "src": "icons/app-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/app-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/app-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/app-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Patrol Builder", "short_name": "Patrols", "url": "./#/builder", "icons": [{ "src": "icons/app-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Game Tracker", "short_name": "Tracker", "url": "./#/game", "icons": [{ "src": "icons/app-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Narrative campaigns", "short_name": "Narrative", "url": "./#/narrative", "icons": [{ "src": "icons/app-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Factions", "short_name": "Factions", "url": "./#/factions", "icons": [{ "src": "icons/app-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ]
+}
