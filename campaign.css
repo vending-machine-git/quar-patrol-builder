@@ -624,3 +624,13 @@ details.cp-mission>.cp-map{margin:10px auto}
 @keyframes mbwob{50%{transform:translateY(-4px) rotate(-2deg)}}
 @media (prefers-reduced-motion:reduce){ .mb-moment,.mb-moment.in,.mb-moment.out{transition:opacity .3s;transform:translate(-50%,0)} .mb-moment .mb-moment-pic{animation:none} }
 @media print{ .mb-moment{display:none!important} }
+
+/* ---------- Item icons in the shops and supply (Every Quar + Quar Tales, v.2026-11-05.53) ---------- */
+/* Brass = equipment you keep; olive = consumable / next battle only. */
+#view-narr .nico{--ic:var(--brass);display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:1.75em;height:1.75em;margin-right:.45em;vertical-align:middle;border-radius:6px;color:var(--ic);background:color-mix(in oklab,var(--ic) 14%,var(--panel));border:1px solid color-mix(in oklab,var(--ic) 38%,var(--rule))}
+#view-narr .nico.use{--ic:var(--olive)}
+#view-narr .nico svg{width:72%;height:72%;display:block}
+#view-narr .cp-shop h3,#view-narr .cp-list h3{display:flex;align-items:center;flex-wrap:wrap}
+#view-narr .eq-chip .nico{width:1.5em;height:1.5em;margin:0 -1px 0 -5px;border-radius:50%}
+#view-narr .unit .uname .nico{margin-left:.1em}
+@media print{#view-narr .nico{background:none}}
