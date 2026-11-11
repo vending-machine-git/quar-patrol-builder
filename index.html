@@ -1517,13 +1517,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-11.64">
-<script src="campaign-rules.js?v=2026-11-11.64"></script>
-<script src="tales-rules.js?v=2026-11-11.64"></script>
-<script src="tales.js?v=2026-11-11.64"></script>
-<script src="mhuddball-rules.js?v=2026-11-11.64"></script>
-<script src="mhuddball.js?v=2026-11-11.64"></script>
-<script src="campaign.js?v=2026-11-11.64"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-11.65">
+<script src="campaign-rules.js?v=2026-11-11.65"></script>
+<script src="tales-rules.js?v=2026-11-11.65"></script>
+<script src="tales.js?v=2026-11-11.65"></script>
+<script src="mhuddball-rules.js?v=2026-11-11.65"></script>
+<script src="mhuddball.js?v=2026-11-11.65"></script>
+<script src="campaign.js?v=2026-11-11.65"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -1732,7 +1732,7 @@ const pgWrap = s => esc(s).replace(PGRX, m => `<span class="pg">${m}</span>`);
 const baseName = a => a.replace(/\s*\(.*\)\s*$/, "").trim();
 function abilityInfo(a){ const k = baseName(a); return DATA.abilities[k] || null; }
 // Pluck costs (or Pluck savings) tied to an ability, from the JSON "pluck" list; shown in every rule list and pop-up
-const pluckHTML = i => (i && i.pluck && i.pluck.length) ? `<span class="pluckln"><b>Pluck</b> ${i.pluck.map(pgWrap).join("<i> · </i>")}</span>` : "";
+const pluckHTML = (i, inPop) => (i && i.pluck && i.pluck.length) ? `<span class="pluckln"><b>${inPop ? "Pluck" : stl("Pluck")}</b> ${i.pluck.map(pgWrap).join("<i> · </i>")}</span>` : "";
 
 const splitList = str => String(str||"").split(/,\s*(?![^()]*\))/).map(x=>x.trim()).filter(Boolean);
 function tip(lbl){
@@ -1752,7 +1752,8 @@ const STATS = {
   R:{n:"Range Band", t:"In inches. No penalty for targets within R; -1 to the Skill Check for each extra Range Band to the target.", s:"Full Book p9"},
   Sn:{n:"Snapshot", t:"Taken off Skill when this rhyfler makes a Snapshot or uses the Return Fire reaction.", s:"Full Book p9"},
   Rn:{n:"Range", t:"The gun's Range Band in inches. NA means no Range Band: it can hit anything on the battlefield with no distance penalty. Min X is a minimum range.", s:"Full Book p49, p58"},
-  Arc:{n:"Fire Arc", t:"The angle the gun can fire into without repositioning, centred on a straight line out from the weapon.", s:"Full Book p58"}
+  Arc:{n:"Fire Arc", t:"The angle the gun can fire into without repositioning, centred on a straight line out from the weapon.", s:"Full Book p58"},
+  Pluck:{n:"Pluck", t:"An in-game resource for special actions and bending the rules. Most missions start each side with 5. Spend 1 to add 1 to a Skill Check or Might roll, move a rhyfler 1\" without a Task, round a halved number up, or pay for Tasks such as Charge or Group Move. Gain it by taking an enemy Out of Action (+1), a Tend Wounded roll of 4-6 (+1), the Steady Task (+1), Regroup (the card's value) and mission objectives.", s:"Full Book p12"}
 };
 const STATS_MH = {
   Sk:{n:"Skill", t:"Roll 3d6 for a Skill Check: a total equal to or under Skill passes. Used for most Tasks, including Mhuddball Tasks. Higher is better.", s:"Mhuddball p2"},
@@ -1760,7 +1761,8 @@ const STATS_MH = {
   MA:{n:"Movement Allowance", t:"How many inches it moves with a Standard Movement Task. Other Movement Tasks change this.", s:"Mhuddball p2"},
   T:{n:"Toughness", t:"How well it stands up to tackles. Decides how much damage it takes.", s:"Mhuddball p2"},
   AP:{n:"Arm Power", t:"Its throwing Range Band, in inches. Most accurate within AP; -2 to the Skill Check to pass or shoot for each extra band to the target.", s:"Mhuddball p2"},
-  PC:{n:"Pluck Cost", t:"Added to or taken from your team's starting Pluck when you pick this Mhudder.", s:"Mhuddball p3"}
+  PC:{n:"Pluck Cost", t:"Added to or taken from your team's starting Pluck when you pick this Mhudder.", s:"Mhuddball p3"},
+  Pluck:{n:"Pluck", t:"Your team's in-game resource for special actions and bending the rules. Spend 1 to add 1 to a Skill Check or Might roll, move a Mhudder 1\" without a Task, or pay for Tasks such as Charge or Coordinated assault. Gain 1 for a successful pass, an interception, a goal, putting a Mhudder OOA, or a Tend Wounded roll of 4-6.", s:"Mhuddball p3-4"}
 };
 const statInfo = (k, game) => (game==="mh" ? STATS_MH : STATS)[k] || null;
 const stl = (k, game) => statInfo(k, game) ? `<button type="button" class="rl st" data-stat="${esc(k)}"${game?` data-game="${esc(game)}"`:""} aria-expanded="false">${esc(k)}</button>` : k;
@@ -2742,7 +2744,7 @@ function renderGame(){
       <div class="gsb-who"${isAct?` title="Active player"`:""}>${isAct?`<span class="gsb-act" role="img" aria-label="Active player"></span>`:""}${f?flagImg(f,"gsbflag"):""}<span class="gsb-nm">${esc(name)}</span></div>
       ${sub?`<span class="gsb-sub">${esc(sub)}</span>`:""}
       <div class="gsb-vp"><button type="button" class="gbtn" data-g="dec" data-k="vp" data-i="${i}" aria-label="${esc(lab)} Victory Points minus one">−</button><output aria-label="${esc(lab)} Victory Points"><b>${game.vp[i]}</b><small>VP</small></output><button type="button" class="gbtn" data-g="inc" data-k="vp" data-i="${i}" aria-label="${esc(lab)} Victory Points plus one">+</button></div>
-      <div class="gsb-pl"><span class="gl">Pluck</span><button type="button" class="gbtn" data-g="dec" data-k="pluck" data-i="${i}" aria-label="${esc(lab)} Pluck minus one">−</button><output aria-label="${esc(lab)} Pluck">${game.pluck[i]}</output><button type="button" class="gbtn" data-g="inc" data-k="pluck" data-i="${i}" aria-label="${esc(lab)} Pluck plus one">+</button></div>
+      <div class="gsb-pl"><span class="gl">${stl("Pluck")}</span><button type="button" class="gbtn" data-g="dec" data-k="pluck" data-i="${i}" aria-label="${esc(lab)} Pluck minus one">−</button><output aria-label="${esc(lab)} Pluck">${game.pluck[i]}</output><button type="button" class="gbtn" data-g="inc" data-k="pluck" data-i="${i}" aria-label="${esc(lab)} Pluck plus one">+</button></div>
       ${(i ? !game.oppForce : !me) ? sideLoss(i ? "opp" : "my") : ""}
     </div>`; };
   const lastR = lim && game.turn>=lim && game.round>=RPT();
@@ -3697,12 +3699,12 @@ document.addEventListener("toggle", e=>{ const d=e.target; if(!d.classList || !d
 const pop = document.createElement("div"); pop.className="pop"; pop.id="rulePop"; pop.setAttribute("role","tooltip"); pop.hidden=true; document.body.appendChild(pop);
 let popFor=null, pinned=false, pinnedEl=null, hideT=null;
 function popHTML(el){
-  if (el.dataset.stat){ const i=statInfo(el.dataset.stat, el.dataset.game); return `<h4>${esc(el.dataset.stat)} · ${esc(i.n)}</h4><p>${esc(i.t)}</p><span class="src pg">${esc(i.s)}</span>`; }
+  if (el.dataset.stat){ const i=statInfo(el.dataset.stat, el.dataset.game); return `<h4>${esc(el.dataset.stat)}${i.n!==el.dataset.stat?` · ${esc(i.n)}`:""}</h4><p>${esc(i.t)}</p><span class="src pg">${esc(i.s)}</span>`; }
   if (el.dataset.weapon){ const wf=(el.dataset.fac && facById(el.dataset.fac)) || FAC, w=wf.weapons.find(x=>x.name===el.dataset.weapon);
-    return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p9)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>${pluckHTML(i)}`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
+    return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p9)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>${pluckHTML(i, true)}`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
   const full=el.dataset.rule, i=abilityInfo(full), body=i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/, m=>i.text.startsWith(baseName(full))?"":m);
   const sub = /^Cadier/.test(full) ? ["Thunderous Hooves","Skittish"].map(k=>`<p style="margin-top:4px"><b>${k}</b> ${pgWrap(DATA.abilities[k].text)}</p>`).join("") : "";
-  return `<h4>${esc(full)}</h4><p>${pgWrap(cap(body))}</p>${pluckHTML(i)}${sub}<span class="src pg">${esc(i.src)}</span>`;
+  return `<h4>${esc(full)}</h4><p>${pgWrap(cap(body))}</p>${pluckHTML(i, true)}${sub}<span class="src pg">${esc(i.src)}</span>`;
 }
 function showPop(el){
   clearTimeout(hideT);
@@ -3810,7 +3812,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-11.64";
+const APP_VERSION = "2026-11-11.65";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
