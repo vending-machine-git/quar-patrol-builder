@@ -338,7 +338,7 @@ window.QuarTales = (() => {
     const button = (action,text,attrs = "",disabled = false) => `<button type="button" class="btn ${PRIMARY.has(action) ? "cta" : DANGER.has(action) ? "danger" : "ghost"}" data-tales="${action}" ${attrs}${disabled ? " disabled" : ""}>${text}</button>`;
     const savedTab = id => { try{ return localStorage.getItem("quar-narr-tab|" + id); }catch(e){ return null; } };
     const keepTab = (id, value) => { try{ localStorage.setItem("quar-narr-tab|" + id, value); }catch(e){} };
-    const ui = context.ui, tile = (label,value) => `<div class="gt"><small>${label}</small><b>${esc(value)}</b></div>`;
+    const ui = context.ui, tile = (label,value) => `<div class="gt"><small>${ui.stl ? ui.stl(label) : label}</small><b>${esc(value)}</b></div>`;
     const panel = (title,text) => `<section class="card cp-panel"><header><h2>${title}</h2></header><div class="cp-body">${text}</div></section>`;
     const options = (values,selected) => values.map(([key,text]) => `<option value="${esc(key)}"${String(key) === String(selected) ? " selected" : ""}>${esc(text)}</option>`).join("");
     const select = (text,values,selected,attrs = "") => `<label>${text}<select ${attrs}>${options(values,selected)}</select></label>`;
