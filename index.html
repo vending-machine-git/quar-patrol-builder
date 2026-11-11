@@ -387,6 +387,9 @@ table.stats td.t{font-family:var(--f-body)}
 .rl{all:unset;cursor:help;border-bottom:1px dotted var(--brass);color:inherit;font:inherit}
 .rl:hover,.rl:focus-visible,.rl[aria-expanded="true"]{color:var(--brass);border-bottom-style:solid}
 .rl:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+.rl.st{border-bottom:1px dashed color-mix(in srgb,currentColor 60%,transparent);border-radius:2px;padding:0 1px;cursor:help}
+.rl.st:hover,.rl.st:focus-visible,.rl.st[aria-expanded="true"]{color:inherit;border-bottom-style:dashed;border-bottom-color:currentColor;background:var(--accent-soft,rgba(0,0,0,.08))}
+.rl.st:focus-visible{outline:2px solid currentColor}
 .pop{position:fixed;z-index:70;max-width:min(24em,calc(100vw - 24px));background:var(--panel);color:var(--ink);border:1px solid var(--ink);border-top:4px solid var(--accent);border-radius:3px;
   padding:9px 11px;box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:.93em;line-height:1.35;pointer-events:auto}
 .pop h4{margin:0 0 4px;font-family:var(--f-display);font-weight:400;font-size:1.05em;letter-spacing:.03em;text-transform:uppercase}
@@ -1514,13 +1517,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-11.63">
-<script src="campaign-rules.js?v=2026-11-11.63"></script>
-<script src="tales-rules.js?v=2026-11-11.63"></script>
-<script src="tales.js?v=2026-11-11.63"></script>
-<script src="mhuddball-rules.js?v=2026-11-11.63"></script>
-<script src="mhuddball.js?v=2026-11-11.63"></script>
-<script src="campaign.js?v=2026-11-11.63"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-11.64">
+<script src="campaign-rules.js?v=2026-11-11.64"></script>
+<script src="tales-rules.js?v=2026-11-11.64"></script>
+<script src="tales.js?v=2026-11-11.64"></script>
+<script src="mhuddball-rules.js?v=2026-11-11.64"></script>
+<script src="mhuddball.js?v=2026-11-11.64"></script>
+<script src="campaign.js?v=2026-11-11.64"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -1739,6 +1742,28 @@ function tip(lbl){
   return esc(lbl);
 }
 const cap = t => t.charAt(0).toUpperCase()+t.slice(1);
+// Stat headings (Sk, Mt, MA, T, D, R, Sn, Rn, Arc): tap or hover for a plain explanation. Mhuddball ("mh") has its own wording.
+const STATS = {
+  Sk:{n:"Skill", t:"Roll 3d6 for a Skill Check: a total equal to or under Skill passes. Used for most Tasks, including attacks. Higher is better.", s:"Full Book p8"},
+  Mt:{n:"Might", t:"The dice rolled for damage after a successful Melee attack.", s:"Full Book p8"},
+  MA:{n:"Movement Allowance", t:"How many inches it moves with a Standard Movement Task. Other Movement Tasks change this. Mounts show two numbers: normal, then after the mount is wounded.", s:"Full Book p8, p42"},
+  T:{n:"Toughness", t:"How well it stands up to melee attacks and explosions. Decides how much damage it takes.", s:"Full Book p8"},
+  D:{n:"Damage", t:"How much punishment a mount, weapon crew or vehicle can take before it is removed or stops working.", s:"Full Book p42, p48, p64"},
+  R:{n:"Range Band", t:"In inches. No penalty for targets within R; -1 to the Skill Check for each extra Range Band to the target.", s:"Full Book p9"},
+  Sn:{n:"Snapshot", t:"Taken off Skill when this rhyfler makes a Snapshot or uses the Return Fire reaction.", s:"Full Book p9"},
+  Rn:{n:"Range", t:"The gun's Range Band in inches. NA means no Range Band: it can hit anything on the battlefield with no distance penalty. Min X is a minimum range.", s:"Full Book p49, p58"},
+  Arc:{n:"Fire Arc", t:"The angle the gun can fire into without repositioning, centred on a straight line out from the weapon.", s:"Full Book p58"}
+};
+const STATS_MH = {
+  Sk:{n:"Skill", t:"Roll 3d6 for a Skill Check: a total equal to or under Skill passes. Used for most Tasks, including Mhuddball Tasks. Higher is better.", s:"Mhuddball p2"},
+  Mt:{n:"Might", t:"The dice rolled for damage after a successful tackle.", s:"Mhuddball p2"},
+  MA:{n:"Movement Allowance", t:"How many inches it moves with a Standard Movement Task. Other Movement Tasks change this.", s:"Mhuddball p2"},
+  T:{n:"Toughness", t:"How well it stands up to tackles. Decides how much damage it takes.", s:"Mhuddball p2"},
+  AP:{n:"Arm Power", t:"Its throwing Range Band, in inches. Most accurate within AP; -2 to the Skill Check to pass or shoot for each extra band to the target.", s:"Mhuddball p2"},
+  PC:{n:"Pluck Cost", t:"Added to or taken from your team's starting Pluck when you pick this Mhudder.", s:"Mhuddball p3"}
+};
+const statInfo = (k, game) => (game==="mh" ? STATS_MH : STATS)[k] || null;
+const stl = (k, game) => statInfo(k, game) ? `<button type="button" class="rl st" data-stat="${esc(k)}"${game?` data-game="${esc(game)}"`:""} aria-expanded="false">${esc(k)}</button>` : k;
 const tips = list => list.length ? list.map(tip).join(", ") : "–";
 function count(ids){ return [].concat(ids).reduce((n,id)=>n+(state.items[id]||0),0); }
 function faMult(){ return state.limit >= DATA.rules.faDoublesAt ? 2 : 1; }
@@ -1813,13 +1838,13 @@ function statBlock(u){
   let h = "";
   if (u.profiles){
     const showD = u.profiles.some(p=>p.d);
-    h += `<div class="scroll"><table class="stats"><thead><tr>${u.profiles.some(p=>p.label)?"<th></th>":""}<th>Sk</th><th>Mt</th><th>MA</th><th>T</th>${showD?"<th>D</th>":""}<th>Abilities</th></tr></thead><tbody>`;
+    h += `<div class="scroll"><table class="stats"><thead><tr>${u.profiles.some(p=>p.label)?"<th></th>":""}<th>${stl("Sk")}</th><th>${stl("Mt")}</th><th>${stl("MA")}</th><th>${stl("T")}</th>${showD?`<th>${stl("D")}</th>`:""}<th>Abilities</th></tr></thead><tbody>`;
     for (const p of u.profiles) h += `<tr>${u.profiles.some(x=>x.label)?`<td class="t"><b>${esc(p.label||"")}</b></td>`:""}<td>${p.sk}</td><td>${esc(p.mt)}</td><td>${esc(p.ma)}</td><td>${p.t}</td>${showD?`<td>${p.d||"–"}</td>`:""}<td class="t">${tips(p.abilities)}</td></tr>`;
     h += `</tbody></table></div>`;
   }
-  if (u.crew){ const c=u.crew; h += `<div class="scroll"><table class="stats"><thead><tr><th>Crew</th><th>Sk</th><th>T</th><th>D</th><th>Break</th><th>MA</th></tr></thead><tbody><tr><td>${c.crew}</td><td>${c.sk}</td><td>${c.t}</td><td>${c.d}</td><td>${esc(c.brk)}</td><td>${esc(c.ma)}</td></tr></tbody></table></div>`; }
-  if (u.vehicle){ const v=u.vehicle; h += `<div class="scroll"><table class="stats"><thead><tr><th>Crew</th><th>Activation</th><th>Sk</th><th>MA</th>${v.t?"<th>T</th>":""}</tr></thead><tbody><tr><td>${v.crew}</td><td class="t">${esc(v.activation)}</td><td>${v.sk}</td><td>${esc(v.ma)}</td>${v.t?`<td>${v.t}</td>`:""}</tr></tbody></table></div>`; }
-  if (u.weapons){ h += `<div class="scroll"><table class="stats"><thead><tr><th>Weapon</th><th>Rn</th><th>Arc</th><th>Abilities</th></tr></thead><tbody>${u.weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.rn)}</td><td>${esc(w.arc)}</td><td class="t">${tips(splitList(w.abilities||w.type||""))}</td></tr>`).join("")}</tbody></table></div>`; }
+  if (u.crew){ const c=u.crew; h += `<div class="scroll"><table class="stats"><thead><tr><th>Crew</th><th>${stl("Sk")}</th><th>${stl("T")}</th><th>${stl("D")}</th><th>Break</th><th>${stl("MA")}</th></tr></thead><tbody><tr><td>${c.crew}</td><td>${c.sk}</td><td>${c.t}</td><td>${c.d}</td><td>${esc(c.brk)}</td><td>${esc(c.ma)}</td></tr></tbody></table></div>`; }
+  if (u.vehicle){ const v=u.vehicle; h += `<div class="scroll"><table class="stats"><thead><tr><th>Crew</th><th>Activation</th><th>${stl("Sk")}</th><th>${stl("MA")}</th>${v.t?`<th>${stl("T")}</th>`:""}</tr></thead><tbody><tr><td>${v.crew}</td><td class="t">${esc(v.activation)}</td><td>${v.sk}</td><td>${esc(v.ma)}</td>${v.t?`<td>${v.t}</td>`:""}</tr></tbody></table></div>`; }
+  if (u.weapons){ h += `<div class="scroll"><table class="stats"><thead><tr><th>Weapon</th><th>${stl("Rn")}</th><th>${stl("Arc")}</th><th>Abilities</th></tr></thead><tbody>${u.weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.rn)}</td><td>${esc(w.arc)}</td><td class="t">${tips(splitList(w.abilities||w.type||""))}</td></tr>`).join("")}</tbody></table></div>`; }
   if (u.abilities && u.abilities.length) h += `<p class="hint" style="margin:4px 0">Abilities: ${tips(u.abilities)}</p>`;
   if (u.armor){ const a=u.armor; h += `<div class="scroll"><table class="stats"><thead><tr><th colspan="2">Locations: ${esc(a.locations)}</th></tr></thead><tbody><tr><td class="t"><b>Front</b></td><td>${esc(a.front)}</td></tr><tr><td class="t"><b>Side</b></td><td>${esc(a.side)}</td></tr><tr><td class="t"><b>Rear</b></td><td>${esc(a.rear)}</td></tr></tbody></table></div>`; }
   return h;
@@ -1858,7 +1883,7 @@ function weaponLine(u){
     return it.w ? `<tr><td class="t">${nm}${where}</td><td>${esc(typeof it.w.r==="number"?it.w.r:it.w.r)}</td><td>${esc(it.w.sn)}</td><td class="t">${tips(it.w.traits)}</td></tr>`
                 : `<tr><td class="t">${nm}${where}</td><td>–</td><td>–</td><td class="t">–</td></tr>`;
   });
-  return `<div class="scroll"><table class="stats"><thead><tr><th>Equipment</th><th>R</th><th>Sn</th><th>Traits</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+  return `<div class="scroll"><table class="stats"><thead><tr><th>Equipment</th><th>${stl("R")}</th><th>${stl("Sn")}</th><th>Traits</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
 }
 // Every note printed for a unit: list-building limits, Force Allowance exceptions, flags and unit-specific rules.
 function unitNotes(u){
@@ -2648,7 +2673,7 @@ function renderGame(){
     const prof = (u.profiles||[]).find(p=> t==="mounted" ? (g.st.dismounted ? !/^mounted$/i.test(p.label||"") : /^mounted$/i.test(p.label||"")) : true) || (u.profiles||[])[0];
     const ma = prof && t==="mounted" && g.st.mountw && /\//.test(prof.ma) ? String(prof.ma).split("/")[1] : prof && prof.ma;
     // Profile first (v.2026-11-05.6): stat tiles, weapons with their traits, abilities. Statuses sit in a fold-out below.
-    const tile = (l, v, hl) => `<span class="gt${hl?" hl":""}"><small>${l}</small><b>${esc(v ?? "–")}</b></span>`;
+    const tile = (l, v, hl) => `<span class="gt${hl?" hl":""}"><small>${stl(l)}</small><b>${esc(v ?? "–")}</b></span>`;
     const shownProfs = t==="mounted" ? (prof ? [prof] : []) : (u.profiles||[]);
     let tilesH = "";
     if (shownProfs.length) tilesH = shownProfs.map(p=>{ const pma = p===prof ? ma : p.ma;
@@ -3316,7 +3341,7 @@ function renderRef(id){
   ${state.ownedOnly && !list.length ? ownEmptyFor(f, "Show all units") : ""}
   ${cats.map(c=>{ const us=list.filter(u=>u.cat===c), k=ddKey("ref:"+f.id,c); return `<details class="catdd ref" id="ref-${slug(c)}" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">${esc(c)}</h2><span class="ccount">${us.length} unit${us.length===1?"":"s"}</span></summary><div class="rgrid">${us.map(refCard).join("")}</div></details>`;}).join("")}
   ${weapons.length ? `${(k=>`<details class="catdd ref" id="ref-weapons" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Weapons</h2><span class="ccount">${weapons.length} weapon${weapons.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__weapons"))}
-  <div class="rrules scroll"><table class="stats" style="margin:8px 0"><thead><tr><th>Weapon</th><th>R</th><th>Sn</th><th>Traits</th></tr></thead><tbody>${weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${tips(w.traits)}</td></tr>`).join("")}</tbody></table></div>
+  <div class="rrules scroll"><table class="stats" style="margin:8px 0"><thead><tr><th>Weapon</th><th>${stl("R")}</th><th>${stl("Sn")}</th><th>Traits</th></tr></thead><tbody>${weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${tips(w.traits)}</td></tr>`).join("")}</tbody></table></div>
   </details>` : ""}
   ${rl.length ? `${(k=>`<details class="catdd ref" id="ref-rules" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Special rules</h2><span class="ccount">${rl.length} rule${rl.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__rules"))}
   <div class="rrules">${rl.map(a=>`<div class="rrule"><b>${esc(a.name)}</b> ${pgWrap(a.text)}<span class="src pg">${esc(a.src)}</span>${pluckHTML(a)}</div>`).join("")}</div></details>` : ""}`;
@@ -3672,8 +3697,9 @@ document.addEventListener("toggle", e=>{ const d=e.target; if(!d.classList || !d
 const pop = document.createElement("div"); pop.className="pop"; pop.id="rulePop"; pop.setAttribute("role","tooltip"); pop.hidden=true; document.body.appendChild(pop);
 let popFor=null, pinned=false, pinnedEl=null, hideT=null;
 function popHTML(el){
+  if (el.dataset.stat){ const i=statInfo(el.dataset.stat, el.dataset.game); return `<h4>${esc(el.dataset.stat)} · ${esc(i.n)}</h4><p>${esc(i.t)}</p><span class="src pg">${esc(i.s)}</span>`; }
   if (el.dataset.weapon){ const wf=(el.dataset.fac && facById(el.dataset.fac)) || FAC, w=wf.weapons.find(x=>x.name===el.dataset.weapon);
-    return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p8)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>${pluckHTML(i)}`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
+    return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p9)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>${pluckHTML(i)}`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
   const full=el.dataset.rule, i=abilityInfo(full), body=i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/, m=>i.text.startsWith(baseName(full))?"":m);
   const sub = /^Cadier/.test(full) ? ["Thunderous Hooves","Skittish"].map(k=>`<p style="margin-top:4px"><b>${k}</b> ${pgWrap(DATA.abilities[k].text)}</p>`).join("") : "";
   return `<h4>${esc(full)}</h4><p>${pgWrap(cap(body))}</p>${pluckHTML(i)}${sub}<span class="src pg">${esc(i.src)}</span>`;
@@ -3784,7 +3810,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-11.63";
+const APP_VERSION = "2026-11-11.64";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3874,6 +3900,7 @@ const narrUIx = {
   unitRules:(fid, u) => narrUIx.withFac(fid, () => `<div class="cp-urules">${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</div>`),
   // Rule chips with pop-ups for a list of abilities/weapons (unknown names stay plain text)
   tips:(fid, list) => narrUIx.withFac(fid, () => tips(list || [])),
+  stl:(k, game) => stl(k, game),
   weapons:(fid, u) => narrUIx.withFac(fid, () => weaponLine(u)),
   rules:(fid, u) => narrUIx.withFac(fid, () => abilityList(u) + rulesText(u)),
   // Muster Roll for recruiting in the narrative campaigns (5 Nov, user request: like the Patrol Builder's). Units grouped by the
@@ -3881,7 +3908,7 @@ const narrUIx = {
   // opens its stat tiles, abilities and equipment. opts: {attr:"data-camp"|"data-tales", unit:"M"|"pts", note:u=>text, disabled:u=>bool}
   roll:(fac, units, opts={}) => {
     const cats = (fac.categories || []).filter(c => units.some(u => u.cat === c)).concat([...new Set(units.map(u => u.cat))].filter(c => !(fac.categories || []).includes(c)));
-    const tile = (l, v) => `<div class="gt"><small>${l}</small><b>${esc(v ?? "-")}</b></div>`;
+    const tile = (l, v) => `<div class="gt"><small>${stl(l)}</small><b>${esc(v ?? "-")}</b></div>`;
     const det = u => { const ps = u.profiles || [], ab = new Set([...(u.abilities || []), ...ps.flatMap(p => p.abilities || [])]), eq = new Set([...ps.flatMap(p => p.equip || []), ...(u.weapons || []).map(w => w.name)]);
       const tiles = ps.length ? ps.map(p => `<div class="gtiles">${ps.length > 1 && p.label ? `<span class="gtlab">${esc(p.label)}</span>` : ""}${tile("Sk", p.sk)}${tile("Mt", p.mt)}${tile("MA", p.ma)}${tile("T", p.t)}</div>`).join("")
         : u.crew ? `<div class="gtiles">${tile("Crew", u.crew.crew)}${tile("Sk", u.crew.sk)}${tile("T", u.crew.t)}${tile("MA", u.crew.ma)}</div>` : u.vehicle ? `<div class="gtiles">${tile("Crew", u.vehicle.crew)}${tile("Sk", u.vehicle.sk)}${tile("MA", u.vehicle.ma)}</div>` : "";

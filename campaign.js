@@ -274,7 +274,7 @@ window.QuarCampaign = (() => {
     const button = (action, text, attributes = "", disabled = false) => `<button type="button" class="btn ${PRIMARY.has(action) ? "cta" : DANGER.has(action) ? "danger" : "ghost"}" data-camp="${action}" ${attributes}${disabled ? " disabled" : ""}>${text}</button>`;
     const savedTab = id => { try{ return localStorage.getItem("quar-narr-tab|" + id); }catch(e){ return null; } };
     const keepTab = (id, value) => { try{ localStorage.setItem("quar-narr-tab|" + id, value); }catch(e){} };
-    const ui = context.ui, tile = (label, value) => `<div class="gt"><small>${label}</small><b>${esc(value)}</b></div>`;
+    const ui = context.ui, tile = (label, value) => `<div class="gt"><small>${ui.stl ? ui.stl(label) : label}</small><b>${esc(value)}</b></div>`;
     const select = (name, values, selected, attributes = "") => `<select aria-label="${esc(name)}" ${attributes}>${options(values, selected)}</select>`;
     const input = (name, value, attributes = "") => `<input aria-label="${esc(name)}" value="${esc(value)}" ${attributes}>`;
     const panel = (title, content, hint = "") => `<section class="card cp-panel"><header><h2>${title}</h2>${hint ? `<span class="hint">${hint}</span>` : ""}</header><div class="cp-body">${content}</div></section>`;
