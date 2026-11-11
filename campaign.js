@@ -487,7 +487,7 @@ window.QuarCampaign = (() => {
         const name = ability.replace(/\([^)]*\)/g, "").trim();
         const key = Object.keys(definitions).find(key => normalizeName(key) === normalizeName(name) || (name === "Blunt-rounds" && key === "Blunt Round"));
         const custom = name === "Slippery" ? "+1 to disengage skill checks." : name === "Field Surgeon" ? "One casualty-chart reroll per casualty step for each patrol member with this ability." : name.startsWith("+1") ? "Permanent characteristic increase, included in the displayed profile." : "";
-        return key || custom ? `<dt>${esc(ability)}</dt><dd>${esc(custom || definitions[key].text)}${key ? ` <span class="hint">${esc(definitions[key].src || "Core rules")}</span>` : ""}</dd>` : "";
+        return key || custom ? `<dt>${esc(ability)}</dt><dd>${esc(custom || definitions[key].text)}${key ? ` <span class="hint">${esc(definitions[key].src || "Core rules")}</span>` : ""}${key && definitions[key].pluck ? `<span class="pluckln"><b>Pluck</b> ${definitions[key].pluck.map(esc).join("<i> · </i>")}</span>` : ""}</dd>` : "";
       });
       rows.push(...character.campaign.equipment.map(item => `<dt>${esc(item.name)}</dt><dd>${esc(R.shop.find(shop => shop.name === item.name)?.rule || "Recovered faction weapon: use its core profile.")}</dd>`));
       return `<details class="cp-mission"><summary>Ability & equipment effects</summary><dl>${rows.join("") || "<dd>No additional rules.</dd>"}</dl></details>`;

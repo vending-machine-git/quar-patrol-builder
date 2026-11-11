@@ -393,6 +393,10 @@ table.stats td.t{font-family:var(--f-body)}
 .pop p{margin:0}
 .pop .src{display:block;margin-top:6px;font-family:var(--f-mono);font-size:.75em;color:var(--muted)}
 .pop table.stats{margin:2px 0 4px}
+.pluckln{display:block;margin-top:5px;padding:3px 7px;border-left:3px solid var(--accent);background:var(--accent-soft,rgba(0,0,0,.05));border-radius:0 3px 3px 0;font-size:.92em;line-height:1.45}
+.pluckln b{font-family:var(--f-display);font-weight:400;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);margin-right:6px}
+.pluckln i{font-style:normal;color:var(--muted)}
+.pop .pluckln{margin:6px 0 2px}
 .updbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;width:min(36em,calc(100% - 24px));display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--panel);color:var(--ink);border:1.5px solid var(--brass);border-left-width:5px;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
 .updbar .updacts{display:flex;gap:8px}
 @media (max-width:860px){ body[data-view="edit"] .updbar{bottom:calc(64px + env(safe-area-inset-bottom,0px))} }
@@ -1510,13 +1514,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-06.59">
-<script src="campaign-rules.js?v=2026-11-06.59"></script>
-<script src="tales-rules.js?v=2026-11-06.59"></script>
-<script src="tales.js?v=2026-11-06.59"></script>
-<script src="mhuddball-rules.js?v=2026-11-06.59"></script>
-<script src="mhuddball.js?v=2026-11-06.59"></script>
-<script src="campaign.js?v=2026-11-06.59"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-10.62">
+<script src="campaign-rules.js?v=2026-11-10.62"></script>
+<script src="tales-rules.js?v=2026-11-10.62"></script>
+<script src="tales.js?v=2026-11-10.62"></script>
+<script src="mhuddball-rules.js?v=2026-11-10.62"></script>
+<script src="mhuddball.js?v=2026-11-10.62"></script>
+<script src="campaign.js?v=2026-11-10.62"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -1724,6 +1728,8 @@ const PGRX = /\s*\([^()]*?(?:Profiles|Full Book|Core Rules)[^()]*\)/g;
 const pgWrap = s => esc(s).replace(PGRX, m => `<span class="pg">${m}</span>`);
 const baseName = a => a.replace(/\s*\(.*\)\s*$/, "").trim();
 function abilityInfo(a){ const k = baseName(a); return DATA.abilities[k] || null; }
+// Pluck costs (or Pluck savings) tied to an ability, from the JSON "pluck" list; shown in every rule list and pop-up
+const pluckHTML = i => (i && i.pluck && i.pluck.length) ? `<span class="pluckln"><b>Pluck</b> ${i.pluck.map(pgWrap).join("<i> · </i>")}</span>` : "";
 
 const splitList = str => String(str||"").split(/,\s*(?![^()]*\))/).map(x=>x.trim()).filter(Boolean);
 function tip(lbl){
@@ -1833,7 +1839,7 @@ const rulesOpen = new Set();
 function abilityList(u){
   const a = allAbilities(u);
   const body = x => { const m = x.text.match(/^[^:]{1,40}\([^)]*\):\s*/); return (m && x.text.startsWith(x.name)) ? cap(x.text.slice(m[0].length)) : x.text; };
-  return a.length ? `<details class="rdd" data-key="${u.id}"${rulesOpen.has(u.id)?" open":""}><summary>Rules <span class="n">(${a.length})</span></summary><ul class="abl">${a.map(x=>`<li><b>${esc(x.full)}</b> ${pgWrap(body(x))}<span class="src pg">${esc(x.src)}</span></li>`).join("")}</ul></details>` : "";
+  return a.length ? `<details class="rdd" data-key="${u.id}"${rulesOpen.has(u.id)?" open":""}><summary>Rules <span class="n">(${a.length})</span></summary><ul class="abl">${a.map(x=>`<li><b>${esc(x.full)}</b> ${pgWrap(body(x))}<span class="src pg">${esc(x.src)}</span>${pluckHTML(x)}</li>`).join("")}</ul></details>` : "";
 }
 // Every piece of gear the unit carries, shown once. Ranged weapons show R/Sn/Traits from the faction weapon table;
 // melee and other gear (Sword, Lance, Goad...) show dashes. Gear carried by only some profiles names them, e.g. "(Dismounted)".
@@ -3313,7 +3319,7 @@ function renderRef(id){
   <div class="rrules scroll"><table class="stats" style="margin:8px 0"><thead><tr><th>Weapon</th><th>R</th><th>Sn</th><th>Traits</th></tr></thead><tbody>${weapons.map(w=>`<tr><td class="t">${esc(w.name)}</td><td>${esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${tips(w.traits)}</td></tr>`).join("")}</tbody></table></div>
   </details>` : ""}
   ${rl.length ? `${(k=>`<details class="catdd ref" id="ref-rules" data-dd="${esc(k)}"${catOpen[k]!==false?" open":""}><summary><span class="chev">▸</span><h2 class="refcat dd">Special rules</h2><span class="ccount">${rl.length} rule${rl.length===1?"":"s"}</span></summary>`)(ddKey("ref:"+f.id,"__rules"))}
-  <div class="rrules">${rl.map(a=>`<div class="rrule"><b>${esc(a.name)}</b> ${pgWrap(a.text)}<span class="src pg">${esc(a.src)}</span></div>`).join("")}</div></details>` : ""}`;
+  <div class="rrules">${rl.map(a=>`<div class="rrule"><b>${esc(a.name)}</b> ${pgWrap(a.text)}<span class="src pg">${esc(a.src)}</span>${pluckHTML(a)}</div>`).join("")}</div></details>` : ""}`;
   applyRefFilter(); mmBadges();
 }
 function openPatrol(id){
@@ -3667,10 +3673,10 @@ const pop = document.createElement("div"); pop.className="pop"; pop.id="rulePop"
 let popFor=null, pinned=false, pinnedEl=null, hideT=null;
 function popHTML(el){
   if (el.dataset.weapon){ const wf=(el.dataset.fac && facById(el.dataset.fac)) || FAC, w=wf.weapons.find(x=>x.name===el.dataset.weapon);
-    return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p8)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
+    return `<h4>${esc(w.name)}</h4><table class="stats"><thead><tr><th>Range</th><th>Sn</th><th>Traits</th></tr></thead><tbody><tr><td>${typeof w.r==="number" ? w.r+'"' : esc(w.r)}</td><td>${esc(w.sn)}</td><td class="t">${esc(w.traits.join(", ")||"None")}</td></tr></tbody></table><p class="hint" style="margin:2px 0 4px">Sn (Snapshot): taken off Skill when this rhyfler makes a Snapshot or Return Fire<span class="pg"> (Full Book p8)</span>.</p>${w.traits.map(t=>{const i=abilityInfo(t);return i?`<p style="margin-top:4px"><b>${esc(t)}</b> ${pgWrap(cap(i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/,"")))}</p>${pluckHTML(i)}`:""}).join("")}<span class="src pg">${esc(FAC.pages)} · traits: Full Book p36–39</span>`; }
   const full=el.dataset.rule, i=abilityInfo(full), body=i.text.replace(/^[^:]{1,40}\([^)]*\):\s*/, m=>i.text.startsWith(baseName(full))?"":m);
   const sub = /^Cadier/.test(full) ? ["Thunderous Hooves","Skittish"].map(k=>`<p style="margin-top:4px"><b>${k}</b> ${pgWrap(DATA.abilities[k].text)}</p>`).join("") : "";
-  return `<h4>${esc(full)}</h4><p>${pgWrap(cap(body))}</p>${sub}<span class="src pg">${esc(i.src)}</span>`;
+  return `<h4>${esc(full)}</h4><p>${pgWrap(cap(body))}</p>${pluckHTML(i)}${sub}<span class="src pg">${esc(i.src)}</span>`;
 }
 function showPop(el){
   clearTimeout(hideT);
@@ -3778,7 +3784,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-06.59";
+const APP_VERSION = "2026-11-10.62";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;

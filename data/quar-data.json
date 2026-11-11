@@ -38,11 +38,18 @@
  "abilities": {
   "Support": {
    "text": "May perform Supporting Fire when it meets the Task's requirements. Only Supports, and is Supported by, rhyflers with this ability.",
-   "src": "Full Book p34"
+   "src": "Full Book p34",
+   "pluck": [
+    "Supporting Fire: 1 Pluck for each supporting rhyfler (Full Book p26)"
+   ]
   },
   "Leader": {
    "text": "Leader (X/Y): may perform a Leadership Task (e.g. Group Move, Fire and Advance) that includes X rhyflers within Y inches.",
-   "src": "Full Book p31"
+   "src": "Full Book p31",
+   "pluck": [
+    "Group Movement: +1 Pluck (Full Book p29)",
+    "Fire and Advance: +1 Pluck (Full Book p28)"
+   ]
   },
   "Melee": {
    "text": "Melee (±X): modifies the Target Number of Melee Combat Tasks by X.",
@@ -81,8 +88,11 @@
    "src": "Full Book p31"
   },
   "Dead-eye": {
-   "text": "May perform the Aimed Shot Task (+1 Pluck): a Ranged Attack that ignores Range Band modifiers. Only rhyflers with Dead-eye can use Aimed Shot.",
-   "src": "Full Book p30; Profiles p58 (FAQ)"
+   "text": "May perform the Aimed Shot Task: a Ranged Attack that ignores Range Band modifiers. Only rhyflers with Dead-eye can use Aimed Shot.",
+   "src": "Full Book p30; Profiles p58 (FAQ)",
+   "pluck": [
+    "Aimed Shot: +1 Pluck (Full Book p30)"
+   ]
   },
   "Blunt Round": {
    "text": "After a Prepare Weapon Task, its shots against tractors have a 1d6+2 Might roll. No bonus against rhyflers.",
@@ -94,7 +104,12 @@
   },
   "Cadier": {
    "text": "Mount. Has Thunderous Hooves and Skittish. A cadier hit by the 2-5/2-5 result on the Fragmentation Grenade chart is Rattled instead of going Prone.",
-   "src": "Profiles p5, p11"
+   "src": "Profiles p5, p11",
+   "pluck": [
+    "Cavalry Charge: +1 Pluck, and its Powerful Blow is free (Full Book p46)",
+    "Mount or dismount: 1 Pluck instead of 1\" of movement (Full Book p43)",
+    "Dismounting while Rattled: may spend 1 Pluck to remove Rattled (Profiles p57 FAQ)"
+   ]
   },
   "Thunderous Hooves": {
    "text": "A rhyfler Charged by this unit may Skedaddle as a reaction to the Melee attack (resolved like a ranged reaction).",
@@ -105,8 +120,11 @@
    "src": "Profiles p6"
   },
   "Pole-arm": {
-   "text": "Within 2\" of an enemy, may choose to become Engaged (and Engage them). Enemies without Pole-arm must be, or move to, within 1\" to make Melee Attacks against it (spend 1 Pluck or a Standard Move).",
-   "src": "Profiles p6"
+   "text": "Within 2\" of an enemy, may choose to become Engaged (and Engage them). Enemies without Pole-arm must be, or move to, within 1\" to make Melee Attacks against it.",
+   "src": "Profiles p6",
+   "pluck": [
+    "Enemies without Pole-arm pay 1 Pluck (or a Standard Move) to step within 1\" and attack it (Profiles p6)"
+   ]
   },
   "Automatic": {
    "text": "Automatic (X): may perform Area Fire. Place a Medium template; each target in it chooses to Skedaddle or Return Fire, then roll to hit each one separately with an extra -X. Reduces Obstructing Cover by 1 (Light ignored, Normal becomes -1). If the firer is wounded by Return Fire, finish the remaining attacks before marking it OOA. Not usable as a Reaction.",
@@ -174,27 +192,41 @@
   },
   "Large Caliber": {
    "text": "Reduces Obstructing Cover modifiers by 1 (Light ignored, Normal becomes -1), including on Return Fire, Snapshot and Overwatch. Against an Armored Vehicle: roll to hit on the standard Ranged Combat Result chart; on a hit roll the location, then a 1d6+2 Might roll on the Might v. AV chart. A Skill Check roll of 3 triples the Might; 4 or 5 doubles it.",
-   "src": "Full Book p37; Profiles p8 (errata to Full Book p54)"
+   "src": "Full Book p37; Profiles p8 (errata to Full Book p54)",
+   "pluck": [
+    "Choose the location hit on an Armored Vehicle: 1 Pluck, or take -2 to the Skill Check (Full Book p54)"
+   ]
   },
   "Shotgun": {
    "text": "No Range penalties. 1st Range Band: target only, +1 Skill. 2nd: target plus 1 more rhyfler within 1\". 3rd: target plus up to 2 more within 2\", each at -2. Cannot fire beyond 3 Range Bands. Extra targets may only Skedaddle.",
    "src": "Full Book p39"
   },
   "Wallop": {
-   "text": "May perform a Powerful Blow without spending a point of Pluck.",
-   "src": "Full Book p35"
+   "text": "May perform a Powerful Blow for free.",
+   "src": "Full Book p35",
+   "pluck": [
+    "Powerful Blow: no Pluck needed (normally +1) (Full Book p27, p35)",
+    "A Charge still costs its own +1 Pluck (Profiles p58 FAQ)"
+   ]
   },
   "Skirmisher": {
    "text": "No movement penalties from difficult terrain, and always counts as having a -1 Obscuring Cover modifier against ranged attacks (stacks with Prone).",
    "src": "Full Book p33, Profiles p59"
   },
   "Scout": {
-   "text": "Scout (X/Y): may perform Group Movement as if it had Leader, ignoring difficult terrain. Scouting Party: before the first Round, spend 1 Pluck to move itself and X rhyflers within Y up to full MA, ending in Cover or Prone.",
-   "src": "Full Book p33"
+   "text": "Scout (X/Y): may perform Group Movement as if it had Leader, ignoring difficult terrain. Scouting Party: before the first Round, move itself and X rhyflers within Y up to full MA, ending in Cover or Prone.",
+   "src": "Full Book p33",
+   "pluck": [
+    "Group Movement: +1 Pluck (Full Book p29, p33)",
+    "Scouting Party: 1 Pluck, before the first Round (Full Book p33)"
+   ]
   },
   "Communications": {
-   "text": "After the opposing commander draws the Activation card, the active commander may spend a point of Pluck to reveal its value.",
-   "src": "Full Book p30"
+   "text": "After the opposing commander draws the Activation card, the active commander may reveal its value.",
+   "src": "Full Book p30",
+   "pluck": [
+    "Reveal the Activation card: 1 Pluck (Full Book p30)"
+   ]
   },
   "Lumbering": {
    "text": "Ignores difficult terrain penalties and may cross Light or Normal Obstructing terrain up to half its height, destroying it. Cannot Gun It!",
@@ -210,7 +242,11 @@
   },
   "Bicycle": {
    "text": "Adds 2 to Movement Allowance when moving in a straight line. Cannot cross Difficult Terrain. Uses the Bicycle Damage Chart.",
-   "src": "Profiles p55"
+   "src": "Profiles p55",
+   "pluck": [
+    "Mount or dismount: 1 Pluck instead of 1\" of movement (Full Book p43; Profiles p55)",
+    "Dismounting while Rattled: may spend 1 Pluck to remove Rattled (Profiles p57 FAQ)"
+   ]
   },
   "Braced": {
    "text": "When fired, -1 to Skill unless the firer is Prone or in base contact with terrain providing cover. This penalty also applies to Return Fire, Snapshot and Overwatch.",
@@ -245,8 +281,12 @@
    "src": "Full Book p32"
   },
   "Onslaught": {
-   "text": "When performing Fire and Advance, this Leader may ignore the X limit on how many rhyflers join (they must still be within Y inches). Those moving may spend 1 Pluck each to perform the Charge Task.",
-   "src": "Full Book p32"
+   "text": "When performing Fire and Advance, this Leader may ignore the X limit on how many rhyflers join (they must still be within Y inches). Those moving may perform the Charge Task.",
+   "src": "Full Book p32",
+   "pluck": [
+    "Fire and Advance: +1 Pluck (Full Book p28)",
+    "Each moving rhyfler may Charge: +1 Pluck each (Full Book p32)"
+   ]
   },
   "Parry": {
    "text": "When Gobsmacked by a melee attack, may make a Skill Check to avoid the change in Status. If the check fails, it goes Out of Action instead.",
@@ -258,7 +298,11 @@
   },
   "Rattleped": {
    "text": "Mechanical mount (mounted rhyfler rules). No movement penalties for difficult terrain (still not Impassable). Unlike cavalry, cannot make a Ranged Attack while Sprinting. An unmounted rattleped gives -2 Obstructing cover to a rider behind it. Uses the Rattleped Damage Chart.",
-   "src": "Full Book p42–46, Profiles p29"
+   "src": "Full Book p42–46, Profiles p29",
+   "pluck": [
+    "Mount or dismount: 1 Pluck instead of 1\" of movement (Full Book p43)",
+    "Dismounting while Rattled: may spend 1 Pluck to remove Rattled (Profiles p57 FAQ)"
+   ]
   },
   "Bolt Action": {
    "text": "Has Slow Reload. May perform the Crack Shot Task instead of a standard Ranged Attack: no Range Band modifiers for that attack.",
@@ -277,8 +321,11 @@
    "src": "Profiles p26 (rule printed on the Fidwog page)"
   },
   "Steady Under Fire": {
-   "text": "May perform Supporting Fire without the Pluck cost. Only Supports, and is Supported by, rhyflers with Steady Under Fire.",
-   "src": "Full Book p33"
+   "text": "May perform Supporting Fire for free. Only Supports, and is Supported by, rhyflers with Steady Under Fire.",
+   "src": "Full Book p33",
+   "pluck": [
+    "Supporting Fire: no Pluck needed (normally 1 per supporting rhyfler) (Full Book p26, p33)"
+   ]
   },
   "Bombardier": {
    "text": "Does not need to Prime Explosive before the Throw Grenade Task; may go straight to the attack.",
@@ -290,7 +337,10 @@
   },
   "Brutal Attack": {
    "text": "When making a Powerful Blow, does not gain the Skill increase; instead adds +2 to its Might for the attack.",
-   "src": "Profiles p32"
+   "src": "Profiles p32",
+   "pluck": [
+    "Powerful Blow: +1 Pluck, unless the rhyfler has Wallop (Full Book p27, p35)"
+   ]
   },
   "Veteran": {
    "text": "Performing the Recover Task does not count towards its two allowed Tasks that Round (it still costs an Activation).",
@@ -342,7 +392,10 @@
   },
   "Pack Leader": {
    "text": "Pack Leader (X): removes the Force Allowance limit on the selected Pack Creatures. On Their Scent Task: Group Move itself and up to X Pack Creatures regardless of distance, as one Activation.",
-   "src": "Profiles p47"
+   "src": "Profiles p47",
+   "pluck": [
+    "On Their Scent: +1 Pluck, as it is a Group Move (Profiles p47; Full Book p29)"
+   ]
   },
   "Retinue": {
    "text": "Retinue (X): may bring up to X rhyflers with the Staff ability. Their own Force Allowance still applies.",
@@ -358,7 +411,11 @@
   },
   "Hunting Party": {
    "text": "Works like a heavy weapon team, but each member (Spotter, Scribe, Lackey and the Noblebuck) may perform only one Task a Round, and the party only one Combat Task in total. Uses its own bespoke Tasks to switch between its three weapons and boost attacks.",
-   "src": "Profiles p48"
+   "src": "Profiles p48",
+   "pluck": [
+    "“Bring me Old Byss!” (Scribe): 1 Pluck (Profiles p48)",
+    "“Keep them coming!!” (Spotter): 1 Pluck (Profiles p48)"
+   ]
   },
   "Casganarwyn": {
    "text": "After deploying, roll a d3 to set its Inspiring Presence level (re-roll by spending an Activation). A rhyfler that uses one of its bonuses must then roll on the In Their Cups! chart.",
@@ -393,8 +450,11 @@
    "src": "Profiles p54"
   },
   "Like This!!": {
-   "text": "Once per battle, after a Militia Rhyfler within its Leadership range fails a Ranged Attack Skill Check, may spend 1+ Pluck for an immediate Crack Shot at that enemy (needs Line of Sight), with a bonus equal to the Pluck spent. Does not count as its only Combat Task that Round.",
-   "src": "Profiles p54"
+   "text": "Once per battle, after a Militia Rhyfler within its Leadership range fails a Ranged Attack Skill Check, may make an immediate Crack Shot at that enemy (needs Line of Sight). Does not count as its only Combat Task that Round.",
+   "src": "Profiles p54",
+   "pluck": [
+    "Crack Shot: 1 or more Pluck, bonus equal to the Pluck spent (Profiles p54)"
+   ]
   },
   "Resilient": {
    "text": "May perform the Tend Wounded Task on itself.",

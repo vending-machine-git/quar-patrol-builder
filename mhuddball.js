@@ -378,9 +378,9 @@ window.QuarMhuddball = (() => {
     }
     // Quick reference on the Teams screen: the PDF's printed positionals for this team's roster (pp. 18-19; limits p. 5),
     // with each special ability explained in a line and a quick Add button per positional while building the team.
-    const ABILITY = [[/^leader/i, a => { const m = a.match(/(\d+)\s*\/\s*(\d+)/); return m ? `coordinates ${m[1]} Mhudders within ${m[2]} inches` : "coordinates nearby Mhudders"; }],
+    const ABILITY = [[/^leader/i, a => { const m = a.match(/(\d+)\s*\/\s*(\d+)/); return m ? `coordinates ${m[1]} Mhudders within ${m[2]} inches (Coordinated assault: 1 Pluck)` : "coordinates nearby Mhudders (Coordinated assault: 1 Pluck)"; }],
       [/^support/i, () => "free follow-on pass after receiving a successful pass"], [/^steady under fire/i, () => "works like Support: free follow-on pass after receiving a successful pass"], [/^hardened/i, () => "ignores the first Soggy result of the game"],
-      [/^dead ?eye/i, () => "can make an Aimed pass"], [/^killing strike/i, () => "Tackle at \u22122 Skill for +2 Might"], [/^medic/i, () => "+1 to Tend Wounded; a Physio can also tend every Mhudder within 2 inches with one Task"],
+      [/^dead ?eye/i, () => "can make an Aimed pass (1 Pluck)"], [/^killing strike/i, () => "Tackle at \u22122 Skill for +2 Might"], [/^medic/i, () => "+1 to Tend Wounded; a Physio can also tend every Mhudder within 2 inches with one Task"],
       [/^(shooting|passing|tackling)/i, a => `modifies ${a.split(/\s/)[0].toLowerCase()} Skill checks`]];
     // Unofficial stand-in rosters (not in the original rules): labelled everywhere a roster is picked or shown.
     const UNOFF_NOTE = "Not in the original Mhuddball rules. An unofficial stand-in roster made by this builder.";
