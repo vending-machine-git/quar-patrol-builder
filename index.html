@@ -532,6 +532,9 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 .gfhead>div{flex:1;min-width:0}
 .gfhead b{display:inline;font-size:1.15em;color:var(--accent);margin-right:8px}
 .gimp{border-top:0}
+.gpick{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:flex-end;padding:12px 12px 10px}
+.gpick .field{flex:1 1 16em}
+.gpick+.gimp{border-top:1px solid var(--rule)}
 .gmore>summary{cursor:pointer;font-size:.78em;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
 .savewarn{display:flex;gap:10px;align-items:flex-start;margin:0;padding:10px 14px;border:1.5px solid var(--warn);border-left-width:5px;border-radius:3px;background:color-mix(in oklab, var(--warn) 12%, var(--panel));line-height:1.4}
 .savewarn svg{width:1.4em;height:1.4em;flex:0 0 auto;color:var(--warn);margin-top:.05em}
@@ -1517,13 +1520,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-11.65">
-<script src="campaign-rules.js?v=2026-11-11.65"></script>
-<script src="tales-rules.js?v=2026-11-11.65"></script>
-<script src="tales.js?v=2026-11-11.65"></script>
-<script src="mhuddball-rules.js?v=2026-11-11.65"></script>
-<script src="mhuddball.js?v=2026-11-11.65"></script>
-<script src="campaign.js?v=2026-11-11.65"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-13.66">
+<script src="campaign-rules.js?v=2026-11-13.66"></script>
+<script src="tales-rules.js?v=2026-11-13.66"></script>
+<script src="tales.js?v=2026-11-13.66"></script>
+<script src="mhuddball-rules.js?v=2026-11-13.66"></script>
+<script src="mhuddball.js?v=2026-11-13.66"></script>
+<script src="campaign.js?v=2026-11-13.66"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -2564,8 +2567,8 @@ const IMPBOX = {
   gMeNew:{t:"Add your patrol", who:"your", note:"Track each of your rhyflers from here on.", btn:["addme","Add my patrol"], save:true}
 };
 const impState = {open:{}, text:{}}; // remembers open boxes and pasted text while the tracker redraws
-const importBox = (id, open) => { const c = IMPBOX[id]; open = open || impState.open[id]; return `<details class="imp gimp" id="${id}Box" data-imp="${id}"${open?" open":""}><summary>${c.t}</summary>
-  <p class="hint">${c.note?c.note+" ":""}Paste ${c.who} <b>share link</b>, or a list made with <b>Copy as text</b>, or open a .txt file with one in it.</p>
+const importBox = (id, open, note) => { const c = IMPBOX[id]; open = open || impState.open[id]; note = note ?? c.note; return `<details class="imp gimp" id="${id}Box" data-imp="${id}"${open?" open":""}><summary>${c.t}</summary>
+  <p class="hint">${note?note+" ":""}Paste ${c.who} <b>share link</b>, or a list made with <b>Copy as text</b>, or open a .txt file with one in it.</p>
   <textarea id="${id}Text" data-imp="${id}" rows="4" spellcheck="false" placeholder="https://…/#/p/… or a text list">${esc(impState.text[id]||"")}</textarea>
   ${c.save?`<label class="gsavechk"><input type="checkbox" id="${id}Save"> Also save it to My Patrols on this device</label>`:""}
   <div class="impacts">${c.btn?`<button class="btn" type="button" data-g="${c.btn[0]}">${c.btn[1]}</button>`:""}<label class="btn ghost filebtn">Open .txt file<input type="file" class="gOppFile" data-target="${id}Text" accept=".txt,text/plain"></label><span class="hint" id="${id}Msg" role="status"></span></div></details>`; };
@@ -2595,10 +2598,16 @@ function gsuPaint(){
   if (mi){ const f = facById(mi.faction); paint(me, f, `Pasted: ${mi.name || f.name} · ${mi.limit} pts`, "var(--brass)"); }
   else { const p = state.saved.find(x=>x.id===(($("#gPatrol")||{}).value)); const f = p && facById(p.faction);
     paint(me, f, p ? `${f ? f.name : ""} · ${p.total||0}/${p.limit} pts` : "No patrol: just tracking the game", "var(--brass)"); }
-  const oi = tryParse("gOppSetupText"), of = oi && facById(oi.faction), nm = (($("#gOpp")||{}).value||"").trim();
-  op.querySelector(".gsu-lab").textContent = nm || (oi && oi.name) || "Opponent";
-  paint(op, of, oi ? `${of.name} · ${oi.limit} pts` : "Their patrol is optional", "var(--slate)");
+  // Their side: a pasted list wins over a saved patrol picked from My Patrols (same as your side).
+  const oi = tryParse("gOppSetupText"), op_ = !oi && savedPatrolOf(($("#gOppPatrol")||{}).value), nm = (($("#gOpp")||{}).value||"").trim();
+  const of = oi ? facById(oi.faction) : op_ ? facById(op_.faction) : null;
+  op.querySelector(".gsu-lab").textContent = nm || (oi && oi.name) || (op_ && op_.name) || "Opponent";
+  paint(op, of, oi ? `${of.name} · ${oi.limit} pts` : op_ ? `${of.name} · ${op_.total||0}/${op_.limit} pts` : "Their patrol is optional", "var(--slate)");
 }
+// A saved patrol (My Patrols) as a force for the tracker, so two of your own patrols can play each other.
+const savedPatrolOf = id => { const p = id && state.saved.find(x=>x && x.id===id); return p && facById(p.faction) ? p : null; };
+const savedForce = p => ({faction:p.faction, name:p.name||"", limit:p.limit, items:{...(p.items||{})}, names:copyNames(p.names)});
+const patrolOpts = list => list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("");
 document.addEventListener("input", e=>{ if (["gOpp","gMeSetupText","gOppSetupText"].includes(e.target.id)) gsuPaint(); });
 document.addEventListener("change", e=>{ if (e.target.id==="gMission" || e.target.id==="gRole") missionInfo(); });
 // Status colours and icons in the tracker (look only): each status belongs to a kind, shared by its badge and its button.
@@ -2639,7 +2648,7 @@ function renderGame(){
       <div class="gsu">
         <div class="gsu-side me" id="gsuMe">
           <div class="gsu-who"><span class="gsu-flag"></span><div><span class="gsu-lab">You</span><span class="gsu-sub"></span></div></div>
-          <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${list.map(p=>`<option value="${esc(p.id)}">${esc(p.name||"Unnamed")} · ${esc((facById(p.faction)||{}).name||"")} · ${p.total||0}/${p.limit} pts</option>`).join("")}<option value="">No patrol: just track the game</option></select></div>
+          <div class="field"><label for="gPatrol">Your patrol</label><select id="gPatrol">${patrolOpts(list)}<option value="">No patrol: just track the game</option></select></div>
           <div class="field" id="gPtsWrap"${list.length?" hidden":""}><label for="gPts">Patrol size (points)</label><input id="gPts" type="number" min="50" max="5000" step="50" value="200" inputmode="numeric"></div>
           ${importBox("gMeSetup", false)}
         </div>
@@ -2647,7 +2656,8 @@ function renderGame(){
         <div class="gsu-side opp" id="gsuOpp">
           <div class="gsu-who"><span class="gsu-flag"></span><div><span class="gsu-lab">Opponent</span><span class="gsu-sub"></span></div></div>
           <div class="field"><label for="gOpp">Opponent's name (optional)</label><input id="gOpp" type="text" maxlength="40" placeholder="Uses their patrol's name if blank" autocomplete="off"></div>
-          ${importBox("gOppSetup", false)}
+          ${list.length ? `<div class="field"><label for="gOppPatrol">Their patrol (optional)</label><select id="gOppPatrol"><option value="">None, or import theirs below</option><optgroup label="One of my patrols">${patrolOpts(list)}</optgroup></select></div>` : ""}
+          ${importBox("gOppSetup", false, list.length ? "It's used instead of a patrol picked above." : "")}
         </div>
       </div>
       <div class="gsu-mission">
@@ -2655,7 +2665,7 @@ function renderGame(){
         <div class="gminfo" id="gMissionInfo"></div>
       </div>
       <div class="gsu-go"><button class="gsu-start" type="button" data-g="start">Start game →</button>${list.length ? "" : `<p class="hint">No saved patrols on this device. Use <b>Import Your Patrol</b> to bring one over, build one in the <a href="#/builder" data-go="#/builder">Patrol Builder</a>, or just track Turns, Pluck, Victory Points and losses.</p>`}</div>
-      ${tipFold("game", "What the Game Tracker does", `Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too. The mission sets the number of Turns, who goes first and the starting Pluck.`)}
+      ${tipFold("game", "What the Game Tracker does", `Tracks Turns, Rounds, Pluck, Victory Points and the Status of every rhyfler. Add your opponent's patrol to track theirs too, or pick a second one of your own patrols to play both sides. The mission sets the number of Turns, who goes first and the starting Pluck.`)}
 </div>` + battlesCard();
     missionInfo();
     return;
@@ -2734,8 +2744,10 @@ function renderGame(){
       <div class="ggrid">${shown.map(card).join("") || `<p class="hempty">Every rhyfler is out of the fight.</p>`}</div></details>`;
   };
   const myHtml = me ? force(game.name, me, game.units, `${game.limit} pts`, false, game.limit) : `<div class="card" data-side="me">${importBox("gMeNew", false)}</div>`;
-  const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card" data-side="opp">${importBox("gOppNew", false)}</div>`;
+  const oppHtml = of ? force(oppLabel(), of, game.oppForce.units, `${game.oppForce.limit} pts${game.opp && game.opp!==game.oppForce.name?` · ${esc(game.oppForce.name)}`:""}`, true, game.oppForce.limit) : `<div class="card" data-side="opp">${oppPickBox()}${importBox("gOppNew", false)}</div>`;
   if (game.faction) useFaction(game.faction); else document.body.style.removeProperty("--fac");
+  function oppPickBox(){ const list = sortedPatrols().filter(p=>savedPatrolOf(p.id) && Object.values(p.items||{}).some(q=>q>0)); if (!list.length) return "";
+    return `<div class="gpick"><div class="field"><label for="gOppPick">Use one of your saved patrols</label><select id="gOppPick">${patrolOpts(list)}</select></div><button class="btn" type="button" data-g="addoppsaved">Add as opponent</button></div>`; }
   const opp = esc(oppLabel());
   // Face-off scoreboard (sticks under the header), My side / Opponent tabs (phones), bottom bar (phones).
   const oppF = of || null, live = !game.ended;
@@ -3170,8 +3182,8 @@ async function brepFile(R){
 <title>${esc(R.headline)}: ${esc(R.myName)} vs ${esc(R.oppName)}</title>
 <link rel="stylesheet" href="${BREP_FONTS}">
 <style>html{background:#d9cfb8}body{margin:0;padding:24px 12px}${BREP_CSS}
-@media print{html,body{background:#fff;padding:0}@page{margin:10mm}.brep{box-shadow:none;max-width:none;font-size:11.5px;border:none;padding:18px 20px 14px}.brep h1{font-size:3em}}</style></head>
-<body>${body}</body></html>`;
+@media print{html,body{background:#fff;padding:0}@page{margin:10mm}.brep{box-shadow:none;max-width:none;font-size:11.5px;border:none;padding:18px 20px 14px}.brep h1{font-size:3em}}<\/style><\/head>
+<body>${body}<\/body><\/html>`; // "<\/" keeps dev servers (VS Code Live Server) from injecting their reload script inside this string
 }
 function brepPrint(R){
   let host = document.getElementById("repPrint");
@@ -3206,6 +3218,7 @@ document.addEventListener("click", e=>{
     let r = null, mine = null, savedId = null; const mtxt = (($("#gMeSetupText")||{}).value||"").trim();
     if (mtxt){ mine = parseForce(mtxt); if (mine.error){ $("#gMeSetupBox").open = true; gMsg("gMeSetup", mine.error, true); return; } }
     if (otxt){ r = parseForce(otxt); if (r.error){ $("#gOppSetupBox").open = true; gMsg("gOppSetup", r.error, true); return; } }
+    else { const op = savedPatrolOf(($("#gOppPatrol")||{}).value); if (op) r = savedForce(op); }
     if (mine && ($("#gMeSetupSave")||{}).checked){ const rec = saveImported(mine); if (rec) savedId = rec.id; }
     newGame($("#gPatrol").value, {force: mine, savedId, points: +(($("#gPts")||{}).value)||200, mission: ($("#gMission")||{}).value, role: ($("#gRole")||{}).value, first: ($("#gFirst")||{}).value});
     if (game){ impState.open = {}; impState.text = {}; game.opp = opp; if (r) setOppForce(r); saveGame(); renderGame(); window.scrollTo(0,0);
@@ -3221,6 +3234,8 @@ document.addEventListener("click", e=>{
     toast(r.missed && r.missed.length ? `Patrol added. Couldn't match: ${r.missed.join(", ")}` : `Added ${game.name}`); }
   if (a==="addopp"){ const r = parseForce(($("#gOppNewText")||{}).value); if (r.error){ gMsg("gOppNew", r.error, true); return; }
     setOppForce(r); delete impState.open.gOppNew; delete impState.text.gOppNew; toast(r.missed && r.missed.length ? `Opponent added. Couldn't match: ${r.missed.join(", ")}` : `Added ${game.oppForce.name}`); }
+  if (a==="addoppsaved"){ const p = savedPatrolOf(($("#gOppPick")||{}).value); if (!p){ toast("Pick one of your saved patrols first"); return; }
+    setOppForce(savedForce(p)); toast(`Added ${game.oppForce.name} as the opponent`); }
   if (a==="removeopp"){ if (!b.dataset.sure){ b.dataset.sure = "1"; b.textContent = "Tap again to remove"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "Remove"; b.classList.remove("danger"); } }, 3500); return; }
     game.oppForce = null; toast("Opponent's patrol removed"); }
   if (a==="end"){ if (b.dataset.sure){ game = null; saveGame(); renderGame(); toast("Game cleared"); } else { b.dataset.sure = "1"; b.textContent = "Tap again to clear this game"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "New game"; b.classList.remove("danger"); } }, 3500); } return; }
@@ -3264,6 +3279,7 @@ document.addEventListener("toggle", e=>{ const d = e.target; if (d.classList && 
 document.addEventListener("change", e=>{
   if (e.target.id==="pSort"){ state.sortBy = e.target.value; persist(); renderHome(); return; }
   if (e.target.id==="gPatrol"){ const w = $("#gPtsWrap"); if (w) w.hidden = !!e.target.value; gsuPaint(); return; }
+  if (e.target.id==="gOppPatrol"){ gsuPaint(); return; }
   if (e.target.id==="gWinner" && game && game.ended){ game.ended.winner = e.target.value; saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
   if (e.target.id==="gNotes" && game && game.ended){ game.ended.notes = e.target.value.slice(0,2000); saveGame(); const y = window.scrollY; renderGame(); window.scrollTo(0, y); return; }
   if (e.target.id==="gHide" && game){ game.hideOut = e.target.checked; saveGame(); renderGame(); return; }
@@ -3812,7 +3828,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-11.65";
+const APP_VERSION = "2026-11-13.66";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -4248,3 +4264,5 @@ init();
   window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(()=>{}); });
 }catch(e){} })();
 </script>
+</body>
+</html>
