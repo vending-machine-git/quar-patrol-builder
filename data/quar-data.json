@@ -1698,7 +1698,7 @@
        ]
       }
      ],
-     "flag": "AT Grenades are not explained on the Creevin pages; the builder uses the rule printed on the Fidwog page (Profiles p26)."
+     "flag": "AT Grenades are not explained on the Creevin pages; see the rule on the Fidwog page (Profiles p26)."
     },
     {
      "id": "cv-ferryts-shotgun",
@@ -7541,7 +7541,7 @@
        ]
       }
      ],
-     "flag": "AT Grenades are not explained on the Gloam Hyyn pages; the builder uses the rule printed on the Fidwog page (Profiles p26)."
+     "flag": "AT Grenades are not explained on the Gloam Hyyn pages; see the rule on the Fidwog page (Profiles p26)."
     },
     {
      "id": "gh-pistoleer",
@@ -9658,7 +9658,7 @@
    "date": "2026-10-31",
    "source": "Faction Profiles 10/26 + Full Book",
    "title": "First release",
-   "intro": "All 12 factions in the Faction Profiles 10/26 entered and checked against the pages.",
+   "intro": "All 12 factions from the Faction Profiles 10/26.",
    "changes": [
     {
      "faction": "fidwog",
