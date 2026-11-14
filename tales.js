@@ -82,7 +82,7 @@ window.QuarTales = (() => {
     function create(name, factionId, limit) {
       const now = Date.now();
       const tale = {id:"tale-"+uid(), system:"quar-tales", name, faction:factionId, notes:"", chars:[], created:now, updated:now, tales:{version:1, limit, supply:2, xp:0, phase:"muster", game:1, inventory:[], advantages:{}, nextPenalty:0, nextSquads:[], log:[]}};
-      normalize(tale); log(tale,"Force founded with 2 Supply. Muster a 600-1000-point Force pool; normal patrols remain independent."); return tale;
+      normalize(tale); log(tale,"Force founded with 2 Supply. Muster a 600-1000-point Force pool."); return tale;
     }
     function spend(tale, key, cost) {
       if (tale.tales[key] < cost) throw Error(`Not enough ${key === "xp" ? "Force XP" : "Supply"}.`);
