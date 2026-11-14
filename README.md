@@ -48,14 +48,15 @@ The Narrative / Community tab offers three independent options: **Every Quar is 
 
 ### Mhuddball
 
-Integrates **Mhudball.pdf**, titled **Mhuddball v1.1** (19 pages), as a standalone sport rather than a campaign variant:
+Integrates **Mhudball + Teams Expansion.pdf**, titled **Mhuddball + Teams Expansion (v1)** (34 pages; original ruleset by TomDrawsThings, Teams Expansion by GamerCouch, balancing and proofreading by both), as a standalone sport rather than a campaign variant:
 
-- **Teams**: both printed Fidwog and Toulmore rosters with their exact Skill, Might, Movement, Toughness, Arm Power, Pluck Cost and abilities. Select six per team, at most one of each positional except four Linesquar, and deploy five initially. Starting Pluck is `max(0, 7 + signed PC total)`. The draft conversion note does not fully define other factions, so the app does not invent additional sport rosters or modify printed ranges a second time.
-- **Unofficial rosters for the other ten factions** (not in the original rules): stand-ins made by this builder with the author's own conversion note (PDF p. 18) and the patterns in his printed rosters, a method that rebuilds all eight printed Mhudders exactly. Sk/Mt/MA/T come from the faction's core profile, AP is the longest weapon range minus 2, and PC comes from the unit's points (+1 per lost weapon ability, +1 if Veteran is dropped, -1 for AP 8+). Each is labelled Unofficial wherever it appears and lists the core unit it is based on. They should be replaced when the author publishes official rosters.
+- **Teams**: the official rosters for all twelve factions (PDF pp. 22-34) with their exact Skill, Might, Movement, Toughness, Arm Power, Pluck Cost and abilities. Select six per team, at most one of each positional except four Linesquar, and deploy five initially. Hoblyn Valley Rangers: the Gamesquar's Retinue (3) brings up to three Staff Mhudders, at most two of each, and a second copy costs the second printed PC. Starting Pluck is `max(0, 7 + signed PC total)`.
+- **Special abilities**: all of the expansion's abilities (PDF pp. 17-21) are explained on the Teams screen and in the rules reference. The tracker handles Aberganed (first Soggy), Hardened (first Gobsmacked), Veteran (free Recover), Resilient (self Tend), Adaptive tactics (Switch up gameplan), reactions (Onslaught, Feint, Like This!!) and once-per-game limits; the dice helper adds Wyndy (-2), Grenade, Nervous and Wallop for you and reminds you of the rest.
+- **Old unofficial rosters**: the builder's earlier stand-in rosters for ten factions are retired. Matches saved with them keep them (marked "Old unofficial") so they still open; new matches always use the official rosters.
 - **Match desk**: track both teams, goal totals, banked Pluck, active team, individual action allowances, the one-Mhuddball-task limit, Steady's temporary credit and Charge's bonus Tackle. Record granted free actions/interruptions with an explanation. Goals automatically grant their 1 Pluck; passes, interceptions and OOA rewards have explicit Pluck controls.
 - **Gourds and victory**: six shared regulation gourds, issued two at a time. A score or grounding removes only that active gourd; stolen gourds can score for either side. Substitutions, fresh deployment, a new roll-off and +2 Pluck per team occur only once both active gourds are gone. Regulation ends when the reserve and active pool are exhausted; ties issue sudden-death pairs until the first goal wins.
-- **Players and weather**: Ready/Gobsmacked/OOA/winded/removed states, Soggy and engagement markers, Hardened's first-Soggy protection, one-task injuries, and passing/shooting dislocations. Apply Tend Wounded results (including Medic's bonus and Pluck awards) separately from recording the task. Optional activation-card weather updates after each team turn; Bright clears Soggy, while Raining puddles are placed on the tabletop.
-- **Dice helpers and reference**: pass/shot range bands and modifiers, Tackle modifiers and critical results, interception face patterns, mishaps, Tend, Might vs Toughness, general/opposed Skill checks and roll-offs. Physical dice or in-app dice; helper outputs are advice and journal entries only, not automatic match effects. Resolve geometry, free movement, reactions and opposed results at the table, then record resulting tasks, possessions, goals and statuses once. The field manual paraphrases all rule sections with PDF page references and lists ambiguities, including Wyndy's unspecified numeric penalty.
+- **Players and weather**: Ready/Gobsmacked/OOA/winded/removed states, Soggy and engagement markers, Aberganed/Hardened protection, one-task injuries, and passing/shooting dislocations. Apply Tend Wounded results (including Medic's bonus and Pluck awards) separately from recording the task. Optional activation-card weather updates after each team turn; Bright clears Soggy, while Raining puddles are placed on the tabletop.
+- **Dice helpers and reference**: pass/shot range bands and modifiers, Tackle modifiers and critical results, interception face patterns, mishaps, Tend, Might vs Toughness, general/opposed Skill checks and roll-offs. Physical dice or in-app dice; helper outputs are advice and journal entries only, not automatic match effects. Resolve geometry, free movement, reactions and opposed results at the table, then record resulting tasks, possessions, goals and statuses once. The field manual paraphrases all rule sections with PDF page references and lists ambiguities, and the builder's readings of unclear points.
 - **Saving**: teams, current lineups, gourd ownership/reserve, weather, tasks, player markers, scores, dice advice and journal persist in browser storage and full backup files. Undo corrects the last action. Nothing alters normal patrols, Quar Tales forces or Every Quar is His Own King campaigns.
 
 ### Quar Tales
@@ -102,7 +103,7 @@ campaign.js             campaign engine, narrative UI and persistence integratio
 campaign-rules.js       community campaign tables, shop and scenario summaries
 tales-rules.js          Quar Tales tables, encounter summaries and source interpretations
 tales.js                independent Quar Tales engine, roster and campaign UI
-mhuddball-rules.js      Mhuddball v1.1 printed sport rosters and rule summaries
+mhuddball-rules.js      Mhuddball + Teams Expansion rosters, abilities and rule summaries
 mhuddball.js            independent Mhuddball team builder, match tracker and dice tools
 campaign.css            responsive campaign layouts (uses existing theme variables)
 data/quar-data.json     all units, weapons, rules and the changelog
@@ -128,7 +129,7 @@ Built by vending_machine with help from Claude (AI). Every stat was checked by h
 - Narrative community modes, used with their creators' permission (Discord names and pictures shown with their OK):
   - *Every Quar is His Own King*: WAR_TROUT
   - *Quar Tales*: Dr. Michael
-  - *Mhuddball*: TomDrawsThings (inspired by *Quar: Clash of Rhyfles* and the *Mhudd rules of play* in Zombiesmith's *Tales of the Breach*)
+  - *Mhuddball*: TomDrawsThings, with the Teams Expansion by GamerCouch (inspired by *Quar: Clash of Rhyfles* and the *Mhudd rules of play* in Zombiesmith's *Tales of the Breach*)
 
 Visits are counted anonymously with [GoatCounter](https://www.goatcounter.com): no cookies and nothing personal, just which pages are used and a few actions such as patrols saved and games started.
 

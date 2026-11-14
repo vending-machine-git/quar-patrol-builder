@@ -1380,7 +1380,14 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 .wog.out .wogmsg{opacity:0;transform:scale(.92) translateY(10px)}
 @keyframes wogIn{from{opacity:0;transform:scale(.6) rotate(-4deg)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){ .wogmsg{animation:none} }
-@media print{ .wog,.wogbtn{display:none!important} }
+@media print{ .wog,.wogbtn,.wogged{display:none!important} }
+/* Easter egg: tapping the GamerCouch credit ("YOU'VE BEEN WOGGED"): Fidwog-coloured waves spread from the badge */
+.wogged{position:fixed;inset:0;z-index:9999;pointer-events:none;display:grid;place-items:center;overflow:hidden;transition:opacity .8s ease}
+.wogged.out{opacity:0}
+.wogged i{position:absolute;left:var(--x);top:var(--y);width:0;height:0;border-radius:50%;transform:translate(-50%,-50%);border:14px solid var(--c);background:color-mix(in srgb,var(--c) 9%,transparent);opacity:.7;animation:woggedWave 4.2s ease-out var(--d) forwards}
+@keyframes woggedWave{to{width:290vmax;height:290vmax;opacity:0}}
+.wogged b{position:relative;margin:0 16px;padding:.5em .9em;background:#900042;color:#fff;font-size:clamp(22px,6.5vw,56px);font-weight:900;letter-spacing:.04em;line-height:1.1;text-align:center;border-radius:14px;box-shadow:0 0 0 4px #fff,0 0 0 9px #900042,0 18px 50px rgba(0,0,0,.55);animation:wogIn .45s cubic-bezier(.2,1.4,.4,1) both}
+@media (prefers-reduced-motion: reduce){ .wogged i{animation:none;width:290vmax;height:290vmax;border:0;opacity:.35} .wogged b{animation:none} }
 .fmeta{display:inline-flex;align-items:center;gap:6px}
 .fmeta .flag{width:1.6em;height:1.08em}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -1517,13 +1524,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-11.65">
-<script src="campaign-rules.js?v=2026-11-11.65"></script>
-<script src="tales-rules.js?v=2026-11-11.65"></script>
-<script src="tales.js?v=2026-11-11.65"></script>
-<script src="mhuddball-rules.js?v=2026-11-11.65"></script>
-<script src="mhuddball.js?v=2026-11-11.65"></script>
-<script src="campaign.js?v=2026-11-11.65"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-14.77">
+<script src="campaign-rules.js?v=2026-11-14.77"></script>
+<script src="tales-rules.js?v=2026-11-14.77"></script>
+<script src="tales.js?v=2026-11-14.77"></script>
+<script src="mhuddball-rules.js?v=2026-11-14.77"></script>
+<script src="mhuddball.js?v=2026-11-14.77"></script>
+<script src="campaign.js?v=2026-11-14.77"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3812,7 +3819,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-11.65";
+const APP_VERSION = "2026-11-14.77";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3895,8 +3902,8 @@ const narrUIx = {
   warn:N_WARN,
   tip:tipFold,
   // Who made each community mode (their Discord names and pictures, shown with their OK, 5 Nov). Pictures: data/art/extras/credits/.
-  credit:key => { const C = {eq:["WAR_TROUT","war-trout"], tales:["Dr. Michael","dr-michael"], mhudd:["TomDrawsThings","tomdrawsthings"]}[key]; if (!C) return "";
-    return `<div class="cp-credit c-${key}"${key === "mhudd" ? ' data-egg="mhudd"' : ""}><img src="data/art/extras/credits/${C[1]}.png" alt="" width="48" height="48" loading="lazy"><span><small>Made by</small><b translate="no">${esc(C[0])}</b><i>on Discord</i></span></div>`; },
+  credit:key => { const C = {eq:["WAR_TROUT","war-trout"], tales:["Dr. Michael","dr-michael"], mhudd:["TomDrawsThings","tomdrawsthings"], gamer:["GamerCouch","gamercouch","Additional Abilities and Teams by"]}[key]; if (!C) return "";
+    return `<div class="cp-credit c-${key}"${key === "mhudd" ? ' data-egg="mhudd"' : key === "gamer" ? ' data-egg="gamer"' : ""}><img src="data/art/extras/credits/${C[1]}.png" alt="" width="48" height="48" loading="lazy"><span><small>${C[2] || "Made by"}</small><b translate="no">${esc(C[0])}</b><i>on Discord</i></span></div>`; },
   // A unit's full rules, drawn by the Patrol Builder's own functions (stats, equipment R/Sn/Traits, Rules fold, notes) with pop-ups.
   withFac:(fid, fn) => { const keep = FAC, keepU = UNITS, f = facById(fid); if (!f) return fn(); FAC = f; UNITS = {}; f.units.forEach(u => UNITS[u.id] = u); try{ return fn(); } finally{ FAC = keep; UNITS = keepU; } },
   unitRules:(fid, u) => narrUIx.withFac(fid, () => `<div class="cp-urules">${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</div>`),
@@ -4170,6 +4177,25 @@ narrUIx.moment = (n, title, sub = "", colour = "") => {
 };
 document.addEventListener("click", e => { const c = e.target.closest && e.target.closest('[data-egg="mhudd"]'); if (!c) return; e.preventDefault(); e.stopPropagation(); mhuddBubbles(c); }, true);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && mhuddEgg) mhuddEgg.stop(true); });
+/* Easter egg (14 Nov, site owner's request): tapping the GamerCouch credit shows "YOU'VE BEEN WOGGED" with Fidwog-coloured
+   waves spreading from the badge, and adds a patrol called "Everyone do the Wog" (the Fidwog starter patrol) to My Patrols.
+   The patrol is added once: tapping again replays the waves but doesn't add a copy while one with that name exists. */
+const WOGGED_NAME = "Everyone do the Wog";
+function gcWogged(tag){
+  try{ gcEvent("youve-been-wogged"); }catch(e){}
+  document.querySelectorAll(".wogged").forEach(x=>x.remove());
+  const r = tag.getBoundingClientRect(), wrap = document.createElement("div"); wrap.className = "wogged"; wrap.setAttribute("role","status");
+  wrap.style.setProperty("--x", (r.left + r.width/2) + "px"); wrap.style.setProperty("--y", (r.top + r.height/2) + "px");
+  wrap.innerHTML = ["#900042","#b8005a","#d6336f"].map((c,i)=>`<i style="--c:${c};--d:${i*0.9}s"></i>`).join("") + "<b>YOU\u2019VE BEEN WOGGED</b>";
+  document.body.appendChild(wrap);
+  setTimeout(()=>wrap.classList.add("out"), 4600); setTimeout(()=>wrap.remove(), 5500);   // slow, soft waves: three rings, about a second apart (no fast flashing)
+  const st = ((DATA && DATA.starterPatrols) || []).find(x=>x.faction==="fidwog");
+  if (st && !state.saved.some(x=>x.faction==="fidwog" && x.name===WOGGED_NAME)){
+    const items = {}; st.items.forEach(([id,q])=>{ items[id] = (items[id]||0) + q; });
+    if (saveImported({faction:"fidwog", name:WOGGED_NAME, limit:st.limit, items, names:{}})){ toast(`"${WOGGED_NAME}" added to My Patrols`); if (state.view==="home") renderHome(); }
+  }
+}
+document.addEventListener("click", e => { const c = e.target.closest && e.target.closest('[data-egg="gamer"]'); if (!c) return; e.preventDefault(); e.stopPropagation(); gcWogged(c); }, true);
 // Muster Roll rows in the narrative campaigns: tapping a unit name opens its profile (like the Patrol Builder)
 document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest('#view-narr [data-roll="toggle"]'); if (!b) return; const u = b.closest(".unit"), d = u && u.querySelector(".cp-udet"); if (!d) return; d.hidden = !d.hidden; u.classList.toggle("open", !d.hidden); b.setAttribute("aria-expanded", String(!d.hidden)); });
 document.addEventListener("change", e=>{ if (e.target.closest && e.target.closest("#view-narr")) setTimeout(()=>document.querySelectorAll("#view-narr .nfpick, #view-narr .nseg").forEach(w=>w._sync && w._sync()), 0); });
