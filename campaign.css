@@ -51,7 +51,12 @@
 .cp-credit small{grid-column:1/-1;font-size:.62em;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .cp-credit b{font-size:.95em;color:var(--cc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cp-credit i{font-style:normal;font-size:.76em;color:var(--muted)}
-.cp-credit.c-eq{--cc:var(--brass)} .cp-credit.c-tales{--cc:var(--olive)} .cp-credit.c-mhudd{--cc:var(--slate)}
+.cp-credit.c-eq{--cc:var(--brass)} .cp-credit.c-tales{--cc:var(--olive)} .cp-credit.c-mhudd,.cp-credit.c-gamer{--cc:var(--slate)}
+.cp-credit.c-gamer::after{animation-delay:3.9s}
+.cp-credit.c-gamer span{grid-template-columns:auto 1fr}
+.cp-credits{display:flex;flex-wrap:wrap;gap:8px;align-items:center;max-width:100%}
+.cp>.cp-credits{margin-top:-4px}
+.cp-mode>.cp-credits{margin-top:auto}
 .cp-credit::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;background:linear-gradient(110deg,transparent 25%,color-mix(in oklab,var(--cc) 24%,transparent) 45%,color-mix(in oklab,var(--ink) 12%,transparent) 50%,transparent 70%);transform:translateX(-110%);opacity:0;animation:cp-credit-sheen 8s ease-in-out infinite}
 .cp-credit.c-tales::after{animation-delay:1.3s}
 .cp-credit.c-mhudd::after{animation-delay:2.6s}
