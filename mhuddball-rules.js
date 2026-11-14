@@ -165,7 +165,6 @@ window.QuarMhuddballRules = {
     {title:"Statuses", page:"16-17", text:"Ready: normal tasks. Engaged: base contact with an opponent; cannot Pass or be targeted by Pass. Gobsmacked: only Recover until cleared; repeated Gobsmacked normally does not worsen status, except from Tackles. Hardened ignores its first Gobsmacked. OOA: cannot act, but can be tended. Soggy: affects throwing and interceptions; Aberganed ignores the first Soggy."}
   ],
   notes:[
-    "Resets do not automatically heal Gobsmacked/OOA players or clear Soggy: no such recovery is stated. A player winded by Tend result 2 can return at the next reset with a one-task limit. Removed players cannot return.",
   ],
   // Retired: the builder's unofficial stand-in rosters (5 Nov 2026), replaced by the official Teams Expansion rosters (13 Nov 2026).
   // Kept ONLY so matches saved with them still open. Never offered for new matches.
