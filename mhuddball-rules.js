@@ -7,8 +7,8 @@ window.QuarMhuddballRules = {
   // balancing and proofreading by both (PDF p. 1). Official rosters for all twelve factions (PDF pp. 22-34).
   // Positional fields: max = how many a team may take (default 1; Linesquar 4); pc2 = PC of a second copy (HVR Staff, p. 33);
   // staff = only through a Retinue; adaptive = the two abilities an "Adaptive tactics" Mhudder switches between (first is active).
-  // Spelling evened out: "Croftyrans" -> Coftyrans (p. 28), "Hardend" -> Hardened (p. 32), "Deadeye"/"Dead-eye" -> Dead eye (pp. 23, 28),
-  // "Shooting +1" -> Shooting (+1). Faction names follow the rest of the site.
+  // Updated 14 Nov 2026 to the author's revised PDF (same "v1" label): spellings fixed in the PDF itself, Resilient and Retinue clarified.
+  // Still written "Shooting +1" in the PDF; stored as Shooting (+1). Faction names follow the rest of the site.
   rosters:[
     {id:"fidwog", name:"Fidwog", page:23, blurb:"Shorter in stature than other quar, but tougher than most and can Mhud with the best of them.", positions:[
       {id:"caerten", name:"Is-Caerten", sk:13, mt:"2d6", ma:5, t:4, ap:2, pc:-1, abilities:["Leader (2/8)"]},
@@ -105,8 +105,8 @@ window.QuarMhuddballRules = {
     {name:"Musician", page:19, text:"Rallying song Task: Recover every friendly Mhudder within X inches"},
     {name:"Nervous", page:19, text:"Passing +1 when not engaged with an opponent"},
     {name:"Onslaught", page:20, text:"when a friendly Mhudder within 6 inches fails a Tackle, spend 2 Pluck to Charge at once with Tackling +1"},
-    {name:"Resilient", page:20, text:"can Tend Wounded on itself"},
-    {name:"Retinue", page:20, text:"may bring up to X Staff Mhudders (at most 2 of each Staff positional)"},
+    {name:"Resilient", page:20, text:"can Tend Wounded on itself, even while Out of Action"},
+    {name:"Retinue", page:20, text:"may bring up to X Staff Mhudders; these may break the usual one-of-each limit, up to 2 of each Staff positional"},
     {name:"Scout", page:20, text:"Sprints 2 inches further"},
     {name:"Shooting", page:20, text:"modifies its Shooting Skill checks"},
     {name:"Passing", page:20, text:"modifies its Passing Skill checks"},
@@ -148,7 +148,7 @@ window.QuarMhuddballRules = {
   ],
   sections:[
     {title:"The game, pitch and victory", page:"1-2, 6-7", text:"Two teams of six Mhudders, at most five deployed per side. Play on a 2-foot-square pitch facing diagonally. Centre a Large template on each opposing corner for the goal zones; place a hoop token at each goal-zone edge and divide the pitch into two halves. Goals are gourd throws through the opposing hoop. Six gourds are shared across regulation play. The highest goal total wins once all six are out of play. A tie resets play with two new gourds, one per team; the first goal wins sudden death."},
-    {title:"Team selection and initial deployment", page:"5-6, 20, 22-34", text:"Choose six Mhudders from your faction's roster. Every positional is limited to one except Linesquar, who may make up four of the six. Hoblyn Valley Rangers: the Gamesquar's Retinue (3) brings up to three Staff Mhudders (Bushbuck, Flusher Buck), at most two of each; a second copy of a Staff positional costs the second PC printed. Deploy five in your goal zone and keep one on the sideline. Starting Pluck is 7 plus the signed sum of PC, never below zero. Choose one deployed Gourder per team. Roll D6 against your opponent; highest chooses attacker or defender, re-rolling ties. The attacker starts the round. Infiltrate Mhudders may take their free move before the game; a Got a feeling Mhudder may pick the weather."},
+    {title:"Team selection and initial deployment", page:"5-6, 20, 22-34", text:"Choose six Mhudders from your faction's roster. Every positional is limited to one except Linesquar, who may make up four of the six. Hoblyn Valley Rangers: the Gamesquar's Retinue (3) brings up to three Staff Mhudders (Bushbuck, Flusher Buck), at most two of each; a second copy of a Staff positional costs the second PC printed. Deploy five in your goal zone and keep one on the sideline. Starting Pluck is 7 plus the team's total PC, never below zero (a team totalling −4 starts with 3). Choose one deployed Gourder per team. Roll D6 against your opponent; highest chooses attacker or defender, re-rolling ties. The attacker starts the round. Infiltrate Mhudders may take their free move before the game; a Got a feeling Mhudder may pick the weather."},
     {title:"Turns, activations and interruptions", page:"7-9", text:"The attacking side activates its five Mhudders in any order, or passes unused activations, then the turn passes to the other side. Each activation grants two actions, only one of them a Mhuddball task. Injured players may be limited to one. One interruption is allowed per movement or Mhuddball task. Interrupting Charge costs 1 Pluck and moves up to twice MA into contact before a Tackle. Re position costs 1 Pluck and moves up to MA. Intercept is available on the passing line or in contact with the intended target."},
     {title:"Gourds, resets and substitutions", page:"6-7", text:"Each side starts with one of the six gourds. A gourd that touches the ground or leaves the pitch is removed; a goal also removes its gourd. Stolen gourds remain in play. Do not replace a gourd immediately after scoring. Only when BOTH gourds are gone do teams reset, substitute from their sidelines, redeploy, receive one new gourd each and roll off again. Each reset grants both sides 2 Pluck."},
     {title:"Skill, range bands and measuring", page:"3-4, 11-13", text:"Roll 3D6 no higher than modified Skill to succeed. Modifiers alter the target number, not the dice. For a pass or shot, each AP range band beyond the first gives a cumulative -2. Measure throwing distances base to base; measure movement from the same forward base edge before and after moving. Measure freely at any time."},
@@ -165,8 +165,6 @@ window.QuarMhuddballRules = {
     {title:"Statuses", page:"16-17", text:"Ready: normal tasks. Engaged: base contact with an opponent; cannot Pass or be targeted by Pass. Gobsmacked: only Recover until cleared; repeated Gobsmacked normally does not worsen status, except from Tackles. Hardened ignores its first Gobsmacked. OOA: cannot act, but can be tended. Soggy: affects throwing and interceptions; Aberganed ignores the first Soggy."}
   ],
   notes:[
-    "Hoblyn Valley Staff (p. 33): the second printed PC (Bushbuck -3, Flusher Buck -2) is read as the PC of the second copy, not an extra amount on top. The Retinue text (p. 20) mentions 'the normal required minimum amount of 3 Linesquar', but the team rules (p. 5) set no minimum, only a maximum of four, so no minimum is enforced.",
-    "Resilient (p. 20) lets a Mhudder Tend Wounded on itself. Read here as: it may tend itself while Out of Action.",
     "Resets do not automatically heal Gobsmacked/OOA players or clear Soggy: no such recovery is stated. A player winded by Tend result 2 can return at the next reset with a one-task limit. Removed players cannot return.",
   ],
   // Retired: the builder's unofficial stand-in rosters (5 Nov 2026), replaced by the official Teams Expansion rosters (13 Nov 2026).
