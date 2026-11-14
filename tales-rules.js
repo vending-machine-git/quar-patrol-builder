@@ -88,7 +88,7 @@ window.QuarTalesRules = {
     {size:6, face:6, name:"Royal Fortress / Crusader Stronghold", page:8, text:"Automatically gain 3D6 Supply. Separately on 4+ receive: D6 Medicine; improve one Character weapon's Range and Snapshot by +1; one standard vehicle in perfect condition within Force limit."}
   ],
   notes: [
-    "Use the PDF as the authority. Scenarios and narrative objectives are agreed by the players; every Skirmish lasts five rounds. No missions from Every Quar is His Own King are used.",
+    "Use the PDF as the authority. Scenarios and narrative objectives are agreed by the players; every Skirmish lasts five rounds.",
     "The app interprets recovery notation as two D6 in either order: 6/6 and 1/1 first, then 6/1, then any remaining 6 or 1, then neither. Remaining Pluck pays one per re-roll of a rhyfler recovery result or a Logistics die; the PDF does not spell out the exchange rate. It gives no Pluck re-roll for the vehicle chart, so vehicle exceptions require an agreement recorded in the journal.",
     "Force XP and Character XP remain separate. 'Patrol XP' in encounters is treated as Force XP. Draws have no stated outcome XP, so only recorded objectives award XP. No XP is awarded twice for a more-expensive incapacitation: it replaces the ordinary 25 XP, then Veteran/Character bonuses are added.",
     "Start with 2 Supply. The Force pool is 600-1000 points with one Leader plus one Character per complete 100 points. Patrols contain at most four other Characters and the Leader. The app enforces those caps even on Fodder promotions; free a slot before confirming a promotion.",
@@ -96,6 +96,5 @@ window.QuarTalesRules = {
     "Only one encounter is resolved per Logistics phase. If multiple matching sets qualify, choose one; larger sets may be used as a smaller matching set. The PDF gives no priority rule. Roll all dice but keep exactly six when seven or more are available.",
     "Injured Characters are excluded from Logistics and encounters, including Characters whose recovery table result was beneficial. Permanent injuries remain on the roster, but participation eligibility is assessed afresh each battle. Vehicles and weapon crews are single purchased roster entries; the PDF supplies no crew-cost splitting rules.",
     "The PDF does not price new vehicles or heavy weapon crews outside encounters, replacement Leaders, XP-based recovery beyond the listed 50-XP advantage, or recruitment of ranks above Yawdryl. The app does not invent costs: use encounter/manual awards with a journal explanation and agree exceptions with opponents.",
-    "Complex encounters, free attribute choices other than Skill/Toughness, vehicle armor/weapon choices, squad membership, and tabletop tests are resolved by players using the displayed instructions, then recorded in the encounter and roster tools. Temporary benefits are tracked for the next battle; equipment uses must be marked by the player. Temporary maps are consumed when their relevant battle/Logistics phase ends; Aerial Maps persist with their bearer."
   ]
 };

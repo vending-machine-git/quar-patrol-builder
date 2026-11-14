@@ -55,12 +55,11 @@ window.QuarCampaignRules = {
     {name:"PykPyk Pillagers", pages:"24-25", setup:"3 x 3 feet. Roll 2D6 objectives; alternate placing them more than 3 inches apart. Each deployment half extends 18 inches to mid-board. Roll off deployment order, alternate models at least 9 inches from enemies and 6 inches from friends. First deployer goes first and is attacker.", objective:"Within 1 inch, Investigate an objective, roll D6, then remove it: 1-2 nothing; 3-4 gain D6 Marks; 5-6 gain 3D3 Marks. Most investigated objectives wins. If one patrol routs, survivor automatically gathers remaining supplies, without XP for rolled sixes.", twist:"An investigation roll of 1 Gobsmacks its model; a 6 gives that model 1 XP as well as Marks, unless automatically collecting after a rout.", reward:"Investigation Marks go to the bank immediately; natural 6 gives 1 XP as described.", end:"All objectives claimed, a rout resolves remaining supplies, or end of turn 2."}
   ],
   notes: [
-    "Underquar bonuses stack: the Underquar gets the bonus for its own difference band and every band above it in the chart (e.g. 40 Marks behind = D3 Pluck, choose the scenario and two PykPyks). Ruling by the site owner, 5 Nov 2026.",
+    "Underquar bonuses stack: the Underquar gets the bonus for its own difference band and every band above it in the chart (e.g. 40 Marks behind = D3 Pluck, choose the scenario and two PykPyks).",
     "Exploration does not specify overlapping sets or five/six of a kind. Default here: one highest event per face, capped at quadruples; choose 2/3/4 per face before resolving if your group agrees differently.",
-    "Marksman level 2, roll 4 grants Blunt-rounds; the adjacent +1 MA belongs to the level 1 column. Consult the core rules for the ability effect.",
     "Duplicate advancement abilities permit a choice from the same level's chart. Numeric improvements count as duplicates after they were rolled before, following the PDF's Ranged example. Starting Ranged/Melee modifiers also count.",
     "The PDF does not assign shop prices to recovered faction weapons. They may be equipped, but their added value must be agreed and entered; no price is invented.",
     "No initial-equipment count exception is stated. Listed starting equipment is locked; newly assigned equipment is limited to the remaining space within 3 pieces. Discuss abstract equipment and weapon-team entries with your opponent.",
-    "A second result anywhere in the lasting-injury group (3, 4, 10, 11) retires a model; the source does not explicitly say whether the second must be identical. This implementation counts any second result from that group."
+    "A second result anywhere in the lasting-injury group (3, 4, 10, 11) retires a model; the source does not explicitly say whether the second must be identical. Any second result from that group counts here."
   ]
 };
