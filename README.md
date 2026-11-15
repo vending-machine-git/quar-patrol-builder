@@ -48,7 +48,7 @@ The Narrative / Community tab offers three independent options: **Every Quar is 
 
 ### Mhuddball
 
-Integrates **Mhudball + Teams Expansion.pdf**, titled **Mhuddball + Teams Expansion (v1)** (34 pages; original ruleset by TomDrawsThings, Teams Expansion by GamerCouch, balancing and proofreading by both), as a standalone sport rather than a campaign variant:
+Integrates **Mhudball + Teams Expansion.pdf**, titled **Mhuddball + Teams Expansion (v1.1)** (34 pages; original ruleset by TomDrawsThings, Teams Expansion by GamerCouch, balancing and proofreading by both), as a standalone sport rather than a campaign variant:
 
 - **Teams**: the official rosters for all twelve factions (PDF pp. 22-34) with their exact Skill, Might, Movement, Toughness, Arm Power, Pluck Cost and abilities. Select six per team, at most one of each positional except four Linesquar, and deploy five initially. Hoblyn Valley Rangers: the Gamesquar's Retinue (3) brings up to three Staff Mhudders, at most two of each, and a second copy costs the second printed PC. Starting Pluck is `max(0, 7 + signed PC total)`.
 - **Special abilities**: all of the expansion's abilities (PDF pp. 17-21) are explained on the Teams screen and in the rules reference. The tracker handles Aberganed (first Soggy), Hardened (first Gobsmacked), Veteran (free Recover), Resilient (self Tend), Adaptive tactics (Switch up gameplan), reactions (Onslaught, Feint, Like This!!) and once-per-game limits; the dice helper adds Wyndy (-2), Grenade, Nervous and Wallop for you and reminds you of the rest.

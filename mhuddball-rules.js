@@ -1,9 +1,9 @@
 "use strict";
 window.QuarMhuddballRules = {
   title:"Mhuddball",
-  version:"Teams Expansion v1",
+  version:"Teams Expansion v1.1",
   source:"Mhudball + Teams Expansion.pdf",
-  // Mhuddball + Teams Expansion (v1), 34 pages. Original ruleset by TomDrawsThings, Teams Expansion by GamerCouch,
+  // Mhuddball + Teams Expansion (v1.1, 15 Nov 2026), 34 pages. Original ruleset by TomDrawsThings, Teams Expansion by GamerCouch,
   // balancing and proofreading by both (PDF p. 1). Official rosters for all twelve factions (PDF pp. 22-34).
   // Positional fields: max = how many a team may take (default 1; Linesquar 4); pc2 = PC of a second copy (HVR Staff, p. 33);
   // staff = only through a Retinue; adaptive = the two abilities an "Adaptive tactics" Mhudder switches between (first is active).
@@ -11,7 +11,7 @@ window.QuarMhuddballRules = {
   // Still written "Shooting +1" in the PDF; stored as Shooting (+1). Faction names follow the rest of the site.
   rosters:[
     {id:"fidwog", name:"Fidwog", page:23, blurb:"Shorter in stature than other quar, but tougher than most and can Mhud with the best of them.", positions:[
-      {id:"caerten", name:"Is-Caerten", sk:13, mt:"2d6", ma:5, t:4, ap:2, pc:-1, abilities:["Leader (2/8)"]},
+      {id:"caerten", name:"Is-Caerten", sk:13, mt:"2d6", ma:5, t:4, ap:2, pc:-2, abilities:["Leader (2/8)"]},
       {id:"linequar", name:"Linesquar", sk:12, mt:"1d6+1", ma:5, t:5, ap:4, pc:0, abilities:["Support"]},
       {id:"miner", name:"Miner", sk:13, mt:"2d6", ma:5, t:5, ap:2, pc:-1, abilities:["Hardened"]},
       {id:"playmaker", name:"Playmaker", sk:12, mt:"1d6+1", ma:5, t:4, ap:8, pc:-1, abilities:["Dead eye"]}
@@ -44,11 +44,11 @@ window.QuarMhuddballRules = {
       {id:"caerten", name:"Is-Caerten", sk:12, mt:"1d6+2", ma:5, t:4, ap:6, pc:-2, abilities:["Leader (2/5)","Shooting (+1)"]},
       {id:"linequar", name:"Linesquar", sk:12, mt:"2d6-1", ma:5, t:4, ap:4, pc:0, abilities:["Support"]},
       {id:"longballer", name:"Long Baller", sk:13, mt:"1d6+1", ma:5, t:4, ap:6, pc:-2, abilities:["Dead eye","Feint"]},
-      {id:"grabber", name:"Pass Grabber", sk:12, mt:"1d6+1", ma:5, t:4, ap:6, pc:-1, abilities:["Steady hands"]}
+      {id:"grabber", name:"Pass Grabber", sk:12, mt:"1d6+1", ma:5, t:4, ap:4, pc:-1, abilities:["Steady hands"]}
     ]},
     {id:"creevin", name:"Creevin", page:29, blurb:"A cautious game: extra protection, or speed over an outright tackle-heavy game.", positions:[
       {id:"yawdryl", name:"Yawdryl", sk:12, mt:"2d6-1", ma:5, t:4, ap:6, pc:-1, abilities:["Leader (3/4)"]},
-      {id:"linequar", name:"Linesquar", sk:12, mt:"1d6+2", ma:5, t:4, ap:6, pc:0, abilities:["Support"]},
+      {id:"linequar", name:"Linesquar", sk:12, mt:"1d6+2", ma:5, t:4, ap:4, pc:0, abilities:["Support"]},
       {id:"runnerup", name:"Runnerup", sk:12, mt:"1d6+2", ma:6, t:4, ap:6, pc:-1, abilities:["Scout"]},
       {id:"ferryt", name:"Mhud Ferryt", sk:13, mt:"2d6", ma:5, t:4, ap:2, pc:-1, abilities:["Extra padding"]}
     ]},
