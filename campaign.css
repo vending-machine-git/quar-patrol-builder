@@ -704,3 +704,7 @@ details.cp-mission>.cp-map{margin:10px auto}
   #view-narr .mb table.stats{display:block;max-width:100%;overflow-x:auto}
   #view-narr .mb table.stats th,#view-narr .mb table.stats td{padding-right:7px}
 }
+
+/* Quar Tales: Game Tracker link in the Skirmish panel (15 Nov 2026) */
+.qt-track{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:4px 0 12px}
+.qt-track .hint{margin:0}

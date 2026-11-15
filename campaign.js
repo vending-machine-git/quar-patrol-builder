@@ -264,7 +264,7 @@ window.QuarCampaign = (() => {
     const E = createEngine(context.getData), esc = context.esc;
     const tales = window.QuarTales.create(context);
     const mhuddball = window.QuarMhuddball.create(context);
-    let current = null, tab = "cycle", confirmDelete = null;
+    let current = null, tab = "cycle", confirmDelete = null, trackerSure = null;
     
     const view = () => document.getElementById("view-narr");
     const story = () => context.getStories().find(entry => entry.id === current);
@@ -419,7 +419,11 @@ window.QuarCampaign = (() => {
       const routNote = neverRout ? "Defender never routs in this mission." : routing ? `<b>Rout test due:</b> ${out} of ${ids.length} models are out (${pct}% or more). At each round start, test your highest available Skill; failure loses the battle. At round end you may choose to rout.` : `Rout tests start once ${Math.ceil(ids.length * pct / 100)} of ${ids.length} models are out (${pct}%).`;
       const rosterRows = ids.map(id => { const row = session.rows[id], character = entry.chars.find(item => item.id === id), data = E.unit(entry, character), vehicle = isVehicle(data), gear = character.campaign.equipment.map(item => item.name);
         return `<article class="cp-brow${["ooa","removed"].includes(row.outcome) ? " is-out" : ""}" data-character="${esc(id)}"><div class="cp-brow-top"><div class="cp-brow-who"><strong>${esc(character.name)}</strong><span class="hint">${esc(data.name)}${data.variant ? " (" + esc(data.variant) + ")" : ""}${vehicle ? " · vehicle: no XP or casualty roll" : ""}</span></div>${statTiles(entry, character)}</div>${select("Status of " + character.name, [["ready","Ready / on table"],["ooa","Out of action"],["removed","Removed by damage"]], row.outcome, 'data-brow="outcome" data-seg="tone"')}<div class="cp-brow-rec"><label>Tend 6s${input("Tend rolls of 6 for " + character.name, row.tend, 'type="number" min="0" max="20" step="1" data-stepper data-brow="tend"')}</label><label>Objective XP${input("Objective XP for " + character.name, row.objective, 'type="number" min="0" max="20" step="1" data-stepper data-brow="objective"')}</label><label class="qt-mvq">${input("MVQ", "1", `type="checkbox" data-brow="mvq"${row.mvq ? " checked" : ""}`)} MVQ</label>${row.scenarioXP ? `<span class="hint">+${row.scenarioXP} scenario XP</span>` : ""}</div><details class="cp-kit"><summary>Weapons & rules</summary><div class="cp-kitbody">${ui.weapons(entry.faction, data)}<p><b>Abilities:</b> ${ui.tips(entry.faction, E.abilities(entry, character)) || "None"}${character.campaign.injuries.includes(4) ? " - Ranged -1 from lost eye" : ""}</p>${gear.length ? `<p><b>Carried:</b> ${gear.map(esc).join(", ")}</p>` : ""}${ui.rules(entry.faction, data)}</div></details></article>`; }).join("");
-      return panel("Battle field desk", `${live}<p class="cp-notice">${routNote}</p>${session.difference >= 36 ? `<p class="hint"><b>Underquar extras:</b> ${esc(underquar(session.ownValue, session.opponent).bonuses.filter(text => /PykPyk|discarded card|2 XP/.test(text)).join(" "))}</p>` : ""}<h3>Your patrol</h3><p class="hint">Tap a status as it happens at the table. Tend 6s, objective XP and MVQ are paid out after the battle.</p><div class="cp-list">${rosterRows}</div>${missionCard(mission, true)}${missionTools(entry)}<div class="cp-form"><label>Result${select("Battle result", [["","Select result"],["win","Victory"],["draw","Draw"],["loss","Defeat / routed"]], session.result, 'data-battle="result" data-seg="tone"')}</label><label>Battle notes<textarea data-battle="notes" maxlength="4000">${esc(session.notes)}</textarea></label></div><p class="hint">Removed means removed by damage. An escaped messenger counts as surviving. Only one MVQ.</p>${button("finish-battle", "End battle & roll casualties")}`, `Battle ${entry.campaign.gameNumber} - ${esc(session.role)}`);
+      // Game Tracker link (15 Nov 2026): play this battle in the full tracker; results come back to this desk.
+      const tstate = ui.trackerState ? ui.trackerState("eq", entry.id, session.id) : "";
+      const tlink = !tstate ? "" : `<div class="qt-track">${tstate === "this" ? button("tracker-open", "Open in the Game Tracker") + '<span class="hint">After End Game there, send the results back to fill in this desk.</span>'
+        : button("tracker-start", trackerSure === entry.id ? "Tap again: replaces the game in progress" : "Play this battle in the Game Tracker") + `<span class="hint">${tstate === "other" ? "The Game Tracker has another game in progress; starting replaces it." : "Track every rhyfler there, then send the results back here."}</span>`}</div>`;
+      return panel("Battle field desk", `${tlink}${live}<p class="cp-notice">${routNote}</p>${session.difference >= 36 ? `<p class="hint"><b>Underquar extras:</b> ${esc(underquar(session.ownValue, session.opponent).bonuses.filter(text => /PykPyk|discarded card|2 XP/.test(text)).join(" "))}</p>` : ""}<h3>Your patrol</h3><p class="hint">Tap a status as it happens at the table. Tend 6s, objective XP and MVQ are paid out after the battle.</p><div class="cp-list">${rosterRows}</div>${missionCard(mission, true)}${missionTools(entry)}<div class="cp-form"><label>Result${select("Battle result", [["","Select result"],["win","Victory"],["draw","Draw"],["loss","Defeat / routed"]], session.result, 'data-battle="result" data-seg="tone"')}</label><label>Battle notes<textarea data-battle="notes" maxlength="4000">${esc(session.notes)}</textarea></label></div><p class="hint">Removed means removed by damage. An escaped messenger counts as surviving. Only one MVQ.</p>${button("finish-battle", "End battle & roll casualties")}`, `Battle ${entry.campaign.gameNumber} - ${esc(session.role)}`);
     }
     function missionTools(entry) {
       const session = entry.campaign.battle;
@@ -466,6 +470,11 @@ window.QuarCampaign = (() => {
     function profile(entry, character) {
       const stats = character.campaign;
       return statTiles(entry, character) + `<p><b>Abilities:</b> ${ui.tips(entry.faction, E.abilities(entry, character)) || "None"}${stats.injuries.includes(4) ? " - Ranged -1 from lost eye" : ""}</p>`;
+    }
+    // The same changes as plain numbers for the Game Tracker (15 Nov 2026).
+    function statDeltas(character) {
+      const stats = character.campaign, count = effect => stats.advances.filter(advance => advance.effect === effect).length;
+      return {sk:count("+1 Skill") - (stats.injuries.includes(11) ? 1 : 0), t:count("+1 T"), ma:count("+1 MA") - (stats.injuries.includes(10) ? 1 : 0), mt:stats.equipment.some(item => item.name === "Sword") ? "2d6" : ""};
     }
     // Stat tiles with advances, injuries and a Sword already applied (also shown on each battle-desk row).
     function statTiles(entry, character) {
@@ -611,7 +620,7 @@ window.QuarCampaign = (() => {
             if (price > 250) throw Error(`Starting patrol costs ${price} Marks; the campaign starts at 250. Make a smaller saved patrol or use a fresh muster.`);
             faction.units.forEach(unit => { for (let index = 0; index < number(patrol.items[unit.id],200); index++) E.recruit(entry, unit.id, patrol.names?.[unit.id]?.[index] || context.name(entry.chars.map(character => character.name))); });
           }
-          E.normalize(entry); E.log(entry, "Campaign founded with 250 Marks; normal patrols remain unchanged.");
+          E.normalize(entry); E.log(entry, "Campaign founded with 250 Marks.");
           context.getStories().push(entry); save(entry); context.navigate(entry.id);
         } catch (error) { fail(error); }
         return;
@@ -628,6 +637,20 @@ window.QuarCampaign = (() => {
       if (action === "undo") {
         const snapshot = entry.campaign.undo; if (!snapshot) return;
         Object.keys(entry).forEach(key => delete entry[key]); Object.assign(entry, clone(snapshot)); delete entry.campaign.setupDraft; save(entry); render(entry.id); return;
+      }
+      if (action === "tracker-open") { ui.trackerOpen(); return; }
+      if (action === "tracker-start") {
+        const campaign = entry.campaign, session = campaign.battle; if (campaign.phase !== "battle") return;
+        if (ui.trackerState("eq", entry.id, session.id) === "other" && trackerSure !== entry.id) { trackerSure = entry.id; render(entry.id); setTimeout(() => { if (trackerSure === entry.id) { trackerSure = null; if (current === entry.id) render(entry.id); } }, 3500); return; }
+        trackerSure = null;
+        try {
+          ui.trackerStart({sys:"eq", id:entry.id, battle:session.id, mode:R.title, title:entry.name, label:`Battle ${campaign.gameNumber}: ${session.mission}, ${session.role}`,
+            rules:"Mission rules, rout tests and scenario actions stay on your campaign's Battle field desk.",
+            faction:entry.faction, limit:session.ownValue, patrolName:entry.name,
+            units:Object.keys(session.rows).map(id => { const character = entry.chars.find(item => item.id === id); return {id, unitId:character.unitId, name:character.name, mod:statDeltas(character)}; })});
+          E.log(entry, `Battle ${campaign.gameNumber} sent to the Game Tracker.`); save(entry);
+        } catch (error) { fail(error); }
+        return;
       }
       if (action === "tab-supply" || action === "tab-roster") { tab = action === "tab-supply" ? "supply" : "roster"; keepTab(entry.id, tab); render(entry.id); return; }
       const character = entry.chars.find(value => value.id === target.dataset.id);
@@ -744,6 +767,26 @@ window.QuarCampaign = (() => {
         }
       });
     });
+    // Results sent from the Game Tracker for this battle (15 Nov 2026): statuses, Turn, Pluck left, both sides' VP and the result.
+    function fromTracker(id, battleId, result) {
+      const entry = context.getStories().find(item => item.id === id && !["quar-tales","mhuddball"].includes(item.system)); if (!entry) throw Error("This campaign is no longer saved on this device.");
+      const campaign = entry.campaign, session = campaign.battle;
+      if (campaign.phase !== "battle" || !session || session.id !== battleId) throw Error("That battle has already ended in the campaign, so nothing was changed.");
+      checkpoint(entry); let n = 0;
+      for (const row of result.members || []) {
+        const target = session.rows[row.id]; if (!target) continue; const character = entry.chars.find(item => item.id === row.id), vehicle = character && isVehicle(E.unit(entry, character));
+        target.outcome = row.status === "removed" || (row.status === "disabled" && vehicle) ? "removed" : ["ooa","disabled"].includes(row.status) ? "ooa" : "ready"; n++;
+      }
+      session.pluck = number(result.pluckLeft); if (Array.isArray(result.vp)) { session.vp = number(result.vp[0]); session.enemyVP = number(result.vp[1]); }
+      if (result.turn) session.turn = Math.max(1, Math.min(30, number(result.turn)));
+      if (result.winner) session.result = result.winner === "me" ? "win" : result.winner === "opp" ? "loss" : "draw";
+      if (result.notes && !String(session.notes || "").includes(result.notes)) session.notes = (session.notes ? session.notes + "\n" : "") + result.notes.slice(0, 2000);
+      E.log(entry, `Game Tracker results: ${n} models updated, VP ${session.vp}-${session.enemyVP}, ${session.pluck} Pluck left${session.result ? ", result " + session.result : ""}.`);
+      save(entry); if (current === entry.id) render(entry.id);
+      return `Results sent to ${entry.name}. Check the Battle field desk, then end the battle there.`;
+    }
+    if (context.ui && context.ui.trackerReturn) context.ui.trackerReturn["eq"] = fromTracker;
+    if (context.ui && context.ui.trackerOpenBattle) context.ui.trackerOpenBattle["eq"] = (id, battleId) => { const entry = context.getStories().find(item => item.id === id); return !!entry && entry.campaign?.phase === "battle" && entry.campaign.battle?.id === battleId; };
     return {render, importStory};
   }
   return {create, createEngine, underquar, isVehicle, startsSenior, levelAt};

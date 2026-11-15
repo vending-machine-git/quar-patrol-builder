@@ -319,17 +319,23 @@ window.QuarTales = (() => {
       if (!tale.tales.advBought || tale.tales.advBought.win !== amount(tale.tales.battles)) tale.tales.advBought = {win:amount(tale.tales.battles), ids:{}};
       tale.tales.advBought.ids[id] = amount(tale.tales.advBought.ids[id])+1; log(tale,`Bought ${rule.name} for ${rule.cost} Force XP.`);
     }
+    function deltas(tale, entry) {
+      const penalties = entry.injuries.reduce((total,injury) => ({sk:total.sk+injury.sk, t:total.t+injury.t, ma:total.ma+injury.ma}),{sk:0,t:0,ma:0});
+      const battle = tale.tales.phase === "battle" ? tale.tales.battle : null;
+      const temporary = (tale.tales.supply === 0 ? 1 : 0)+(battle ? battle.penalty+(battle.squads.includes(entry.squad) ? 1 : 0) : 0);
+      return {sk:entry.advances.skill+penalties.sk-temporary, t:entry.advances.toughness+penalties.t, ma:penalties.ma};
+    }
     function profile(tale, entry, data) {
       const penalties = entry.injuries.reduce((total,injury) => ({sk:total.sk+injury.sk, t:total.t+injury.t, ma:total.ma+injury.ma}),{sk:0,t:0,ma:0});
       const battle = tale.tales.phase === "battle" ? tale.tales.battle : null;
       const temporary = (tale.tales.supply === 0 ? 1 : 0)+(battle ? battle.penalty+(battle.squads.includes(entry.squad) ? 1 : 0) : tale.tales.nextPenalty+(tale.tales.nextSquads.includes(entry.squad) ? 1 : 0));
       return {...data, sk:Number.isFinite(data.sk) ? data.sk+entry.advances.skill+penalties.sk-temporary : null, t:Number.isFinite(data.t) ? data.t+entry.advances.toughness+penalties.t : null, ma:String(data.ma || "-").replace(/\d+/g,value => String(Math.max(0,Number(value)+penalties.ma)))};
     }
-    return {dismiss, dismissable, sell, sellable, refundAdvantage, refundable, normalize, create, unit, faction, alive, characters, value, characterLimit, log, requireMember, recruit, setRole, spend, advance, deploymentCost, patrolErrors, between, start, finish, rollRecovery, confirmRecovery, characterXP, awardXP, logisticsCount, rollLogistics, rerollLogistics, resolveLogistics, addItem, buy, advantage, profile};
+    return {dismiss, dismissable, sell, sellable, refundAdvantage, refundable, normalize, create, unit, faction, alive, characters, value, characterLimit, log, requireMember, recruit, setRole, spend, advance, deploymentCost, patrolErrors, between, start, finish, rollRecovery, confirmRecovery, characterXP, awardXP, logisticsCount, rollLogistics, rerollLogistics, resolveLogistics, addItem, buy, advantage, profile, deltas};
   }
   function create(context) {
     const E = createEngine(context.getData), esc = context.esc;
-    let current = null, tab = "cycle", deleting = null;
+    let current = null, tab = "cycle", deleting = null, trackerSure = null;
     const view = () => document.getElementById("view-narr");
     const tales = () => context.getStories().filter(entry => entry.system === "quar-tales");
     const story = () => tales().find(entry => entry.id === current);
@@ -418,7 +424,11 @@ window.QuarTales = (() => {
       const rows = session.deployed.map(id => { const entry = E.requireMember(tale,id), row = session.rows[id], data = E.unit(tale,entry), profiles = data.profiles || [data.vehicle || data.crew || {}];
         const tiles = profiles.map(base => { const profile = E.profile(tale,entry,base); return `<div class="gtiles">${profiles.length > 1 && base.label ? `<span class="gtlab">${esc(base.label)}</span>` : ""}${tile("Sk",profile.sk ?? "-")}${tile("Mt",base.mt || "-")}${tile("MA",profile.ma)}${tile("T",profile.t ?? "-")}</div>`; }).join("");
         return `<article class="cp-brow${["ooa","removed","disabled"].includes(row.outcome) ? " is-out" : ""}"><div class="cp-brow-top"><div class="cp-brow-who"><strong>${esc(entry.name)}</strong><span class="hint">${esc(entry.role)} &middot; ${esc(label(data))}${row.jitters ? " - starts Gobsmacked; Recover gives no Pluck" : ""}</span></div>${tiles}</div><select aria-label="Status of ${esc(entry.name)}" data-row="outcome" ${idAttr(entry)} data-seg="tone">${options([["ready","Ready"],["gobsmacked","Gobsmacked"],["ooa","Out of action"],["removed","Removed"],...(vehicle(data) ? [["disabled","Disabled"]] : [])],row.outcome)}</select>${vehicle(data) ? `<div class="cp-brow-rec">${stepper("Damage boxes",`data-row="damage" ${idAttr(entry)}`,row.damage,0,30)}</div>` : ""}${entry.role !== "fodder" ? `<div class="cp-brow-rec">${deeds.map(([key,text]) => stepper(text,`data-row="${key}" ${idAttr(entry)}`,row[key],0,50)).join("")}</div>` : ""}<details class="cp-kit"><summary>Weapons & rules</summary><div class="cp-kitbody">${ui.weapons(tale.faction,data)}<p><b>Abilities:</b> ${ui.tips(tale.faction,[...(data.abilities || []),...(data.profiles?.[0]?.abilities || [])]) || "None"}</p>${ui.rules(tale.faction,data)}</div></details></article>`; }).join("");
-      return panel("Five-round Skirmish",`<h3>${esc(session.scenario)}</h3>${live}${session.penalty ? '<p class="cp-notice">Patrol -1 Skill from a Character death last Skirmish (non-stacking).</p>' : ""}${session.squads.length ? `<p class="cp-notice">Squad -1 Skill: ${session.squads.map(esc).join(", ")} (including replacements).</p>` : ""}${benefits ? `<details class="cp-mission"><summary>Prepared benefits this Skirmish</summary><ul>${benefits}</ul></details>` : ""}<details class="cp-mission"><summary>Force advantages this Skirmish</summary>${R.advantages.map(rule => `<p>${esc(rule.name)}: ${amount(session.advantages[rule.id])} ${rule.id !== "recover" ? button("use-advantage","Use one",`data-type="${rule.id}"`,!session.advantages[rule.id]) : "(use during Recovery)"}</p>`).join("")}</details><h3>Your Patrol</h3><p class="hint">Tap a status as it happens. Count each Character's deeds as you go; they carry over to the Experience step, where you can still change them.</p><div class="cp-list">${rows}</div><div class="cp-form"><label>Outcome<select aria-label="Outcome" data-battle="result" data-seg="tone">${options([["","Choose result"],["win","Won"],["loss","Lost"],["draw","Draw"]],session.result)}</select></label></div><p class="hint">A draw gives no printed result XP.</p><label>Battle notes<textarea data-battle="notes" maxlength="4000">${esc(session.notes)}</textarea></label>${button("finish","End Skirmish - resolve Recovery","",!session.result)}`);
+      // Game Tracker link (15 Nov 2026): play this Skirmish in the full tracker; results come back to this sheet.
+      const tstate = ui.trackerState ? ui.trackerState("quar-tales", tale.id, state.game) : "";
+      const tlink = !tstate ? "" : `<div class="qt-track">${tstate === "this" ? button("tracker-open","Open in the Game Tracker") + '<span class="hint">After End Game there, send the results back to fill in this sheet.</span>'
+        : button("tracker-start", trackerSure === tale.id ? "Tap again: replaces the game in progress" : "Play this Skirmish in the Game Tracker", trackerSure === tale.id ? 'data-sure="1"' : "") + `<span class="hint">${tstate === "other" ? "The Game Tracker has another game in progress; starting replaces it." : "Track every rhyfler there, then send the results back here."}</span>`}</div>`;
+      return panel("Five-round Skirmish",`<h3>${esc(session.scenario)}</h3>${tlink}${live}${session.penalty ? '<p class="cp-notice">Patrol -1 Skill from a Character death last Skirmish (non-stacking).</p>' : ""}${session.squads.length ? `<p class="cp-notice">Squad -1 Skill: ${session.squads.map(esc).join(", ")} (including replacements).</p>` : ""}${benefits ? `<details class="cp-mission"><summary>Prepared benefits this Skirmish</summary><ul>${benefits}</ul></details>` : ""}<details class="cp-mission"><summary>Force advantages this Skirmish</summary>${R.advantages.map(rule => `<p>${esc(rule.name)}: ${amount(session.advantages[rule.id])} ${rule.id !== "recover" ? button("use-advantage","Use one",`data-type="${rule.id}"`,!session.advantages[rule.id]) : "(use during Recovery)"}</p>`).join("")}</details><h3>Your Patrol</h3><p class="hint">Tap a status as it happens. Count each Character's deeds as you go; they carry over to the Experience step, where you can still change them.</p><div class="cp-list">${rows}</div><div class="cp-form"><label>Outcome<select aria-label="Outcome" data-battle="result" data-seg="tone">${options([["","Choose result"],["win","Won"],["loss","Lost"],["draw","Draw"]],session.result)}</select></label></div><p class="hint">A draw gives no printed result XP.</p><label>Battle notes<textarea data-battle="notes" maxlength="4000">${esc(session.notes)}</textarea></label>${button("finish","End Skirmish - resolve Recovery","",!session.result)}`);
     }
     function recovery(tale) {
       const state = tale.tales, session = state.battle, pending = session.deployed.filter(id => session.rows[id].pending);
@@ -511,6 +521,20 @@ window.QuarTales = (() => {
       }
       if (action === "tab") { tab = target.dataset.tab; keepTab(current, tab); render(current); return; }
       const tale = story(); if (!tale) return;
+      if (action === "tracker-open") { ui.trackerOpen(); return; }
+      if (action === "tracker-start") {
+        if (tale.tales.phase !== "battle") return;
+        if (ui.trackerState("quar-tales", tale.id, tale.tales.game) === "other" && trackerSure !== tale.id) { trackerSure = tale.id; render(tale.id); setTimeout(() => { if (trackerSure === tale.id) { trackerSure = null; if (current === tale.id) render(tale.id); } }, 3500); return; }
+        trackerSure = null; const state = tale.tales, session = state.battle;
+        try {
+          ui.trackerStart({sys:"quar-tales", id:tale.id, battle:state.game, mode:"Quar Tales", title:tale.name, label:`Skirmish ${state.game}: ${session.scenario}`,
+            rules:"Five rounds. Starting Pluck and objectives as agreed for this Skirmish; Force advantages stay on your Quar Tales sheet.",
+            faction:tale.faction, limit:session.limit, patrolName:tale.name,
+            units:session.deployed.map(id => { const entry = E.requireMember(tale,id); return {id, unitId:entry.unitId, name:entry.name, mod:E.deltas(tale,entry), gob:!!session.rows[id].jitters}; })});
+          E.log(tale,`Skirmish ${state.game} sent to the Game Tracker.`); save(tale);
+        } catch(error) { context.toast(error.message || String(error)); }
+        return;
+      }
       if (action === "next-round") { const session = tale.tales.battle; if (tale.tales.phase !== "battle" || session.round >= 5) return; session.round++; save(tale); render(tale.id); return; }
       if (action === "deploy-all" || action === "deploy-none") { const setup = draft(tale); setup.deployed = action === "deploy-none" ? [] : E.alive(tale).filter(entry => !entry.skip && !entry.disabled && !entry.damage).map(entry => entry.id); save(tale); render(tale.id); return; }
       if (action === "undo") { const snapshot = tale.tales.undo; if (!snapshot) return; Object.keys(tale).forEach(key => delete tale[key]); Object.assign(tale,clone(snapshot)); save(tale); render(tale.id); return; }
@@ -565,6 +589,26 @@ window.QuarTales = (() => {
         }
       });
     });
+    // Results sent from the Game Tracker for this Skirmish (15 Nov 2026): statuses, vehicle damage, Pluck left and the result.
+    function fromTracker(id, game, result) {
+      const tale = tales().find(entry => entry.id === id); if (!tale) throw Error("This campaign is no longer saved on this device.");
+      E.normalize(tale); const state = tale.tales, session = state.battle;
+      if (state.phase !== "battle" || state.game !== game) throw Error("That Skirmish has already ended in the campaign, so nothing was changed.");
+      checkpoint(tale); let n = 0;
+      for (const row of result.members || []) {
+        const target = session.rows[row.id]; if (!target) continue; const entry = tale.chars.find(item => item.id === row.id), isVehicle = entry && vehicle(E.unit(tale,entry));
+        target.outcome = row.status === "disabled" ? (isVehicle ? "disabled" : "ooa") : row.status === "ooa" && isVehicle ? "disabled" : ["ready","gobsmacked","ooa","removed"].includes(row.status) ? row.status : "ready";
+        if (isVehicle) target.damage = amount(row.damage, 30); n++;
+      }
+      session.pluck = amount(result.pluckLeft, 99);
+      if (result.winner) session.result = result.winner === "me" ? "win" : result.winner === "opp" ? "loss" : "draw";
+      if (result.notes && !session.notes.includes(result.notes)) session.notes = (session.notes ? session.notes + "\n" : "") + result.notes.slice(0,2000);
+      E.log(tale,`Game Tracker results: ${n} rhyflers updated, ${session.pluck} Pluck left${session.result ? ", result "+session.result : ""}.`);
+      save(tale); if (current === tale.id) render(tale.id);
+      return `Results sent to ${tale.name}. Check the Skirmish sheet, then end the Skirmish there.`;
+    }
+    if (context.ui && context.ui.trackerReturn) context.ui.trackerReturn["quar-tales"] = fromTracker;
+    if (context.ui && context.ui.trackerOpenBattle) context.ui.trackerOpenBattle["quar-tales"] = (id, game) => { const tale = tales().find(entry => entry.id === id); return !!tale && tale.tales.phase === "battle" && tale.tales.game === game; };
     return {render, importStory:value => { const entry = clone(value); delete entry.tales?.undo; return E.normalize(entry); }};
   }
   return {create, createEngine, recoveryKey, supplies, matches, eligible, vehicle};

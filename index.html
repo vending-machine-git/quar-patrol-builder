@@ -1384,6 +1384,16 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 @keyframes wogIn{from{opacity:0;transform:scale(.6) rotate(-4deg)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){ .wogmsg{animation:none} }
 @media print{ .wog,.wogbtn,.wogged{display:none!important} }
+/* Game Tracker: campaign banner for a game started from a narrative campaign */
+.gnarr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:10px 14px;margin:0 0 12px;border-left:5px solid var(--fac,var(--brass))}
+.gnarr-t{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;flex:1 1 220px}
+.gnarr-t small{flex-basis:100%;font-size:.7em;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gnarr-t b{font-size:1.1em}.gnarr-t span{color:var(--muted)}
+.gnarr>.hint{flex-basis:100%;margin:0}
+.gnarr .gendbtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0}
+.gnarr .gendbtns .hint{margin:0}
+.gnarr-ok{margin:0;font-weight:700;color:var(--ok,#2f7d32)}
+@media print{ .gnarr{display:none!important} }
 /* Easter egg: tapping the GamerCouch credit ("YOU'VE BEEN WOGGED"): Fidwog-coloured waves spread from the badge */
 .wogged{position:fixed;inset:0;z-index:9999;pointer-events:none;display:grid;place-items:center;overflow:hidden;transition:opacity .8s ease}
 .wogged.out{opacity:0}
@@ -1527,13 +1537,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-15.84">
-<script src="campaign-rules.js?v=2026-11-15.84"></script>
-<script src="tales-rules.js?v=2026-11-15.84"></script>
-<script src="tales.js?v=2026-11-15.84"></script>
-<script src="mhuddball-rules.js?v=2026-11-15.84"></script>
-<script src="mhuddball.js?v=2026-11-15.84"></script>
-<script src="campaign.js?v=2026-11-15.84"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-15.87">
+<script src="campaign-rules.js?v=2026-11-15.87"></script>
+<script src="tales-rules.js?v=2026-11-15.87"></script>
+<script src="tales.js?v=2026-11-15.87"></script>
+<script src="mhuddball-rules.js?v=2026-11-15.87"></script>
+<script src="mhuddball.js?v=2026-11-15.87"></script>
+<script src="campaign.js?v=2026-11-15.87"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -2693,12 +2703,14 @@ function renderGame(){
     const ma = prof && t==="mounted" && g.st.mountw && /\//.test(prof.ma) ? String(prof.ma).split("/")[1] : prof && prof.ma;
     // Profile first (v.2026-11-05.6): stat tiles, weapons with their traits, abilities. Statuses sit in a fold-out below.
     const tile = (l, v, hl) => `<span class="gt${hl?" hl":""}"><small>${stl(l)}</small><b>${esc(v ?? "–")}</b></span>`;
+    // A rhyfler sent from a narrative campaign carries its campaign stat changes (advances, injuries) in g.mod.
+    const md = g.mod || {}, adj = (v, d) => d && v != null && /\d/.test(String(v)) ? String(v).replace(/\d+/g, n => String(Math.max(0, +n + d))) : v;
     const shownProfs = t==="mounted" ? (prof ? [prof] : []) : (u.profiles||[]);
     let tilesH = "";
     if (shownProfs.length) tilesH = shownProfs.map(p=>{ const pma = p===prof ? ma : p.ma;
-      return `<div class="gtiles">${p.label && (shownProfs.length>1 || t==="mounted") ? `<span class="gtlab">${esc(p.label)}</span>` : ""}${tile("Sk",p.sk)}${tile("Mt",p.mt)}${tile("MA",pma, p===prof && t==="mounted" && g.st.mountw)}${tile("T",p.t)}${p.d?tile("D",p.d):""}</div>`; }).join("");
-    else if (u.crew) tilesH = `<div class="gtiles">${tile("Crew",u.crew.crew)}${tile("Sk",u.crew.sk)}${tile("T",u.crew.t)}${tile("D",u.crew.d)}${tile("Break",u.crew.brk)}${tile("MA",u.crew.ma)}</div>`;
-    else if (u.vehicle) tilesH = `<div class="gtiles">${tile("Crew",u.vehicle.crew)}${tile("Sk",u.vehicle.sk)}${tile("MA",u.vehicle.ma)}${u.vehicle.t?tile("T",u.vehicle.t):""}</div>${u.vehicle.activation?`<p class="gact">Activation: <b>${esc(u.vehicle.activation)}</b></p>`:""}`;
+      return `<div class="gtiles">${p.label && (shownProfs.length>1 || t==="mounted") ? `<span class="gtlab">${esc(p.label)}</span>` : ""}${tile("Sk",adj(p.sk,md.sk),!!md.sk)}${tile("Mt",md.mt||p.mt,!!md.mt)}${tile("MA",adj(pma,md.ma), (p===prof && t==="mounted" && g.st.mountw) || !!md.ma)}${tile("T",adj(p.t,md.t),!!md.t)}${p.d?tile("D",p.d):""}</div>`; }).join("");
+    else if (u.crew) tilesH = `<div class="gtiles">${tile("Crew",u.crew.crew)}${tile("Sk",adj(u.crew.sk,md.sk),!!md.sk)}${tile("T",adj(u.crew.t,md.t),!!md.t)}${tile("D",u.crew.d)}${tile("Break",u.crew.brk)}${tile("MA",u.crew.ma)}</div>`;
+    else if (u.vehicle) tilesH = `<div class="gtiles">${tile("Crew",u.vehicle.crew)}${tile("Sk",adj(u.vehicle.sk,md.sk),!!md.sk)}${tile("MA",u.vehicle.ma)}${u.vehicle.t?tile("T",u.vehicle.t):""}</div>${u.vehicle.activation?`<p class="gact">Activation: <b>${esc(u.vehicle.activation)}</b></p>`:""}`;
     const traitTips = list => list.map(x=>`<span class="gtr">${tip(x)}</span>`).join("");
     let weapH = "";
     if (shownProfs.length){
@@ -2728,7 +2740,7 @@ function renderGame(){
     const worst = out ? "" : ["nerve","wound","pin"].find(w=>nowK.some(k=>SGRP[k]===w)) || "";
     // Phones: a slim list row (name, short stat line, small status icons); tap it to open the full card.
     const p0 = shownProfs[0];
-    const mini = p0 ? `Sk ${p0.sk} · Mt ${p0.mt} · MA ${p0===prof ? ma : p0.ma} · T ${p0.t}` : u.crew ? `Crew ${u.crew.crew} · Sk ${u.crew.sk} · T ${u.crew.t}` : u.vehicle ? `Sk ${u.vehicle.sk} · MA ${u.vehicle.ma}` : "";
+    const mini = p0 ? `Sk ${adj(p0.sk,md.sk)} · Mt ${md.mt||p0.mt} · MA ${adj(p0===prof ? ma : p0.ma,md.ma)} · T ${adj(p0.t,md.t)}` : u.crew ? `Crew ${u.crew.crew} · Sk ${adj(u.crew.sk,md.sk)} · T ${adj(u.crew.t,md.t)}` : u.vehicle ? `Sk ${adj(u.vehicle.sk,md.sk)} · MA ${u.vehicle.ma}` : "";
     const micons = (spent ? `<span class="gmi s-spent" title="Spent">${sIcon("spent")}</span>` : "") + nowK.map(k=>`<span class="gmi s-${SGRP[k]||"nerve"}" title="${esc(ST[k].t)}">${sIcon(k)}</span>`).join("");
     return `<article class="gunit${gCardOpen.has(g.uid)?" open":""}${out?" out":""}${spent?" spent":""}${g.st.killed?" killed":""}${worst?" w-"+worst:""}">
       <header><span class="gchev" aria-hidden="true">▸</span><div class="ghn" role="button" tabindex="0" data-gcard="${esc(g.uid)}" aria-expanded="${gCardOpen.has(g.uid)}"><div>${g.nm ? `${dtag(g.nm)} <b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>` : `<b>${esc(u.name)}</b>${g.of>1?` <span class="gn">#${g.n}</span>`:""} <span class="gv">${esc(u.variant)}</span>`}</div><div class="gmini">${mini?`<span class="gms">${esc(mini)}</span>`:""}${micons}</div></div>${out?"":tasks}</header>
@@ -2739,7 +2751,7 @@ function renderGame(){
     </article>`; };
   // Each force's cards are drawn with its own faction loaded (weapon tables differ per faction).
   const force = (title, f, units, extra, isOpp, limit) => {
-    const errs = forceProblems(f.id, units, limit);
+    const errs = game.narr && !isOpp ? [] : forceProblems(f.id, units, limit);
     useFaction(f.id);
     const alive = units.filter(g=>!isOut(g)).length, ooa = units.filter(g=>g.st.ooa).length, dead = units.filter(g=>g.st.killed).length, gone = units.filter(g=>g.st.disabled||g.st.carried).length;
     const shown = units.filter(g=>!(game.hideOut && isOut(g)));
@@ -2781,13 +2793,37 @@ function renderGame(){
     return `<button type="button" role="tab" class="gtab" data-g="tab" data-t="${key}" aria-selected="${tab===key}" style="--fac:${f && f.color ? esc(f.color) : key==="opp" ? "var(--slate)" : "var(--brass)"}">${f?flagImg(f,"gtflag"):""}<span class="gtn">${esc(name)}</span><span class="gtc" title="${units?"Still fighting":""}">${units ? `${alive}/${units.length}` : "Add"}</span></button>`; };
   const tabs = `<div class="gtabs" id="gTabs" role="tablist" aria-label="Which patrol to show">${tabBtn("me", me, me ? game.name : "My patrol", me ? game.units : null)}${tabBtn("opp", oppF, oppLabel(), of ? game.oppForce.units : null)}</div>`;
   v.classList.remove("hasdock");
-  v.innerHTML = head + `
+  v.innerHTML = head + narrBanner() + `
   ${game.ended ? `<div class="gtop card"${me && me.color?` style="--fac:${me.color}"`:""}>${resultsCard(ms)}</div>` : ""}
   ${scoreboard}
   ${allGameUnits().length ? `<div class="gbar"><span></span><label class="switch" for="gHide"><input type="checkbox" id="gHide"${game.hideOut?" checked":""}> Hide units out of the fight</label></div>` : ""}
   ${tabs}
   <div class="gforces" data-tab="${tab}">${myHtml}${oppHtml}</div>
   `;
+}
+// Narrative campaign link (15 Nov 2026): a game started from a campaign battle shows which campaign it belongs to,
+// a way back, and once the game is ended a button that sends the results to the campaign's battle sheet.
+function narrBanner(){
+  const n = game && game.narr; if (!n) return "";
+  const live = narr.stories.some(x=>x.id===n.id), f = game.faction && facById(game.faction);
+  const isOpen = narrUIx.trackerOpenBattle[n.sys], open = !live || !isOpen || isOpen(n.id, n.battle);
+  const back = live ? `<a class="btn ghost" href="#/narrative/${esc(n.id)}" data-go="#/narrative/${esc(n.id)}">&larr; Back to ${esc(n.title)}</a>` : "";
+  const send = !game.ended ? `<p class="hint">When the battle is over, tap <b>End Game</b>, then send the results to the campaign.</p>`
+    : n.sent ? `<p class="gnarr-ok">Results sent to the campaign.</p>`
+    : !live ? `<p class="hint">This campaign is no longer saved on this device.</p>`
+    : !open ? `<p class="hint">This battle has already ended in the campaign.</p>`
+    : `<button class="btn cta" type="button" data-g="narrsend">Send results to ${esc(n.title)}</button>`;
+  return `<div class="card gnarr"${f && f.color ? ` style="--fac:${esc(f.color)}"` : ""}><div class="gnarr-t"><small>${esc(n.mode)} campaign</small><b>${esc(n.title)}</b><span>${esc(n.label)}</span></div>${n.rules ? `<p class="hint">${esc(n.rules)}</p>` : ""}<div class="gendbtns">${send}${back}</div></div>`;
+}
+function narrSendResults(){
+  const n = game && game.narr; if (!n || !game.ended) return;
+  const fn = narrUIx.trackerReturn[n.sys]; if (!fn) return toast("This campaign type can't take results yet.");
+  const R = battleReport(), dmg = g => (g.c && g.c.dmg || 0) + Object.values((g.c && g.c.loc) || {}).reduce((a,b)=>a+(+b||0), 0);
+  const members = game.units.filter(g=>String(g.uid).startsWith("n:")).map(g=>({id:String(g.uid).slice(2),
+    status: g.st.killed ? "removed" : g.st.disabled ? "disabled" : (g.st.ooa || g.st.carried) ? "ooa" : g.st.gob ? "gobsmacked" : "ready", damage: dmg(g)}));
+  try{ const msg = fn(n.id, n.battle, {winner: R.winner || null, pluckLeft: game.pluck[0], vp: [...game.vp], turn: game.turn, notes: (game.ended.notes||"").trim(), members});
+    n.sent = Date.now(); saveGame(); narrSave(); renderGame(); toast(msg || "Results sent to the campaign"); }
+  catch(err){ toast(err.message || String(err)); }
 }
 // Rule check for a force in the tracker: borrow the builder's checks() with that force's units.
 function forceProblems(fid, units, limit){
@@ -3255,9 +3291,10 @@ document.addEventListener("click", e=>{
     if (game.round < RPT()){ game.round++; toast(`Round ${game.round}: ${activeSide(game)==="me" ? "your" : oppLabel()+"'s"} turn to activate`); }
     else if (lim && game.turn >= lim){ toast("That was the last Round of the battle. Press End Game to see the result"); }
     else { game.turn++; game.round = 1; toast(`Turn ${game.turn} begins: reshuffle the Activation Deck`); } }
+  if (a==="narrsend"){ narrSendResults(); return; }
   if (a==="endgame"){ if (!b.dataset.sure){ b.dataset.sure = "1"; b.textContent = "Tap again to end"; b.classList.add("danger"); setTimeout(()=>{ if (b.isConnected){ delete b.dataset.sure; b.textContent = "End Game"; b.classList.remove("danger"); } }, 3500); return; }
     game.ended = {turn: game.turn, round: game.round, at: Date.now(), winner: (game.lastEnd||{}).winner || "auto", notes: (game.lastEnd||{}).notes || ""}; try{ gcEvent("game-ended"); }catch(e){} toast("Battle over"); }
-  if (a==="resume"){ game.lastEnd = {winner: game.ended.winner, notes: game.ended.notes}; game.ended = null; }
+  if (a==="resume"){ game.lastEnd = {winner: game.ended.winner, notes: game.ended.notes}; game.ended = null; if (game.narr) game.narr.sent = 0; }
   const g = b.dataset.u && allGameUnits().find(x=>x.uid===b.dataset.u);
   const before = g ? NOTE_KEYS.filter(k=>g.st[k]) : null;
   if (a==="st" && g) setStatus(g, b.dataset.s, !g.st[b.dataset.s], unitOf(g));
@@ -3835,7 +3872,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-15.84";
+const APP_VERSION = "2026-11-15.87";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3909,6 +3946,23 @@ function nicoSvg(name, kind){
 }
 
 const narrUIx = {
+  // Narrative campaigns -> Game Tracker (15 Nov 2026). trackerState says what the tracker holds for a campaign battle:
+  // "none" (no game), "this" (this battle's game), "other" (another game in progress, which starting would replace).
+  trackerState:(sys, id, battle) => !game ? "none" : (game.narr && game.narr.sys===sys && game.narr.id===id && game.narr.battle===battle) ? "this" : "other",
+  // spec: {sys, id, battle, mode, title, label, rules, faction, limit, patrolName, units:[{id, unitId, name, mod:{sk,t,ma}, gob}]}
+  trackerStart:spec => {
+    const f = facById(spec.faction); if (!f) throw Error("This campaign's faction isn't in the builder.");
+    newGame(null, {points: spec.limit}); if (!game) throw Error("Couldn't start the game.");
+    game.faction = f.id; game.name = String(spec.patrolName || f.name).slice(0,60); game.limit = spec.limit;
+    game.units = spec.units.filter(m=>f.units.some(u=>u.id===m.unitId)).map(m=>({uid:"n:"+m.id, unitId:m.unitId, f:f.id, n:1, of:1, nm:cleanNm(m.name), st:m.gob ? {gob:true} : {}, c:{}, tasks:0, mod:m.mod && (m.mod.sk||m.mod.t||m.mod.ma||m.mod.mt) ? {sk:m.mod.sk||0, t:m.mod.t||0, ma:m.mod.ma||0, mt:m.mod.mt||""} : null}));
+    game.narr = {sys:spec.sys, id:spec.id, battle:spec.battle, mode:spec.mode, title:spec.title, label:spec.label||"", rules:spec.rules||"", sent:0};
+    saveGame(); try{ gcEvent("narrative-to-tracker"); }catch(e){} showView("game");
+  },
+  trackerOpen:() => showView("game"),
+  // Each narrative script registers how it takes results back: trackerReturn[sys] = (id, battle, result) => message
+  trackerReturn:{},
+  // ...and whether that campaign battle is still being played: trackerOpenBattle[sys] = (id, battle) => true/false
+  trackerOpenBattle:{},
   // Shop / supply item icon (nicoSvg above): item(name, "eq" | "use")
   item:nicoSvg,
   // Phone bottom bar for the recruiting tabs (like the Patrol Builder's): summary text, optional points meter, jump buttons [[elementId,label]]. Hidden above 860px.
