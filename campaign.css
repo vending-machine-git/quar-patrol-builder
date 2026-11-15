@@ -708,3 +708,42 @@ details.cp-mission>.cp-map{margin:10px auto}
 /* Quar Tales: Game Tracker link in the Skirmish panel (15 Nov 2026) */
 .qt-track{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:4px 0 12px}
 .qt-track .hint{margin:0}
+
+/* Narrative Your Force list: options panel header (name, unit, close) — 15 Nov 2026 */
+#view-narr .npl .npl-mh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-2px 0 2px;padding-bottom:6px;border-bottom:1px dashed var(--rule)}
+#view-narr .npl .npl-mh .hint{margin:0;flex:1 1 auto}
+#view-narr .npl .npl-x{all:unset;box-sizing:border-box;cursor:pointer;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;color:var(--muted);font-size:14px;margin-left:auto}
+#view-narr .npl .npl-x:hover,#view-narr .npl .npl-x:focus-visible{background:var(--accent-soft);color:var(--accent);outline:none}
+/* Quar Tales role picker */
+#view-narr .qt-rolebox{display:flex;flex-direction:column;gap:6px}
+#view-narr .qt-rh{font-size:.72em;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+#view-narr .qt-ropts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#view-narr .qt-ropt{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:3px;padding:8px 10px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);min-height:100%}
+#view-narr .qt-ropt b{font-size:.95em;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#view-narr .qt-ropt span{font-size:.8em;line-height:1.3;color:var(--muted)}
+#view-narr .qt-ropt:not(:disabled):hover,#view-narr .qt-ropt:focus-visible{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-line)}
+#view-narr .qt-ropt.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+#view-narr .qt-ropt:disabled{cursor:not-allowed;opacity:.6}
+#view-narr .qt-ropt.on:disabled{opacity:1}
+#view-narr .qt-rnow{font-size:.68em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:999px;background:var(--accent);color:var(--panel)}
+@media (max-width:560px){ #view-narr .qt-ropts{grid-template-columns:1fr} }
+/* Quar Tales role summary at the top of Your Force */
+#view-narr .qt-rsum{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 8px;padding:8px 10px;border:1px solid var(--rule);border-radius:4px;background:var(--sunk)}
+#view-narr .qt-rsum>div{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
+#view-narr .qt-rsum b{font-size:.72em;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+#view-narr .qt-rsum em{font-size:.85em;color:var(--muted)}
+#view-narr .qt-chip{all:unset;box-sizing:border-box;cursor:pointer;font-size:.88em;font-weight:600;padding:2px 9px;border-radius:999px;border:1px solid var(--accent-line);background:var(--panel);color:var(--accent)}
+#view-narr .qt-chip:hover,#view-narr .qt-chip:focus-visible{background:var(--accent-soft);outline:none}
+/* Long dropdowns inside a rhyfler's options (e.g. "Character advance") fit the panel on phones */
+#view-narr .npl .npl-mem .cp-form{grid-template-columns:minmax(0,1fr)}
+#view-narr .npl .npl-mem label{min-width:0}
+#view-narr .npl .npl-mem select,#view-narr .npl .npl-mem input,#view-narr .npl .npl-mem textarea{max-width:100%;min-width:0;box-sizing:border-box}
+#view-narr .npl .npl-mem select{width:100%;text-overflow:ellipsis}
+/* Name tags never squeeze to nothing; on phones the names get the full row and the − n + / points sit underneath (15 Nov 2026) */
+#view-narr .npl .nmem .dtag{flex:0 0 auto}
+@media (max-width:560px){
+  #view-narr .npl .prow{grid-template-columns:minmax(0,1fr) auto auto;row-gap:6px}
+  #view-narr .npl .prow>.pname{grid-column:1/-1}
+  #view-narr .npl .prow>.step{grid-column:2}
+  #view-narr .npl .prow>.pts{grid-column:3}
+}

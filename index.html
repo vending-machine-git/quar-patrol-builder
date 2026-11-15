@@ -1537,13 +1537,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-15.87">
-<script src="campaign-rules.js?v=2026-11-15.87"></script>
-<script src="tales-rules.js?v=2026-11-15.87"></script>
-<script src="tales.js?v=2026-11-15.87"></script>
-<script src="mhuddball-rules.js?v=2026-11-15.87"></script>
-<script src="mhuddball.js?v=2026-11-15.87"></script>
-<script src="campaign.js?v=2026-11-15.87"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-15.88">
+<script src="campaign-rules.js?v=2026-11-15.88"></script>
+<script src="tales-rules.js?v=2026-11-15.88"></script>
+<script src="tales.js?v=2026-11-15.88"></script>
+<script src="mhuddball-rules.js?v=2026-11-15.88"></script>
+<script src="mhuddball.js?v=2026-11-15.88"></script>
+<script src="campaign.js?v=2026-11-15.88"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3872,7 +3872,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-15.87";
+const APP_VERSION = "2026-11-15.88";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -4005,13 +4005,13 @@ const narrUIx = {
   force:opts => {
     const pen = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     if (!opts.groups.length) return `<div class="plist npl"><p class="empty">${esc(opts.empty || "No units yet. Tap + on the Muster Roll to add units.")}</p></div>`;
-    return `<div class="plist npl">${opts.hint ? `<p class="npl-hint"><span class="nhi" aria-hidden="true">&#9758;</span><span>${opts.hint}</span></p>` : ""}${opts.groups.map(g => { const q = g.members.length, k = opts.key + "|" + g.id, open = narrNameOpen.has(k), names = g.members.map(m => m.name || ""), named = names.some(Boolean);
+    return `<div class="plist npl">${opts.hint ? `<p class="npl-hint"><span class="nhi" aria-hidden="true">&#9758;</span><span>${opts.hint}</span></p>` : ""}${opts.summary || ""}${opts.groups.map(g => { const q = g.members.length, k = opts.key + "|" + g.id, open = narrNameOpen.has(k), names = g.members.map(m => m.name || ""), named = names.some(Boolean);
       const what = q > 1 ? "these rhyflers" : "this rhyfler";
       return `<div class="prow" data-nk="${esc(k)}"><div class="pname"><button type="button" class="nmbtn${open ? " on" : ""}${named ? " has" : ""}" data-nf="names" aria-expanded="${open}" title="${named ? "Edit names" : "Name " + what}" aria-label="${named ? "Edit names" : "Name " + what}">${pen}</button><div class="pnm"><b>${esc(g.name)}</b> <span>${esc(g.variant || "")}</span>${opts.detail ? `<div class="pnames">${g.members.map((m, i) => { const on = narrMemOpen.has(m.id); return `<button type="button" class="nmem${on ? " on" : ""}" data-nf="mem" data-mid="${esc(m.id)}" aria-expanded="${on}" title="Tap for ${esc(m.name || "this rhyfler")}'s role and options">${dtag(m.name || (q > 1 ? "No name #" + (i + 1) : "No name"))}${opts.badge ? opts.badge(m) : ""}<span class="nchev" aria-hidden="true">&#9662;</span></button>`; }).join("")}</div>` : named ? `<div class="pnames">${names.filter(Boolean).map(dtag).join("")}</div>` : ""}</div></div>
         <div class="step"><button type="button" class="ndec" ${opts.attr}="dismiss" data-unit="${esc(g.id)}" aria-label="Remove the latest ${esc(g.name)} recruit for a full refund" title="${g.canRemove ? "Remove the latest recruit (full refund)" : "Only recruits added since the last battle can be removed. Use Retire for veterans."}"${g.canRemove ? "" : " disabled"}>−</button><output>${q}</output><button type="button" class="ninc" ${opts.attr}="recruit" data-unit="${esc(g.id)}" aria-label="Recruit another ${esc(g.name)}"${g.canAdd ? "" : " disabled"}>+</button></div>
         <span class="pts">${g.pts}<small>${esc(opts.unit || "")}</small></span>
         <div class="pnedit"${open ? "" : " hidden"}>${g.members.map((m, i) => `<div class="pnrow"><label for="nf-${esc(m.id)}">${q > 1 ? "#" + (i + 1) : "Name"}</label><input id="nf-${esc(m.id)}" ${opts.input(m)} data-nfi type="text" maxlength="30" value="${esc(m.name || "")}" placeholder="No name" autocomplete="off" spellcheck="false"><button type="button" class="nmdice" data-nf="roll" title="Random name" aria-label="Random name for ${q > 1 ? "#" + (i + 1) : what}">🎲</button></div>`).join("")}
-        <div class="pnacts">${q > 1 ? '<button type="button" class="btn ghost" data-nf="all">Randomise all</button>' : ""}<button type="button" class="btn ghost" data-nf="clear">Clear name${q > 1 ? "s" : ""}</button><button type="button" class="btn" data-nf="done">Done</button></div></div>${opts.detail ? g.members.map(m => `<div class="npl-mem" data-mid="${esc(m.id)}"${narrMemOpen.has(m.id) ? "" : " hidden"}>${opts.detail(m)}</div>`).join("") : ""}</div>`; }).join("")}</div>`;
+        <div class="pnacts">${q > 1 ? '<button type="button" class="btn ghost" data-nf="all">Randomise all</button>' : ""}<button type="button" class="btn ghost" data-nf="clear">Clear name${q > 1 ? "s" : ""}</button><button type="button" class="btn" data-nf="done">Done</button></div></div>${opts.detail ? g.members.map((m, i) => `<div class="npl-mem" data-mid="${esc(m.id)}"${narrMemOpen.has(m.id) ? "" : " hidden"}><div class="npl-mh">${dtag(m.name || (q > 1 ? "No name #" + (i + 1) : "No name"))}<span class="hint">${esc(g.name)}${g.variant ? " &middot; " + esc(g.variant) : ""}</span><button type="button" class="npl-x" data-nf="mem" data-mid="${esc(m.id)}" aria-label="Close ${esc(m.name || "this rhyfler")}'s options" title="Close">&#10005;</button></div>${opts.detail(m)}</div>`).join("") : ""}</div>`; }).join("")}</div>`;
   },
   // A fold-out remembered like the others; closed unless opened before (for long rule references).
   fold:(key, title, html, def=false) => { let open = def; try{ const v = localStorage.getItem("quar-fold-"+key); if (v!==null) open = v==="1"; }catch(error){} return `<details class="cp-fold" data-fold="${key}"${open?" open":""}><summary><span class="chev" aria-hidden="true">&#9656;</span>${title}</summary><div class="cp-foldbody">${html}</div></details>`; }
@@ -4147,6 +4147,19 @@ document.addEventListener("click", e=>{ document.querySelectorAll("#view-narr .n
 const narrNameOpen = new Set();
 function narrNameSave(inp){ inp.dispatchEvent(new Event("change", {bubbles:true})); }
 const narrMemOpen = new Set();
+// Open or close one rhyfler's options. Only one is open at a time: opening one closes the others (15 Nov 2026, user request).
+function narrMemToggle(id, forceOpen){
+  const d = document.querySelector(`#view-narr .npl-mem[data-mid="${CSS.escape(id)}"]`); if (!d) return;
+  const open = forceOpen || d.hidden;
+  const mark = (mid, on) => { const tag = document.querySelector(`#view-narr .nmem[data-mid="${CSS.escape(mid)}"]`); if (tag){ tag.classList.toggle("on", on); tag.setAttribute("aria-expanded", String(on)); } };
+  if (open) document.querySelectorAll("#view-narr .npl-mem:not([hidden])").forEach(o => { if (o !== d){ o.hidden = true; narrMemOpen.delete(o.dataset.mid); mark(o.dataset.mid, false); } });
+  narrMemOpen.clear(); if (open) narrMemOpen.add(id);
+  d.hidden = !open; mark(id, open);
+  if (open){ const r = d.getBoundingClientRect(), barh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--barh")) || 0;
+    if (r.top < barh || r.top > innerHeight - 120) d.scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); }
+}
+// Role summary chips (Leader / Characters) jump to that rhyfler's options.
+document.addEventListener("click", e=>{ const c = e.target.closest && e.target.closest("#view-narr [data-memjump]"); if (!c) return; e.preventDefault(); narrMemToggle(c.dataset.memjump, true); });
 function narrNameTags(row){ const mem = [...row.querySelectorAll(".nmem")];
   if (mem.length){ const ins = [...row.querySelectorAll("input[data-nfi]")]; mem.forEach((b, i) => { const t = b.querySelector(".dtn"), v = ins[i] ? ins[i].value.trim() : ""; if (t) t.textContent = v || (mem.length > 1 ? "No name #" + (i + 1) : "No name"); }); row.querySelector(".nmbtn").classList.toggle("has", ins.some(x => x.value.trim())); return; }
   const names = [...row.querySelectorAll("input[data-nfi]")].map(x=>x.value.trim()).filter(Boolean), box = row.querySelector(".pnm");
@@ -4159,7 +4172,7 @@ function narrNameShow(row, open){ const k = row.dataset.nk, ed = row.querySelect
 document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("#view-narr [data-nf]"); if (!b) return; const row = b.closest(".prow"); if (!row) return; e.preventDefault();
   const act = b.dataset.nf, inputs = [...row.querySelectorAll("input[data-nfi]")];
   if (act==="names"){ narrNameShow(row, row.querySelector(".pnedit").hidden); return; }
-  if (act==="mem"){ const id = b.dataset.mid, d = row.querySelector(`.npl-mem[data-mid="${CSS.escape(id)}"]`); if (!d) return; const open = d.hidden; d.hidden = !open; if (open) narrMemOpen.add(id); else narrMemOpen.delete(id); b.classList.toggle("on", open); b.setAttribute("aria-expanded", String(open)); return; }
+  if (act==="mem"){ narrMemToggle(b.dataset.mid); return; }
   if (act==="done"){ narrNameShow(row, false); return; }
   const set = (inp, v) => { if (inp.value === v) return; inp.value = v; narrNameSave(inp); };
   if (act==="roll"){ const inp = b.parentElement.querySelector("input"); const n = randName(narrNameUsed(inp)); if (n) set(inp, n); }
