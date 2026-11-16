@@ -126,7 +126,7 @@ Built by vending_machine with help from Claude (AI). Every stat was checked by h
 - World design: Joshua Qualtieri, Pete Murray, Pete McKenna & Edward McEneely
 - Art: Joshua Qualtieri
 - Starter patrols: Joshua Qualtieri, [rhyfler.com/example-patrols](https://rhyfler.com/example-patrols/), used with permission
-- Unit and weapon profiles from the *Clash of Rhyfles* Full Rulebook: used with permission from Joshua Qualtieri
+- Unit and weapon abilities from the *Clash of Rhyfles* Full Rulebook: used with permission from Joshua Qualtieri
 - Random rhyfler names: Joshua Qualtieri's [Quar Squad Record Generator](https://www.rhyfler.com/files/quar_squad_gen/QuarSquadGenerator.html), used with permission
 - Narrative community modes, used with their creators' permission (Discord names and pictures shown with their OK):
   - *Every Quar is His Own King*: WAR_TROUT
