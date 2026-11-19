@@ -41,5 +41,5 @@ If a unit's internal ID is **renamed, merged or removed** in the main data, camp
 ### Other notes
 
 - The **backup file** is shared (one file holds patrols and narrative). That's fine — it doesn't mix rules.
-- The project note `claude/narrative.md` still says the campaign integration was removed (1 Nov). It has since been rebuilt, so that note is out of date.
+- The project note `narrative.md` still says the campaign integration was removed (1 Nov). It has since been rebuilt, so that note is out of date.
 - Not checked here: whether each narrative rule matches its source PDF. This only checks separation.

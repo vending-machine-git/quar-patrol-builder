@@ -116,7 +116,7 @@ icons/                  website icon
 
 When a new version of the Faction Profiles is released, the data file is updated and the changes are added to the Rules changelog.
 
-Built by vending_machine with help from Claude (AI). Every stat was checked by hand against the books.
+Built by vending_machine. Every stat was checked by hand against the books.
 
 ## Credits and legal
 
