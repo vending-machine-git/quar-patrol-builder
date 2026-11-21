@@ -1537,13 +1537,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-16.90">
-<script src="campaign-rules.js?v=2026-11-16.90"></script>
-<script src="tales-rules.js?v=2026-11-16.90"></script>
-<script src="tales.js?v=2026-11-16.90"></script>
-<script src="mhuddball-rules.js?v=2026-11-16.90"></script>
-<script src="mhuddball.js?v=2026-11-16.90"></script>
-<script src="campaign.js?v=2026-11-16.90"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-21.92">
+<script src="campaign-rules.js?v=2026-11-21.92"></script>
+<script src="tales-rules.js?v=2026-11-21.92"></script>
+<script src="tales.js?v=2026-11-21.92"></script>
+<script src="mhuddball-rules.js?v=2026-11-21.92"></script>
+<script src="mhuddball.js?v=2026-11-21.92"></script>
+<script src="campaign.js?v=2026-11-21.92"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3872,7 +3872,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-16.90";
+const APP_VERSION = "2026-11-21.92";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
@@ -3922,6 +3922,8 @@ const NICO = {
   "sturdy helmet":'<path d="M2.5 16h19"/><path d="M5 16a7 7 0 0 1 14 0"/><path d="M6 12.6h12"/><path d="M8.5 16l1.2 3h4.6l1.2-3"/>',
   "lantern":'<path d="M9 3.5h6M12 3.5V5.5"/><path d="M8.5 5.5h7l1 2.5v10.5l-1 2h-7l-1-2V8z"/><path d="M7.5 8h9M7.5 18.5h9"/><path d="M12 11c1.3 1.3 1.6 2.4 1.1 3.4-.4.8-1.8.8-2.2 0-.5-1 0-2.1 1.1-3.4z"/>',
   "medicine":'<path d="M9.5 3h5v3h-5z"/><rect x="7" y="6" width="10" height="15" rx="1.8"/><path d="M12 10.3v6.4M8.8 13.5h6.4"/>',
+  "keg of bugbrau":'<path d="M7 3h10c1.4 2.6 2 5.6 2 9s-.6 6.4-2 9H7c-1.4-2.6-2-5.6-2-9s.6-6.4 2-9z"/><path d="M5.6 8h12.8M5.6 16h12.8"/>',
+  "damaged tractor":'<rect x="3" y="9" width="13" height="6" rx="1"/><path d="M16 11h3l2 2.5V15h-5M6 9V6.5h6V9"/><circle cx="7" cy="18" r="2.2"/><circle cx="16.5" cy="18" r="2.2"/>',
   "weapon":'<path d="M2 12.5h12.5l2.2-1.8H22v3h-5.2l-3.8 3.8H9.4l.8-3H5.5L4 16.5H2z"/><path d="M5 12.5v-1.6"/>',
   "item":'<path d="M12 2.8l8.5 4.6v9.2L12 21.2l-8.5-4.6V7.4z"/><path d="M3.5 7.4L12 12l8.5-4.6M12 12v9.2"/>'
 };
@@ -3937,7 +3939,9 @@ function nicoKey(name){
   if (/radio/.test(n)) return "short range radio";
   if (/grenade/.test(n)) return "at grenades";
   if (/charm/.test(n)) return "lucky charm";
-  if (/harlech|bogen|rhyfle|rifle|carbine|shotgun|grifkis|smg|lmg|gun|torpedo|doru|splagen/.test(n)) return "weapon";
+  if (/keg|bugbrau/.test(n)) return "keg of bugbrau";
+  if (/tractor/.test(n)) return "damaged tractor";
+  if (/harlech|bogen|rhyfle|rifle|carbine|shotgun|grifkis|smg|lmg|gun|torpedo|doru|splagen|cryfen|pyn/.test(n)) return "weapon";
   return "item";
 }
 // kind: "eq" (kept equipment, brass), "use" (consumable / next battle only, olive)
@@ -3954,7 +3958,9 @@ const narrUIx = {
     const f = facById(spec.faction); if (!f) throw Error("This campaign's faction isn't in the builder.");
     newGame(null, {points: spec.limit}); if (!game) throw Error("Couldn't start the game.");
     game.faction = f.id; game.name = String(spec.patrolName || f.name).slice(0,60); game.limit = spec.limit;
-    game.units = spec.units.filter(m=>f.units.some(u=>u.id===m.unitId)).map(m=>({uid:"n:"+m.id, unitId:m.unitId, f:f.id, n:1, of:1, nm:cleanNm(m.name), st:m.gob ? {gob:true} : {}, c:{}, tasks:0, mod:m.mod && (m.mod.sk||m.mod.t||m.mod.ma||m.mod.mt) ? {sk:m.mod.sk||0, t:m.mod.t||0, ma:m.mod.ma||0, mt:m.mod.mt||""} : null}));
+    const fOf = m => (m.faction && facById(m.faction)) || f;
+    game.units = spec.units.filter(m=>fOf(m).units.some(u=>u.id===m.unitId)).map(m=>({uid:"n:"+m.id, unitId:m.unitId, f:fOf(m).id, n:1, of:1, nm:cleanNm(m.name), st:m.gob ? {gob:true} : {}, c:{}, tasks:0, mod:m.mod && (m.mod.sk||m.mod.t||m.mod.ma||m.mod.mt) ? {sk:m.mod.sk||0, t:m.mod.t||0, ma:m.mod.ma||0, mt:m.mod.mt||""} : null}));
+    if (spec.pluck != null && Array.isArray(game.pluck)) game.pluck[0] = spec.pluck; // e.g. Every Quar: Under-Supplied starts with no Pluck
     game.narr = {sys:spec.sys, id:spec.id, battle:spec.battle, mode:spec.mode, title:spec.title, label:spec.label||"", rules:spec.rules||"", sent:0};
     saveGame(); try{ gcEvent("narrative-to-tracker"); }catch(e){} showView("game");
   },
