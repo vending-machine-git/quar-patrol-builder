@@ -3268,6 +3268,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p25",
+     "photos": [
+      {
+       "src": "data/art/units/fid-han-gaefyn-Dai.jpg",
+       "thumb": "data/art/units/fid-han-gaefyn-Dai-thumb.jpg",
+       "by": "Dai"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -3289,6 +3296,13 @@
      "pts": 35,
      "fa": 1,
      "page": "Profiles p25",
+     "photos": [
+      {
+       "src": "data/art/units/fid-yawdryl-Dai.jpg",
+       "thumb": "data/art/units/fid-yawdryl-Dai-thumb.jpg",
+       "by": "Dai"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -3584,6 +3598,13 @@
      "pts": 32,
      "fa": 1,
      "page": "Profiles p26",
+     "photos": [
+      {
+       "src": "data/art/units/fid-cook-rifle-Dai.jpg",
+       "thumb": "data/art/units/fid-cook-rifle-Dai-thumb.jpg",
+       "by": "Dai"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -3664,6 +3685,13 @@
      "pts": 35,
      "fa": 2,
      "page": "Profiles p26",
+     "photos": [
+      {
+       "src": "data/art/units/fid-lancer-Dai.jpg",
+       "thumb": "data/art/units/fid-lancer-Dai-thumb.jpg",
+       "by": "Dai"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -3762,6 +3790,11 @@
        "src": "data/art/units/fid-fydo-vending_machine.jpg",
        "thumb": "data/art/units/fid-fydo-vending_machine-thumb.jpg",
        "by": "vending_machine"
+      },
+      {
+       "src": "data/art/units/fid-fydo-Dai.jpg",
+       "thumb": "data/art/units/fid-fydo-Dai-thumb.jpg",
+       "by": "Dai"
       }
      ],
      "profiles": [
