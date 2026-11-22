@@ -610,8 +610,11 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 .upop figcaption b{font-family:var(--f-display);font-weight:400;letter-spacing:.03em;text-transform:uppercase}
 .upop figcaption .by{display:block;font-family:var(--f-mono);font-size:.85em;opacity:.8}
 .upop .upx{position:absolute;top:10px;right:12px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:1.5em;line-height:1;cursor:pointer}
-.upop .upnav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:1.4em;cursor:pointer}
-.upop .upnav.prev{left:10px} .upop .upnav.next{right:10px}
+.upop .uprow{display:flex;align-items:center;justify-content:center;gap:12px;max-width:100%}
+.upop .uprow.multi img{max-width:calc(100vw - 32px - 128px)}
+.upop .upnav{flex:none;width:52px;height:52px;padding:0 0 .12em;border:2px solid #fff;border-radius:50%;background:#f2ede0;color:#1c1d16;font-size:2em;font-weight:700;line-height:1;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.6);transition:transform .12s,background .12s}
+.upop .upnav:hover,.upop .upnav:focus-visible{background:#fff;transform:scale(1.1);outline:none}
+@media (max-width:560px){ .upop .uprow{gap:6px} .upop .uprow.multi img{max-width:calc(100vw - 32px - 92px)} .upop .upnav{width:40px;height:40px;font-size:1.6em} }
 @media print{ .upic,.upop{display:none!important} }
 .wtable{margin-top:12px}
 .eqwhere{font-size:.85em;color:var(--muted);font-family:var(--f-body)}
@@ -1553,13 +1556,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-22.101">
-<script src="campaign-rules.js?v=2026-11-22.101"></script>
-<script src="tales-rules.js?v=2026-11-22.101"></script>
-<script src="tales.js?v=2026-11-22.101"></script>
-<script src="mhuddball-rules.js?v=2026-11-22.101"></script>
-<script src="mhuddball.js?v=2026-11-22.101"></script>
-<script src="campaign.js?v=2026-11-22.101"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-22.104">
+<script src="campaign-rules.js?v=2026-11-22.104"></script>
+<script src="tales-rules.js?v=2026-11-22.104"></script>
+<script src="tales.js?v=2026-11-22.104"></script>
+<script src="mhuddball-rules.js?v=2026-11-22.104"></script>
+<script src="mhuddball.js?v=2026-11-22.104"></script>
+<script src="campaign.js?v=2026-11-22.104"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3396,7 +3399,8 @@ function showUnitPhoto(u, n=0){
   let d = document.getElementById("upop");
   if (!d){ d = document.createElement("div"); d.id = "upop"; d.className = "upop"; d.setAttribute("role","dialog"); d.setAttribute("aria-modal","true"); document.body.appendChild(d); }
   d.dataset.u = u.id; d.dataset.n = n; d.setAttribute("aria-label", "Photo of "+u.name);
-  d.innerHTML = `<figure><img src="${esc(p.src)}" alt="${esc(u.name+" ("+u.variant+"), painted by the community")}"><figcaption><b>${esc(u.name)}</b> · ${esc(u.variant)}<span class="by">Photo by ${esc(p.by)}${ph.length>1?` · ${n+1} of ${ph.length}`:""}</span></figcaption></figure><button class="upx" type="button" data-upclose aria-label="Close">×</button>${ph.length>1?`<button class="upnav prev" type="button" data-upstep="-1" aria-label="Previous photo">‹</button><button class="upnav next" type="button" data-upstep="1" aria-label="Next photo">›</button>`:""}`;
+  const multi = ph.length>1;
+  d.innerHTML = `<figure><div class="uprow${multi?" multi":""}">${multi?`<button class="upnav prev" type="button" data-upstep="-1" aria-label="Previous photo">‹</button>`:""}<img src="${esc(p.src)}" alt="${esc(u.name+" ("+u.variant+"), painted by the community")}">${multi?`<button class="upnav next" type="button" data-upstep="1" aria-label="Next photo">›</button>`:""}</div><figcaption><b>${esc(u.name)}</b> · ${esc(u.variant)}<span class="by">Photo by ${esc(p.by)}${ph.length>1?` · ${n+1} of ${ph.length}`:""}</span></figcaption></figure><button class="upx" type="button" data-upclose aria-label="Close">×</button>`;
   d.querySelector(".upx").focus();
 }
 function closeUnitPhoto(){ const d = document.getElementById("upop"); if (d) d.remove(); }
@@ -3911,7 +3915,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-22.101";
+const APP_VERSION = "2026-11-22.104";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;

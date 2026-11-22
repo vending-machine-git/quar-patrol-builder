@@ -4141,6 +4141,13 @@
      "pts": 31,
      "fa": 1,
      "page": "Profiles p28",
+     "photos": [
+      {
+       "src": "data/art/units/wa-mate-TredHedJon.jpg",
+       "thumb": "data/art/units/wa-mate-TredHedJon-thumb.jpg",
+       "by": "TredHedJon"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -4408,6 +4415,18 @@
      "pts": 38,
      "fa": 2,
      "page": "Profiles p29",
+     "photos": [
+      {
+       "src": "data/art/units/wa-vedette-TredHedJon.jpg",
+       "thumb": "data/art/units/wa-vedette-TredHedJon-thumb.jpg",
+       "by": "TredHedJon"
+      },
+      {
+       "src": "data/art/units/wa-vedette-TredHedJon-dismounted.jpg",
+       "thumb": "data/art/units/wa-vedette-TredHedJon-dismounted-thumb.jpg",
+       "by": "TredHedJon"
+      }
+     ],
      "profiles": [
       {
        "label": "Mounted",
@@ -4568,6 +4587,13 @@
      "pts": 125,
      "fa": null,
      "page": "Profiles p29",
+     "photos": [
+      {
+       "src": "data/art/units/wa-daen-fen-TredHedJon.jpg",
+       "thumb": "data/art/units/wa-daen-fen-TredHedJon-thumb.jpg",
+       "by": "TredHedJon"
+      }
+     ],
      "vehicle": {
       "crew": 3,
       "activation": "Crewed",
