@@ -3245,6 +3245,13 @@
      "pts": 25,
      "fa": null,
      "page": "Profiles p25",
+     "photos": [
+      {
+       "src": "data/art/units/fid-gaefyn-Dai.jpg",
+       "thumb": "data/art/units/fid-gaefyn-Dai-thumb.jpg",
+       "by": "Dai"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -3326,6 +3333,13 @@
      "pts": 60,
      "fa": 2,
      "page": "Profiles p25",
+     "photos": [
+      {
+       "src": "data/art/units/fid-fynrydhad-Dai.jpg",
+       "thumb": "data/art/units/fid-fynrydhad-Dai-thumb.jpg",
+       "by": "Dai"
+      }
+     ],
      "vehicle": {
       "crew": 1,
       "activation": "Individual",
@@ -3384,6 +3398,13 @@
      "pts": 38,
      "fa": 1,
      "page": "Profiles p26",
+     "photos": [
+      {
+       "src": "data/art/units/fid-caerten-Dai.jpg",
+       "thumb": "data/art/units/fid-caerten-Dai-thumb.jpg",
+       "by": "Dai"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -3713,6 +3734,13 @@
      "pts": 40,
      "fa": 2,
      "page": "Profiles p26",
+     "photos": [
+      {
+       "src": "data/art/units/fid-miner-Dai.jpg",
+       "thumb": "data/art/units/fid-miner-Dai-thumb.jpg",
+       "by": "Dai"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
