@@ -600,7 +600,7 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 /* community unit photos: round picture on the reference card, tap for the big photo */
 .rcard header.haspic{justify-content:flex-start;align-items:center}
 .rcard header.haspic .pts{margin-left:auto}
-.upic{flex:none;width:46px;height:46px;padding:0;border:2px solid var(--accent);border-radius:50%;overflow:hidden;background:var(--rule);cursor:zoom-in}
+.upic{flex:none;width:96px;height:96px;padding:0;border:3px solid var(--accent);border-radius:50%;overflow:hidden;background:var(--rule);cursor:zoom-in}
 .upic img{display:block;width:100%;height:100%;object-fit:cover}
 .upic:hover,.upic:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .upop{position:fixed;inset:0;z-index:70;background:rgba(10,12,8,.82);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -1568,13 +1568,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-22.96">
-<script src="campaign-rules.js?v=2026-11-22.96"></script>
-<script src="tales-rules.js?v=2026-11-22.96"></script>
-<script src="tales.js?v=2026-11-22.96"></script>
-<script src="mhuddball-rules.js?v=2026-11-22.96"></script>
-<script src="mhuddball.js?v=2026-11-22.96"></script>
-<script src="campaign.js?v=2026-11-22.96"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-22.99">
+<script src="campaign-rules.js?v=2026-11-22.99"></script>
+<script src="tales-rules.js?v=2026-11-22.99"></script>
+<script src="tales.js?v=2026-11-22.99"></script>
+<script src="mhuddball-rules.js?v=2026-11-22.99"></script>
+<script src="mhuddball.js?v=2026-11-22.99"></script>
+<script src="campaign.js?v=2026-11-22.99"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3400,7 +3400,7 @@ function useFaction(id){
 }
 function refCard(u){
   const ph = u.photos||[];
-  const pic = ph.length ? `<button class="upic" type="button" data-upic="${esc(u.id)}" title="Photo by ${esc(ph[0].by)}" aria-label="Show photo of ${esc(u.name)}"><img src="${esc(ph[0].thumb||ph[0].src)}" alt="" loading="lazy" width="46" height="46"></button>` : "";
+  const pic = ph.length ? `<button class="upic" type="button" data-upic="${esc(u.id)}" title="Photo by ${esc(ph[0].by)}" aria-label="Show photo of ${esc(u.name)}"><img src="${esc(ph[0].thumb||ph[0].src)}" alt="" loading="lazy" width="96" height="96"></button>` : "";
   return `<article class="rcard${u.vehicle||u.crew?" veh":""}"><header${pic?' class="haspic"':""}>${pic}<h3>${esc(u.name)}</h3><span class="pts">${u.pts}${u.fa!=null?`<span class="facnt" title="Force Allowance">(${u.fa})</span>`:""}</span></header><p class="sub">${esc(u.variant)}<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</article>`;
 }
 // Community unit photo pop-up (u.photos: [{src, thumb, by}]). Several photos: arrows / ← → keys.
@@ -3955,7 +3955,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-22.96";
+const APP_VERSION = "2026-11-22.99";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
