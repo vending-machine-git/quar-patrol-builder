@@ -3757,6 +3757,13 @@
      "pts": 22,
      "fa": 2,
      "page": "Profiles p26",
+     "photos": [
+      {
+       "src": "data/art/units/fid-fydo-vending_machine.jpg",
+       "thumb": "data/art/units/fid-fydo-vending_machine-thumb.jpg",
+       "by": "vending_machine"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,

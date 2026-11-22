@@ -597,6 +597,22 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 .rcard h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.12em;letter-spacing:.03em;text-transform:uppercase}
 .rcard .qty{font-family:var(--f-mono);font-weight:600;color:var(--brass);margin-right:6px}
 .rcard .sub{color:var(--muted);font-size:.88em;margin:0 0 4px}
+/* community unit photos: round picture on the reference card, tap for the big photo */
+.rcard header.haspic{justify-content:flex-start;align-items:center}
+.rcard header.haspic .pts{margin-left:auto}
+.upic{flex:none;width:46px;height:46px;padding:0;border:2px solid var(--accent);border-radius:50%;overflow:hidden;background:var(--rule);cursor:zoom-in}
+.upic img{display:block;width:100%;height:100%;object-fit:cover}
+.upic:hover,.upic:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.upop{position:fixed;inset:0;z-index:70;background:rgba(10,12,8,.82);display:flex;align-items:center;justify-content:center;padding:16px}
+.upop figure{margin:0;max-width:min(100%,1100px);display:flex;flex-direction:column;align-items:center;gap:8px}
+.upop img{max-width:100%;max-height:calc(100vh - 110px);border-radius:4px;box-shadow:0 6px 30px rgba(0,0,0,.5)}
+.upop figcaption{color:#f2ede0;text-align:center;font-size:.95em}
+.upop figcaption b{font-family:var(--f-display);font-weight:400;letter-spacing:.03em;text-transform:uppercase}
+.upop figcaption .by{display:block;font-family:var(--f-mono);font-size:.85em;opacity:.8}
+.upop .upx{position:absolute;top:10px;right:12px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:1.5em;line-height:1;cursor:pointer}
+.upop .upnav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:1.4em;cursor:pointer}
+.upop .upnav.prev{left:10px} .upop .upnav.next{right:10px}
+@media print{ .upic,.upop{display:none!important} }
 .wtable{margin-top:12px}
 .eqwhere{font-size:.85em;color:var(--muted);font-family:var(--f-body)}
 .foot{color:var(--muted);font-size:.8em;padding:8px 0 10px}
@@ -1181,6 +1197,7 @@ h1 .community{font-size:.32em;vertical-align:.55em;letter-spacing:.12em}
 #kofiSlot .kofi.shine::after{animation:kofiSweep 1.15s cubic-bezier(.4,0,.2,1) var(--d,0s) 2 both}
 #kofiSlot .kofi.shine{animation:kofiGlow 2.6s ease-out var(--d,0s) both}
 #kofiSlot .kofi + .kofi{--d:.22s}
+#kofiSlot .kofi + .kofi + .kofi{--d:.44s}
 @keyframes kofiSweep{from{transform:translateX(-160%) skewX(-20deg)}to{transform:translateX(260%) skewX(-20deg)}}
 @keyframes kofiGlow{0%{box-shadow:0 0 0 0 transparent}25%{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent),0 0 14px color-mix(in oklab, var(--accent) 35%, transparent)}100%{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion: reduce){ #kofiSlot .kofi.shine,#kofiSlot .kofi.shine::after{animation:none} }
@@ -1537,13 +1554,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-21.92">
-<script src="campaign-rules.js?v=2026-11-21.92"></script>
-<script src="tales-rules.js?v=2026-11-21.92"></script>
-<script src="tales.js?v=2026-11-21.92"></script>
-<script src="mhuddball-rules.js?v=2026-11-21.92"></script>
-<script src="mhuddball.js?v=2026-11-21.92"></script>
-<script src="campaign.js?v=2026-11-21.92"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-22.94">
+<script src="campaign-rules.js?v=2026-11-22.94"></script>
+<script src="tales-rules.js?v=2026-11-22.94"></script>
+<script src="tales.js?v=2026-11-22.94"></script>
+<script src="mhuddball-rules.js?v=2026-11-22.94"></script>
+<script src="mhuddball.js?v=2026-11-22.94"></script>
+<script src="campaign.js?v=2026-11-22.94"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3368,8 +3385,31 @@ function useFaction(id){
   if (FAC.color) document.body.style.setProperty("--fac", FAC.color); else document.body.style.removeProperty("--fac");
 }
 function refCard(u){
-  return `<article class="rcard${u.vehicle||u.crew?" veh":""}"><header><h3>${esc(u.name)}</h3><span class="pts">${u.pts}${u.fa!=null?`<span class="facnt" title="Force Allowance">(${u.fa})</span>`:""}</span></header><p class="sub">${esc(u.variant)}<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</article>`;
+  const ph = u.photos||[];
+  const pic = ph.length ? `<button class="upic" type="button" data-upic="${esc(u.id)}" title="Photo by ${esc(ph[0].by)}" aria-label="Show photo of ${esc(u.name)}"><img src="${esc(ph[0].thumb||ph[0].src)}" alt="" loading="lazy" width="46" height="46"></button>` : "";
+  return `<article class="rcard${u.vehicle||u.crew?" veh":""}"><header${pic?' class="haspic"':""}>${pic}<h3>${esc(u.name)}</h3><span class="pts">${u.pts}${u.fa!=null?`<span class="facnt" title="Force Allowance">(${u.fa})</span>`:""}</span></header><p class="sub">${esc(u.variant)}<span class="pg"> · ${esc(u.page)}</span></p>${statBlock(u)}${weaponLine(u)}${abilityList(u)}${rulesText(u)}</article>`;
 }
+// Community unit photo pop-up (u.photos: [{src, thumb, by}]). Several photos: arrows / ← → keys.
+function unitById(id){ for (const f of DATA.factions){ const u = f.units.find(x=>x.id===id); if (u) return u; } return null; }
+function showUnitPhoto(u, n=0){
+  const ph = u.photos||[]; if (!ph.length) return;
+  n = (n+ph.length)%ph.length; const p = ph[n];
+  let d = document.getElementById("upop");
+  if (!d){ d = document.createElement("div"); d.id = "upop"; d.className = "upop"; d.setAttribute("role","dialog"); d.setAttribute("aria-modal","true"); document.body.appendChild(d); }
+  d.dataset.u = u.id; d.dataset.n = n; d.setAttribute("aria-label", "Photo of "+u.name);
+  d.innerHTML = `<figure><img src="${esc(p.src)}" alt="${esc(u.name+" ("+u.variant+"), painted by the community")}"><figcaption><b>${esc(u.name)}</b> · ${esc(u.variant)}<span class="by">Photo by ${esc(p.by)}${ph.length>1?` · ${n+1} of ${ph.length}`:""}</span></figcaption></figure><button class="upx" type="button" data-upclose aria-label="Close">×</button>${ph.length>1?`<button class="upnav prev" type="button" data-upstep="-1" aria-label="Previous photo">‹</button><button class="upnav next" type="button" data-upstep="1" aria-label="Next photo">›</button>`:""}`;
+  d.querySelector(".upx").focus();
+}
+function closeUnitPhoto(){ const d = document.getElementById("upop"); if (d) d.remove(); }
+document.addEventListener("click", e=>{
+  const b = e.target.closest("[data-upic]"); if (b){ const u = unitById(b.dataset.upic); if (u) showUnitPhoto(u); return; }
+  const d = document.getElementById("upop"); if (!d || !d.contains(e.target)) return;
+  const st = e.target.closest("[data-upstep]"); if (st){ showUnitPhoto(unitById(d.dataset.u), +d.dataset.n + +st.dataset.upstep); return; }
+  if (e.target.closest("[data-upclose]") || !e.target.closest("img")) closeUnitPhoto();
+});
+document.addEventListener("keydown", e=>{ const d = document.getElementById("upop"); if (!d) return;
+  if (e.key==="Escape"){ e.preventDefault(); closeUnitPhoto(); }
+  else if (e.key==="ArrowLeft"||e.key==="ArrowRight"){ e.preventDefault(); showUnitPhoto(unitById(d.dataset.u), +d.dataset.n + (e.key==="ArrowRight"?1:-1)); } });
 // Section filter on a faction page: nothing picked = everything shown; pick one or more chips to show only those sections.
 const refFilter = new Set();
 function applyRefFilter(){
@@ -3586,7 +3626,7 @@ async function init(){
     state.editingId=p.id; state.name=p.name; state.limit=p.limit; state.items={...p.items}; state.names=copyNames(p.names); setFaction(p.faction); { const o = checks().out; state.status = !Object.keys(state.items).length?"empty":o.some(c=>c.lvl==="err")?"err":o.some(c=>c.lvl==="approved")?"approved":"ok"; } const up=p.updated; saveCurrent(); p.updated=up||Date.now();
     state.editingId=keepE; state.name=keepN; state.limit=keepL; state.items=keepI; state.names=keepNm; setFaction(keepF||p.faction); }
   $("#newFaction").value = state.faction || DATA.factions[0].id; $("#newLimit").value = "300"; syncPickers(); newPtsInit();
-    { const k = $("#kofiSlot"); if (k) k.innerHTML = ZS_LINK + KOFI_LINK; }
+    { const k = $("#kofiSlot"); if (k) k.innerHTML = ZS_LINK + KOFI_LINK + PHOTO_LINK; }
   // Footer:  the data sources as small badges and the changelog link
   $("#foot").innerHTML = `<span class="fsrc"><span class="fsl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.2 5 7.6 4.5 4 4.8v12.6c3.6-.3 6.2.2 8 1.7m0-12.6c1.8-1.5 4.4-2 8-1.7v12.6c-3.6-.3-6.2.2-8 1.7m0-12.6v12.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Data from</span><span class="fbadge"><span class="cor">CoR</span> Faction Profiles <b>${esc(DATA.meta.profilesVersion)}</b></span><span class="fbadge"><span class="cor">CoR</span> Full Rulebook</span><span class="fdot" aria-hidden="true">·</span><a class="fchg" href="#/changes" data-go="#/changes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.3h4.3M12 8v4.2l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Rules changelog<span class="farr" aria-hidden="true">→</span></a></span>`;
   const r = route(location.hash);
@@ -3844,6 +3884,8 @@ function wogParty(){
 }
 $("#wogBtn").addEventListener("click", ()=>{ if (wogOn()) wogParty(); });
 // Zombiesmith (publisher) link, shown beside the Ko-fi button in the credits
+const PHOTO_URL = "https://docs.google.com/spreadsheets/d/1I4mAz4CdmvH-eLFGPTguYjMon3VuA8IUBQjTac0ic6o/edit?gid=1346255698#gid=1346255698";
+const PHOTO_LINK = `<a class="kofi photo" href="${PHOTO_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h3.2L8.8 6h6.4l1.6 2.5H20a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13.3" r="3.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>Send a photo of your painted units<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8M17 14v5H5V7h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
 const ZS_LINK = `<a class="kofi zs" href="https://www.zombiesmith.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5C6.8 4.6 8.9 4.5 12 5.6c3.1-1.1 5.2-1 7 0V19c-1.8-1-3.9-1.1-7 0-3.1-1.1-5.2-1-7 0z M12 5.6V19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Get the rulebook and models at Zombiesmith<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8M17 14v5H5V7h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
 // Shimmer the Zombiesmith / Ko-fi buttons the first time they're on screen, once per visit
 // (remembered in sessionStorage: refreshing or changing pages won't replay it; closing the site and coming back will)
@@ -3872,7 +3914,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-21.92";
+const APP_VERSION = "2026-11-22.94";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
