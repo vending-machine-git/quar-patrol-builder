@@ -519,6 +519,13 @@
      "pts": 25,
      "fa": null,
      "page": "Profiles p9",
+     "photos": [
+      {
+       "src": "data/art/units/cof-rhyfler-harlech-Stewart.jpg",
+       "thumb": "data/art/units/cof-rhyfler-harlech-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -542,6 +549,13 @@
      "pts": 32,
      "fa": 1,
      "page": "Profiles p9",
+     "photos": [
+      {
+       "src": "data/art/units/cof-rhyfler-cryfen-Stewart.jpg",
+       "thumb": "data/art/units/cof-rhyfler-cryfen-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -586,6 +600,13 @@
      "pts": 33,
      "fa": 1,
      "page": "Profiles p9",
+     "photos": [
+      {
+       "src": "data/art/units/cof-yawdryl-Stewart.jpg",
+       "thumb": "data/art/units/cof-yawdryl-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -610,6 +631,13 @@
      "fa": 1,
      "faGroup": "cof-iscaerten",
      "page": "Profiles p10",
+     "photos": [
+      {
+       "src": "data/art/units/cof-iscaerten-pistol-Stewart.jpg",
+       "thumb": "data/art/units/cof-iscaerten-pistol-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -792,6 +820,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p10",
+     "photos": [
+      {
+       "src": "data/art/units/cof-musician-Stewart.jpg",
+       "thumb": "data/art/units/cof-musician-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -838,6 +873,13 @@
      "pts": 35,
      "fa": 1,
      "page": "Profiles p10",
+     "photos": [
+      {
+       "src": "data/art/units/cof-standard-doru-Stewart.jpg",
+       "thumb": "data/art/units/cof-standard-doru-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -872,6 +914,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p10",
+     "photos": [
+      {
+       "src": "data/art/units/cof-squirrel-handler-Stewart.jpg",
+       "thumb": "data/art/units/cof-squirrel-handler-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -895,6 +944,13 @@
      "pts": 42,
      "fa": 3,
      "page": "Profiles p10",
+     "photos": [
+      {
+       "src": "data/art/units/cof-trench-raider-Stewart.jpg",
+       "thumb": "data/art/units/cof-trench-raider-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -955,6 +1011,13 @@
      "pts": 35,
      "fa": 2,
      "page": "Profiles p10",
+     "photos": [
+      {
+       "src": "data/art/units/cof-sharpshooter-Stewart.jpg",
+       "thumb": "data/art/units/cof-sharpshooter-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -1049,6 +1112,18 @@
      "pts": 42,
      "fa": 3,
      "page": "Profiles p11",
+     "photos": [
+      {
+       "src": "data/art/units/cof-cav-rhyfler-Stewart.jpg",
+       "thumb": "data/art/units/cof-cav-rhyfler-Stewart-thumb.jpg",
+       "by": "Stewart"
+      },
+      {
+       "src": "data/art/units/cof-cav-rhyfler-Stewart-dismounted.jpg",
+       "thumb": "data/art/units/cof-cav-rhyfler-Stewart-dismounted-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "faLiftedBy": [
       "cof-cav-yawdryl",
       "cof-cav-iscaerten"
@@ -1193,6 +1268,13 @@
      "pts": 125,
      "fa": 1,
      "page": "Profiles p12",
+     "photos": [
+      {
+       "src": "data/art/units/cof-rco-m60-Stewart.jpg",
+       "thumb": "data/art/units/cof-rco-m60-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "crew": {
       "crew": 3,
       "sk": 12,
@@ -1225,6 +1307,13 @@
      "pts": 100,
      "fa": 1,
      "page": "Profiles p12",
+     "photos": [
+      {
+       "src": "data/art/units/cof-m3b-hmg-Stewart.jpg",
+       "thumb": "data/art/units/cof-m3b-hmg-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "crew": {
       "crew": 3,
       "sk": 12,
@@ -1253,6 +1342,13 @@
      "pts": 75,
      "fa": null,
      "page": "Profiles p13",
+     "photos": [
+      {
+       "src": "data/art/units/cof-aerthyn-Stewart.jpg",
+       "thumb": "data/art/units/cof-aerthyn-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "vehicle": {
       "crew": 2,
       "activation": "Individual",
