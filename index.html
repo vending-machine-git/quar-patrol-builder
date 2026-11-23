@@ -616,6 +616,40 @@ details.gforce[open]>.gfhead .chev{transform:rotate(90deg)}
 .upop .upnav:hover,.upop .upnav:focus-visible{background:#fff;transform:scale(1.1);outline:none}
 @media (max-width:560px){ .upop .uprow{gap:6px} .upop .uprow.multi img{max-width:calc(100vw - 32px - 92px)} .upop .upnav{width:40px;height:40px;font-size:1.6em} }
 @media print{ .upic,.upop{display:none!important} }
+/* Unit Photos page (opened only from the "Send a photo" footer button and the one-time pop-up) */
+#phPage .phask{margin:14px 0 12px;padding:14px 16px 12px;border:1px solid var(--rule);border-top:4px solid var(--brass);border-radius:4px;background:var(--panel);max-width:42em}
+#phPage .phask h2{margin:0 0 6px;font-family:var(--f-display);font-weight:400;font-size:1.35em;letter-spacing:.03em;text-transform:uppercase}
+#phPage .phask p{margin:0 0 10px;line-height:1.45}
+#phPage .phsteps{margin:0 0 12px;padding-left:1.5em;line-height:1.45}
+#phPage .phsteps li{margin:5px 0}
+#phPage .phsteps .phex{display:inline-block;margin-top:2px;padding:1px 7px;border-radius:3px;background:var(--stripe);font-family:var(--f-mono);font-size:.85em;color:var(--ink)}
+#phPage .phjoin{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-size:1.05em;padding:8px 14px}
+#phPage .phjoin svg{width:1.15em;height:1.15em;flex:none}
+#phPage .phtips{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--rule);font-size:.88em;color:var(--muted)}
+#phPage .phctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin:14px 0 4px}
+#phPage .phfac{--pa:color-mix(in oklab, var(--fac, var(--brass)) var(--acc-mix, 70%), var(--ink))}
+#phPage .phfac>summary{display:flex;align-items:center;gap:8px;list-style:none;cursor:pointer;border-bottom:2px solid var(--pa);margin:14px 0 4px;padding:2px 0 4px}
+#phPage .phfac>summary::-webkit-details-marker{display:none}
+#phPage .phfac>summary .chev{display:inline-block;width:1em;flex:none;color:var(--muted);font-size:.85em;transition:transform .15s}
+#phPage .phfac[open]>summary .chev{transform:rotate(90deg)}
+#phPage .phfac>summary .phflag{width:1.9em;height:1.25em;object-fit:cover;border-radius:2px;flex:none}
+#phPage .phfac>summary .phflag:not(img){display:none}
+#phPage .phfac>summary h2{margin:0;flex:1;min-width:0;font-family:var(--f-display);font-weight:400;font-size:1.15em;letter-spacing:.03em;text-transform:uppercase;color:var(--pa)}
+#phPage .phcnt{flex:none;font-size:.85em;color:var(--muted);white-space:nowrap}
+#phPage .phcnt b{color:var(--pa)}
+#phPage .phlist{list-style:none;margin:0;padding:0}
+#phPage .phrow{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px;padding:5px 6px 5px 8px;border-radius:3px;min-height:2.4em}
+#phPage .phrow:nth-child(even){background:var(--stripe)}
+#phPage .phrow.has{box-shadow:inset 3px 0 0 var(--pa)}
+#phPage .phnm{min-width:0;line-height:1.3}
+#phPage .phnm span{color:var(--muted);font-size:.9em}
+#phPage .phst{display:flex;align-items:center;gap:8px;justify-content:flex-end;text-align:right}
+#phPage .phneed{display:inline-block;padding:2px 9px;border:1px solid var(--rule);border-radius:999px;font-size:.78em;font-weight:600;color:var(--muted);background:var(--panel);white-space:nowrap}
+#phPage .phby{font-size:.8em;color:var(--muted);max-width:9em;overflow-wrap:anywhere}
+#phPage .phpic{flex:none;width:40px;height:40px;padding:0;border:2px solid var(--pa);border-radius:50%;overflow:hidden;background:var(--rule);cursor:zoom-in}
+#phPage .phpic img{display:block;width:100%;height:100%;object-fit:cover}
+#phPage .phdone{padding:6px 8px;font-size:.9em;color:var(--muted)}
+@media (max-width:480px){ #phPage .phby{display:none} }
 /* one-time "send a unit photo" invitation (shown once per browser) */
 .askpop{position:fixed;inset:0;z-index:75;background:rgba(10,12,8,.55);display:flex;align-items:center;justify-content:center;padding:16px;animation:askIn .2s ease-out}
 .askbox{position:relative;width:min(100%,400px);background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-top:4px solid var(--brass);border-radius:4px;padding:18px 18px 16px;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:center}
@@ -1567,17 +1601,36 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
     <div id="mmRoster" role="tabpanel" aria-labelledby="mmTabRoster" hidden></div>
   </div>
 </div>
+<div class="mmodal" id="phPage" role="dialog" aria-modal="true" aria-labelledby="phTitle" hidden>
+  <div class="mmhead"><div class="wrap mmhin"><h1 id="phTitle">Unit Photos</h1><button type="button" class="btn" id="phDone">Done</button></div></div>
+  <div class="wrap mmbody">
+    <section class="phask">
+      <h2>Got painted Quar?</h2>
+      <p>Send a photo of your painted units and it could appear on that unit's card in the builder, with credit to you.</p>
+      <ol class="phsteps">
+        <li>Join the official Quar Discord.</li>
+        <li>Message <b>vending_machine (@tsuiki2664)</b> your photo.</li>
+        <li>Say the faction, the unit, its weapon variant and the name you'd like credited, e.g.<br><span class="phex">Coftyrans Rhyfler Cryfen (vending_machine)</span></li>
+      </ol>
+      <a class="btn sqbtn phjoin" id="phJoin" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17A2.5 2.5 0 0 1 4 14.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Join the official Quar Discord</a>
+      <p class="phtips">Show one model per photo, in good light. Painted and based models are preferred. The list below shows which units still need a photo.</p>
+    </section>
+    <div class="phctl"><div class="mmsum" id="phSum"></div><label class="switch" for="phNeedOnly"><input type="checkbox" id="phNeedOnly"> Only units still needing a photo</label></div>
+    <div class="ddall"><button type="button" data-phall="1">Open all</button><button type="button" data-phall="0">Close all</button></div>
+    <div id="phList"></div>
+  </div>
+</div>
 <textarea id="copyArea" aria-hidden="true" tabindex="-1"></textarea>
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-23.114">
-<script src="campaign-rules.js?v=2026-11-23.114"></script>
-<script src="tales-rules.js?v=2026-11-23.114"></script>
-<script src="tales.js?v=2026-11-23.114"></script>
-<script src="mhuddball-rules.js?v=2026-11-23.114"></script>
-<script src="mhuddball.js?v=2026-11-23.114"></script>
-<script src="campaign.js?v=2026-11-23.114"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-23.115">
+<script src="campaign-rules.js?v=2026-11-23.115"></script>
+<script src="tales-rules.js?v=2026-11-23.115"></script>
+<script src="tales.js?v=2026-11-23.115"></script>
+<script src="mhuddball-rules.js?v=2026-11-23.115"></script>
+<script src="mhuddball.js?v=2026-11-23.115"></script>
+<script src="campaign.js?v=2026-11-23.115"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -3428,6 +3481,51 @@ document.addEventListener("click", e=>{
 document.addEventListener("keydown", e=>{ const d = document.getElementById("upop"); if (!d) return;
   if (e.key==="Escape"){ e.preventDefault(); closeUnitPhoto(); }
   else if (e.key==="ArrowLeft"||e.key==="ArrowRight"){ e.preventDefault(); showUnitPhoto(unitById(d.dataset.u), +d.dataset.n + (e.key==="ArrowRight"?1:-1)); } });
+// Unit Photos page: which units have a community photo and which still need one, plus how to send one
+// (official Quar Discord, message vending_machine). Not in the tabs: opened only by [data-phopen] (footer button, one-time pop-up).
+const DISCORD_URL = "https://discord.gg/8wHtDbBGza";
+let phNeedOnly = false; const phOpenFac = new Set();
+function phRender(){
+  const L = $("#phList"); if (!L || !DATA) return;
+  $("#phJoin").href = DISCORD_URL;
+  let have = 0, tot = 0;
+  DATA.factions.forEach(f=>f.units.forEach(u=>{ tot++; if ((u.photos||[]).length) have++; }));
+  $("#phSum").innerHTML = `<div class="mmtile pts"><b>${have}</b><span>Have a photo</span></div><div class="mmtile"><b>${tot-have}</b><span>Still needed</span></div>`;
+  L.innerHTML = DATA.factions.map(f=>{
+    const done = f.units.filter(u=>(u.photos||[]).length).length;
+    const list = f.units.filter(u=>!phNeedOnly || !(u.photos||[]).length);
+    const rows = list.length ? list.map(u=>{
+      const ph = u.photos||[];
+      const by = [...new Set(ph.map(p=>p.by))].join(", ");
+      const st = ph.length
+        ? `<span class="phby">Photo by ${esc(by)}</span><button class="phpic" type="button" data-upic="${esc(u.id)}" title="Photo by ${esc(by)}" aria-label="Show photo of ${esc(u.name)}"><img src="${esc(ph[0].thumb||ph[0].src)}" alt="" loading="lazy" width="40" height="40"></button>`
+        : `<span class="phneed">Needed</span>`;
+      return `<li class="phrow${ph.length?" has":""}"><span class="phnm"><b>${esc(u.name)}</b> <span>· ${esc(u.variant||"")}</span></span><span class="phst">${st}</span></li>`;
+    }).join("") : `<li class="phdone">Every unit in this faction has a photo.</li>`;
+    return `<details class="phfac" data-phf="${esc(f.id)}"${f.color?` style="--fac:${esc(f.color)}"`:""}${phOpenFac.has(f.id)?" open":""}><summary><span class="chev" aria-hidden="true">▸</span>${flagImg(f,"phflag")}<h2>${esc(f.name)}</h2><span class="phcnt"><b>${done}</b> of ${f.units.length} have a photo</span></summary><ul class="phlist">${rows}</ul></details>`;
+  }).join("");
+}
+function phOpen(){
+  if (!DATA) return;
+  phRender(); const pg = $("#phPage"); pg.hidden = false; pg.scrollTop = 0; document.body.classList.add("mm-open");
+  try{ history.pushState({ph:1}, "", location.hash); }catch(e){}
+  $("#phDone").focus({preventScroll:true});
+}
+function phClose(fromHistory){
+  const pg = $("#phPage"); if (pg.hidden) return; pg.hidden = true;
+  if ($("#mmPage").hidden) document.body.classList.remove("mm-open");
+  if (!fromHistory && history.state && history.state.ph){ phClose.skip = true; history.back(); }
+}
+// The phone's Back button closes the page instead of leaving the builder
+window.addEventListener("popstate", e=>{ if (phClose.skip){ phClose.skip = false; e.stopImmediatePropagation(); return; } if (!$("#phPage").hidden){ phClose(true); e.stopImmediatePropagation(); } });
+document.addEventListener("click", e=>{
+  if (e.target.closest("[data-phopen]")){ e.preventDefault(); phOpen(); return; }
+  if (e.target.closest("#phDone")){ phClose(); return; }
+  const a = e.target.closest("[data-phall]"); if (a){ document.querySelectorAll("#phList details.phfac").forEach(d=>{ d.open = a.dataset.phall==="1"; }); }
+});
+document.addEventListener("change", e=>{ if (e.target.id==="phNeedOnly"){ phNeedOnly = e.target.checked; phRender(); } });
+document.addEventListener("toggle", e=>{ const d = e.target; if (d.matches && d.matches("#phList details.phfac")){ if (d.open) phOpenFac.add(d.dataset.phf); else phOpenFac.delete(d.dataset.phf); } }, true);
+document.addEventListener("keydown", e=>{ if (e.key==="Escape" && !$("#phPage").hidden && !document.getElementById("upop") && !e.defaultPrevented) phClose(); });
 // Section filter on a faction page: nothing picked = everything shown; pick one or more chips to show only those sections.
 const refFilter = new Set();
 function applyRefFilter(){
@@ -3901,15 +3999,15 @@ function wogParty(){
   setTimeout(()=>wrap.remove(), Math.max(3700, reduce?3700:LIFE+100));
 }
 $("#wogBtn").addEventListener("click", ()=>{ if (wogOn()) wogParty(); });
-const PHOTO_URL = "https://docs.google.com/spreadsheets/d/1I4mAz4CdmvH-eLFGPTguYjMon3VuA8IUBQjTac0ic6o/edit?gid=1346255698#gid=1346255698";
-const PHOTO_LINK = `<a class="kofi photo" href="${PHOTO_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h3.2L8.8 6h6.4l1.6 2.5H20a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13.3" r="3.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>Send a photo of your painted units<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8M17 14v5H5V7h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
+// The "Send a photo" button and the one-time pop-up open the Unit Photos page (#phPage); the Google Sheet is no longer linked (23 Nov).
+const PHOTO_LINK = `<a class="kofi photo" href="#" data-phopen><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h3.2L8.8 6h6.4l1.6 2.5H20a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13.3" r="3.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>Send a photo of your painted units</a>`;
 // One-time invitation to send a unit photo: shown once per browser, a few seconds after the site opens, never again
 // (remembered in localStorage "quar-photo-ask-2"; clearing site data shows it again). Waits if another pop-up is open.
 (()=>{
   const KEY = "quar-photo-ask-2";   // new key (23 Nov): everyone sees the pop-up once more, incl. people who saw it on 22 Nov
   try{ if (localStorage.getItem(KEY)) return; }catch(e){ return; }
   let tries = 0;
-  function busy(){ return document.getElementById("upop") || document.querySelector(".nmodal, .askpop") || ($("#mmPage") && !$("#mmPage").hidden); }
+  function busy(){ return document.getElementById("upop") || document.querySelector(".nmodal, .askpop") || ($("#mmPage") && !$("#mmPage").hidden) || ($("#phPage") && !$("#phPage").hidden); }
   function show(){
     if (busy()){ if (++tries < 10) setTimeout(show, 4000); return; }
     try{ localStorage.setItem(KEY, "1"); }catch(e){ return; }
@@ -3919,7 +4017,7 @@ const PHOTO_LINK = `<a class="kofi photo" href="${PHOTO_URL}" target="_blank" re
       <svg class="askicon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h3.2L8.8 6h6.4l1.6 2.5H20a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="13.3" r="3.3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
       <h2 id="askTitle">Got painted Quar?</h2>
       <p>Send a photo of your painted units and it could appear on that unit's card in the builder, with credit to you.</p>
-      <div class="askbtns"><a class="btn sqbtn" href="${PHOTO_URL}" target="_blank" rel="noopener" data-askclose>Send a photo</a><button class="btn ghost" type="button" data-askclose>No thanks</button></div>
+      <div class="askbtns"><a class="btn sqbtn" href="#" data-phopen data-askclose>Send a photo</a><button class="btn ghost" type="button" data-askclose>No thanks</button></div>
       <p class="asklater">Need it later? The <b>Send a photo</b> button is always at the bottom of the page.</p></div>`;
     const close = ()=>{ d.remove(); document.removeEventListener("keydown", onKey); };
     const onKey = e=>{ if (e.key==="Escape"){ e.preventDefault(); close(); } };
@@ -3959,7 +4057,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-23.114";
+const APP_VERSION = "2026-11-23.115";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
