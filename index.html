@@ -1624,13 +1624,13 @@ img.flag{object-fit:contain;background:none;border:0;border-radius:0}
 <div class="toast" id="toast" role="status"></div>
 <div class="updbar" id="updBar" role="status" hidden><span><b>A newer version of the Patrol Builder is available.</b></span><span class="updacts"><button class="btn" type="button" id="updBtn">Refresh now</button><button class="btn ghost" type="button" id="updLater">Later</button></span></div>
 
-<link rel="stylesheet" href="campaign.css?v=2026-11-23.115">
-<script src="campaign-rules.js?v=2026-11-23.115"></script>
-<script src="tales-rules.js?v=2026-11-23.115"></script>
-<script src="tales.js?v=2026-11-23.115"></script>
-<script src="mhuddball-rules.js?v=2026-11-23.115"></script>
-<script src="mhuddball.js?v=2026-11-23.115"></script>
-<script src="campaign.js?v=2026-11-23.115"></script>
+<link rel="stylesheet" href="campaign.css?v=2026-11-23.116">
+<script src="campaign-rules.js?v=2026-11-23.116"></script>
+<script src="tales-rules.js?v=2026-11-23.116"></script>
+<script src="tales.js?v=2026-11-23.116"></script>
+<script src="mhuddball-rules.js?v=2026-11-23.116"></script>
+<script src="mhuddball.js?v=2026-11-23.116"></script>
+<script src="campaign.js?v=2026-11-23.116"></script>
 <script>
 (function(){
 const $ = s => document.querySelector(s);
@@ -4002,9 +4002,9 @@ $("#wogBtn").addEventListener("click", ()=>{ if (wogOn()) wogParty(); });
 // The "Send a photo" button and the one-time pop-up open the Unit Photos page (#phPage); the Google Sheet is no longer linked (23 Nov).
 const PHOTO_LINK = `<a class="kofi photo" href="#" data-phopen><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h3.2L8.8 6h6.4l1.6 2.5H20a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13.3" r="3.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>Send a photo of your painted units</a>`;
 // One-time invitation to send a unit photo: shown once per browser, a few seconds after the site opens, never again
-// (remembered in localStorage "quar-photo-ask-2"; clearing site data shows it again). Waits if another pop-up is open.
+// (remembered in localStorage "quar-photo-ask-3"; clearing site data shows it again). Waits if another pop-up is open.
 (()=>{
-  const KEY = "quar-photo-ask-2";   // new key (23 Nov): everyone sees the pop-up once more, incl. people who saw it on 22 Nov
+  const KEY = "quar-photo-ask-3";   // new key (23 Nov, .116): everyone sees the pop-up once more (now opens the Unit Photos page)
   try{ if (localStorage.getItem(KEY)) return; }catch(e){ return; }
   let tries = 0;
   function busy(){ return document.getElementById("upop") || document.querySelector(".nmodal, .askpop") || ($("#mmPage") && !$("#mmPage").hidden) || ($("#phPage") && !$("#phPage").hidden); }
@@ -4057,7 +4057,7 @@ function mmFacCycle(){
     ico.style.setProperty("--mmdur", (n*1.2).toFixed(1)+"s"); /* 1.2 s per faction colour (v.56, user: faster; was 3 s) */ ico.classList.add("cyc");
   }catch(error){}
 }
-const APP_VERSION = "2026-11-23.115";
+const APP_VERSION = "2026-11-23.116";
 let updDismissed = false, updVersion = null;
 function checkForUpdate(){
   if (updDismissed || !/^https?:$/.test(location.protocol) || document.hidden) return;
