@@ -2074,6 +2074,13 @@
      "pts": 25,
      "fa": null,
      "page": "Profiles p18",
+     "photos": [
+      {
+       "src": "data/art/units/cr-rhyfler-bogen-Stewart.jpg",
+       "thumb": "data/art/units/cr-rhyfler-bogen-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -2097,6 +2104,13 @@
      "pts": 30,
      "fa": 3,
      "page": "Profiles p18",
+     "photos": [
+      {
+       "src": "data/art/units/cr-rhyfler-ryshi-Stewart.jpg",
+       "thumb": "data/art/units/cr-rhyfler-ryshi-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -2165,6 +2179,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p18",
+     "photos": [
+      {
+       "src": "data/art/units/cr-yawdryl-Stewart.jpg",
+       "thumb": "data/art/units/cr-yawdryl-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -2189,6 +2210,13 @@
      "pts": 35,
      "fa": 1,
      "page": "Profiles p18",
+     "photos": [
+      {
+       "src": "data/art/units/cr-lmg-Stewart.jpg",
+       "thumb": "data/art/units/cr-lmg-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -2210,6 +2238,13 @@
      "pts": 39,
      "fa": 2,
      "page": "Profiles p18",
+     "photos": [
+      {
+       "src": "data/art/units/cr-torpedo-Stewart.jpg",
+       "thumb": "data/art/units/cr-torpedo-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -2264,6 +2299,13 @@
      "pts": 36,
      "fa": 1,
      "page": "Profiles p19",
+     "photos": [
+      {
+       "src": "data/art/units/cr-iscaerten-grifkis-Stewart.jpg",
+       "thumb": "data/art/units/cr-iscaerten-grifkis-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -2479,6 +2521,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p19",
+     "photos": [
+      {
+       "src": "data/art/units/cr-standard-Stewart.jpg",
+       "thumb": "data/art/units/cr-standard-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -2502,6 +2551,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p19",
+     "photos": [
+      {
+       "src": "data/art/units/cr-squirrel-Stewart.jpg",
+       "thumb": "data/art/units/cr-squirrel-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -2565,6 +2621,13 @@
      "pts": 42,
      "fa": 3,
      "page": "Profiles p19",
+     "photos": [
+      {
+       "src": "data/art/units/cr-trench-raider-Stewart.jpg",
+       "thumb": "data/art/units/cr-trench-raider-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -3184,6 +3247,13 @@
      "pts": 130,
      "fa": null,
      "page": "Profiles p23",
+     "photos": [
+      {
+       "src": "data/art/units/cr-ailthean-mk2-Stewart.jpg",
+       "thumb": "data/art/units/cr-ailthean-mk2-Stewart-thumb.jpg",
+       "by": "Stewart"
+      }
+     ],
      "vehicle": {
       "crew": 3,
       "activation": "Crewed",
