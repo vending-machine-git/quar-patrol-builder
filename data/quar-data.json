@@ -5947,6 +5947,13 @@
      "pts": 35,
      "fa": null,
      "page": "Profiles p35",
+     "photos": [
+      {
+       "src": "data/art/units/tm-rhyfler-bogen-Tithegha.jpg",
+       "thumb": "data/art/units/tm-rhyfler-bogen-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -5971,6 +5978,13 @@
      "pts": 40,
      "fa": 3,
      "page": "Profiles p35",
+     "photos": [
+      {
+       "src": "data/art/units/tm-rhyfler-ryshi-Tithegha.jpg",
+       "thumb": "data/art/units/tm-rhyfler-ryshi-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -5994,6 +6008,13 @@
      "pts": 37,
      "fa": 1,
      "page": "Profiles p35",
+     "photos": [
+      {
+       "src": "data/art/units/tm-marksquar-Tithegha.jpg",
+       "thumb": "data/art/units/tm-marksquar-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -6018,6 +6039,13 @@
      "pts": 35,
      "fa": 1,
      "page": "Profiles p35",
+     "photos": [
+      {
+       "src": "data/art/units/tm-milwer-Tithegha.jpg",
+       "thumb": "data/art/units/tm-milwer-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -6043,6 +6071,13 @@
      "pts": 40,
      "fa": 1,
      "page": "Profiles p35",
+     "photos": [
+      {
+       "src": "data/art/units/tm-yawdryl-Tithegha.jpg",
+       "thumb": "data/art/units/tm-yawdryl-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -6125,6 +6160,13 @@
      "pts": 45,
      "fa": 1,
      "page": "Profiles p35",
+     "photos": [
+      {
+       "src": "data/art/units/tm-mortar-Tithegha.jpg",
+       "thumb": "data/art/units/tm-mortar-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -6319,6 +6361,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p36",
+     "photos": [
+      {
+       "src": "data/art/units/tm-cook-Tithegha.jpg",
+       "thumb": "data/art/units/tm-cook-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -6342,6 +6391,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p36",
+     "photos": [
+      {
+       "src": "data/art/units/tm-musician-Tithegha.jpg",
+       "thumb": "data/art/units/tm-musician-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -6365,6 +6421,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p36",
+     "photos": [
+      {
+       "src": "data/art/units/tm-standard-Tithegha.jpg",
+       "thumb": "data/art/units/tm-standard-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -6388,6 +6451,13 @@
      "pts": 30,
      "fa": 1,
      "page": "Profiles p36",
+     "photos": [
+      {
+       "src": "data/art/units/tm-squirrel-Tithegha.jpg",
+       "thumb": "data/art/units/tm-squirrel-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -6411,6 +6481,13 @@
      "pts": 44,
      "fa": 2,
      "page": "Profiles p36",
+     "photos": [
+      {
+       "src": "data/art/units/tm-pathfinders-Tithegha.jpg",
+       "thumb": "data/art/units/tm-pathfinders-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -6436,6 +6513,13 @@
      "pts": 38,
      "fa": 2,
      "page": "Profiles p36",
+     "photos": [
+      {
+       "src": "data/art/units/tm-wysp-tracker-Tithegha.jpg",
+       "thumb": "data/art/units/tm-wysp-tracker-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "profiles": [
       {
        "sk": 13,
@@ -6931,6 +7015,13 @@
      "pts": 140,
      "fa": null,
      "page": "Profiles p39",
+     "photos": [
+      {
+       "src": "data/art/units/tm-twaenhyr-Tithegha.jpg",
+       "thumb": "data/art/units/tm-twaenhyr-Tithegha-thumb.jpg",
+       "by": "Tithegha"
+      }
+     ],
      "vehicle": {
       "crew": 3,
       "activation": "Crewed",
