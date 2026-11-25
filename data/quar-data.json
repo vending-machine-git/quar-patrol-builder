@@ -2079,6 +2079,11 @@
        "src": "data/art/units/cr-rhyfler-bogen-Stewart.jpg",
        "thumb": "data/art/units/cr-rhyfler-bogen-Stewart-thumb.jpg",
        "by": "Stewart"
+      },
+      {
+       "src": "data/art/units/cr-rhyfler-bogen-PapaGiuseppe.jpg",
+       "thumb": "data/art/units/cr-rhyfler-bogen-PapaGiuseppe-thumb.jpg",
+       "by": "Papa Giuseppe"
       }
      ],
      "profiles": [
@@ -2109,6 +2114,11 @@
        "src": "data/art/units/cr-rhyfler-ryshi-Stewart.jpg",
        "thumb": "data/art/units/cr-rhyfler-ryshi-Stewart-thumb.jpg",
        "by": "Stewart"
+      },
+      {
+       "src": "data/art/units/cr-rhyfler-ryshi-PapaGiuseppe.jpg",
+       "thumb": "data/art/units/cr-rhyfler-ryshi-PapaGiuseppe-thumb.jpg",
+       "by": "Papa Giuseppe"
       }
      ],
      "profiles": [
@@ -2155,6 +2165,13 @@
      "pts": 28,
      "fa": 1,
      "page": "Profiles p18",
+     "photos": [
+      {
+       "src": "data/art/units/cr-milwer-PapaGiuseppe.jpg",
+       "thumb": "data/art/units/cr-milwer-PapaGiuseppe-thumb.jpg",
+       "by": "Papa Giuseppe"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -4119,6 +4136,13 @@
      "pts": 125,
      "fa": null,
      "page": "Profiles p27",
+     "photos": [
+      {
+       "src": "data/art/units/fid-shaedyn-Hawkrin.jpg",
+       "thumb": "data/art/units/fid-shaedyn-Hawkrin-thumb.jpg",
+       "by": "Hawkrin"
+      }
+     ],
      "vehicle": {
       "crew": 3,
       "activation": "Crewed",
@@ -4254,6 +4278,13 @@
      "pts": 19,
      "fa": null,
      "page": "Profiles p28",
+     "photos": [
+      {
+       "src": "data/art/units/wa-able-smg-Ambassador.jpg",
+       "thumb": "data/art/units/wa-able-smg-Ambassador-thumb.jpg",
+       "by": "Ambassador"
+      }
+     ],
      "profiles": [
       {
        "sk": 11,
@@ -4277,6 +4308,13 @@
      "pts": 21,
      "fa": null,
      "page": "Profiles p28",
+     "photos": [
+      {
+       "src": "data/art/units/wa-able-blade-Ambassador.jpg",
+       "thumb": "data/art/units/wa-able-blade-Ambassador-thumb.jpg",
+       "by": "Ambassador"
+      }
+     ],
      "profiles": [
       {
        "sk": 11,
@@ -4301,6 +4339,13 @@
      "pts": 25,
      "fa": 2,
      "page": "Profiles p28",
+     "photos": [
+      {
+       "src": "data/art/units/wa-able-2pistols-Ambassador.jpg",
+       "thumb": "data/art/units/wa-able-2pistols-Ambassador-thumb.jpg",
+       "by": "Ambassador"
+      }
+     ],
      "profiles": [
       {
        "sk": 11,
@@ -4324,6 +4369,13 @@
      "pts": 25,
      "fa": 3,
      "page": "Profiles p28",
+     "photos": [
+      {
+       "src": "data/art/units/wa-able-keegy-Ambassador.jpg",
+       "thumb": "data/art/units/wa-able-keegy-Ambassador-thumb.jpg",
+       "by": "Ambassador"
+      }
+     ],
      "profiles": [
       {
        "sk": 11,
@@ -4400,6 +4452,13 @@
      "pts": 33,
      "fa": 1,
      "page": "Profiles p28",
+     "photos": [
+      {
+       "src": "data/art/units/wa-bosun-Ambassador.jpg",
+       "thumb": "data/art/units/wa-bosun-Ambassador-thumb.jpg",
+       "by": "Ambassador"
+      }
+     ],
      "profiles": [
       {
        "sk": 12,
@@ -4447,6 +4506,13 @@
      "pts": 36,
      "fa": 2,
      "page": "Profiles p28",
+     "photos": [
+      {
+       "src": "data/art/units/wa-askyldae-blade-Ambassador.jpg",
+       "thumb": "data/art/units/wa-askyldae-blade-Ambassador-thumb.jpg",
+       "by": "Ambassador"
+      }
+     ],
      "profiles": [
       {
        "sk": 11,
@@ -6518,6 +6584,11 @@
        "src": "data/art/units/tm-wysp-tracker-Tithegha.jpg",
        "thumb": "data/art/units/tm-wysp-tracker-Tithegha-thumb.jpg",
        "by": "Tithegha"
+      },
+      {
+       "src": "data/art/units/tm-wysp-tracker-PapaGiuseppe.jpg",
+       "thumb": "data/art/units/tm-wysp-tracker-PapaGiuseppe-thumb.jpg",
+       "by": "Papa Giuseppe"
       }
      ],
      "profiles": [
@@ -7020,6 +7091,11 @@
        "src": "data/art/units/tm-twaenhyr-Tithegha.jpg",
        "thumb": "data/art/units/tm-twaenhyr-Tithegha-thumb.jpg",
        "by": "Tithegha"
+      },
+      {
+       "src": "data/art/units/tm-twaenhyr-PapaGiuseppe.jpg",
+       "thumb": "data/art/units/tm-twaenhyr-PapaGiuseppe-thumb.jpg",
+       "by": "Papa Giuseppe"
       }
      ],
      "vehicle": {
